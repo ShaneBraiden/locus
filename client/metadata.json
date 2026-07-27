@@ -1,0 +1,6 @@
+{
+  "name": "Northr",
+  "description": "Your AI career companion and decision intelligence lab, guiding you from clinical/science chaos to clarity.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

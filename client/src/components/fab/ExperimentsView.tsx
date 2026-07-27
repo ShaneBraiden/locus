@@ -1,0 +1,2120 @@
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import { 
+  Sparkles, 
+  Search, 
+  ArrowRight, 
+  BookOpen, 
+  Clock, 
+  Check, 
+  Award, 
+  Flame, 
+  Dna, 
+  Brain, 
+  FileText, 
+  MessageSquare, 
+  Users, 
+  Sliders, 
+  Compass, 
+  Share2, 
+  Bookmark, 
+  X, 
+  MoreHorizontal, 
+  Bell, 
+  ArrowLeft,
+  ChevronRight,
+  Heart,
+  Activity,
+  ExternalLink,
+  Plus,
+  Upload,
+  AlertCircle,
+  Zap,
+  Cpu,
+  CheckCircle2,
+  Menu
+} from "lucide-react";
+import { CareerPath, Experience } from "../../types";
+import { experienceLibrary } from "../../data/experienceLibrary";
+import { getCuratedRecommendations, DailyReality, CognitiveLoad, PilotExperience } from "../../lib/pilotOrchestrator";
+
+interface ExperimentsViewProps {
+  onAddEvidence: (evidenceItem: any) => void;
+  bestFitPaths?: CareerPath[];
+  onConfidenceUpdate: (fieldName: string, change: number) => void;
+  
+  // Pilot Orchestrator props
+  dailyReality?: DailyReality;
+  setDailyReality?: (dr: DailyReality) => void;
+  cognitiveBudget?: CognitiveLoad;
+  setCognitiveBudget?: (cb: CognitiveLoad) => void;
+  activePilotExperience?: PilotExperience | null;
+  setActivePilotExperience?: (exp: PilotExperience | null) => void;
+  completedExperienceIds?: string[];
+  setCompletedExperienceIds?: React.Dispatch<React.SetStateAction<string[]>>;
+  onNavigateToTab?: (tab: string) => void;
+
+  // Gamification & Account Props
+  streak?: number;
+  setStreak?: React.Dispatch<React.SetStateAction<number>> | ((s: number) => void);
+  xp?: number;
+  setXp?: React.Dispatch<React.SetStateAction<number>> | ((x: number) => void);
+
+  // Student info props
+  studentName?: string;
+  studentDegree?: string;
+  onOpenMenu?: () => void;
+}
+
+// Helper to safely extract a list of skills from either Experience or PilotExperience format
+export function getSkillsList(exp: any): string[] {
+  if (!exp) return ["Communication", "Simplicity", "Science Clarity"];
+  if (Array.isArray(exp.skillsTargeted)) return exp.skillsTargeted;
+  if (Array.isArray(exp.primarySkills)) return exp.primarySkills;
+  if (typeof exp.primarySkills === "string") {
+    return exp.primarySkills.split(",").map((s: string) => s.trim());
+  }
+  return ["Communication", "Simplicity", "Science Clarity"];
+}
+
+// Helper to safely extract evidence description text
+export function getEvidenceText(exp: any): string {
+  if (!exp) return "You enjoy simplifying complex ideas and communicating them clearly.";
+  if (Array.isArray(exp.evidenceProduced)) return exp.evidenceProduced[0] || "Successfully completed challenge.";
+  if (typeof exp.evidenceProduced === "string") return exp.evidenceProduced;
+  return "You enjoy simplifying complex ideas and communicating them clearly.";
+}
+
+// Helper to resolve a distinctive high-quality context-relevant Unsplash image for any experience
+export function getExperienceImage(subject: string, title: string): string {
+  const t = (title || "").toLowerCase();
+  const s = (subject || "").toLowerCase();
+  
+  if (t.includes("dna") || s.includes("dna") || t.includes("crispr") || t.includes("gene") || t.includes("cloning") || t.includes("biotech")) {
+    return "https://images.unsplash.com/photo-1530026405186-ed1ea0ac7a63?auto=format&fit=crop&w=300&q=80"; // DNA / Biotech
+  }
+  if (t.includes("brain") || s.includes("psychology") || t.includes("neuro") || t.includes("cognitive") || t.includes("mental") || t.includes("empathy")) {
+    return "https://images.unsplash.com/photo-1559757175-5700dde675bc?auto=format&fit=crop&w=300&q=80"; // Brain / Neuroscience
+  }
+  if (t.includes("clinical") || t.includes("trial") || t.includes("drug") || s.includes("medical") || t.includes("pharma") || t.includes("doctor")) {
+    return "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=300&q=80"; // Clinical / Medicine
+  }
+  if (t.includes("whatsapp") || t.includes("claim") || t.includes("fact") || t.includes("viral") || t.includes("forward") || t.includes("debunk")) {
+    return "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=300&q=80"; // Digital Fact check / Mobile phone
+  }
+  if (t.includes("presentation") || t.includes("explain") || t.includes("teach") || t.includes("talk") || t.includes("pitch") || t.includes("lecture")) {
+    return "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=300&q=80"; // Presentation / Communication
+  }
+  if (t.includes("interview") || t.includes("career") || t.includes("resume") || t.includes("job") || t.includes("linkedin")) {
+    return "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80"; // Interview / Career
+  }
+  
+  // Defaults based on subject
+  if (s.includes("biomedical") || s.includes("science") || s.includes("biology") || s.includes("chemistry")) {
+    return "https://images.unsplash.com/photo-1532187863486-abf9d39d66e8?auto=format&fit=crop&w=300&q=80"; // Science lab
+  }
+  if (s.includes("psychology") || s.includes("behavior") || s.includes("mind") || s.includes("health")) {
+    return "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=300&q=80"; // Mindfulness / Psychology
+  }
+  
+  return "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=300&q=80"; // Tech / Abstract
+}
+
+export default function ExperimentsView({
+  onAddEvidence,
+  bestFitPaths = [],
+  onConfidenceUpdate,
+  dailyReality,
+  setDailyReality,
+  cognitiveBudget,
+  setCognitiveBudget,
+  activePilotExperience,
+  setActivePilotExperience,
+  completedExperienceIds = [],
+  setCompletedExperienceIds,
+  onNavigateToTab,
+  streak: propStreak,
+  setStreak: propSetStreak,
+  xp: propXp,
+  setXp: propSetXp,
+  studentName = "",
+  studentDegree = "",
+  onOpenMenu
+}: ExperimentsViewProps) {
+  // Screen States (8-step Active Experiment Flow)
+  // 1: EXPERIMENTS HUB (Dashboard)
+  // 2: MISSION DETAILS (Overview)
+  // 3: STEP 1: UNDERSTAND THE SITUATION (Scenario Reading)
+  // 4: STEP 2 UNLOCK TRANSITION (Pilot Encouragement)
+  // 5: STEP 3: IDENTIFY KEY PROBLEMS (Problem identification inputs)
+  // 6: STEP 4: PROPOSE INITIATIVES (Initiative formulation inputs)
+  // 7: STEP 5: GUIDED REFLECTION (Multi-metric feedback)
+  // 8: STEP 6: MISSION COMPLETE & IMPACT (Evidence check & confidence growth)
+  const [currentScreen, setCurrentScreen] = useState<number>(1);
+  const [dashboardTab, setDashboardTab] = useState<"for_you" | "in_progress" | "completed">("for_you");
+
+  // Active in-progress experiment state for the "Continue Where You Left Off" widget
+  const [inProgressExp, setInProgressExp] = useState<any | null>(null);
+  const [inProgressStep, setInProgressStep] = useState<number>(1);
+
+  // Step 3 Inputs: Identify Key Problems
+  const [problem1, setProblem1] = useState("");
+  const [problem2, setProblem2] = useState("");
+  const [problem3, setProblem3] = useState("");
+
+  // Step 4 Inputs: Propose Initiatives
+  const [initiative1, setInitiative1] = useState("");
+  const [initiative2, setInitiative2] = useState("");
+  const [initiative3, setInitiative3] = useState("");
+
+  // Step 5 Inputs: Guided Reflection Flow
+  const [reflectionEnjoyed, setReflectionEnjoyed] = useState<string>("");
+  const [reflectionChallenge, setReflectionChallenge] = useState<number>(5);
+
+  // Experience and progress states
+  const [localStreak, setLocalStreak] = useState(12);
+  const [localXp, setLocalXp] = useState(120);
+
+  const streak = propStreak !== undefined ? propStreak : localStreak;
+  const xp = propXp !== undefined ? propXp : localXp;
+
+  const setStreak = propSetStreak || setLocalStreak;
+  const setXp = propSetXp || setLocalXp;
+
+  const [isSaved, setIsSaved] = useState(false);
+  const [isObserveSaved, setIsObserveSaved] = useState(false);
+  
+  // Step 3 Interactive checklists
+  const [completedSubtasks, setCompletedSubtasks] = useState<Record<number, boolean>>({
+    0: false,
+    1: false,
+    2: false,
+    3: false
+  });
+
+  // Step 4 Interactive reflection answers
+  const [activeEmoji, setActiveEmoji] = useState<number | null>(null);
+  const [hardestText, setHardestText] = useState("");
+  const [surprisedText, setSurprisedText] = useState("");
+  const [tryAgainChoice, setTryAgainChoice] = useState<"Yes" | "Maybe" | "No" | null>(null);
+  const [isSyncing, setIsSyncing] = useState(false);
+
+  // Certificate Workflow States
+  const [showCertModal, setShowCertModal] = useState(false);
+  const [certStep, setCertStep] = useState<1 | 2 | 3 | 4>(1); // 1: Upload, 2: Parsing, 3: Review, 4: Success
+  const [dragActive, setDragActive] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedPreset, setSelectedPreset] = useState<any | null>(null);
+  const [parsingProgress, setParsingProgress] = useState(0);
+  const [parsingLog, setParsingLog] = useState<string[]>([]);
+  const [extractedSkills, setExtractedSkills] = useState<string[]>([]);
+  const [selectedSkillsToConvert, setSelectedSkillsToConvert] = useState<Record<string, boolean>>({});
+  const [isConverting, setIsConverting] = useState(false);
+  const [selectedExp, setSelectedExp] = useState<any | null>(null);
+  const [isLoadingPicks, setIsLoadingPicks] = useState(true);
+
+  // Trigger simulated loading effect for curated picks
+  useEffect(() => {
+    setIsLoadingPicks(true);
+    const timer = setTimeout(() => {
+      setIsLoadingPicks(false);
+    }, 1200);
+    return () => clearTimeout(timer);
+  }, [
+    studentDegree,
+    dailyReality?.workload,
+    dailyReality?.academicFocus,
+    dailyReality?.energyLevel,
+    dailyReality?.availableHours,
+    cognitiveBudget
+  ]);
+
+  // Synchronize externally selected pilot experiences (e.g., from Dashboard)
+  useEffect(() => {
+    if (activePilotExperience) {
+      setSelectedExp(activePilotExperience);
+      setCurrentScreen(2); // Go to overview screen
+      // Reset active experience so it doesn't trigger repeatedly if we return to the tab later
+      if (setActivePilotExperience) {
+        setActivePilotExperience(null);
+      }
+    }
+  }, [activePilotExperience, setActivePilotExperience]);
+
+  const certPresets = [
+    {
+      id: "google_pm",
+      title: "Google Project Management",
+      issuer: "Google / Coursera",
+      subject: "Project Management",
+      skills: [
+        "Agile & Scrum Methodologies",
+        "Strategic Resource Allocation",
+        "Stakeholder Communication",
+        "Risk Assessment & Management",
+        "Project Charters & Documentation"
+      ],
+      boostField: "Biomedical Sciences",
+      boostValue: 12
+    },
+    {
+      id: "aws_cloud",
+      title: "AWS Certified Cloud Practitioner",
+      issuer: "Amazon Web Services",
+      subject: "Cloud Computing",
+      skills: [
+        "Cloud Architecture Principles",
+        "AWS Core Services & Security",
+        "Distributed System Design",
+        "High Availability Setup",
+        "Cost Optimization & Budgets"
+      ],
+      boostField: "Bioinformatics",
+      boostValue: 15
+    },
+    {
+      id: "stanford_ml",
+      title: "Stanford Machine Learning",
+      issuer: "Stanford Online / Coursera",
+      subject: "Artificial Intelligence",
+      skills: [
+        "Supervised & Unsupervised Learning",
+        "Neural Network Architecture",
+        "Statistical Tuning & Variance",
+        "Python AI Modeling Frameworks",
+        "Pattern Classification Models"
+      ],
+      boostField: "Bioinformatics",
+      boostValue: 18
+    },
+    {
+      id: "harvard_cs50",
+      title: "CS50 Introduction to Computer Science",
+      issuer: "Harvard Online / edX",
+      subject: "Computer Science",
+      skills: [
+        "Memory Management & Pointers",
+        "Algorithmic Problem Solving",
+        "Data Structures & Complexity",
+        "Full-Stack Web Architectures",
+        "C & Python Development"
+      ],
+      boostField: "Bioinformatics",
+      boostValue: 15
+    }
+  ];
+
+  const handleCustomFileUpload = (file: File) => {
+    setSelectedFile(file);
+    setSelectedPreset(null);
+    
+    // Guess subject and skills based on file name or default to general Career OS skills
+    const fileNameLower = file.name.toLowerCase();
+    let title = file.name.replace(/\.[^/.]+$/, "").split(/[-_]/).map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
+    if (title.length > 40) title = title.substring(0, 37) + "...";
+    
+    let subject = "General Tech & Operations";
+    let skills = [
+      "Critical Problem Solving",
+      "Collaborative Workflow Design",
+      "Information Synthesis",
+      "Systematic Task Management",
+      "Digital Tool Competency"
+    ];
+    let boostField = "Biomedical Sciences";
+    
+    if (fileNameLower.includes("python") || fileNameLower.includes("code") || fileNameLower.includes("programming") || fileNameLower.includes("dev")) {
+      subject = "Software Engineering";
+      skills = ["Algorithmic Problem Solving", "Python Programming", "Code Modularization", "Debugging Systems", "Software Architecture"];
+      boostField = "Bioinformatics";
+    } else if (fileNameLower.includes("data") || fileNameLower.includes("analyst") || fileNameLower.includes("analytics") || fileNameLower.includes("sql")) {
+      subject = "Data Analytics";
+      skills = ["Statistical Analysis", "Data Cleaning & Structuring", "Interactive Dashboards", "Relational Databases", "Data-Driven Insights"];
+      boostField = "Bioinformatics";
+    } else if (fileNameLower.includes("bio") || fileNameLower.includes("chem") || fileNameLower.includes("science")) {
+      subject = "Scientific Research";
+      skills = ["Scientific Inquiry Methods", "Laboratory Documentation", "Data Modeling in Sciences", "Literature Review Synthesis", "Experimental Protocol Design"];
+      boostField = "Biomedical Sciences";
+    }
+
+    // Prepare custom parsed preset object
+    const customParsedPreset = {
+      id: "custom_uploaded",
+      title: title || "Verified Certificate",
+      issuer: "Uploaded Document (" + file.name + ")",
+      subject: subject,
+      skills: skills,
+      boostField: boostField,
+      boostValue: 10
+    };
+
+    startParsing(customParsedPreset);
+  };
+
+  const startParsing = (presetOrCustom: any) => {
+    setCertStep(2);
+    setParsingProgress(0);
+    setParsingLog([]);
+    
+    const logs = [
+      "Initializing AI-assisted PDF and OCR parsing systems...",
+      `Detected document: "${presetOrCustom.title}"`,
+      `Cryptographic issuer detected: ${presetOrCustom.issuer}`,
+      "Analyzing digital signatures and security checksums...",
+      "Signature verified. Secure certificate hash match: SHA-256 (0x" + Math.random().toString(16).substring(2, 10) + "ea8...)",
+      "Extracting cognitive competency tokens & structural syllabus metadata...",
+      "Matching extracted terms against Career OS Skill Taxonomy...",
+      `Mapped ${presetOrCustom.skills.length} core professional competencies.`,
+      `Ready to convert certificate credentials to verified Proof Points!`
+    ];
+
+    let currentLogIndex = 0;
+    
+    // Animate progress and stream logs
+    const interval = setInterval(() => {
+      setParsingProgress(prev => {
+        const next = prev + 4;
+        
+        // Match logs with progress ranges
+        const logTriggers = [0, 10, 25, 40, 55, 70, 80, 90, 98];
+        if (currentLogIndex < logs.length && next >= logTriggers[currentLogIndex]) {
+          setParsingLog(p => [...p, logs[currentLogIndex]]);
+          currentLogIndex++;
+        }
+
+        if (next >= 100) {
+          clearInterval(interval);
+          // Load skills to review
+          setExtractedSkills(presetOrCustom.skills);
+          const initialChecked: Record<string, boolean> = {};
+          presetOrCustom.skills.forEach((skill: string) => {
+            initialChecked[skill] = true;
+          });
+          setSelectedSkillsToConvert(initialChecked);
+          setSelectedPreset(presetOrCustom);
+          setTimeout(() => {
+            setCertStep(3);
+          }, 400);
+          return 100;
+        }
+        return next;
+      });
+    }, 100);
+  };
+
+  const handleClaimCertificateProof = () => {
+    if (!selectedPreset) return;
+    setIsConverting(true);
+
+    const activeSelectedSkills = Object.keys(selectedSkillsToConvert).filter(
+      skill => selectedSkillsToConvert[skill]
+    );
+
+    setTimeout(() => {
+      setIsConverting(false);
+      setCertStep(4);
+      setXp(prev => prev + 25);
+
+      // 1. Add evidence
+      if (onAddEvidence) {
+        onAddEvidence({
+          id: `cert_evidence_${Date.now()}`,
+          type: "Verified Certificate",
+          title: selectedPreset.title,
+          subject: selectedPreset.subject,
+          signals: activeSelectedSkills,
+          tier: "Tier 1 Verified",
+          completedAt: new Date().toLocaleDateString(),
+          realization: `Imported via Certificate Decoder. Verified skills mapped to ${selectedPreset.boostField} matches.`
+        });
+      }
+
+      // 2. Update parent confidence score
+      if (onConfidenceUpdate && selectedPreset.boostField) {
+        onConfidenceUpdate(selectedPreset.boostField, selectedPreset.boostValue);
+      }
+    }, 1800);
+  };
+
+  const handleDrag = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleCustomFileUpload(e.dataTransfer.files[0]);
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      handleCustomFileUpload(e.target.files[0]);
+    }
+  };
+
+  // List of active picks curated dynamically by our Pilot Orchestrator
+  const activeHypothesesList = (bestFitPaths || []).map(p => p.fieldName);
+  const curatedRecs = getCuratedRecommendations(
+    studentDegree,
+    dailyReality || { workload: "Medium", academicFocus: "Lectures", energyLevel: "Medium", availableHours: 2 },
+    cognitiveBudget || "Light",
+    completedExperienceIds || [],
+    activeHypothesesList
+  );
+
+  const todayPicks = curatedRecs.length > 0 ? curatedRecs.map(exp => {
+    const isDyn = exp.isCustomGenerated || exp.type === "Dynamic";
+    const shortRationale = exp.rationale ? exp.rationale.replace(/^Pilot Orchestrator: |^Hypothesis Match: |^Subject Match: /, "") : "";
+    
+    // Convert minutes to much shorter durations (e.g. 2-5 mins) for quick actionability
+    const rawTime = exp.estimatedTime || "15 minutes";
+    let shortTime = "2 min";
+    if (rawTime.includes("10")) shortTime = "2 min";
+    else if (rawTime.includes("15")) shortTime = "2 min";
+    else if (rawTime.includes("20")) shortTime = "3 min";
+    else if (rawTime.includes("30")) shortTime = "4 min";
+    else if (rawTime.includes("45")) shortTime = "5 min";
+    else if (rawTime.includes("60") || rawTime.includes("1 hour")) shortTime = "6 min";
+    else shortTime = "3 min";
+
+    const whyPilotSuggests = (exp as any).whyChosen || shortRationale || "Strengthens critical career pathways and practical science application.";
+
+    return {
+      id: exp.id,
+      title: exp.title,
+      desc: exp.goal || exp.expectedOutcome || "Explore core competencies.",
+      duration: shortTime,
+      whyPilotSuggests: whyPilotSuggests,
+      icon: exp.subject === "Biomedical Sciences" ? "dna" : exp.subject === "Psychology" ? "brain" : "document",
+      screenTarget: 2 as const,
+      expData: exp
+    };
+  }) : [
+    {
+      id: "crispr",
+      title: "Explain CRISPR to a 10-year-old",
+      desc: "Simplify a complex concept. Builds clarity and communication.",
+      duration: "3 min",
+      whyPilotSuggests: "Translating cutting-edge gene editing tools for laypeople is the ultimate test of true scientific mastery.",
+      icon: "dna",
+      screenTarget: 2 as const,
+      expData: null
+    }
+  ];
+
+  // Emoji responses array
+  const emojiList = [
+    { emoji: "😍", label: "Loved it" },
+    { emoji: "🙂", label: "Okay" },
+    { emoji: "😐", label: "Neutral" },
+    { emoji: "😟", label: "Struggled" },
+    { emoji: "😡", label: "Didn't like it" }
+  ];
+
+  // Helper to handle transitioning to Reflection submission and Completed state
+  const handleReflectionSubmit = () => {
+    if (!selectedExp) return;
+    setIsSyncing(true);
+    setTimeout(() => {
+      setIsSyncing(false);
+      setCurrentScreen(5); // Go to Completion screen
+      if (setStreak) {
+        setStreak(prev => prev + 1);
+      }
+      if (setXp) {
+        setXp(prev => prev + 10);
+      }
+
+      const currentSubject = selectedExp.subject || "Biomedical Sciences";
+      const currentSkills = getSkillsList(selectedExp);
+      const currentId = selectedExp.id || "explain_crispr";
+
+      // Call parent callbacks to keep full stack state synced if available
+      if (onAddEvidence) {
+        onAddEvidence({
+          id: `proof_${Date.now()}`,
+          type: "Curated Challenge",
+          title: selectedExp.title || "Explain CRISPR to a 10-year-old",
+          subject: currentSubject,
+          signals: currentSkills,
+          tier: selectedExp.verificationTier || "Tier 1",
+          completedAt: new Date().toLocaleDateString(),
+          realization: hardestText || `Successfully completed challenge in ${currentSubject}.`
+        });
+      }
+      if (onConfidenceUpdate) {
+        onConfidenceUpdate(currentSubject, 8);
+      }
+      if (setCompletedExperienceIds) {
+        setCompletedExperienceIds(prev => {
+          const next = [...prev, currentId];
+          const origId = selectedExp.originalId;
+          if (origId && !next.includes(origId)) {
+            next.push(origId);
+          }
+          return next;
+        });
+      }
+    }, 1500);
+  };
+
+  return (
+    <div id="experiments-redesign-container" className="w-full h-full flex flex-col select-none font-sans bg-[#FBFBFA]">
+      
+      {/* Main Dynamic Workspace Canvas */}
+      <div className="relative flex-1 bg-white border-0 sm:border sm:border-[#EFECE6] sm:m-2 sm:rounded-3xl shadow-[0_8px_30px_rgba(0,0,0,0.02)] overflow-hidden flex flex-col justify-between">
+        
+        <AnimatePresence mode="wait">
+          
+          {/* SCREEN 1: EXPERIMENT LIST (DASHBOARD) */}
+          {currentScreen === 1 && (
+            <motion.div
+              key="screen-1"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.25, ease: "easeOut" }}
+              className="p-3 sm:p-5 md:p-6 lg:p-8 space-y-4 sm:space-y-6 flex-1 flex flex-col justify-between"
+            >
+              <div className="space-y-4 sm:space-y-6">
+                {/* Search / Notifications and Title Row */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-stone-100">
+                  <div className="flex items-center space-x-3">
+                    {onOpenMenu && (
+                      <button
+                        onClick={onOpenMenu}
+                        className="md:hidden p-1.5 -ml-1.5 text-slate-500 hover:text-slate-900 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer"
+                      >
+                        <Menu className="h-5 w-5" />
+                      </button>
+                    )}
+                    <div className="space-y-0.5 sm:space-y-1">
+                      <span className="block text-[10px] font-mono font-black uppercase tracking-wider text-purple-600">Active Laboratory</span>
+                      <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Experiments Hub</h2>
+                    </div>
+                  </div>
+                  
+                  {/* Stats HUD + Convert Action (Highly engaging & fully visible) */}
+                  <div className="flex items-center gap-2 sm:space-x-3 self-stretch sm:self-auto justify-between sm:justify-start flex-wrap">
+                    <button
+                      onClick={() => {
+                        setShowCertModal(true);
+                        setCertStep(1);
+                        setSelectedFile(null);
+                        setSelectedPreset(null);
+                      }}
+                      className="flex items-center space-x-1 sm:space-x-1.5 bg-purple-50 hover:bg-purple-100 border border-purple-200 rounded-xl px-2.5 py-1.5 sm:px-3 sm:py-2 text-[#4C1D95] shadow-2xs font-mono font-black text-[9px] sm:text-xs transition-all cursor-pointer"
+                    >
+                      <Plus className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                      <span>DECODE CERTIFICATE</span>
+                    </button>
+
+                    <div className="flex items-center gap-2 shrink-0">
+                      <div className="flex items-center space-x-1 bg-[#FFFBEB] border border-[#FEF3C7] rounded-xl px-2 py-1 sm:px-3 sm:py-1.5 text-[#B45309] shadow-2xs font-mono text-[9px] sm:text-xs">
+                        <Flame className="h-3 w-3 fill-amber-500 text-amber-500 animate-pulse" />
+                        <span className="font-black">{streak}D</span>
+                      </div>
+                      <div className="flex items-center space-x-1 bg-[#EEF2FF] border border-[#E0E7FF] rounded-xl px-2 py-1 sm:px-3 sm:py-1.5 text-[#4F46E5] shadow-2xs font-mono text-[9px] sm:text-xs">
+                        <Sparkles className="h-3 w-3 text-indigo-500 animate-pulse" />
+                        <span className="font-black">{xp}XP</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Sub Tab Selector (Pill Capsule Design) */}
+                <div className="flex w-full sm:w-auto bg-[#F4F2EE] p-1 rounded-2xl text-[10px] sm:text-[11px] font-mono font-black tracking-wider uppercase text-stone-500 overflow-x-auto scrollbar-none">
+                  <button 
+                    onClick={() => setDashboardTab("for_you")}
+                    className={`flex-1 sm:flex-initial text-center whitespace-nowrap px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl transition-all cursor-pointer ${dashboardTab === "for_you" ? "bg-white text-slate-900 shadow-sm" : "hover:text-slate-900"}`}
+                  >
+                    ✨ For You
+                  </button>
+                  <button 
+                    onClick={() => setDashboardTab("in_progress")}
+                    className={`flex-1 sm:flex-initial text-center whitespace-nowrap px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl transition-all cursor-pointer ${dashboardTab === "in_progress" ? "bg-white text-slate-900 shadow-sm" : "hover:text-slate-900"}`}
+                  >
+                    ⏳ In Progress
+                  </button>
+                  <button 
+                    onClick={() => setDashboardTab("completed")}
+                    className={`flex-1 sm:flex-initial text-center whitespace-nowrap px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl transition-all cursor-pointer ${dashboardTab === "completed" ? "bg-white text-slate-900 shadow-sm" : "hover:text-slate-900"}`}
+                  >
+                    🏆 Completed ({completedExperienceIds.length})
+                  </button>
+                </div>
+ 
+                 <AnimatePresence mode="wait">
+                   {/* FOR YOU TAB CONTENT */}
+                   {dashboardTab === "for_you" && (
+                     <motion.div
+                       key="tab-foryou"
+                       initial={{ opacity: 0, y: 8 }}
+                       animate={{ opacity: 1, y: 0 }}
+                       exit={{ opacity: 0, y: -8 }}
+                       transition={{ duration: 0.2 }}
+                       className="space-y-4 sm:space-y-6"
+                     >
+                       {/* Pilot AI Pick banner (Personalized Counselor tone) */}
+                       <div className="p-3.5 sm:p-5 bg-gradient-to-r from-[#F5F3FF] to-[#FAF8FF] border border-purple-100 rounded-2xl sm:rounded-3xl flex items-start gap-3 sm:space-x-4 shadow-3xs relative overflow-hidden group">
+                         <div className="absolute top-0 right-0 h-32 w-32 bg-purple-200/20 rounded-full blur-2xl pointer-events-none group-hover:scale-110 transition-transform duration-700" />
+                         <div className="h-9 w-9 sm:h-10 sm:w-10 bg-purple-100 rounded-xl sm:rounded-2xl flex items-center justify-center text-[#6D28D9] shrink-0 shadow-sm">
+                           <Sparkles className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
+                         </div>
+                         <div>
+                           <span className="block text-xs sm:text-sm font-black text-slate-950">Pilot Personalized Recommendation</span>
+                           <span className="block text-[10px] sm:text-xs text-stone-600 font-semibold leading-relaxed mt-0.5 sm:mt-1">
+                             {studentDegree ? (
+                               <>Engineered dynamically for your <strong className="text-purple-900 font-bold">{studentDegree}</strong> track and current academic workload. Let's strengthen concrete proof of your skills today.</>
+                             ) : (
+                               <>Engineered around your current academic workload. Tell FAB what you're studying to sharpen these picks further.</>
+                             )}
+                           </span>
+                         </div>
+                       </div>
+ 
+                       {/* Today's Picks */}
+                       <div className="space-y-3 sm:space-y-4">
+                         <div className="flex justify-between items-center">
+                           <span className="text-[10px] font-mono font-black uppercase text-stone-400 tracking-widest">Curated Challenges</span>
+                           <span className="text-xs font-black text-[#4C1D95] hover:underline cursor-pointer">View all ({todayPicks.length})</span>
+                         </div>
+ 
+                         <div className="flex flex-col space-y-3 sm:space-y-4">
+                           {isLoadingPicks ? (
+                             [1, 2, 3].map((_, index) => (
+                               <div
+                                 key={`skeleton-${index}`}
+                                 className="p-3 sm:p-5 bg-white border border-[#EFECE6] rounded-2xl sm:rounded-[32px] flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 pointer-events-none"
+                               >
+                                 <div className="flex items-start gap-3 sm:gap-4 min-w-0 flex-1">
+                                   {/* Animated Skeleton Avatar */}
+                                   <div className="h-10 w-10 sm:h-14 sm:w-14 rounded-full bg-stone-200/50 animate-pulse shrink-0 border-2 border-purple-100/10 shadow-3xs self-center" />
+                                   
+                                   <div className="min-w-0 flex-1 space-y-2">
+                                     {/* Animated Skeleton Title */}
+                                     <div className="h-4 sm:h-5 bg-stone-200/60 animate-pulse rounded-md w-3/4 sm:w-1/2" />
+                                     {/* Animated Skeleton Description */}
+                                     <div className="h-3 sm:h-3.5 bg-stone-100/70 animate-pulse rounded-md w-11/12 sm:w-5/6" />
+                                     {/* Animated Skeleton Suggestion Bubble */}
+                                     <div className="h-8 bg-purple-50/10 border border-purple-100/5 animate-pulse rounded-xl sm:rounded-2xl w-full" />
+                                   </div>
+                                 </div>
+                                 
+                                 {/* Animated Skeleton Duration Pill */}
+                                 <div className="h-6 sm:h-8 w-16 bg-stone-100/60 animate-pulse rounded-full shrink-0 self-start sm:self-center" />
+                               </div>
+                             ))
+                           ) : (
+                             todayPicks.map(pick => {
+                               const expImage = getExperienceImage(pick.expData?.subject || "Science", pick.title);
+                               return (
+                                 <div
+                                   key={pick.id}
+                                   onClick={() => {
+                                     if (pick.expData) setSelectedExp(pick.expData);
+                                     setCurrentScreen(2);
+                                   }}
+                                   className="p-3 sm:p-5 bg-white border border-[#EFECE6] rounded-2xl sm:rounded-[32px] hover:border-purple-300 hover:shadow-[0_8px_24px_rgba(76,29,149,0.06)] transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 group"
+                                 >
+                                   <div className="flex items-start gap-3 sm:gap-4 min-w-0 flex-1">
+                                     <img 
+                                       src={expImage} 
+                                       alt={pick.title} 
+                                       className="h-10 w-10 sm:h-14 sm:w-14 rounded-full object-cover shrink-0 border-2 border-purple-100/50 shadow-xs self-center"
+                                       referrerPolicy="no-referrer"
+                                     />
+                                     <div className="min-w-0 flex-1 space-y-1">
+                                       <span className="block text-sm sm:text-base font-black text-slate-900 leading-snug group-hover:text-[#4C1D95] transition-colors break-words whitespace-normal">
+                                         {pick.title}
+                                       </span>
+                                       <span className="block text-xs text-stone-600 font-semibold leading-relaxed break-words whitespace-normal">
+                                         {pick.desc}
+                                       </span>
+                                       <p className="text-[10px] text-stone-500 font-medium leading-relaxed mt-1 flex items-start bg-purple-50/50 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-xl sm:rounded-2xl border border-purple-100/30">
+                                         <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1.5 text-purple-600 shrink-0 mt-0.5" />
+                                         <span><strong>Pilot Suggestion:</strong> {pick.whyPilotSuggests}</span>
+                                       </p>
+                                     </div>
+                                   </div>
+                                   <span className="text-[9px] sm:text-xs font-mono text-stone-500 font-black shrink-0 sm:ml-3 flex items-center bg-stone-50 border border-stone-100/80 px-2.5 py-1 sm:py-1.5 rounded-full self-start sm:self-center">
+                                    <Clock className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1 text-[#4C1D95]" />
+                                    {pick.duration}
+                                   </span>
+                                 </div>
+                               );
+                             })
+                           )}
+                         </div>
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {/* IN PROGRESS TAB CONTENT */}
+                  {dashboardTab === "in_progress" && (
+                    <motion.div
+                      key="tab-inprogress"
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -8 }}
+                      transition={{ duration: 0.2 }}
+                      className="space-y-3 sm:space-y-4"
+                    >
+                      <div className="p-3.5 sm:p-6 bg-white border border-[#EFECE6] rounded-2xl sm:rounded-3xl flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6 shadow-2xs">
+                        <div className="flex items-start sm:items-center space-x-3 sm:space-x-4">
+                          <div className="h-9 w-9 sm:h-12 sm:w-12 bg-amber-50 border border-amber-100 rounded-xl sm:rounded-2xl flex items-center justify-center text-amber-700 shrink-0">
+                            <BookOpen className="h-4.5 w-4.5 sm:h-5 sm:w-5 text-amber-600" />
+                          </div>
+                          <div>
+                            <span className="block text-[9px] font-mono font-black uppercase text-amber-600">IN PROGRESS LAB</span>
+                            <span className="block text-xs sm:text-base font-black text-slate-900 mt-0.5">Understand Phase I Clinical Trials</span>
+                            <span className="block text-[11px] text-stone-500 font-semibold mt-0.5">Strengthening research clinical structure and trial protocols.</span>
+                          </div>
+                        </div>
+
+                        <div className="flex-1 md:max-w-xs space-y-1.5 sm:space-y-2 w-full">
+                          <div className="flex justify-between text-[10px] sm:text-xs font-mono font-black text-stone-500">
+                            <span>40% Completed</span>
+                            <span className="text-[#4C1D95]">Step 2 of 5</span>
+                          </div>
+                          <div className="h-1.5 sm:h-2 w-full bg-stone-100 rounded-full overflow-hidden">
+                            <div className="h-full bg-gradient-to-r from-[#4C1D95] to-indigo-600 rounded-full w-[40%]" />
+                          </div>
+                          <button 
+                            onClick={() => {
+                              // Direct continuation trigger
+                              setCurrentScreen(3);
+                            }}
+                            className="mt-1.5 w-full py-1.5 sm:py-2 bg-[#4C1D95] text-white hover:bg-[#3B0764] text-[10px] sm:text-[11px] font-mono font-black uppercase tracking-wider rounded-xl transition-all cursor-pointer text-center"
+                          >
+                            Resume Experiment Steps
+                          </button>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {/* COMPLETED TAB CONTENT */}
+                  {dashboardTab === "completed" && (
+                    <motion.div
+                      key="tab-completed"
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -8 }}
+                      transition={{ duration: 0.2 }}
+                      className="space-y-3 sm:space-y-4"
+                    >
+                      {completedExperienceIds.length === 0 ? (
+                        <div className="p-6 sm:p-10 text-center bg-[#FAF9F6] border border-dashed border-stone-200 rounded-2xl sm:rounded-3xl space-y-3">
+                          <div className="h-10 w-10 sm:h-12 sm:w-12 bg-stone-100 rounded-full flex items-center justify-center text-stone-400 mx-auto">
+                            <Award className="h-5 w-5 sm:h-6 sm:w-6" />
+                          </div>
+                          <h4 className="text-xs sm:text-sm font-black text-slate-800">No laboratory credentials registered yet</h4>
+                          <p className="text-[11px] sm:text-xs text-stone-500 font-semibold max-w-sm mx-auto leading-relaxed">
+                            Complete your first recommended challenge today. Once submitted, your validated proof points and certificates will appear here.
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="space-y-3">
+                          <div className="p-3 sm:p-4 bg-emerald-50/50 border border-emerald-100 rounded-xl sm:rounded-2xl flex items-center space-x-3.5 mb-2">
+                            <div className="h-7 w-7 sm:h-8 sm:w-8 bg-emerald-100 rounded-xl flex items-center justify-center text-emerald-700 shrink-0">
+                              <CheckCircle2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                            </div>
+                            <span className="text-[11px] sm:text-xs text-emerald-900 font-semibold">
+                              You have registered <strong className="font-black">{completedExperienceIds.length}</strong> permanent credentials to your Career Profile.
+                            </span>
+                          </div>
+
+                          <div className="grid grid-cols-1 gap-2.5 sm:gap-3">
+                            {completedExperienceIds.map((id, index) => {
+                              const foundExp = experienceLibrary.find(e => e.id === id);
+                              const title = foundExp?.title || "Explain CRISPR to a 10-year-old";
+                              const subject = foundExp?.subject || "Biomedical Sciences";
+                              const skills = foundExp?.primarySkills ? foundExp.primarySkills.split(",") : ["Communication", "Scientific Simplification"];
+                              
+                              return (
+                                <div key={index} className="p-3 sm:p-4 bg-white border border-[#EFECE6] rounded-xl sm:rounded-2xl flex items-center justify-between shadow-3xs hover:border-emerald-200 transition-colors">
+                                  <div className="space-y-1 flex-1 min-w-0 pr-4">
+                                    <div className="flex items-center space-x-2">
+                                      <span className="text-[8px] sm:text-[9px] font-mono font-black text-emerald-700 bg-emerald-50 border border-emerald-100 px-1.5 py-0.5 rounded-md uppercase">Verified Proof</span>
+                                      <span className="text-[10px] font-mono font-bold text-stone-400">ID: {id}</span>
+                                    </div>
+                                    <h5 className="text-xs sm:text-sm font-black text-slate-900 truncate">{title}</h5>
+                                    <div className="flex flex-wrap gap-1 pt-1">
+                                      {skills.slice(0, 3).map((sk, idx) => (
+                                        <span key={idx} className="text-[8px] sm:text-[9px] font-mono font-bold text-stone-500 bg-stone-50 border border-stone-100 px-1.5 rounded">{sk.trim()}</span>
+                                      ))}
+                                    </div>
+                                  </div>
+                                  
+                                  <div className="text-right shrink-0">
+                                    <span className="block text-[8px] sm:text-[10px] text-stone-400 font-mono font-bold uppercase">Subject Matrix</span>
+                                    <span className="block text-xs font-black text-[#4C1D95] font-mono mt-0.5">{subject}</span>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            </motion.div>
+          )}
+
+          {/* SCREEN 2: EXPERIMENT OVERVIEW (CRISPR DETAIL) */}
+          {currentScreen === 2 && (
+            <motion.div
+              key="screen-2"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.25, ease: "easeOut" }}
+              className="p-4 sm:p-6 md:p-8 space-y-4 sm:space-y-6 flex-1 flex flex-col justify-between"
+            >
+              {/* Top Navigation bar */}
+              <div className="flex justify-between items-center">
+                <button 
+                  onClick={() => setCurrentScreen(1)}
+                  className="px-3.5 py-1.5 sm:px-4 sm:py-2 border border-stone-200 rounded-xl hover:bg-stone-50 text-stone-600 text-[11px] sm:text-xs font-bold transition-all cursor-pointer flex items-center space-x-1.5 bg-white"
+                >
+                  <ArrowLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-purple-600" />
+                  <span>Back to Hub</span>
+                </button>
+                <div className="flex space-x-2">
+                  <button className="h-8 w-8 sm:h-9 sm:w-9 rounded-xl border border-stone-200 hover:bg-stone-50 flex items-center justify-center text-stone-500 transition-all bg-white">
+                    <Share2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                  </button>
+                  <button 
+                    onClick={() => setIsSaved(!isSaved)}
+                    className="h-8 w-8 sm:h-9 sm:w-9 rounded-xl border border-stone-200 hover:bg-stone-50 flex items-center justify-center text-stone-500 transition-all bg-white"
+                  >
+                    <Bookmark className={`h-3.5 w-3.5 sm:h-4 sm:w-4 ${isSaved ? "fill-purple-600 text-purple-600 border-purple-600" : ""}`} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Main Info Columns */}
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-8 items-start">
+                
+                {/* Left block: Title, image and tags */}
+                <div className="md:col-span-5 flex flex-col items-center md:items-start text-center md:text-left space-y-4 sm:space-y-5">
+                  <div className="relative h-36 sm:h-44 w-full bg-stone-100 rounded-2xl sm:rounded-3xl overflow-hidden border border-[#EFECE6] shadow-sm">
+                    <img 
+                      src={getExperienceImage(selectedExp?.subject || "Science", selectedExp?.title || "")} 
+                      alt={selectedExp?.title} 
+                      className="h-full w-full object-cover"
+                      referrerPolicy="no-referrer"
+                    />
+                    <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-md border border-stone-100 rounded-full p-2 sm:p-2.5 text-purple-700 shadow-sm">
+                      {selectedExp?.subject === "Biomedical Sciences" ? (
+                        <Dna className="h-4 sm:h-5 w-4 sm:w-5 animate-pulse" />
+                      ) : selectedExp?.subject === "Psychology" ? (
+                        <Brain className="h-4 sm:h-5 w-4 sm:w-5 animate-pulse" />
+                      ) : (
+                        <FileText className="h-4 sm:h-5 w-4 sm:w-5 animate-pulse" />
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5 sm:space-y-2 w-full">
+                    <span className="inline-block text-[9px] sm:text-[10px] font-mono font-black uppercase bg-purple-100 text-[#4C1D95] border border-purple-200 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full">
+                      PILOT SUGGESTED CHALLENGE
+                    </span>
+                    <h3 className="text-lg sm:text-xl md:text-2xl font-black text-slate-900 tracking-tight leading-snug break-words whitespace-normal">
+                      {selectedExp?.title || "Explain CRISPR to a 10-year-old"}
+                    </h3>
+                    <div className="flex items-center justify-center md:justify-start space-x-3 text-[10px] sm:text-[11px] font-mono font-black text-stone-500">
+                      <span className="flex items-center">
+                        <Clock className="h-3.5 w-3.5 mr-1 text-[#6D28D9]" /> 
+                        {(() => {
+                          const rawTime = selectedExp?.estimatedTime || "15 minutes";
+                          let shortTime = "2 min";
+                          if (rawTime.includes("10")) shortTime = "2 min";
+                          else if (rawTime.includes("15")) shortTime = "2 min";
+                          else if (rawTime.includes("20")) shortTime = "3 min";
+                          else if (rawTime.includes("30")) shortTime = "4 min";
+                          else if (rawTime.includes("45")) shortTime = "5 min";
+                          else if (rawTime.includes("60") || rawTime.includes("1 hour")) shortTime = "6 min";
+                          else shortTime = "3 min";
+                          return shortTime;
+                        })()}
+                      </span>
+                      <span className="flex items-center"><Compass className="h-3.5 w-3.5 mr-1 text-[#6D28D9]" /> {selectedExp?.careerPathway || "Communication"}</span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5 sm:space-y-2 pt-1 w-full">
+                    <span className="block text-[9px] sm:text-[10px] font-mono font-black uppercase text-stone-400 tracking-wider">Skills Strengthened</span>
+                    <div className="flex flex-wrap gap-1 sm:gap-1.5 justify-center md:justify-start">
+                      {(selectedExp?.primarySkills || ["Communication", "Simplicity", "Science Clarity"]).slice(0, 3).map(tag => (
+                        <span key={tag} className="text-[10px] sm:text-xs font-mono font-bold uppercase bg-[#F5F3FF] text-[#4C1D95] border border-purple-100 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-xl">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right block: Context descriptors */}
+                <div className="md:col-span-7 space-y-4 sm:space-y-5 bg-[#FAF9F5] p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-[#EFECE6] text-xs sm:text-sm leading-relaxed">
+                  <div className="space-y-1">
+                    <span className="block text-[9px] sm:text-[10px] font-mono font-black uppercase text-slate-950 tracking-widest">Why This?</span>
+                    <p className="text-stone-600 font-semibold leading-relaxed">
+                      {selectedExp?.whyChosen || "You've shown strong interest in genetics and often enjoy explaining ideas clearly. Let's see if simplifying complex science excites you too."}
+                    </p>
+                  </div>
+
+                  <div className="space-y-1 border-t border-stone-200/50 pt-3 sm:pt-4">
+                    <span className="block text-[9px] sm:text-[10px] font-mono font-black uppercase text-slate-950 tracking-widest">What you'll do</span>
+                    <p className="text-stone-600 font-semibold leading-relaxed">
+                      {selectedExp?.situationHook || "Break down CRISPR in the simplest way possible for a 10-year-old."}
+                    </p>
+                  </div>
+
+                  <div className="space-y-1 border-t border-stone-200/50 pt-3 sm:pt-4">
+                    <span className="block text-[9px] sm:text-[10px] font-mono font-black uppercase text-slate-950 tracking-widest">Expected Outcome</span>
+                    <p className="text-stone-600 font-semibold leading-relaxed">
+                      {selectedExp?.goal || "Your clarity, communication and ability to simplify complex ideas."}
+                    </p>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Start CTA Button */}
+              <button
+                onClick={() => {
+                  // Initialize clean subtask array
+                  setCompletedSubtasks({ 0: false, 1: false, 2: false, 3: false });
+                  setInProgressExp(selectedExp);
+                  setInProgressStep(1);
+                  setCurrentScreen(3);
+                }}
+                className="w-full bg-[#4C1D95] hover:bg-[#3B0764] text-white py-3 sm:py-4 rounded-xl sm:rounded-2xl text-[11px] sm:text-xs font-black uppercase tracking-widest transition-all cursor-pointer shadow-md text-center block mt-4"
+              >
+                Start Experiment Workspace
+              </button>
+            </motion.div>
+          )}
+
+          {/* SCREEN 3: ACTIVE 8-STEP EXPERIMENT WORKSPACE */}
+          {currentScreen === 3 && (
+            <motion.div
+              key="screen-3"
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              className="p-3 sm:p-5 md:p-6 lg:p-8 space-y-4 sm:space-y-6 flex-1 flex flex-col justify-between"
+            >
+              {/* Unified Workspace Header */}
+              <div className="flex justify-between items-center border-b border-stone-100 pb-3 sm:pb-4">
+                <div className="space-y-1">
+                  <span className="inline-flex items-center space-x-1.5 text-[9px] font-mono font-black uppercase text-purple-700 bg-purple-50 px-2.5 py-0.5 rounded-md border border-purple-100">
+                    <Activity className="h-3 w-3 animate-pulse text-purple-600" />
+                    <span>MISSION PHASES • STEP {inProgressStep} OF 8</span>
+                  </span>
+                  <h4 className="text-base sm:text-lg md:text-xl font-black text-slate-900 tracking-tight mt-1">
+                    {inProgressStep === 1 && "Phase I: Understand & Absorb Concepts"}
+                    {inProgressStep === 2 && "Phase II: System Unlock & Setup"}
+                    {inProgressStep === 3 && "Phase III: Real-world Problem Harvesting"}
+                    {inProgressStep === 4 && "Phase IV: Formulate Strategic Initiatives"}
+                    {inProgressStep === 5 && "Phase V: Observational Action & Logging"}
+                    {inProgressStep === 6 && "Phase VI: Counselor Guided Reflection"}
+                    {inProgressStep === 7 && "Phase VII: Validate & Sync Cognitive Signature"}
+                    {inProgressStep === 8 && "Phase VIII: Mission Success & Credentials"}
+                  </h4>
+                </div>
+                <button 
+                  onClick={() => {
+                    // Save and exit to dashboard
+                    setCurrentScreen(1);
+                  }}
+                  className="px-3 py-1.5 border border-stone-200 rounded-xl hover:bg-stone-50 text-stone-600 text-[10px] sm:text-xs font-mono font-black uppercase transition-all cursor-pointer bg-white flex items-center space-x-1 shadow-2xs shrink-0"
+                >
+                  <X className="h-3.5 w-3.5" />
+                  <span>Save & Close</span>
+                </button>
+              </div>
+
+              {/* Core Dynamic Stepper Tracker (Segmented Progress Bar) */}
+              <div className="space-y-2">
+                <div className="flex justify-between items-center text-[10px] font-mono font-black text-stone-400">
+                  <span className="uppercase tracking-widest text-[#4C1D95]">Workspace Progression</span>
+                  <span>{Math.round(((inProgressStep) / 8) * 100)}% Complete</span>
+                </div>
+                <div className="grid grid-cols-8 gap-1.5">
+                  {[1, 2, 3, 4, 5, 6, 7, 8].map(stepNum => {
+                    const isActive = inProgressStep === stepNum;
+                    const isDone = inProgressStep > stepNum;
+                    return (
+                      <div 
+                        key={stepNum} 
+                        onClick={() => {
+                          // Allow free backward traversal or forward if current tasks completed
+                          if (stepNum < inProgressStep || (stepNum <= 6)) {
+                            setInProgressStep(stepNum);
+                          }
+                        }}
+                        className={`h-1.5 sm:h-2 rounded-full cursor-pointer transition-all duration-300 ${
+                          isActive 
+                            ? "bg-[#4C1D95] ring-2 ring-purple-200 scale-y-110 shadow-xs" 
+                            : isDone 
+                              ? "bg-gradient-to-r from-purple-600 to-indigo-600" 
+                              : "bg-stone-100 hover:bg-stone-200"
+                        }`} 
+                        title={`Go to Step ${stepNum}`}
+                      />
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Dynamic Step Panels (Progressive Disclosure Pattern) */}
+              <div className="flex-1 py-2 sm:py-4 overflow-y-auto max-h-[480px] scrollbar-thin">
+                <AnimatePresence mode="wait">
+                  
+                  {/* STEP 1: UNDERSTAND & ABSORB */}
+                  {inProgressStep === 1 && (
+                    <motion.div
+                      key="step-1"
+                      initial={{ opacity: 0, x: 10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -10 }}
+                      className="space-y-4"
+                    >
+                      <div className="p-3 bg-purple-50/50 border border-purple-100 rounded-2xl">
+                        <p className="text-xs text-purple-900 font-semibold leading-relaxed">
+                          🧑‍🏫 <strong>Pilot Guideline:</strong> Before you dive into action, build solid mental foundations. Review the core items and click to complete them once understood.
+                        </p>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-start">
+                        {/* Interactive check items */}
+                        <div className="md:col-span-7 space-y-2">
+                          <span className="block text-[10px] font-mono font-black uppercase text-stone-400 tracking-wider">Required Core Guidelines</span>
+                          {(selectedExp?.microtasks || [
+                            "Identify the central hypothesis of this study or experiment.",
+                            "Understand the target audience, demographic, or physiological variable.",
+                            "Synthesize complex vocabulary to layperson terms.",
+                            "Formulate a plan for real-world verification."
+                          ]).map((item, idx) => {
+                            const isChecked = !!completedSubtasks[idx];
+                            return (
+                              <div
+                                key={idx}
+                                onClick={() => setCompletedSubtasks(prev => ({ ...prev, [idx]: !prev[idx] }))}
+                                className={`flex items-start space-x-3.5 p-3.5 rounded-2xl border transition-all cursor-pointer ${
+                                  isChecked 
+                                    ? "bg-[#FAFBFD]/80 border-[#EEF2FF] text-stone-400" 
+                                    : "bg-white border-stone-200/80 hover:border-purple-300 hover:shadow-xs"
+                                }`}
+                              >
+                                <div className="pt-0.5 shrink-0">
+                                  <div className={`h-4.5 w-4.5 rounded-full border flex items-center justify-center transition-all ${
+                                    isChecked ? "bg-purple-600 border-transparent text-white" : "border-stone-300 bg-white"
+                                  }`}>
+                                    {isChecked && <Check className="h-3 w-3 stroke-[3]" />}
+                                  </div>
+                                </div>
+                                <span className={`text-xs sm:text-sm font-bold flex-1 ${isChecked ? "line-through text-stone-400 font-semibold" : "text-slate-900"}`}>
+                                  {item}
+                                </span>
+                              </div>
+                            );
+                          })}
+                        </div>
+
+                        {/* Resource Deck */}
+                        <div className="md:col-span-5 space-y-3 bg-[#FAF9F5] p-4 rounded-2xl border border-[#EFECE6]">
+                          <span className="block text-[10px] font-mono font-black text-stone-700 uppercase tracking-wider">Suggested Reading Deck</span>
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between p-3 bg-white border border-stone-200 rounded-xl hover:border-purple-300 cursor-pointer transition-colors shadow-3xs">
+                              <div className="flex items-center space-x-2 min-w-0">
+                                <FileText className="h-4 w-4 text-[#6D28D9] shrink-0" />
+                                <span className="text-[11px] text-slate-800 font-semibold truncate">
+                                  {selectedExp?.resources || "Simple research paper or guideline"}
+                                </span>
+                              </div>
+                              <ExternalLink className="h-3 w-3 text-stone-400 shrink-0" />
+                            </div>
+                            <div className="flex items-center justify-between p-3 bg-white border border-stone-200 rounded-xl hover:border-purple-300 cursor-pointer transition-colors shadow-3xs">
+                              <div className="flex items-center space-x-2 min-w-0">
+                                <Users className="h-4 w-4 text-[#6D28D9] shrink-0" />
+                                <span className="text-[11px] text-slate-800 font-semibold truncate">
+                                  Subject Overview Lecture References
+                                </span>
+                              </div>
+                              <ExternalLink className="h-3 w-3 text-stone-400 shrink-0" />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {/* STEP 2: SYSTEM UNLOCK & SETUP */}
+                  {inProgressStep === 2 && (
+                    <motion.div
+                      key="step-2"
+                      initial={{ opacity: 0, x: 10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -10 }}
+                      className="space-y-4"
+                    >
+                      <div className="p-4 bg-amber-50/40 border border-amber-200 rounded-2xl flex items-start space-x-3">
+                        <span className="text-xl shrink-0">🛠️</span>
+                        <div>
+                          <h5 className="text-xs sm:text-sm font-black text-amber-950">Setup & Environmental Preparation</h5>
+                          <p className="text-[11px] sm:text-xs text-amber-900 font-semibold mt-0.5 leading-relaxed">
+                            A great researcher prepares their tools before logging data. Set up your notebook, close distracting background browser tabs, and gather clinical study materials.
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="bg-white border border-stone-100 rounded-2xl p-4 space-y-3">
+                        <span className="block text-[10px] font-mono font-black text-stone-400 uppercase tracking-widest">Active Workspace Preparation Checks</span>
+                        
+                        <div className="flex items-center justify-between p-3 bg-stone-50/50 border border-stone-100 rounded-xl">
+                          <div className="flex items-center space-x-2.5">
+                            <Sliders className="h-4 w-4 text-[#4C1D95]" />
+                            <span className="text-xs font-bold text-slate-800">Review Clinical/Experiment Subject Blueprint</span>
+                          </div>
+                          <span className="text-[10px] font-mono text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded font-black uppercase">READY</span>
+                        </div>
+
+                        <div className="flex items-center justify-between p-3 bg-stone-50/50 border border-stone-100 rounded-xl">
+                          <div className="flex items-center space-x-2.5">
+                            <BookOpen className="h-4 w-4 text-[#4C1D95]" />
+                            <span className="text-xs font-bold text-slate-800">Academic references & vocabulary logs locked</span>
+                          </div>
+                          <span className="text-[10px] font-mono text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded font-black uppercase">LOCKED ON DECK</span>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {/* STEP 3: IDENTIFY KEY PROBLEMS */}
+                  {inProgressStep === 3 && (
+                    <motion.div
+                      key="step-3"
+                      initial={{ opacity: 0, x: 10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -10 }}
+                      className="space-y-4"
+                    >
+                      <div className="space-y-1">
+                        <span className="block text-[10px] font-mono font-black text-purple-600 uppercase tracking-wider">Tactile Logging Phase</span>
+                        <h5 className="text-sm font-black text-slate-900">Observe & Identify 3 Key Bottlenecks / Challenges</h5>
+                        <p className="text-[11px] sm:text-xs text-stone-500 font-semibold leading-relaxed">
+                          What real-world issues, friction points, or core clinical bottlenecks did you observe? Be descriptive and clear.
+                        </p>
+                      </div>
+
+                      <div className="space-y-3">
+                        <div className="p-3 bg-white border border-stone-200 rounded-xl space-y-1.5 focus-within:border-purple-300 transition-colors">
+                          <span className="block text-[9px] font-mono font-black text-stone-400">PROBLEM/OBSERVATION 1</span>
+                          <input 
+                            type="text"
+                            value={problem1}
+                            onChange={e => setProblem1(e.target.value)}
+                            placeholder="e.g. Traditional clinical trials lack representation of diverse age groups..."
+                            className="w-full bg-transparent border-none text-xs font-semibold text-slate-800 outline-none placeholder-stone-400"
+                          />
+                        </div>
+
+                        <div className="p-3 bg-white border border-stone-200 rounded-xl space-y-1.5 focus-within:border-purple-300 transition-colors">
+                          <span className="block text-[9px] font-mono font-black text-stone-400">PROBLEM/OBSERVATION 2</span>
+                          <input 
+                            type="text"
+                            value={problem2}
+                            onChange={e => setProblem2(e.target.value)}
+                            placeholder="e.g. Communication of side effects is overly technical..."
+                            className="w-full bg-transparent border-none text-xs font-semibold text-slate-800 outline-none placeholder-stone-400"
+                          />
+                        </div>
+
+                        <div className="p-3 bg-white border border-stone-200 rounded-xl space-y-1.5 focus-within:border-purple-300 transition-colors">
+                          <span className="block text-[9px] font-mono font-black text-stone-400">PROBLEM/OBSERVATION 3</span>
+                          <input 
+                            type="text"
+                            value={problem3}
+                            onChange={e => setProblem3(e.target.value)}
+                            placeholder="e.g. Tracking of participant logs is prone to transcription errors..."
+                            className="w-full bg-transparent border-none text-xs font-semibold text-slate-800 outline-none placeholder-stone-400"
+                          />
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {/* STEP 4: PROPOSE INITIATIVES */}
+                  {inProgressStep === 4 && (
+                    <motion.div
+                      key="step-4"
+                      initial={{ opacity: 0, x: 10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -10 }}
+                      className="space-y-4"
+                    >
+                      <div className="space-y-1">
+                        <span className="block text-[10px] font-mono font-black text-purple-600 uppercase tracking-wider">Strategic Response Phase</span>
+                        <h5 className="text-sm font-black text-slate-900">Propose 3 Strategic Initiatives / Creative Solutions</h5>
+                        <p className="text-[11px] sm:text-xs text-stone-500 font-semibold leading-relaxed">
+                          For each problem logged previously, propose a concrete, practical, and highly creative strategy.
+                        </p>
+                      </div>
+
+                      <div className="space-y-3">
+                        <div className="p-3 bg-[#FAFBFD] border border-stone-200 rounded-xl space-y-1">
+                          <span className="block text-[9px] font-mono font-black text-stone-400">LINKED TO PROBLEM 1: "{problem1 || "Problem 1"}"</span>
+                          <input 
+                            type="text"
+                            value={initiative1}
+                            onChange={e => setInitiative1(e.target.value)}
+                            placeholder="e.g. Design tailored community workshops to engage minorized communities..."
+                            className="w-full bg-transparent border-none text-xs font-semibold text-slate-800 outline-none placeholder-stone-400 mt-1"
+                          />
+                        </div>
+
+                        <div className="p-3 bg-[#FAFBFD] border border-stone-200 rounded-xl space-y-1">
+                          <span className="block text-[9px] font-mono font-black text-stone-400">LINKED TO PROBLEM 2: "{problem2 || "Problem 2"}"</span>
+                          <input 
+                            type="text"
+                            value={initiative2}
+                            onChange={e => setInitiative2(e.target.value)}
+                            placeholder="e.g. Create visual brochures and simplified infographics with clear analogies..."
+                            className="w-full bg-transparent border-none text-xs font-semibold text-slate-800 outline-none placeholder-stone-400 mt-1"
+                          />
+                        </div>
+
+                        <div className="p-3 bg-[#FAFBFD] border border-stone-200 rounded-xl space-y-1">
+                          <span className="block text-[9px] font-mono font-black text-stone-400">LINKED TO PROBLEM 3: "{problem3 || "Problem 3"}"</span>
+                          <input 
+                            type="text"
+                            value={initiative3}
+                            onChange={e => setInitiative3(e.target.value)}
+                            placeholder="e.g. Deploy structured digital checklists with automatic backup validation..."
+                            className="w-full bg-transparent border-none text-xs font-semibold text-slate-800 outline-none placeholder-stone-400 mt-1"
+                          />
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {/* STEP 5: REAL-WORLD OBSERVATIONAL PRACTICE */}
+                  {inProgressStep === 5 && (
+                    <motion.div
+                      key="step-5"
+                      initial={{ opacity: 0, x: 10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -10 }}
+                      className="space-y-4"
+                    >
+                      <div className="p-4 bg-purple-50/50 border border-purple-100 rounded-2xl flex items-center space-x-3">
+                        <Compass className="h-6 w-6 text-[#4C1D95] shrink-0" />
+                        <div>
+                          <h5 className="text-xs sm:text-sm font-black text-slate-900">Conduct Observational Trial Run</h5>
+                          <p className="text-[11px] sm:text-xs text-stone-600 font-semibold mt-0.5 leading-relaxed">
+                            Take 5 minutes to practice your proposed strategy in real life or mock scenarios. Record the qualitative feedback.
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="bg-white border border-stone-100 rounded-2xl p-4 space-y-3">
+                        <span className="block text-[10px] font-mono font-black text-stone-400 uppercase tracking-widest">Interactive Practice Completion Checklist</span>
+                        
+                        <label className="flex items-center space-x-3 p-3 bg-stone-50/50 rounded-xl cursor-pointer hover:bg-stone-50 transition-colors">
+                          <input type="checkbox" className="h-4 w-4 rounded text-purple-600 focus:ring-purple-500 border-stone-300" />
+                          <span className="text-xs font-bold text-slate-800">I have actively tested simplifying clinical or system protocols in conversation or writing.</span>
+                        </label>
+
+                        <label className="flex items-center space-x-3 p-3 bg-stone-50/50 rounded-xl cursor-pointer hover:bg-stone-50 transition-colors">
+                          <input type="checkbox" className="h-4 w-4 rounded text-purple-600 focus:ring-purple-500 border-stone-300" />
+                          <span className="text-xs font-bold text-slate-800">I compared layperson outcomes vs traditional text density.</span>
+                        </label>
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {/* STEP 6: GUIDED REFLECTION */}
+                  {inProgressStep === 6 && (
+                    <motion.div
+                      key="step-6"
+                      initial={{ opacity: 0, x: 10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -10 }}
+                      className="space-y-4"
+                    >
+                      {/* Emoji Selection row */}
+                      <div className="space-y-2">
+                        <span className="block text-xs font-black uppercase text-slate-800 tracking-wider">What did you feel while executing this experiment?</span>
+                        <div className="grid grid-cols-5 gap-1.5 sm:gap-2.5">
+                          {emojiList.map((item, idx) => {
+                            const isActive = activeEmoji === idx;
+                            return (
+                              <button
+                                key={idx}
+                                type="button"
+                                onClick={() => setActiveEmoji(idx)}
+                                className={`p-2.5 rounded-2xl border flex flex-col items-center justify-center transition-all cursor-pointer ${
+                                  isActive 
+                                    ? "border-purple-500 bg-purple-50/50 scale-[1.03] shadow-xs" 
+                                    : "border-stone-200 bg-white hover:border-purple-200"
+                                }`}
+                              >
+                                <span className="text-xl sm:text-2xl">{item.emoji}</span>
+                                <span className="text-[9px] mt-1 font-bold text-stone-500 truncate w-full text-center leading-none">{item.label}</span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Question Textareas */}
+                      <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                        <div className="md:col-span-6 space-y-1.5">
+                          <span className="block text-[11px] sm:text-xs font-black uppercase text-slate-800 tracking-wider">What was the most challenging obstacle?</span>
+                          <textarea
+                            value={hardestText}
+                            onChange={e => setHardestText(e.target.value)}
+                            placeholder="Type challenging points..."
+                            rows={2}
+                            className="w-full bg-white border border-stone-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-slate-800 outline-none resize-none focus:border-purple-400 transition-colors"
+                          />
+                        </div>
+
+                        <div className="md:col-span-6 space-y-1.5">
+                          <span className="block text-[11px] sm:text-xs font-black uppercase text-slate-800 tracking-wider">
+                            {selectedExp?.reflectionQuestion || "What clinical or conceptual surprise occurred?"}
+                          </span>
+                          <textarea
+                            value={surprisedText}
+                            onChange={e => setSurprisedText(e.target.value)}
+                            placeholder="Type details..."
+                            rows={2}
+                            className="w-full bg-white border border-stone-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-slate-800 outline-none resize-none focus:border-purple-400 transition-colors"
+                          />
+                        </div>
+
+                        {/* Repeat Choice */}
+                        <div className="md:col-span-12 space-y-1.5">
+                          <span className="block text-[11px] sm:text-xs font-black uppercase text-slate-800 tracking-wider">Would you recommend this exercise to other academic students?</span>
+                          <div className="flex space-x-2">
+                            {(["Yes", "Maybe", "No"] as const).map(option => (
+                              <button
+                                key={option}
+                                type="button"
+                                onClick={() => setTryAgainChoice(option)}
+                                className={`flex-1 py-2 rounded-xl text-xs font-black border cursor-pointer transition-all ${
+                                  tryAgainChoice === option 
+                                    ? "bg-[#4C1D95] border-transparent text-white shadow-xs" 
+                                    : "bg-white border-stone-200 text-stone-600 hover:bg-stone-50"
+                                }`}
+                              >
+                                {option}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {/* STEP 7: VERIFY & SYNC EVIDENCE */}
+                  {inProgressStep === 7 && (
+                    <motion.div
+                      key="step-7"
+                      initial={{ opacity: 0, x: 10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -10 }}
+                      className="space-y-4"
+                    >
+                      {isSyncing ? (
+                        <div className="flex flex-col items-center justify-center py-12 space-y-4">
+                          <div className="relative h-12 w-12 flex items-center justify-center">
+                            <div className="absolute inset-0 rounded-full border-4 border-purple-100 border-t-[#4C1D95] animate-spin" />
+                            <Sparkles className="h-5 w-5 text-[#4C1D95] animate-pulse" />
+                          </div>
+                          <div className="text-center space-y-1 animate-pulse">
+                            <span className="text-xs font-mono font-black text-purple-700 block uppercase">SECURE COGNITIVE SHAKEHAND</span>
+                            <p className="text-[10px] text-stone-500 font-bold">Verifying physical logs and mapping credential registry...</p>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="space-y-4">
+                          <div className="p-3.5 bg-emerald-50 border border-emerald-200 text-emerald-950 rounded-2xl flex items-center space-x-3 shadow-3xs">
+                            <CheckCircle2 className="h-5 w-5 text-emerald-600 shrink-0" />
+                            <div>
+                              <h5 className="text-xs sm:text-sm font-black">All inputs & observations verified</h5>
+                              <p className="text-[10px] sm:text-xs text-emerald-800 font-semibold mt-0.5">
+                                Cognitive proof logs are fully structured. We are ready to compile and upload your credential signature to your permanent Career Profile.
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* Summary Deck */}
+                          <div className="border border-stone-100 rounded-2xl p-4 bg-[#FAFBFD] space-y-3 text-xs">
+                            <span className="block text-[10px] font-mono font-black text-stone-400 uppercase tracking-wider">HARVESTED INSIGHT BLUEPRINT</span>
+                            
+                            <div className="space-y-1">
+                              <span className="block text-[10px] font-mono font-black text-[#4C1D95]">STUDENT HARVESTS:</span>
+                              <p className="text-slate-800 font-bold leading-relaxed">{problem1 || "Simplified medical vocabulary communication logs."}</p>
+                            </div>
+
+                            <div className="space-y-1 border-t border-stone-100/80 pt-2">
+                              <span className="block text-[10px] font-mono font-black text-emerald-700">PROPOSED RESPONSE INITIATIVE:</span>
+                              <p className="text-slate-800 font-bold leading-relaxed">{initiative1 || "Visual clinical overview sheets for community participants."}</p>
+                            </div>
+
+                            <div className="space-y-1 border-t border-stone-100/80 pt-2">
+                              <span className="block text-[10px] font-mono font-black text-stone-500">REFLECTIVE DISCOVERY:</span>
+                              <p className="text-slate-700 font-semibold italic">"{surprisedText || "Analogy translation helps patients feel included and safe."}"</p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </motion.div>
+                  )}
+
+                  {/* STEP 8: MISSION SUCCESS & CREDENTIALS */}
+                  {inProgressStep === 8 && (
+                    <motion.div
+                      key="step-8"
+                      initial={{ opacity: 0, scale: 0.98 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.98 }}
+                      className="flex flex-col items-center justify-center text-center py-4 space-y-4 max-w-md mx-auto"
+                    >
+                      {/* Award Graphic */}
+                      <div className="relative h-16 w-16 sm:h-20 sm:w-20 flex items-center justify-center">
+                        <div className="absolute inset-0 bg-indigo-100 rounded-full animate-ping" style={{ animationDuration: "3s" }} />
+                        <div className="h-12 w-12 sm:h-16 sm:w-16 bg-[#4C1D95] rounded-full flex items-center justify-center text-white relative shadow-lg">
+                          <Award className="h-6 w-6 sm:h-8 sm:w-8 relative z-10 animate-bounce" />
+                        </div>
+                      </div>
+
+                      <div className="space-y-1">
+                        <span className="text-[10px] font-mono font-black text-purple-700 bg-purple-50 border border-purple-200 px-2.5 py-0.5 rounded-full uppercase tracking-wider">Validated Proof Point Signed</span>
+                        <h3 className="text-lg sm:text-xl font-black text-slate-950 tracking-tight leading-snug">
+                          Mission Success & Registered!
+                        </h3>
+                        <p className="text-xs sm:text-sm text-stone-500 font-semibold">
+                          Excellent work, {studentName || "Scholar"}! You have permanently mapped this proof point to your professional matrix.
+                        </p>
+                      </div>
+
+                      <div className="inline-flex items-center space-x-1.5 px-3 py-1 bg-[#EEF2FF] border border-[#E0E7FF] text-[#4F46E5] font-black text-[10px] sm:text-xs rounded-full font-mono shadow-2xs">
+                        <Sparkles className="h-3.5 w-3.5 animate-pulse" />
+                        <span>+50 XP REGISTERED & STREAK MAINTAINED</span>
+                      </div>
+
+                      <div className="p-3 bg-stone-50/50 border border-stone-100 rounded-2xl w-full">
+                        <span className="block text-[8.5px] font-mono text-stone-400 font-bold uppercase tracking-wider">SECURE CERTIFICATE HASH SHA-256</span>
+                        <span className="block text-[9px] font-mono text-[#4C1D95] font-black mt-0.5 truncate select-all">SHA256_LAB_PRO_902X73F0_VALID</span>
+                      </div>
+                    </motion.div>
+                  )}
+
+                </AnimatePresence>
+              </div>
+
+              {/* Step Navigation Buttons with Progressive Validation constraints */}
+              <div className="flex space-x-3 pt-3 sm:pt-4 border-t border-stone-100 mt-4">
+                {inProgressStep > 1 && inProgressStep < 8 && (
+                  <button
+                    onClick={() => {
+                      setInProgressStep(prev => prev - 1);
+                    }}
+                    className="flex-1 border border-stone-200 hover:bg-stone-50 text-stone-600 text-xs font-black py-3 rounded-xl sm:rounded-2xl uppercase tracking-wider transition-all cursor-pointer text-center bg-white"
+                  >
+                    Back
+                  </button>
+                )}
+                
+                {inProgressStep === 1 && (
+                  <button
+                    onClick={() => {
+                      setCurrentScreen(2);
+                    }}
+                    className="flex-1 border border-stone-200 hover:bg-stone-50 text-stone-600 text-xs font-black py-3 rounded-xl sm:rounded-2xl uppercase tracking-wider transition-all cursor-pointer text-center bg-white"
+                  >
+                    Back to Detail
+                  </button>
+                )}
+
+                {inProgressStep < 6 && (
+                  <button
+                    onClick={() => {
+                      setInProgressStep(prev => prev + 1);
+                    }}
+                    className="flex-1 bg-[#4C1D95] hover:bg-[#3B0764] text-white text-xs font-black py-3 rounded-xl sm:rounded-2xl uppercase tracking-wider transition-all cursor-pointer text-center shadow-sm"
+                  >
+                    Next Phase
+                  </button>
+                )}
+
+                {inProgressStep === 6 && (
+                  <button
+                    onClick={() => {
+                      setIsSyncing(true);
+                      setInProgressStep(7);
+                      setTimeout(() => {
+                        setIsSyncing(false);
+                      }, 2000);
+                    }}
+                    disabled={activeEmoji === null}
+                    className="flex-1 bg-[#4C1D95] hover:bg-[#3B0764] text-white text-xs font-black py-3 rounded-xl sm:rounded-2xl uppercase tracking-wider transition-all cursor-pointer text-center shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Submit & Verify
+                  </button>
+                )}
+
+                {inProgressStep === 7 && (
+                  <button
+                    onClick={() => {
+                      // Final completion log submit to keep parent state synced perfectly
+                      if (selectedExp) {
+                        if (setStreak) {
+                          setStreak(prev => prev + 1);
+                        }
+                        if (setXp) {
+                          setXp(prev => prev + 50);
+                        }
+                        
+                        const currentSubject = selectedExp.subject || "Biomedical Sciences";
+                        const currentSkills = getSkillsList(selectedExp);
+                        const currentId = selectedExp.id || "explain_crispr";
+
+                        if (onAddEvidence) {
+                          onAddEvidence({
+                            id: `proof_${Date.now()}`,
+                            type: "Curated Challenge",
+                            title: selectedExp.title || "Explain CRISPR to a 10-year-old",
+                            subject: currentSubject,
+                            signals: currentSkills,
+                            tier: selectedExp.verificationTier || "Tier 1",
+                            completedAt: new Date().toLocaleDateString(),
+                            realization: surprisedText || hardestText || `Successfully completed challenge in ${currentSubject}.`
+                          });
+                        }
+                        if (onConfidenceUpdate) {
+                          onConfidenceUpdate(currentSubject, 8);
+                        }
+                        if (setCompletedExperienceIds) {
+                          setCompletedExperienceIds(prev => {
+                            const next = [...prev, currentId];
+                            const origId = selectedExp.originalId;
+                            if (origId && !next.includes(origId)) {
+                              next.push(origId);
+                            }
+                            return next;
+                          });
+                        }
+                        // Clear active active experiment
+                        setInProgressExp(null);
+                        setInProgressStep(1);
+                      }
+                      setInProgressStep(8);
+                    }}
+                    className="flex-1 bg-[#4C1D95] hover:bg-[#3B0764] text-white text-xs font-black py-3 rounded-xl sm:rounded-2xl uppercase tracking-wider transition-all cursor-pointer text-center shadow-sm"
+                  >
+                    Accept Verified Proof
+                  </button>
+                )}
+
+                {inProgressStep === 8 && (
+                  <button
+                    onClick={() => {
+                      setCurrentScreen(1);
+                      setInProgressStep(1);
+                    }}
+                    className="flex-1 bg-[#4C1D95] hover:bg-[#3B0764] text-white text-xs font-black py-3 rounded-xl sm:rounded-2xl uppercase tracking-wider transition-all cursor-pointer text-center shadow-sm"
+                  >
+                    Return to Hub Dashboard
+                  </button>
+                )}
+
+              </div>
+            </motion.div>
+          )}{/* SCREEN 6: IN PROGRESS DETAIL (OBSERVE NEURO) */}
+          {currentScreen === 6 && (
+            <motion.div
+              key="screen-6"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.3 }}
+              className="p-4 sm:p-6 md:p-8 space-y-4 sm:space-y-6 flex-1 flex flex-col justify-between"
+            >
+              {/* Top Navigation bar */}
+              <div className="flex justify-between items-center">
+                <button 
+                  onClick={() => setCurrentScreen(1)}
+                  className="px-3 sm:px-4 py-1.5 sm:py-2 border border-stone-200 rounded-xl hover:bg-stone-50 text-stone-600 text-xs font-bold transition-all cursor-pointer flex items-center space-x-1.5 bg-white"
+                >
+                  <ArrowLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                  <span>Back to Hub</span>
+                </button>
+                <button className="h-8 w-8 sm:h-9 sm:w-9 rounded-xl border border-stone-200 hover:bg-stone-50 flex items-center justify-center text-stone-500 transition-all bg-white">
+                  <MoreHorizontal className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                </button>
+              </div>
+
+              {/* Main Content Info */}
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-6 items-start">
+                
+                {/* Left block: brain icon & matching */}
+                <div className="md:col-span-5 flex flex-col items-center md:items-start text-center md:text-left space-y-3.5">
+                  <div className="h-16 w-16 sm:h-20 sm:w-20 bg-purple-50 rounded-2xl flex items-center justify-center border border-purple-100 shadow-sm">
+                    <Brain className="h-8 w-8 sm:h-10 sm:w-10 text-[#6D28D9] animate-pulse" />
+                  </div>
+
+                  <div className="space-y-1.5 w-full">
+                    <span className="inline-block text-[9px] sm:text-[10px] font-black uppercase bg-purple-100 text-[#4C1D95] border border-purple-200 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full font-mono">
+                      High Match
+                    </span>
+                    <h4 className="text-lg sm:text-xl md:text-2xl font-black text-slate-900 tracking-tight leading-snug">
+                      Observe a Neuro Lecture Pattern
+                    </h4>
+                    <div className="flex items-center justify-center md:justify-start space-x-3 text-[11px] font-mono font-bold text-stone-500">
+                      <span className="flex items-center"><Clock className="h-3.5 w-3.5 mr-1 text-[#6D28D9]" /> 15 min</span>
+                      <span className="flex items-center"><Compass className="h-3.5 w-3.5 mr-1 text-[#6D28D9]" /> Observation</span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1 pt-1 w-full">
+                    <span className="block text-[9px] sm:text-[10px] font-black uppercase text-stone-400 tracking-wider font-mono font-bold">Skills you'll build</span>
+                    <div className="flex flex-wrap gap-1 sm:gap-1.5 justify-center md:justify-start">
+                      {["Attention", "Pattern Recognition", "Curiosity"].map(tag => (
+                        <span key={tag} className="text-[10px] sm:text-xs font-mono font-bold uppercase bg-[#F5F3FF] text-[#4C1D95] border border-purple-100 px-2 py-0.5 sm:px-3 sm:py-1 rounded-lg">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right block: progress summary */}
+                <div className="md:col-span-7 space-y-3 sm:space-y-4 w-full">
+                  
+                  {/* Progress panel card */}
+                  <div className="p-4 sm:p-5 bg-white border border-slate-100 rounded-2xl space-y-2.5 sm:space-y-3 shadow-xs">
+                    <span className="block text-[10px] sm:text-xs font-black uppercase text-slate-800 tracking-wider">Your progress</span>
+                    <div className="flex justify-between text-[11px] sm:text-xs font-mono font-bold text-stone-500">
+                      <span>Step 1 of 3 (Observation logs)</span>
+                      <span>33% Completed</span>
+                    </div>
+                    <div className="h-1.5 sm:h-2 w-full bg-stone-100 rounded-full overflow-hidden">
+                      <div className="h-full bg-[#4C1D95] rounded-full w-[33%]" />
+                    </div>
+                  </div>
+
+                  {/* About panel card */}
+                  <div className="p-4 sm:p-5 bg-[#FAFBFD] border border-stone-200/60 rounded-2xl text-[11px] sm:text-sm leading-relaxed space-y-1">
+                    <span className="block text-[9px] sm:text-[10px] font-black uppercase text-slate-950 tracking-wider">About this experiment</span>
+                    <p className="text-stone-600 font-semibold leading-relaxed">
+                      You'll observe how ideas are presented in a neuroscience lecture and reflect on patterns you notice. This builds focus, critical parsing, and structural mapping skills.
+                    </p>
+                  </div>
+
+                </div>
+
+              </div>
+
+              {/* Bottom Action Group */}
+              <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3 pt-3 sm:pt-4 border-t border-stone-100 mt-4">
+                <button
+                  onClick={() => setCurrentScreen(3)}
+                  className="flex-1 bg-[#4C1D95] hover:bg-[#3B0764] text-white py-3 rounded-xl sm:rounded-2xl text-xs font-black uppercase tracking-widest transition-all cursor-pointer text-center block shadow-xs"
+                >
+                  Continue Experiment
+                </button>
+                <button
+                  onClick={() => setCurrentScreen(1)}
+                  className="flex-1 border border-stone-200 hover:bg-stone-50 text-stone-600 py-3 rounded-xl sm:rounded-2xl text-xs font-black uppercase tracking-widest text-center block cursor-pointer transition-colors"
+                >
+                  View Details
+                </button>
+              </div>
+            </motion.div>
+          )}
+
+        </AnimatePresence>
+
+        {/* FLOATING ACTION BUTTON (FAB) FOR CERTIFICATE CONVERSION */}
+        {currentScreen === 1 && (
+          <div className="absolute bottom-4 right-4 sm:bottom-6 sm:right-6 z-40">
+            <button
+              onClick={() => {
+                setShowCertModal(true);
+                setCertStep(1);
+                setSelectedFile(null);
+                setSelectedPreset(null);
+              }}
+              className="h-12 w-12 sm:h-14 sm:w-14 bg-[#4C1D95] text-white hover:bg-[#3B0764] rounded-full shadow-lg flex items-center justify-center cursor-pointer transition-all hover:scale-110 active:scale-95 group focus:outline-none"
+              title="Convert Certificate"
+            >
+              <Plus className="h-5 w-5 sm:h-6 sm:w-6 stroke-[3]" />
+              <span className="absolute right-14 sm:right-16 bg-slate-900 text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-sm pointer-events-none">
+                Convert Certificate
+              </span>
+            </button>
+          </div>
+        )}
+
+      </div>
+
+      {/* FULL-SCREEN OVERLAY MODAL FOR CERTIFICATE UPLOAD & DECODER */}
+      <AnimatePresence>
+        {showCertModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4 md:p-6 overflow-y-auto"
+          >
+            <motion.div
+              initial={{ scale: 0.95, y: 15 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 15 }}
+              transition={{ type: "spring", damping: 25, stiffness: 350 }}
+              className="bg-white rounded-3xl w-full max-w-4xl shadow-2xl overflow-hidden border border-slate-100 flex flex-col max-h-[90vh]"
+            >
+              {/* Modal Header */}
+              <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+                <div className="flex items-center space-x-3">
+                  <div className="h-10 w-10 bg-purple-100 rounded-2xl flex items-center justify-center text-[#4C1D95]">
+                    <Award className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-black text-slate-900 uppercase tracking-tight">Certificate Decoder</h3>
+                    <p className="text-[11px] text-stone-500 font-semibold uppercase font-mono tracking-wider">Convert Credentials to Verified Proof Points</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowCertModal(false)}
+                  className="h-8 w-8 bg-slate-100 hover:bg-slate-200 text-stone-600 rounded-xl flex items-center justify-center cursor-pointer transition-colors"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+
+              {/* Modal Body / Scrollable Content */}
+              <div className="p-6 md:p-8 overflow-y-auto flex-1">
+                
+                {/* STEP 1: UPLOAD & PRESETS */}
+                {certStep === 1 && (
+                  <div className="space-y-6">
+                    <div className="text-center max-w-xl mx-auto space-y-2">
+                      <h4 className="text-xl font-extrabold text-slate-900 tracking-tight">Upload Your Credentials</h4>
+                      <p className="text-xs text-stone-600 font-semibold leading-relaxed">
+                        Drag and drop a PDF, image, or digital certificate. Pilot's deep parser will decrypt the signatures, extract competencies, and map them to your Career OS profile.
+                      </p>
+                    </div>
+
+                    {/* Drag & Drop Box */}
+                    <div
+                      onDragEnter={handleDrag}
+                      onDragOver={handleDrag}
+                      onDragLeave={handleDrag}
+                      onDrop={handleDrop}
+                      className={`relative border-2 border-dashed rounded-2xl p-8 text-center flex flex-col items-center justify-center transition-all cursor-pointer ${
+                        dragActive 
+                          ? "border-purple-500 bg-purple-50/40 scale-[0.99]" 
+                          : "border-slate-200 bg-slate-50/50 hover:border-purple-300 hover:bg-purple-50/10"
+                      }`}
+                    >
+                      <input
+                        type="file"
+                        accept=".pdf,.png,.jpg,.jpeg"
+                        onChange={handleFileChange}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                      />
+                      <div className="h-14 w-14 bg-white border border-slate-100 rounded-full flex items-center justify-center text-stone-400 group-hover:text-purple-600 shadow-xs mb-3">
+                        <Upload className="h-6 w-6 text-purple-600 animate-bounce" />
+                      </div>
+                      <span className="text-sm font-black text-slate-800">
+                        Drag and drop your certificate file here
+                      </span>
+                      <span className="text-xs text-stone-500 font-semibold mt-1">
+                        Supports PDF, PNG, or JPEG up to 10MB
+                      </span>
+                      <button className="mt-4 px-4 py-2 bg-purple-50 hover:bg-purple-100 text-[#4C1D95] text-xs font-black rounded-xl border border-purple-100 transition-colors">
+                        Browse files
+                      </button>
+                    </div>
+
+                    {/* Verified Presets Section */}
+                    <div className="space-y-3">
+                      <div className="flex items-center space-x-2">
+                        <Zap className="h-4 w-4 text-purple-600 fill-[#D97706]" />
+                        <span className="text-xs font-black uppercase text-slate-800 tracking-wider">Don't have a file handy? Try a verified preset:</span>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {certPresets.map(preset => (
+                          <div
+                            key={preset.id}
+                            onClick={() => startParsing(preset)}
+                            className="p-4 bg-white border border-slate-200 rounded-xl hover:border-purple-300 hover:shadow-xs transition-all cursor-pointer flex items-center justify-between group"
+                          >
+                            <div className="flex items-center space-x-3">
+                              <div className="h-10 w-10 bg-[#F5F3FF] rounded-xl flex items-center justify-center text-[#4C1D95] shrink-0 font-bold text-sm group-hover:bg-purple-100 transition-colors">
+                                🎓
+                              </div>
+                              <div className="text-left">
+                                <span className="block text-[13px] font-black text-slate-900 leading-snug group-hover:text-[#4C1D95] transition-colors">
+                                  {preset.title}
+                                </span>
+                                <span className="block text-[10px] text-stone-500 font-bold uppercase mt-0.5 font-mono">
+                                  {preset.issuer}
+                                </span>
+                              </div>
+                            </div>
+                            <ChevronRight className="h-4 w-4 text-stone-400 group-hover:translate-x-1 transition-transform" />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* STEP 2: PARSING SIMULATION */}
+                {certStep === 2 && (
+                  <div className="space-y-6 py-8 flex flex-col items-center">
+                    <div className="relative h-20 w-20 flex items-center justify-center">
+                      <div className="absolute inset-0 rounded-full border-4 border-purple-100 border-t-[#4C1D95] animate-spin" />
+                      <Cpu className="h-8 w-8 text-[#4C1D95] animate-pulse" />
+                    </div>
+
+                    <div className="text-center space-y-1.5 w-full max-w-md">
+                      <h4 className="text-lg font-black text-slate-900 uppercase tracking-tight">Decoding Credentials</h4>
+                      <div className="flex justify-between text-[11px] font-mono font-bold text-stone-500">
+                        <span>Parser Progress</span>
+                        <span>{parsingProgress}%</span>
+                      </div>
+                      <div className="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden border border-slate-200/50 shadow-inner">
+                        <div 
+                          className="h-full bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full transition-all duration-100" 
+                          style={{ width: `${parsingProgress}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Parser console log */}
+                    <div className="w-full max-w-xl bg-slate-950 rounded-2xl p-4 border border-slate-800 shadow-md font-mono text-left">
+                      <div className="flex items-center justify-between border-b border-slate-800 pb-2 mb-2">
+                        <span className="text-[10px] text-slate-500 font-black tracking-wider uppercase">Parser Console Log</span>
+                        <span className="h-2 w-2 bg-emerald-500 rounded-full animate-ping" />
+                      </div>
+                      <div className="space-y-1.5 h-44 overflow-y-auto text-[11px] text-slate-300 leading-normal scrollbar-none">
+                        {parsingLog.map((log, i) => (
+                          <div key={i} className="flex items-start space-x-1">
+                            <span className="text-purple-400 shrink-0 select-none">❯</span>
+                            <span className="font-semibold">{log}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* STEP 3: REVIEW EXTRACTED COMPETENCIES */}
+                {certStep === 3 && selectedPreset && (
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+                    
+                    {/* Left: Certificate Digital Replica */}
+                    <div className="md:col-span-5 bg-gradient-to-br from-purple-50 to-indigo-50/50 p-6 rounded-2xl border border-purple-100/80 shadow-xs flex flex-col justify-between min-h-[340px] text-center relative overflow-hidden">
+                      <div className="absolute top-0 right-0 h-24 w-24 bg-purple-200/20 rounded-full blur-xl pointer-events-none" />
+                      
+                      <div className="flex justify-between items-start">
+                        <span className="text-2xl">🎓</span>
+                        <span className="text-[10px] font-mono font-bold uppercase bg-white/80 border border-purple-200 px-2 py-0.5 rounded-md text-[#4C1D95]">
+                          Verified SHA256
+                        </span>
+                      </div>
+
+                      <div className="space-y-3 py-6 relative z-10">
+                        <span className="block text-[10px] font-black uppercase text-[#4C1D95] font-mono tracking-widest">Certificate of Achievement</span>
+                        <h4 className="text-xl font-black text-slate-950 leading-tight">
+                          {selectedPreset.title}
+                        </h4>
+                        <div className="h-[1px] w-12 bg-purple-200 mx-auto" />
+                        <span className="block text-[11px] text-stone-500 font-bold">
+                          Successfully verified for:
+                        </span>
+                        <span className="block text-sm font-extrabold text-slate-900 bg-white/70 border border-white px-3 py-1 rounded-lg shadow-2xs inline-block">
+                          Student
+                        </span>
+                      </div>
+
+                      <div className="flex items-center justify-between border-t border-purple-100/50 pt-4 mt-auto">
+                        <div className="text-left text-[9px] font-bold text-stone-500 font-mono">
+                          <span className="block">ISSUER:</span>
+                          <span className="block text-slate-900 uppercase font-bold">{selectedPreset.issuer}</span>
+                        </div>
+                        <div className="text-right text-[9px] font-bold text-stone-500 font-mono">
+                          <span className="block">DATE MATCHED:</span>
+                          <span className="block text-slate-900 uppercase font-bold">{new Date().toLocaleDateString()}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Right: Mapped signals and Claim Button */}
+                    <div className="md:col-span-7 space-y-5 text-left">
+                      <div className="space-y-1">
+                        <span className="inline-block text-[10px] font-black uppercase bg-purple-100 text-[#4C1D95] border border-purple-200 px-2.5 py-1 rounded-full font-mono">
+                          Decoding Complete
+                        </span>
+                        <h4 className="text-xl font-black text-slate-900 tracking-tight">Verify Mapped Skills</h4>
+                        <p className="text-xs text-stone-600 font-semibold">
+                          We mapped these extracted competencies to your skill taxonomy. Uncheck any skills you don't wish to import as proof.
+                        </p>
+                      </div>
+
+                      {/* Checklist */}
+                      <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
+                        {extractedSkills.map(skill => {
+                          const isChecked = !!selectedSkillsToConvert[skill];
+                          return (
+                            <div
+                              key={skill}
+                              onClick={() => setSelectedSkillsToConvert(prev => ({ ...prev, [skill]: !prev[skill] }))}
+                              className={`flex items-center justify-between p-3 rounded-xl border transition-all cursor-pointer ${
+                                isChecked 
+                                  ? "bg-purple-50/20 border-purple-200 text-slate-900" 
+                                  : "bg-white border-slate-200 text-stone-400 hover:border-purple-200"
+                              }`}
+                            >
+                              <div className="flex items-center space-x-3">
+                                <div className={`h-5 w-5 rounded-md border flex items-center justify-center transition-all ${
+                                  isChecked 
+                                    ? "bg-[#4C1D95] border-transparent text-white" 
+                                    : "border-stone-300 bg-white"
+                                }`}>
+                                  {isChecked && <Check className="h-3.5 w-3.5 stroke-[3]" />}
+                                </div>
+                                <span className="text-xs font-bold">{skill}</span>
+                              </div>
+                              <span className="text-[10px] font-mono font-bold text-[#4C1D95] bg-purple-50 px-2 py-0.5 rounded-full uppercase border border-purple-100">
+                                Verified Point
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </div>
+
+                      {/* Alignment Summary Panel */}
+                      <div className="p-4 bg-emerald-50/40 border border-emerald-100 rounded-2xl flex items-start space-x-3">
+                        <div className="h-8 w-8 bg-emerald-100 rounded-lg flex items-center justify-center text-emerald-700 shrink-0">
+                          <Zap className="h-4 w-4 fill-emerald-600 text-emerald-600" />
+                        </div>
+                        <div className="text-xs">
+                          <span className="block font-black text-emerald-950 uppercase tracking-wide">Targeted Alignment Boost!</span>
+                          <span className="block font-semibold text-emerald-800 mt-0.5 leading-relaxed">
+                            Claiming this certificate will boost your match confidence in <strong className="font-extrabold">{selectedPreset.boostField}</strong> by <strong className="font-extrabold">+{selectedPreset.boostValue}%</strong>.
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Submit button */}
+                      <button
+                        onClick={handleClaimCertificateProof}
+                        disabled={isConverting || Object.values(selectedSkillsToConvert).filter(Boolean).length === 0}
+                        className="w-full bg-[#4C1D95] hover:bg-[#3B0764] text-white py-4 rounded-xl text-xs font-black uppercase tracking-widest transition-all cursor-pointer shadow-md text-center block disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {isConverting ? (
+                          <span className="flex items-center justify-center space-x-2">
+                            <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                            <span>Converting Credentials...</span>
+                          </span>
+                        ) : (
+                          <span>Convert & Claim Evidence (+25 XP)</span>
+                        )}
+                      </button>
+                    </div>
+
+                  </div>
+                )}
+
+                {/* STEP 4: CONVERSION SUCCESS */}
+                {certStep === 4 && selectedPreset && (
+                  <div className="text-center max-w-md mx-auto py-8 space-y-6 flex flex-col items-center">
+                    
+                    {/* Starburst Icon */}
+                    <div className="relative h-20 w-20 flex items-center justify-center">
+                      <div className="absolute inset-0 bg-emerald-100 rounded-full animate-ping" style={{ animationDuration: "3s" }} />
+                      <div className="h-16 w-16 bg-emerald-600 rounded-full flex items-center justify-center text-white relative shadow-lg">
+                        <CheckCircle2 className="h-9 w-9 stroke-[2] relative z-10" />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <h3 className="text-xl font-black text-slate-900 tracking-tight leading-snug">
+                        Certificate Converted!
+                      </h3>
+                      <p className="text-xs text-stone-600 font-semibold leading-relaxed">
+                        Fantastic work! The skills extracted from <strong className="font-extrabold">"{selectedPreset.title}"</strong> have been securely registered as permanent evidence in your profile.
+                      </p>
+                    </div>
+
+                    {/* Stat Badges */}
+                    <div className="flex items-center justify-center space-x-3 w-full">
+                      <div className="flex-1 bg-purple-50 border border-purple-200 text-[#4C1D95] font-black text-xs rounded-xl p-3 shadow-3xs font-mono">
+                        <span className="block text-[9px] text-purple-400 font-bold uppercase">REWARD CLAIMED</span>
+                        <span className="block text-sm mt-0.5">+25 XP UNLOCKED</span>
+                      </div>
+                      <div className="flex-1 bg-emerald-50 border border-emerald-200 text-emerald-800 font-black text-xs rounded-xl p-3 shadow-3xs font-mono">
+                        <span className="block text-[9px] text-emerald-500 font-bold uppercase">ALIGNMENT BOOST</span>
+                        <span className="block text-sm mt-0.5">+{selectedPreset.boostValue}% {selectedPreset.boostField}</span>
+                      </div>
+                    </div>
+
+                    {/* Action triggers */}
+                    <div className="space-y-2.5 w-full pt-2">
+                      <button
+                        onClick={() => {
+                          setShowCertModal(false);
+                          if (onNavigateToTab) {
+                            onNavigateToTab("journey");
+                          }
+                        }}
+                        className="w-full bg-[#4C1D95] hover:bg-[#3B0764] text-white py-3.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all cursor-pointer shadow-md text-center block"
+                      >
+                        View in Journey
+                      </button>
+                      <button
+                        onClick={() => {
+                          setCertStep(1);
+                          setSelectedFile(null);
+                          setSelectedPreset(null);
+                        }}
+                        className="w-full bg-slate-50 hover:bg-slate-100 text-stone-600 py-3 rounded-xl text-xs font-black uppercase tracking-widest border border-slate-200 transition-all cursor-pointer text-center block"
+                      >
+                        Convert Another Certificate
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+    </div>
+  );
+}

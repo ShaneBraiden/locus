@@ -1,0 +1,57 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default-deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+    
+    // Reusable, hardened global helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+    
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+    
+    function incoming() {
+      return request.resource.data;
+    }
+    
+    function existing() {
+      return resource.data;
+    }
+    
+    // 1. User Profiles Rule Block
+    match /user_profiles/{userId} {
+      allow read, write: if isOwner(userId);
+    }
+    
+    // 2. Chat Sessions Rule Block
+    match /chat_sessions/{userId} {
+      allow read, write: if isOwner(userId);
+    }
+    
+    // 3. Evidence Items Rule Block (Secure list query, identity checks)
+    match /evidence_items/{evidenceId} {
+      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow write: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+    }
+    
+    // 4. Pilot Reality Rule Block
+    match /pilot_reality/{userId} {
+      allow read, write: if isOwner(userId);
+    }
+    
+    // 5. Student Models Rule Block
+    match /student_models/{userId} {
+      allow read, write: if isOwner(userId);
+    }
+  }
+}

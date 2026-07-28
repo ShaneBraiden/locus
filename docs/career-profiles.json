@@ -1,0 +1,1547 @@
+{
+  "version": 1,
+  "source": "locus_psychometric_engine.xlsx, parsed 2026-07-28",
+  "weights": {
+    "h": 0.25,
+    "o": 0.2,
+    "s": 0.25,
+    "m": 0.2,
+    "d": 0.1
+  },
+  "fitWeights": {
+    "h": 0.25,
+    "o": 0.2,
+    "s": 0.25,
+    "m": 0.2
+  },
+  "thresholds": {
+    "bestFit": 72,
+    "consider": 52
+  },
+  "careers": [
+    {
+      "id": "c1-medical-doctor-mbbs-md",
+      "name": "Medical Doctor (MBBS→MD)",
+      "domain": "Medicine",
+      "profile": {
+        "h": 85,
+        "o": 75,
+        "s": 80,
+        "m": 70,
+        "d": 80
+      }
+    },
+    {
+      "id": "c2-surgeon",
+      "name": "Surgeon",
+      "domain": "Medicine",
+      "profile": {
+        "h": 85,
+        "o": 80,
+        "s": 75,
+        "m": 75,
+        "d": 80
+      }
+    },
+    {
+      "id": "c3-dentist",
+      "name": "Dentist",
+      "domain": "Medicine",
+      "profile": {
+        "h": 80,
+        "o": 75,
+        "s": 75,
+        "m": 70,
+        "d": 75
+      }
+    },
+    {
+      "id": "c4-pharmacist",
+      "name": "Pharmacist",
+      "domain": "Medicine",
+      "profile": {
+        "h": 70,
+        "o": 80,
+        "s": 70,
+        "m": 65,
+        "d": 75
+      }
+    },
+    {
+      "id": "c5-biomedical-researcher",
+      "name": "Biomedical Researcher",
+      "domain": "Research",
+      "profile": {
+        "h": 60,
+        "o": 90,
+        "s": 80,
+        "m": 65,
+        "d": 80
+      }
+    },
+    {
+      "id": "c6-geneticist",
+      "name": "Geneticist",
+      "domain": "Research",
+      "profile": {
+        "h": 55,
+        "o": 90,
+        "s": 80,
+        "m": 60,
+        "d": 80
+      }
+    },
+    {
+      "id": "c7-microbiologist",
+      "name": "Microbiologist",
+      "domain": "Research",
+      "profile": {
+        "h": 55,
+        "o": 85,
+        "s": 80,
+        "m": 60,
+        "d": 75
+      }
+    },
+    {
+      "id": "c8-biochemist",
+      "name": "Biochemist",
+      "domain": "Research",
+      "profile": {
+        "h": 55,
+        "o": 85,
+        "s": 80,
+        "m": 60,
+        "d": 75
+      }
+    },
+    {
+      "id": "c9-neuroscientist",
+      "name": "Neuroscientist",
+      "domain": "Research",
+      "profile": {
+        "h": 55,
+        "o": 90,
+        "s": 85,
+        "m": 60,
+        "d": 80
+      }
+    },
+    {
+      "id": "c10-clinical-psychologist",
+      "name": "Clinical Psychologist",
+      "domain": "Psychology",
+      "profile": {
+        "h": 45,
+        "o": 70,
+        "s": 85,
+        "m": 75,
+        "d": 80
+      }
+    },
+    {
+      "id": "c11-psychiatrist",
+      "name": "Psychiatrist",
+      "domain": "Psychology",
+      "profile": {
+        "h": 50,
+        "o": 75,
+        "s": 85,
+        "m": 70,
+        "d": 80
+      }
+    },
+    {
+      "id": "c12-physiotherapist",
+      "name": "Physiotherapist",
+      "domain": "Medicine",
+      "profile": {
+        "h": 80,
+        "o": 65,
+        "s": 75,
+        "m": 75,
+        "d": 70
+      }
+    },
+    {
+      "id": "c13-occupational-therapist",
+      "name": "Occupational Therapist",
+      "domain": "Medicine",
+      "profile": {
+        "h": 75,
+        "o": 65,
+        "s": 75,
+        "m": 75,
+        "d": 70
+      }
+    },
+    {
+      "id": "c14-nutritionist-dietitian",
+      "name": "Nutritionist/Dietitian",
+      "domain": "Medicine",
+      "profile": {
+        "h": 65,
+        "o": 70,
+        "s": 75,
+        "m": 65,
+        "d": 70
+      }
+    },
+    {
+      "id": "c15-veterinarian",
+      "name": "Veterinarian",
+      "domain": "Medicine",
+      "profile": {
+        "h": 80,
+        "o": 70,
+        "s": 75,
+        "m": 65,
+        "d": 70
+      }
+    },
+    {
+      "id": "c16-environmental-scientist",
+      "name": "Environmental Scientist",
+      "domain": "Science",
+      "profile": {
+        "h": 60,
+        "o": 80,
+        "s": 80,
+        "m": 70,
+        "d": 70
+      }
+    },
+    {
+      "id": "c17-marine-biologist",
+      "name": "Marine Biologist",
+      "domain": "Science",
+      "profile": {
+        "h": 65,
+        "o": 80,
+        "s": 80,
+        "m": 70,
+        "d": 65
+      }
+    },
+    {
+      "id": "c18-astronomer-astrophysicist",
+      "name": "Astronomer/Astrophysicist",
+      "domain": "Science",
+      "profile": {
+        "h": 40,
+        "o": 95,
+        "s": 85,
+        "m": 55,
+        "d": 80
+      }
+    },
+    {
+      "id": "c19-nuclear-engineer",
+      "name": "Nuclear Engineer",
+      "domain": "Engineering",
+      "profile": {
+        "h": 75,
+        "o": 85,
+        "s": 70,
+        "m": 55,
+        "d": 75
+      }
+    },
+    {
+      "id": "c20-aerospace-engineer",
+      "name": "Aerospace Engineer",
+      "domain": "Engineering",
+      "profile": {
+        "h": 80,
+        "o": 85,
+        "s": 70,
+        "m": 60,
+        "d": 75
+      }
+    },
+    {
+      "id": "c21-mechanical-engineer",
+      "name": "Mechanical Engineer",
+      "domain": "Engineering",
+      "profile": {
+        "h": 85,
+        "o": 80,
+        "s": 65,
+        "m": 55,
+        "d": 75
+      }
+    },
+    {
+      "id": "c22-civil-engineer",
+      "name": "Civil Engineer",
+      "domain": "Engineering",
+      "profile": {
+        "h": 80,
+        "o": 75,
+        "s": 65,
+        "m": 55,
+        "d": 75
+      }
+    },
+    {
+      "id": "c23-chemical-engineer",
+      "name": "Chemical Engineer",
+      "domain": "Engineering",
+      "profile": {
+        "h": 70,
+        "o": 85,
+        "s": 65,
+        "m": 55,
+        "d": 75
+      }
+    },
+    {
+      "id": "c24-electrical-engineer",
+      "name": "Electrical Engineer",
+      "domain": "Engineering",
+      "profile": {
+        "h": 80,
+        "o": 80,
+        "s": 65,
+        "m": 55,
+        "d": 75
+      }
+    },
+    {
+      "id": "c25-electronics-engineer",
+      "name": "Electronics Engineer",
+      "domain": "Engineering",
+      "profile": {
+        "h": 80,
+        "o": 80,
+        "s": 65,
+        "m": 55,
+        "d": 75
+      }
+    },
+    {
+      "id": "c26-computer-science-engineer",
+      "name": "Computer Science Engineer",
+      "domain": "Technology",
+      "profile": {
+        "h": 55,
+        "o": 90,
+        "s": 70,
+        "m": 45,
+        "d": 80
+      }
+    },
+    {
+      "id": "c27-software-developer",
+      "name": "Software Developer",
+      "domain": "Technology",
+      "profile": {
+        "h": 45,
+        "o": 90,
+        "s": 70,
+        "m": 45,
+        "d": 80
+      }
+    },
+    {
+      "id": "c28-data-scientist",
+      "name": "Data Scientist",
+      "domain": "Technology",
+      "profile": {
+        "h": 40,
+        "o": 95,
+        "s": 75,
+        "m": 40,
+        "d": 80
+      }
+    },
+    {
+      "id": "c29-ai-ml-engineer",
+      "name": "AI/ML Engineer",
+      "domain": "Technology",
+      "profile": {
+        "h": 40,
+        "o": 95,
+        "s": 75,
+        "m": 40,
+        "d": 80
+      }
+    },
+    {
+      "id": "c30-cybersecurity-analyst",
+      "name": "Cybersecurity Analyst",
+      "domain": "Technology",
+      "profile": {
+        "h": 55,
+        "o": 90,
+        "s": 70,
+        "m": 40,
+        "d": 80
+      }
+    },
+    {
+      "id": "c31-cloud-solutions-architect",
+      "name": "Cloud Solutions Architect",
+      "domain": "Technology",
+      "profile": {
+        "h": 55,
+        "o": 85,
+        "s": 70,
+        "m": 45,
+        "d": 80
+      }
+    },
+    {
+      "id": "c32-devops-engineer",
+      "name": "DevOps Engineer",
+      "domain": "Technology",
+      "profile": {
+        "h": 65,
+        "o": 85,
+        "s": 65,
+        "m": 40,
+        "d": 75
+      }
+    },
+    {
+      "id": "c33-ux-ui-designer",
+      "name": "UX/UI Designer",
+      "domain": "Design",
+      "profile": {
+        "h": 70,
+        "o": 65,
+        "s": 75,
+        "m": 90,
+        "d": 70
+      }
+    },
+    {
+      "id": "c34-product-manager",
+      "name": "Product Manager",
+      "domain": "Business",
+      "profile": {
+        "h": 65,
+        "o": 75,
+        "s": 80,
+        "m": 75,
+        "d": 85
+      }
+    },
+    {
+      "id": "c35-business-analyst",
+      "name": "Business Analyst",
+      "domain": "Business",
+      "profile": {
+        "h": 50,
+        "o": 85,
+        "s": 70,
+        "m": 65,
+        "d": 85
+      }
+    },
+    {
+      "id": "c36-actuary",
+      "name": "Actuary",
+      "domain": "Finance",
+      "profile": {
+        "h": 35,
+        "o": 95,
+        "s": 65,
+        "m": 35,
+        "d": 85
+      }
+    },
+    {
+      "id": "c37-chartered-accountant",
+      "name": "Chartered Accountant",
+      "domain": "Finance",
+      "profile": {
+        "h": 40,
+        "o": 90,
+        "s": 60,
+        "m": 40,
+        "d": 85
+      }
+    },
+    {
+      "id": "c38-investment-banker",
+      "name": "Investment Banker",
+      "domain": "Finance",
+      "profile": {
+        "h": 60,
+        "o": 80,
+        "s": 70,
+        "m": 55,
+        "d": 85
+      }
+    },
+    {
+      "id": "c39-equity-research-analyst",
+      "name": "Equity Research Analyst",
+      "domain": "Finance",
+      "profile": {
+        "h": 45,
+        "o": 90,
+        "s": 70,
+        "m": 50,
+        "d": 85
+      }
+    },
+    {
+      "id": "c40-financial-planner",
+      "name": "Financial Planner",
+      "domain": "Finance",
+      "profile": {
+        "h": 55,
+        "o": 80,
+        "s": 70,
+        "m": 60,
+        "d": 80
+      }
+    },
+    {
+      "id": "c41-venture-capitalist",
+      "name": "Venture Capitalist",
+      "domain": "Business",
+      "profile": {
+        "h": 70,
+        "o": 80,
+        "s": 80,
+        "m": 65,
+        "d": 90
+      }
+    },
+    {
+      "id": "c42-entrepreneur-startup-founder",
+      "name": "Entrepreneur/Startup Founder",
+      "domain": "Business",
+      "profile": {
+        "h": 85,
+        "o": 65,
+        "s": 95,
+        "m": 75,
+        "d": 85
+      }
+    },
+    {
+      "id": "c43-management-consultant",
+      "name": "Management Consultant",
+      "domain": "Business",
+      "profile": {
+        "h": 65,
+        "o": 80,
+        "s": 75,
+        "m": 70,
+        "d": 90
+      }
+    },
+    {
+      "id": "c44-operations-manager",
+      "name": "Operations Manager",
+      "domain": "Business",
+      "profile": {
+        "h": 70,
+        "o": 80,
+        "s": 65,
+        "m": 65,
+        "d": 85
+      }
+    },
+    {
+      "id": "c45-supply-chain-manager",
+      "name": "Supply Chain Manager",
+      "domain": "Business",
+      "profile": {
+        "h": 70,
+        "o": 80,
+        "s": 65,
+        "m": 60,
+        "d": 80
+      }
+    },
+    {
+      "id": "c46-human-resources-manager",
+      "name": "Human Resources Manager",
+      "domain": "Business",
+      "profile": {
+        "h": 50,
+        "o": 70,
+        "s": 70,
+        "m": 80,
+        "d": 80
+      }
+    },
+    {
+      "id": "c47-marketing-manager",
+      "name": "Marketing Manager",
+      "domain": "Business",
+      "profile": {
+        "h": 65,
+        "o": 65,
+        "s": 75,
+        "m": 80,
+        "d": 80
+      }
+    },
+    {
+      "id": "c48-brand-strategist",
+      "name": "Brand Strategist",
+      "domain": "Business",
+      "profile": {
+        "h": 65,
+        "o": 60,
+        "s": 75,
+        "m": 85,
+        "d": 75
+      }
+    },
+    {
+      "id": "c49-digital-marketing-specialist",
+      "name": "Digital Marketing Specialist",
+      "domain": "Business",
+      "profile": {
+        "h": 55,
+        "o": 65,
+        "s": 70,
+        "m": 80,
+        "d": 75
+      }
+    },
+    {
+      "id": "c50-sales-manager",
+      "name": "Sales Manager",
+      "domain": "Business",
+      "profile": {
+        "h": 75,
+        "o": 60,
+        "s": 75,
+        "m": 75,
+        "d": 75
+      }
+    },
+    {
+      "id": "c51-retail-manager",
+      "name": "Retail Manager",
+      "domain": "Business",
+      "profile": {
+        "h": 70,
+        "o": 65,
+        "s": 65,
+        "m": 70,
+        "d": 70
+      }
+    },
+    {
+      "id": "c52-lawyer-advocate",
+      "name": "Lawyer/Advocate",
+      "domain": "Law",
+      "profile": {
+        "h": 55,
+        "o": 70,
+        "s": 75,
+        "m": 75,
+        "d": 85
+      }
+    },
+    {
+      "id": "c53-judge",
+      "name": "Judge",
+      "domain": "Law",
+      "profile": {
+        "h": 45,
+        "o": 80,
+        "s": 70,
+        "m": 65,
+        "d": 90
+      }
+    },
+    {
+      "id": "c54-corporate-lawyer",
+      "name": "Corporate Lawyer",
+      "domain": "Law",
+      "profile": {
+        "h": 55,
+        "o": 80,
+        "s": 75,
+        "m": 65,
+        "d": 90
+      }
+    },
+    {
+      "id": "c55-criminal-lawyer",
+      "name": "Criminal Lawyer",
+      "domain": "Law",
+      "profile": {
+        "h": 60,
+        "o": 65,
+        "s": 75,
+        "m": 70,
+        "d": 85
+      }
+    },
+    {
+      "id": "c56-human-rights-lawyer",
+      "name": "Human Rights Lawyer",
+      "domain": "Law",
+      "profile": {
+        "h": 40,
+        "o": 65,
+        "s": 85,
+        "m": 70,
+        "d": 85
+      }
+    },
+    {
+      "id": "c57-ias-ips-officer",
+      "name": "IAS / IPS Officer",
+      "domain": "Civil Services",
+      "profile": {
+        "h": 60,
+        "o": 75,
+        "s": 80,
+        "m": 70,
+        "d": 90
+      }
+    },
+    {
+      "id": "c58-diplomat-ifs-officer",
+      "name": "Diplomat/IFS Officer",
+      "domain": "Civil Services",
+      "profile": {
+        "h": 55,
+        "o": 70,
+        "s": 80,
+        "m": 70,
+        "d": 90
+      }
+    },
+    {
+      "id": "c59-policy-analyst",
+      "name": "Policy Analyst",
+      "domain": "Government",
+      "profile": {
+        "h": 45,
+        "o": 85,
+        "s": 80,
+        "m": 65,
+        "d": 90
+      }
+    },
+    {
+      "id": "c60-urban-planner",
+      "name": "Urban Planner",
+      "domain": "Government",
+      "profile": {
+        "h": 60,
+        "o": 80,
+        "s": 75,
+        "m": 70,
+        "d": 85
+      }
+    },
+    {
+      "id": "c61-military-officer",
+      "name": "Military Officer",
+      "domain": "Defence",
+      "profile": {
+        "h": 85,
+        "o": 70,
+        "s": 75,
+        "m": 65,
+        "d": 85
+      }
+    },
+    {
+      "id": "c62-police-officer",
+      "name": "Police Officer",
+      "domain": "Defence",
+      "profile": {
+        "h": 85,
+        "o": 65,
+        "s": 70,
+        "m": 65,
+        "d": 80
+      }
+    },
+    {
+      "id": "c63-school-teacher",
+      "name": "School Teacher",
+      "domain": "Education",
+      "profile": {
+        "h": 45,
+        "o": 65,
+        "s": 80,
+        "m": 80,
+        "d": 75
+      }
+    },
+    {
+      "id": "c64-professor-academic",
+      "name": "Professor/Academic",
+      "domain": "Education",
+      "profile": {
+        "h": 35,
+        "o": 85,
+        "s": 85,
+        "m": 70,
+        "d": 85
+      }
+    },
+    {
+      "id": "c65-education-technology-designer",
+      "name": "Education Technology Designer",
+      "domain": "Education",
+      "profile": {
+        "h": 45,
+        "o": 75,
+        "s": 80,
+        "m": 80,
+        "d": 80
+      }
+    },
+    {
+      "id": "c66-special-educator",
+      "name": "Special Educator",
+      "domain": "Education",
+      "profile": {
+        "h": 50,
+        "o": 65,
+        "s": 85,
+        "m": 80,
+        "d": 70
+      }
+    },
+    {
+      "id": "c67-social-worker",
+      "name": "Social Worker",
+      "domain": "Social",
+      "profile": {
+        "h": 40,
+        "o": 60,
+        "s": 85,
+        "m": 80,
+        "d": 65
+      }
+    },
+    {
+      "id": "c68-ngo-programme-manager",
+      "name": "NGO Programme Manager",
+      "domain": "Social",
+      "profile": {
+        "h": 45,
+        "o": 65,
+        "s": 85,
+        "m": 75,
+        "d": 75
+      }
+    },
+    {
+      "id": "c69-community-development-officer",
+      "name": "Community Development Officer",
+      "domain": "Social",
+      "profile": {
+        "h": 45,
+        "o": 60,
+        "s": 80,
+        "m": 75,
+        "d": 70
+      }
+    },
+    {
+      "id": "c70-counselor-therapist",
+      "name": "Counselor/Therapist",
+      "domain": "Psychology",
+      "profile": {
+        "h": 40,
+        "o": 65,
+        "s": 85,
+        "m": 80,
+        "d": 75
+      }
+    },
+    {
+      "id": "c71-life-coach",
+      "name": "Life Coach",
+      "domain": "Psychology",
+      "profile": {
+        "h": 50,
+        "o": 60,
+        "s": 85,
+        "m": 80,
+        "d": 70
+      }
+    },
+    {
+      "id": "c72-graphic-designer",
+      "name": "Graphic Designer",
+      "domain": "Creative",
+      "profile": {
+        "h": 60,
+        "o": 55,
+        "s": 80,
+        "m": 95,
+        "d": 65
+      }
+    },
+    {
+      "id": "c73-animator",
+      "name": "Animator",
+      "domain": "Creative",
+      "profile": {
+        "h": 65,
+        "o": 60,
+        "s": 75,
+        "m": 95,
+        "d": 65
+      }
+    },
+    {
+      "id": "c74-filmmaker-director",
+      "name": "Filmmaker/Director",
+      "domain": "Creative",
+      "profile": {
+        "h": 65,
+        "o": 55,
+        "s": 85,
+        "m": 90,
+        "d": 70
+      }
+    },
+    {
+      "id": "c75-screenwriter",
+      "name": "Screenwriter",
+      "domain": "Creative",
+      "profile": {
+        "h": 35,
+        "o": 55,
+        "s": 85,
+        "m": 90,
+        "d": 65
+      }
+    },
+    {
+      "id": "c76-journalist",
+      "name": "Journalist",
+      "domain": "Media",
+      "profile": {
+        "h": 50,
+        "o": 65,
+        "s": 80,
+        "m": 85,
+        "d": 75
+      }
+    },
+    {
+      "id": "c77-content-creator-influencer",
+      "name": "Content Creator/Influencer",
+      "domain": "Media",
+      "profile": {
+        "h": 65,
+        "o": 45,
+        "s": 80,
+        "m": 85,
+        "d": 60
+      }
+    },
+    {
+      "id": "c78-photographer",
+      "name": "Photographer",
+      "domain": "Creative",
+      "profile": {
+        "h": 70,
+        "o": 55,
+        "s": 80,
+        "m": 90,
+        "d": 60
+      }
+    },
+    {
+      "id": "c79-fashion-designer",
+      "name": "Fashion Designer",
+      "domain": "Creative",
+      "profile": {
+        "h": 65,
+        "o": 55,
+        "s": 80,
+        "m": 95,
+        "d": 65
+      }
+    },
+    {
+      "id": "c80-architect",
+      "name": "Architect",
+      "domain": "Design",
+      "profile": {
+        "h": 75,
+        "o": 75,
+        "s": 80,
+        "m": 90,
+        "d": 80
+      }
+    },
+    {
+      "id": "c81-interior-designer",
+      "name": "Interior Designer",
+      "domain": "Design",
+      "profile": {
+        "h": 70,
+        "o": 60,
+        "s": 75,
+        "m": 90,
+        "d": 70
+      }
+    },
+    {
+      "id": "c82-industrial-designer",
+      "name": "Industrial Designer",
+      "domain": "Design",
+      "profile": {
+        "h": 75,
+        "o": 70,
+        "s": 75,
+        "m": 85,
+        "d": 75
+      }
+    },
+    {
+      "id": "c83-music-producer",
+      "name": "Music Producer",
+      "domain": "Creative",
+      "profile": {
+        "h": 55,
+        "o": 55,
+        "s": 85,
+        "m": 95,
+        "d": 65
+      }
+    },
+    {
+      "id": "c84-musician-performer",
+      "name": "Musician/Performer",
+      "domain": "Creative",
+      "profile": {
+        "h": 55,
+        "o": 45,
+        "s": 85,
+        "m": 95,
+        "d": 55
+      }
+    },
+    {
+      "id": "c85-actor",
+      "name": "Actor",
+      "domain": "Creative",
+      "profile": {
+        "h": 60,
+        "o": 40,
+        "s": 85,
+        "m": 85,
+        "d": 55
+      }
+    },
+    {
+      "id": "c86-dancer-choreographer",
+      "name": "Dancer/Choreographer",
+      "domain": "Creative",
+      "profile": {
+        "h": 80,
+        "o": 45,
+        "s": 85,
+        "m": 90,
+        "d": 55
+      }
+    },
+    {
+      "id": "c87-author-writer",
+      "name": "Author/Writer",
+      "domain": "Creative",
+      "profile": {
+        "h": 25,
+        "o": 65,
+        "s": 90,
+        "m": 90,
+        "d": 70
+      }
+    },
+    {
+      "id": "c88-poet",
+      "name": "Poet",
+      "domain": "Creative",
+      "profile": {
+        "h": 25,
+        "o": 55,
+        "s": 85,
+        "m": 90,
+        "d": 55
+      }
+    },
+    {
+      "id": "c89-game-designer",
+      "name": "Game Designer",
+      "domain": "Technology",
+      "profile": {
+        "h": 60,
+        "o": 70,
+        "s": 80,
+        "m": 90,
+        "d": 75
+      }
+    },
+    {
+      "id": "c90-professional-athlete",
+      "name": "Professional Athlete",
+      "domain": "Sports",
+      "profile": {
+        "h": 95,
+        "o": 55,
+        "s": 80,
+        "m": 75,
+        "d": 70
+      }
+    },
+    {
+      "id": "c91-sports-coach",
+      "name": "Sports Coach",
+      "domain": "Sports",
+      "profile": {
+        "h": 85,
+        "o": 60,
+        "s": 80,
+        "m": 80,
+        "d": 75
+      }
+    },
+    {
+      "id": "c92-sports-physiotherapist",
+      "name": "Sports Physiotherapist",
+      "domain": "Sports",
+      "profile": {
+        "h": 85,
+        "o": 65,
+        "s": 75,
+        "m": 75,
+        "d": 70
+      }
+    },
+    {
+      "id": "c93-sports-manager-agent",
+      "name": "Sports Manager/Agent",
+      "domain": "Sports",
+      "profile": {
+        "h": 70,
+        "o": 60,
+        "s": 75,
+        "m": 70,
+        "d": 75
+      }
+    },
+    {
+      "id": "c94-fitness-trainer-nutritionist",
+      "name": "Fitness Trainer/Nutritionist",
+      "domain": "Sports",
+      "profile": {
+        "h": 80,
+        "o": 60,
+        "s": 75,
+        "m": 70,
+        "d": 65
+      }
+    },
+    {
+      "id": "c95-hotel-manager",
+      "name": "Hotel Manager",
+      "domain": "Hospitality",
+      "profile": {
+        "h": 70,
+        "o": 65,
+        "s": 70,
+        "m": 70,
+        "d": 80
+      }
+    },
+    {
+      "id": "c96-chef-culinary-artist",
+      "name": "Chef/Culinary Artist",
+      "domain": "Hospitality",
+      "profile": {
+        "h": 80,
+        "o": 55,
+        "s": 80,
+        "m": 80,
+        "d": 65
+      }
+    },
+    {
+      "id": "c97-event-manager",
+      "name": "Event Manager",
+      "domain": "Hospitality",
+      "profile": {
+        "h": 70,
+        "o": 60,
+        "s": 75,
+        "m": 75,
+        "d": 80
+      }
+    },
+    {
+      "id": "c98-travel-tourism-manager",
+      "name": "Travel/Tourism Manager",
+      "domain": "Hospitality",
+      "profile": {
+        "h": 65,
+        "o": 60,
+        "s": 70,
+        "m": 70,
+        "d": 75
+      }
+    },
+    {
+      "id": "c99-climate-sustainability-analyst",
+      "name": "Climate/Sustainability Analyst",
+      "domain": "Emerging",
+      "profile": {
+        "h": 45,
+        "o": 85,
+        "s": 85,
+        "m": 70,
+        "d": 80
+      }
+    },
+    {
+      "id": "c100-biotech-entrepreneur",
+      "name": "Biotech Entrepreneur",
+      "domain": "Emerging",
+      "profile": {
+        "h": 70,
+        "o": 85,
+        "s": 90,
+        "m": 70,
+        "d": 85
+      }
+    },
+    {
+      "id": "c101-health-tech-founder",
+      "name": "Health Tech Founder",
+      "domain": "Emerging",
+      "profile": {
+        "h": 70,
+        "o": 80,
+        "s": 90,
+        "m": 70,
+        "d": 85
+      }
+    },
+    {
+      "id": "c102-edtech-founder",
+      "name": "EdTech Founder",
+      "domain": "Emerging",
+      "profile": {
+        "h": 55,
+        "o": 75,
+        "s": 90,
+        "m": 75,
+        "d": 85
+      }
+    },
+    {
+      "id": "c103-fintech-analyst",
+      "name": "FinTech Analyst",
+      "domain": "Emerging",
+      "profile": {
+        "h": 50,
+        "o": 90,
+        "s": 75,
+        "m": 60,
+        "d": 85
+      }
+    },
+    {
+      "id": "c104-blockchain-developer",
+      "name": "Blockchain Developer",
+      "domain": "Technology",
+      "profile": {
+        "h": 45,
+        "o": 90,
+        "s": 75,
+        "m": 45,
+        "d": 80
+      }
+    },
+    {
+      "id": "c105-robotics-engineer",
+      "name": "Robotics Engineer",
+      "domain": "Engineering",
+      "profile": {
+        "h": 80,
+        "o": 85,
+        "s": 70,
+        "m": 60,
+        "d": 75
+      }
+    },
+    {
+      "id": "c106-space-technology-engineer",
+      "name": "Space Technology Engineer",
+      "domain": "Engineering",
+      "profile": {
+        "h": 75,
+        "o": 90,
+        "s": 75,
+        "m": 60,
+        "d": 80
+      }
+    },
+    {
+      "id": "c107-nanotechnologist",
+      "name": "Nanotechnologist",
+      "domain": "Research",
+      "profile": {
+        "h": 50,
+        "o": 92,
+        "s": 78,
+        "m": 55,
+        "d": 78
+      }
+    },
+    {
+      "id": "c108-forensic-scientist",
+      "name": "Forensic Scientist",
+      "domain": "Science",
+      "profile": {
+        "h": 70,
+        "o": 85,
+        "s": 72,
+        "m": 60,
+        "d": 75
+      }
+    },
+    {
+      "id": "c109-epidemiologist",
+      "name": "Epidemiologist",
+      "domain": "Research",
+      "profile": {
+        "h": 45,
+        "o": 88,
+        "s": 80,
+        "m": 60,
+        "d": 80
+      }
+    },
+    {
+      "id": "c110-sports-scientist",
+      "name": "Sports Scientist",
+      "domain": "Sports",
+      "profile": {
+        "h": 80,
+        "o": 80,
+        "s": 75,
+        "m": 72,
+        "d": 75
+      }
+    },
+    {
+      "id": "c111-ca-chartered-accountant",
+      "name": "CA (Chartered Accountant)",
+      "domain": "Finance",
+      "profile": {
+        "h": 38,
+        "o": 90,
+        "s": 62,
+        "m": 38,
+        "d": 88
+      }
+    },
+    {
+      "id": "c112-cs-company-secretary",
+      "name": "CS (Company Secretary)",
+      "domain": "Finance",
+      "profile": {
+        "h": 35,
+        "o": 88,
+        "s": 60,
+        "m": 38,
+        "d": 85
+      }
+    },
+    {
+      "id": "c113-cma-cost-accountant",
+      "name": "CMA (Cost Accountant)",
+      "domain": "Finance",
+      "profile": {
+        "h": 38,
+        "o": 88,
+        "s": 60,
+        "m": 38,
+        "d": 85
+      }
+    },
+    {
+      "id": "c114-upsc-indian-forest-service",
+      "name": "UPSC — Indian Forest Service",
+      "domain": "Civil Services",
+      "profile": {
+        "h": 65,
+        "o": 80,
+        "s": 80,
+        "m": 72,
+        "d": 88
+      }
+    },
+    {
+      "id": "c115-state-psc-officer",
+      "name": "State PSC Officer",
+      "domain": "Civil Services",
+      "profile": {
+        "h": 55,
+        "o": 72,
+        "s": 75,
+        "m": 65,
+        "d": 85
+      }
+    },
+    {
+      "id": "c116-bank-po",
+      "name": "Bank PO",
+      "domain": "Banking",
+      "profile": {
+        "h": 50,
+        "o": 78,
+        "s": 65,
+        "m": 58,
+        "d": 80
+      }
+    },
+    {
+      "id": "c117-insurance-analyst",
+      "name": "Insurance Analyst",
+      "domain": "Finance",
+      "profile": {
+        "h": 45,
+        "o": 80,
+        "s": 65,
+        "m": 55,
+        "d": 78
+      }
+    },
+    {
+      "id": "c118-agricultural-scientist",
+      "name": "Agricultural Scientist",
+      "domain": "Science",
+      "profile": {
+        "h": 70,
+        "o": 82,
+        "s": 78,
+        "m": 68,
+        "d": 72
+      }
+    },
+    {
+      "id": "c119-ayurveda-practitioner",
+      "name": "Ayurveda Practitioner",
+      "domain": "Medicine",
+      "profile": {
+        "h": 72,
+        "o": 70,
+        "s": 78,
+        "m": 68,
+        "d": 70
+      }
+    },
+    {
+      "id": "c120-homeopathy-practitioner",
+      "name": "Homeopathy Practitioner",
+      "domain": "Medicine",
+      "profile": {
+        "h": 65,
+        "o": 68,
+        "s": 75,
+        "m": 65,
+        "d": 68
+      }
+    },
+    {
+      "id": "c121-yoga-instructor",
+      "name": "Yoga Instructor",
+      "domain": "Wellness",
+      "profile": {
+        "h": 72,
+        "o": 55,
+        "s": 82,
+        "m": 78,
+        "d": 60
+      }
+    },
+    {
+      "id": "c122-meditation-wellness-coach",
+      "name": "Meditation/Wellness Coach",
+      "domain": "Wellness",
+      "profile": {
+        "h": 50,
+        "o": 55,
+        "s": 88,
+        "m": 80,
+        "d": 60
+      }
+    },
+    {
+      "id": "c123-fashion-merchandiser",
+      "name": "Fashion Merchandiser",
+      "domain": "Business",
+      "profile": {
+        "h": 62,
+        "o": 60,
+        "s": 70,
+        "m": 82,
+        "d": 72
+      }
+    },
+    {
+      "id": "c124-textile-designer",
+      "name": "Textile Designer",
+      "domain": "Creative",
+      "profile": {
+        "h": 68,
+        "o": 58,
+        "s": 78,
+        "m": 90,
+        "d": 65
+      }
+    },
+    {
+      "id": "c125-jewellery-designer",
+      "name": "Jewellery Designer",
+      "domain": "Creative",
+      "profile": {
+        "h": 72,
+        "o": 55,
+        "s": 78,
+        "m": 90,
+        "d": 62
+      }
+    },
+    {
+      "id": "c126-animation-vfx-artist",
+      "name": "Animation & VFX Artist",
+      "domain": "Creative",
+      "profile": {
+        "h": 62,
+        "o": 62,
+        "s": 78,
+        "m": 93,
+        "d": 65
+      }
+    },
+    {
+      "id": "c127-radio-jockey-podcast-host",
+      "name": "Radio Jockey / Podcast Host",
+      "domain": "Media",
+      "profile": {
+        "h": 58,
+        "o": 45,
+        "s": 82,
+        "m": 85,
+        "d": 62
+      }
+    }
+  ]
+}

@@ -8,7 +8,7 @@ import RoadmapView from "./components/fab/RoadmapView";
 import DashboardHomeView from "./components/fab/DashboardHomeView";
 import ExperimentsView from "./components/fab/ExperimentsView";
 import JourneyView from "./components/fab/JourneyView";
-import { ChatSession, Message, Phase, ProfileSignals, PracticalConstraints, CareerPath, CareerConfidence } from "./types";
+import { ChatSession, Message, Phase, ProfileSignals, PracticalConstraints, CareerPath, CareerConfidence, AssessmentState, ChatProgress, PsychReadout } from "./types";
 import { motion, AnimatePresence } from "motion/react";
 import { DailyReality, CognitiveLoad, PilotExperience } from "./lib/pilotOrchestrator";
 import {
@@ -99,9 +99,9 @@ function mergeConstraints(incoming: PracticalConstraints | null | undefined): Pr
   return next;
 }
 
-// FAB asks for the degree with this exact phrasing (server/src/flow.ts) and
-// renders the answers as MCQ options, so the real degree can be read straight
-// out of the transcript rather than guessed or hardcoded.
+// Fallback only. The server now reports the resolved degree name directly
+// (FlowResponse.degreeName), which is authoritative because it comes from
+// findDegree() rather than from whatever the student happened to type.
 const DEGREE_PROMPT_MARKER = "which of these are you studying";
 
 function deriveStudentDegree(messages: Message[]): string {
@@ -145,6 +145,12 @@ function Workspace({ user }: { user: AuthUser }) {
   const [compareList, setCompareList] = useState<CareerPath[]>([]);
   const [reflectionText, setReflectionText] = useState<string | null>(null);
   const [reflectionApproved, setReflectionApproved] = useState<boolean>(false);
+
+  // The conversation's position. Owned by the server, parked here so the
+  // stateless API can resume after a refresh or on another device.
+  const [assessment, setAssessment] = useState<AssessmentState | null>(null);
+  const [progress, setProgress] = useState<ChatProgress | null>(null);
+  const [psychometrics, setPsychometrics] = useState<PsychReadout | null>(null);
 
   // Evidence list completed in the Experiments Workspace
   const [evidenceList, setEvidenceList] = useState<any[]>([]);
@@ -211,6 +217,9 @@ function Workspace({ user }: { user: AuthUser }) {
     setCompareList(activeSession.compareList || []);
     setReflectionText(activeSession.reflectionText || null);
     setReflectionApproved(activeSession.reflectionApproved || false);
+    setAssessment(activeSession.assessment || null);
+    setProgress(activeSession.progress || null);
+    setPsychometrics(activeSession.psychometrics || null);
 
     if (activeSession.selectedPath) {
       setActiveTab("paths");
@@ -405,6 +414,15 @@ function Workspace({ user }: { user: AuthUser }) {
     const nextApp = updates.reflectionApproved !== undefined ? updates.reflectionApproved : reflectionApproved;
     if (updates.reflectionApproved !== undefined) setReflectionApproved(updates.reflectionApproved);
 
+    const nextAssessment = updates.assessment !== undefined ? updates.assessment : assessment;
+    if (updates.assessment !== undefined) setAssessment(updates.assessment);
+
+    const nextProgress = updates.progress !== undefined ? updates.progress : progress;
+    if (updates.progress !== undefined) setProgress(updates.progress);
+
+    const nextPsych = updates.psychometrics !== undefined ? updates.psychometrics : psychometrics;
+    if (updates.psychometrics !== undefined) setPsychometrics(updates.psychometrics);
+
     const session: ChatSession = {
       id: activeSessionId || "default",
       title: "Conversation",
@@ -415,6 +433,9 @@ function Workspace({ user }: { user: AuthUser }) {
       compareList: nextCompare,
       reflectionText: nextRef || undefined,
       reflectionApproved: nextApp,
+      assessment: nextAssessment,
+      progress: nextProgress,
+      psychometrics: nextPsych,
       viewingRoadmap: pathsSubTab === "roadmap"
     };
 
@@ -438,7 +459,7 @@ function Workspace({ user }: { user: AuthUser }) {
       {
         id: "msg_init_" + Date.now(),
         sender: "fab",
-        text: "Heyy! Welcome to Northr. I am FAB.\n\nFifteen quick questions, one real answer at the end: the career path that actually fits you.\n\nFirst things first, what do I call you?",
+        text: "Heyy! Welcome to Northr, I am FAB.\n\nBefore I can point you anywhere useful, I want to actually know you a little. So this is just a chat, no right answers.\n\nFirst things first, what do I call you?",
         timestamp: new Date().toISOString()
       }
     ];
@@ -448,13 +469,19 @@ function Workspace({ user }: { user: AuthUser }) {
     setCompareList([]);
     setReflectionText(null);
     setReflectionApproved(false);
+    setAssessment(null);
+    setProgress(null);
+    setPsychometrics(null);
 
     const session: ChatSession = {
       id: sessionId,
       title: "New Conversation",
       createdAt: new Date().toISOString(),
       messages: freshMessages,
-      phase: "phase1"
+      phase: "phase1",
+      assessment: null,
+      progress: null,
+      psychometrics: null
     };
 
     setChatSessions((prev) => [session, ...prev]);
@@ -597,10 +624,9 @@ function Workspace({ user }: { user: AuthUser }) {
         },
         body: JSON.stringify({
           messages: currentMessages,
-          phase: phase,
-          signals: signals,
-          constraints: constraints,
-          reflectionApproved: reflectionApproved
+          // The server's own flow state, handed back untouched. It re-validates
+          // everything on arrival, so this is a convenience, not a trust path.
+          assessment: assessment
         })
       });
 
@@ -637,6 +663,10 @@ function Workspace({ user }: { user: AuthUser }) {
         ? mergeConstraints(data.updatedConstraints)
         : constraints;
 
+      const nextAssessment = data.assessment ?? assessment;
+      const nextProgress = data.progress ?? progress;
+      const nextPsych = data.psychometrics ?? psychometrics;
+
       setPhase(nextPhase);
       setMessages(mergedMsgs);
       if (data.updatedSignals) setSignals(nextSignals);
@@ -645,6 +675,10 @@ function Workspace({ user }: { user: AuthUser }) {
       if (data.bestFitPaths && data.bestFitPaths.length > 0) {
         setBestFitPaths(data.bestFitPaths);
       }
+      setAssessment(nextAssessment);
+      setProgress(nextProgress);
+      if (data.psychometrics) setPsychometrics(data.psychometrics);
+      if (data.degreeName) setStudentDegree(data.degreeName);
 
       saveSession({
         phase: nextPhase,
@@ -653,7 +687,10 @@ function Workspace({ user }: { user: AuthUser }) {
         messages: mergedMsgs,
         bestFitPaths: mergedPaths,
         reflectionText: data.reflectionText || reflectionText || undefined,
-        reflectionApproved: nextRefApproved
+        reflectionApproved: nextRefApproved,
+        assessment: nextAssessment,
+        progress: nextProgress,
+        psychometrics: nextPsych
       });
 
     } catch (err: any) {
@@ -1066,6 +1103,7 @@ function Workspace({ user }: { user: AuthUser }) {
                     onSendMessage={handleSendMessage}
                     isProcessing={isProcessing}
                     phase={phase}
+                    progress={progress}
                     onNewChat={createNewChatSession}
                   />
                 </motion.div>
@@ -1117,6 +1155,7 @@ function Workspace({ user }: { user: AuthUser }) {
                     >
                       <BestFitPathsView
                         paths={bestFitPaths}
+                        psychometrics={psychometrics}
                         compareList={compareList}
                         onToggleCompare={handleToggleCompare}
                         onViewDetails={(path) => {

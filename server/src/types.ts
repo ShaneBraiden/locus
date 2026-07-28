@@ -155,3 +155,79 @@ export interface Answer {
   optionIndex: number; // -1 = unmatched free-text answer (no weights applied)
   rawText: string;
 }
+
+// ---- Psychometric layer (LOCUS instrument, docs/psychometric-items.json) ----
+
+/** One settled item. `optionId` indexes into the committed item bank. */
+export interface PsychAnswer {
+  itemId: string;
+  optionId: string;
+  rawText: string;
+  /** How sure the classifier was. 1 when the student clicked the option. */
+  confidence?: number;
+}
+
+export interface TheoryScores {
+  h: number; // Holland RIASEC
+  o: number; // Big Five OCEAN
+  s: number; // Self-Determination Theory
+  m: number; // Multiple Intelligences
+  d: number; // Career Decision-Making
+}
+
+export interface PsychScores {
+  raw: TheoryScores;
+  /** 0-100 per theory, normalised by what was actually answered. */
+  pct: TheoryScores;
+  ccfs: number;
+  adjustedCcfs: number;
+  sdtFlag: boolean; // pct.s < 50 — the 0.85x motivation-quality penalty applied
+  sdtWarning: boolean; // pct.s < 35 — surface "your motivation appears external"
+  answered: number;
+  total: number;
+}
+
+export interface CareerMatch {
+  careerId: string;
+  name: string;
+  domain: string;
+  fitScore: number;
+  status: 'best_fit' | 'consider' | 'mismatch';
+  rank: number;
+}
+
+/**
+ * Explicit conversation state, round-tripped through the client so the server
+ * stays stateless. Replaces the old approach of re-deriving position by
+ * substring-matching FAB's own past messages, which cannot survive questions
+ * that Gemini phrases differently every time.
+ *
+ * Never trusted as-is: `sanitizeAssessment` re-validates every field.
+ */
+export interface AssessmentState {
+  v: 1;
+  name: string | null;
+  degreeId: string | null;
+  answers: PsychAnswer[];
+  /** itemId -> follow-ups already spent, so a vague student cannot stall us. */
+  followUps: Record<string, number>;
+  /** Items we gave up on after too many follow-ups. Counted as covered. */
+  skipped: string[];
+  /** The item FAB's last message was actually asking about. */
+  targetItemId: string | null;
+  /** Set when Gemini was unreachable and we served the raw item as MCQ. */
+  fallbackItemId?: string | null;
+  reflectionShown: boolean;
+  reflectionAnswered: boolean;
+  recommendationShown: boolean;
+}
+
+/** What the client needs to render the psychometric read. */
+export interface PsychReadout {
+  scores: PsychScores;
+  topMatches: CareerMatch[];
+  secondaryMatches: CareerMatch[];
+  motivationNote: string | null;
+  /** Careers the topology engine also surfaced — the strongest signal we have. */
+  convergentCareers: string[];
+}

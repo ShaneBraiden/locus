@@ -14,8 +14,19 @@ import {
   Clock,
   BookOpen
 } from "lucide-react";
-import { CareerPath } from "../../types";
+import { CareerPath, PsychReadout } from "../../types";
 import { getCareerIntelligence } from "../../lib/careerIntelligence";
+
+// The five theories behind the psychometric read, in the workbook's own order
+// and weighting. Labels are deliberately plain English — students should not
+// have to know what "RIASEC" means to read their own results.
+const THEORY_META: { key: keyof PsychReadout["scores"]["pct"]; label: string; blurb: string }[] = [
+  { key: "h", label: "Work environment fit", blurb: "The kind of setting you do your best work in" },
+  { key: "o", label: "Personality fit", blurb: "How you tend to approach work and pressure" },
+  { key: "s", label: "Motivation quality", blurb: "How much of your drive comes from inside you" },
+  { key: "m", label: "Cognitive style", blurb: "The way you naturally process and solve things" },
+  { key: "d", label: "Decision readiness", blurb: "How ready you are to actually commit to a direction" },
+];
 
 interface BestFitPathsViewProps {
   paths: CareerPath[];
@@ -24,15 +35,17 @@ interface BestFitPathsViewProps {
   onToggleCompare: (path: CareerPath) => void;
   setActiveTab?: (tab: any) => void;
   onViewUniversities?: (path: CareerPath) => void;
+  psychometrics?: PsychReadout | null;
 }
 
-export default function BestFitPathsView({ 
-  paths = [], 
-  onViewDetails, 
+export default function BestFitPathsView({
+  paths = [],
+  onViewDetails,
   compareList = [],
   onToggleCompare,
   setActiveTab,
-  onViewUniversities
+  onViewUniversities,
+  psychometrics = null
 }: BestFitPathsViewProps) {
   const [showCompareModal, setShowCompareModal] = useState(false);
 
@@ -118,6 +131,132 @@ export default function BestFitPathsView({
           </div>
         )}
       </div>
+
+      {/* PSYCHOMETRIC READ — who you are, before what you could do.
+          Careers here come from the 127-path LOCUS profile table and are
+          scored independently of the degree topology below, so agreement
+          between the two lists is meaningful rather than circular. */}
+      {psychometrics && psychometrics.scores.answered > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="mb-10 rounded-2xl border border-slate-100 bg-white p-5 sm:p-6 shadow-sm"
+        >
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
+            <div>
+              <h2 className="text-lg font-extrabold tracking-tight text-[#0F172A]">Your profile read</h2>
+              <p className="text-xs text-[#5C534C] mt-1 font-medium max-w-xl leading-relaxed">
+                Built from everything you told FAB, scored across five established frameworks.
+              </p>
+            </div>
+            <div className="shrink-0 rounded-2xl border border-slate-100 bg-[#F8FAFC] px-4 py-2.5 text-center">
+              <div className="font-mono text-[10px] font-bold uppercase tracking-wider text-[#5C534C]">
+                Overall fit
+              </div>
+              <div className="text-2xl font-extrabold tabular-nums text-[#0F172A] leading-tight">
+                {psychometrics.scores.adjustedCcfs}
+                <span className="text-sm font-bold text-[#94A3B8]">/100</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Five theory bars */}
+          <div className="space-y-3 mb-6">
+            {THEORY_META.map(({ key, label, blurb }) => {
+              const value = psychometrics.scores.pct[key];
+              const low = key === "s" && psychometrics.scores.sdtFlag;
+              return (
+                <div key={key}>
+                  <div className="flex items-baseline justify-between gap-3 mb-1">
+                    <span className="text-[12.5px] font-bold text-[#0F172A]">{label}</span>
+                    <span className={`font-mono text-[11px] font-bold tabular-nums ${low ? "text-amber-600" : "text-[#5C534C]"}`}>
+                      {value}%
+                    </span>
+                  </div>
+                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${Math.max(0, Math.min(100, value))}%` }}
+                      transition={{ duration: 0.6, ease: "easeOut" }}
+                      className={`h-full rounded-full ${low ? "bg-amber-500" : "bg-gradient-to-r from-[#D97706] to-[#F59E0B]"}`}
+                    />
+                  </div>
+                  <p className="mt-1 text-[11px] font-medium text-[#94A3B8] leading-snug">{blurb}</p>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Motivation-quality caveat, shown rather than buried */}
+          {psychometrics.motivationNote && (
+            <div className="mb-6 flex items-start gap-2.5 rounded-xl border border-amber-200 bg-amber-50 px-3.5 py-3">
+              <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
+              <p className="text-[12px] font-semibold leading-relaxed text-amber-900">
+                {psychometrics.motivationNote}
+              </p>
+            </div>
+          )}
+
+          {/* Tiered career archetypes */}
+          {(psychometrics.topMatches.length > 0 || psychometrics.secondaryMatches.length > 0) && (
+            <div className="space-y-4">
+              {psychometrics.topMatches.length > 0 && (
+                <div>
+                  <div className="font-mono text-[10px] font-bold uppercase tracking-wider text-emerald-700 mb-2">
+                    Strong fit
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {psychometrics.topMatches.map((m) => {
+                      const convergent = psychometrics.convergentCareers.includes(m.name);
+                      return (
+                        <span
+                          key={m.careerId}
+                          title={convergent ? "Your degree pathways point here too" : m.domain}
+                          className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-[12px] font-bold ${
+                            convergent
+                              ? "border-emerald-300 bg-emerald-100 text-emerald-900"
+                              : "border-emerald-200 bg-emerald-50 text-emerald-800"
+                          }`}
+                        >
+                          {convergent && <Sparkles className="h-3 w-3" />}
+                          {m.name}
+                          <span className="font-mono text-[10px] font-bold opacity-70 tabular-nums">{m.fitScore}</span>
+                        </span>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {psychometrics.secondaryMatches.length > 0 && (
+                <div className="opacity-70">
+                  <div className="font-mono text-[10px] font-bold uppercase tracking-wider text-amber-700 mb-2">
+                    Worth considering
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {psychometrics.secondaryMatches.map((m) => (
+                      <span
+                        key={m.careerId}
+                        title={m.domain}
+                        className="inline-flex items-center gap-1.5 rounded-lg border border-amber-200 bg-amber-50 px-2.5 py-1.5 text-[12px] font-semibold text-amber-800"
+                      >
+                        {m.name}
+                        <span className="font-mono text-[10px] font-bold opacity-70 tabular-nums">{m.fitScore}</span>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <p className="text-[11px] font-medium text-[#94A3B8] leading-relaxed">
+                These are broad archetypes across every field. The paths below are the specific,
+                concrete routes open to you from your degree.
+              </p>
+            </div>
+          )}
+        </motion.div>
+      )}
 
       {/* RENDER LOGIC */}
       {!paths ? (

@@ -86,6 +86,75 @@ export interface LivingStudentModel {
   executionEngine?: ExecutionEngineData;
 }
 
+// ---- Psychometric layer, mirrored from server/src/types.ts ----
+
+export interface PsychAnswer {
+  itemId: string;
+  optionId: string;
+  rawText: string;
+  confidence?: number;
+}
+
+export interface TheoryScores {
+  h: number; // Holland RIASEC
+  o: number; // Big Five OCEAN
+  s: number; // Self-Determination Theory
+  m: number; // Multiple Intelligences
+  d: number; // Career Decision-Making
+}
+
+export interface PsychScores {
+  raw: TheoryScores;
+  pct: TheoryScores;
+  ccfs: number;
+  adjustedCcfs: number;
+  sdtFlag: boolean;
+  sdtWarning: boolean;
+  answered: number;
+  total: number;
+}
+
+export interface CareerMatch {
+  careerId: string;
+  name: string;
+  domain: string;
+  fitScore: number;
+  status: 'best_fit' | 'consider' | 'mismatch';
+  rank: number;
+}
+
+export interface PsychReadout {
+  scores: PsychScores;
+  topMatches: CareerMatch[];
+  secondaryMatches: CareerMatch[];
+  motivationNote: string | null;
+  convergentCareers: string[];
+}
+
+/**
+ * The conversation's position, owned by the server but stored here so the
+ * stateless API can pick up where it left off. Treated as an opaque blob:
+ * the server re-validates every field on arrival.
+ */
+export interface AssessmentState {
+  v: 1;
+  name: string | null;
+  degreeId: string | null;
+  answers: PsychAnswer[];
+  followUps: Record<string, number>;
+  skipped: string[];
+  targetItemId: string | null;
+  fallbackItemId?: string | null;
+  reflectionShown: boolean;
+  reflectionAnswered: boolean;
+  recommendationShown: boolean;
+}
+
+export interface ChatProgress {
+  answered: number;
+  total: number;
+}
+
 export interface ChatSession {
   id: string;
   title: string;
@@ -102,6 +171,9 @@ export interface ChatSession {
   selectedPath?: CareerPath;
   viewingRoadmap?: boolean;
   compareList?: CareerPath[];
+  assessment?: AssessmentState | null;
+  progress?: ChatProgress | null;
+  psychometrics?: PsychReadout | null;
 }
 
 export interface CareerPath {

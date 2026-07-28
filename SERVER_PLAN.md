@@ -5,11 +5,14 @@ The API in `server/`. Replaces the original root `server.ts` + `pilotEngine.ts`
 
 Two defining decisions:
 
-1. **Career prediction is driven by the 26 degree topologies** parsed from the
-   source Google Doc, not by a hardcoded field list living inside a prompt.
-2. **The prediction is deterministic.** Gemini narrates the result when a key is
-   configured; it never decides the ranking. The engine produces identical output
-   for identical answers, with or without AI.
+1. **Career prediction is driven by committed datasets** — the 26 degree
+   topologies parsed from the source Google Doc, and the LOCUS psychometric
+   instrument parsed from the workbook — not by a field list living inside a
+   prompt.
+2. **The prediction is deterministic.** Gemini conducts the conversation and
+   classifies a free-text reply onto a pre-scored option; it never decides a
+   score or a ranking. The engine produces identical output for identical
+   answers, with or without AI.
 
 ## 1. Layout
 
@@ -22,17 +25,24 @@ server/
     index.ts            # bootstrap: env, DB, rate limits, all routes, listen :3000
     db.ts               # MongoDB (mongoose) + in-memory fallback; users & state repos
     auth.ts             # JWT sessions, bcrypt, register/login/me, requireAuth
-    flow.ts             # stateless chat state machine driving the 15 questions
-    questions.ts        # the 15-question bank with per-option prediction weights
+    flow.ts             # stateless chat state machine over an explicit AssessmentState
+    conversation.ts     # the Gemini interviewer: free text -> pre-scored option ids
+    psychometrics.ts    # LOCUS scoring: theories -> CCFS -> 127-career fit
+    bridge.ts           # construct tags -> topology vocabulary; the 3 practical items
     engine.ts           # deterministic scoring + CareerPath/roadmap construction
+    questions.ts        # the legacy 15-question bank (still serves /api/predict)
     topology.ts         # loads and flattens docs/career-topology.json
-    gemini.ts           # optional narration; every call has a non-AI fallback
+    gemini.ts           # transport only; every call has a non-AI fallback
     types.ts            # shapes mirrored from client/src/types.ts
 ```
 
-`docs/career-topology.json` is the dataset (regenerate with
-`node docs/parse-topology.mjs`). It is read at boot; a missing file is a
-fail-fast startup error.
+Three datasets are read at boot; a missing file is a fail-fast startup error.
+
+| File | Regenerate with | Holds |
+|---|---|---|
+| `docs/career-topology.json` | `node docs/parse-topology.mjs` | 26 degrees, 1,271 items |
+| `docs/psychometric-items.json` | `node docs/parse-psychometrics.mjs` | 25 items, 110 pre-scored options |
+| `docs/career-profiles.json` | `node docs/parse-psychometrics.mjs` | 127 career success profiles |
 
 ## 2. Accounts and storage
 
@@ -91,44 +101,86 @@ description) used for keyword matching.
 The source doc defines no algorithm — no weights, scores, salary or eligibility
 data. It is a knowledge base; all ranking logic below is engine-owned.
 
-## 4. The 15 questions
+## 4. The instrument (`psychometrics.ts`, `bridge.ts`)
 
-`questions.ts` holds 15 lifestyle questions in FAB's voice — "a whole workday on
-your feet, or at a desk with your setup just right?", "alarms going off, what
-happens inside you?", "when do you actually need to start earning?".
+28 items: the 25 LOCUS scenarios plus 3 Northr-native practical ones.
 
-Each option carries the prediction weights, which is what makes the quiz
-meaningful rather than decorative:
+Each of the 110 psychometric options is pre-scored 1–5 on five theories
+(`H` Holland, `O` OCEAN, `S` SDT, `M` Multiple Intelligences, `D` decision
+readiness) and carries a `Construct Measured` label that the parser turns into
+stable tags (`"Investigative (I) + Autonomy"` → `holland:I`, `sdt:autonomy_high`).
+59 distinct tags exist; `bridge.ts` maps every one of them.
 
-| Field         | Effect                                                        |
-| ------------- | ------------------------------------------------------------- |
-| `sections`    | points toward the 10 outcome intents                          |
-| `types`       | points toward the 6 profile types                             |
-| `tags`        | +4 per keyword hit in a candidate's blob                      |
-| `avoid`       | −8 per keyword hit (asymmetric: dislikes outweigh likes)      |
-| `signal`      | fills the client's `ProfileSignals` dashboard model           |
-| `constraint`  | fills `PracticalConstraints` (budget, timeline, geography)    |
-| `react`       | FAB's one-line reaction shown before the next question        |
-| `reflect`     | a fragment reused in the reflection moment                    |
-
-## 5. Chat flow (`flow.ts`)
-
-The server is **stateless**: the client posts the full message history on every
-turn, and `parseState` re-derives position by recognizing its own past questions
-via `probe` substrings. No session storage, no ordering assumptions, and a
-refresh mid-quiz resumes correctly.
+All formulas are lifted verbatim from the workbook:
 
 ```
-name → degree (26 buttons) → 15 questions → reflection → prediction → open chat
+theory%      = ROUND(sum / (answered × 5) × 100, 1)
+CCFS         = H%×0.25 + O%×0.20 + S%×0.25 + M%×0.20 + D%×0.10
+adjustedCCFS = SDT% < 50 ? ROUND(CCFS × 0.85, 1) : CCFS
+fitScore     = ROUND(MAX(0, 100 − (|ΔH|×0.25 + |ΔO|×0.20 + |ΔS|×0.25 + |ΔM|×0.20)), 1)
+status       = fit ≥ 72 BEST FIT | ≥ 52 CONSIDER | else MISMATCH
 ```
 
-The reflection moment is mandatory before any recommendation: FAB plays back
-what it sees ("The Operator — you make hard things run flawlessly...") built
-from the `reflect` fragments, and the student can push back. Disagreement is
-acknowledged in the recommendation rather than silently ignored.
+Two deliberate fidelity choices. **`fitScore` omits the CDM delta** — those
+weights sum to 0.90 and `D` is stored per career but never differenced; that is
+what the sheet does. And `round1()` reproduces **Excel's ROUND**, not
+JavaScript's: Excel collapses to 15 significant digits before rounding halves
+away from zero, so `100 − 69.15 = 30.849999999999994` becomes `30.9`, not
+`30.8`. Both behaviours are covered by comparing against the 127 fit scores
+Excel itself cached in the workbook.
 
-Free-text answers that do not match an option are accepted and recorded with
-`optionIndex: -1`, contributing no weights instead of guessing wrong.
+The workbook measures personality but never circumstance, so `bridge.ts` adds
+three items carrying `constraint` payloads only — earning timeline, funding,
+geography — which is exactly what `engine.ts`'s constraint pass needs. They
+carry no theory scores, so they cannot distort the CCFS.
+
+`bridge.ts` also derives `avoid` keywords from evidence: a Holland letter
+offered five or more times and never once chosen is a real dislike, and the
+engine weights dislikes (−8) more heavily than likes (+4).
+
+## 5. Chat flow (`flow.ts`, `conversation.ts`)
+
+The server is still **stateless**, but position now lives in an explicit
+`AssessmentState` that round-trips through the client. The old approach — 
+re-deriving position by substring-matching FAB's own past questions — cannot
+survive questions Gemini phrases differently every time.
+
+```
+name → degree (26 buttons) → 28 items, conversationally → reflection → prediction → open chat
+```
+
+One Gemini call per turn does two jobs: interpret the student's last message
+against the item FAB asked about, and ask the next thing in FAB's voice. It
+returns **option ids and a confidence, never numbers**:
+
+```jsonc
+{ "scored": [{ "itemId": "p1", "optionId": "p1c", "confidence": 0.86 }],
+  "needsFollowUp": false,
+  "reply": "Ha, the glue person. Does that ever get exhausting?" }
+```
+
+Enforced server-side, not trusted to the model:
+
+- ids are checked against the item bank; anything hallucinated is dropped
+- `confidence < 0.5` is not recorded — FAB circles back instead
+- **max 2 follow-ups per item**, then it is added to `skipped` and the
+  conversation moves on rather than stalling
+- a rich answer may settle several open items at once, which is what keeps 28
+  items from feeling like 28 questions
+- the reply is scrubbed of leaked option letters, counters and markdown
+
+`sanitizeAssessment` re-validates everything the client sends. A tampered
+payload can cost a student progress; it cannot forge a score.
+
+**Without a key** (or on timeout, or unparseable JSON) the turn falls back to
+the raw item rendered as multiple choice, matched locally by `matchOption`.
+Scoring is byte-identical either way — only the texture of the conversation
+changes.
+
+The reflection moment remains mandatory before any recommendation. Its content
+is deterministic, built from the `reflect` fragments the construct tags
+produced; Gemini only rephrases it, and disagreement is acknowledged in the
+recommendation rather than silently ignored.
 
 ## 6. Prediction (`engine.ts`)
 
@@ -149,6 +201,15 @@ Free-text answers that do not match an option are accepted and recorded with
 
 Regulatory hard gates are surfaced with the path, never silently dropped.
 
+Steps 2–5 are fed by `bridge.ts` rather than the old 15-question weights, so
+`engine.ts` itself is unchanged.
+
+Alongside it, `matchCareers()` ranks all 127 LOCUS careers from the same
+answers. The two lists are computed independently — one from psychometric
+theory, one from the degree topology — so a career appearing in **both** is
+genuine corroboration rather than the same signal counted twice. Those are
+flagged as `convergentCareers` and highlighted in the UI.
+
 ## 7. API
 
 | Route | Auth | Notes |
@@ -160,12 +221,18 @@ Regulatory hard gates are surfaced with the path, never silently dropped.
 | `POST /api/fab/chat` | ✅ | the flow above; `/api/chat` is a legacy alias |
 | `POST /api/pilot/analyze` | ✅ | dashboard confidence sync; deterministic |
 | `GET /api/careers/degrees[/:id]` | ✅ | the 26-degree topology |
-| `GET /api/quiz/questions` | ✅ | question bank for non-chat clients |
+| `GET /api/quiz/questions` | ✅ | the legacy 15-question bank, still backing `/api/predict` |
 | `POST /api/predict` | ✅ | stateless: `{degreeId, answers}` → ranked paths |
-| `GET /healthz` | – | liveness, degree count, storage backend |
+| `GET /healthz` | – | liveness, dataset counts, Gemini mode, storage backend |
 
-Rate limits: 150 requests / 5 min per user on the API (a full quiz is ~19), and
-a stricter 20 / 15 min per IP on the credential endpoints.
+`POST /api/fab/chat` takes `{messages, assessment}` and returns
+`{reply, options?, assessment, progress, degreeName?, psychometrics?, ...}`.
+`progress` replaces the old trick of scraping a literal `(n/15)` prefix out of
+FAB's own prose in the client.
+
+Rate limits: 150 requests / 5 min per user on the API (a full conversation is
+~32 turns, or up to ~88 if every item needs its follow-ups), and a stricter
+20 / 15 min per IP on the credential endpoints.
 
 ## 8. Environment
 

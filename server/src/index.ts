@@ -6,9 +6,12 @@ import { rateLimit, ipKeyGenerator } from 'express-rate-limit';
 import {
   currentUser, loginHandler, meHandler, registerHandler, requireAuth,
 } from './auth.js';
+import { interviewItemCount } from './bridge.js';
 import { initDb, getRepos } from './db.js';
 import { buildCareerPaths, buildProfile } from './engine.js';
 import { respond } from './flow.js';
+import { geminiEnabled } from './gemini.js';
+import { careers as careerProfiles, items as psychItems } from './psychometrics.js';
 import { QUESTIONS } from './questions.js';
 import { findDegree, loadDegrees } from './topology.js';
 import type { Answer, Message } from './types.js';
@@ -60,6 +63,10 @@ app.get('/healthz', (_req, res) => {
     ok: true,
     degrees: loadDegrees().length,
     questions: QUESTIONS.length,
+    interviewItems: interviewItemCount(),
+    psychometricItems: psychItems().length,
+    careerProfiles: careerProfiles().length,
+    gemini: geminiEnabled() ? 'enabled' : 'fallback',
     db: getRepos().backend,
   });
 });
@@ -92,11 +99,14 @@ app.put('/api/state', ah(requireAuth), apiLimiter, ah(async (req, res) => {
   res.json({ ok: true, persisted: true });
 }));
 
-// --- Chat: the 15-question FAB flow ---
+// --- Chat: FAB's conversational assessment ---
+// `assessment` is the client's copy of the flow state. It is re-validated
+// server-side on every turn (see sanitizeAssessment), so a missing or tampered
+// payload costs the student progress but can never forge a score.
 const chatHandler: express.RequestHandler = async (req, res) => {
   try {
     const messages: Message[] = Array.isArray(req.body?.messages) ? req.body.messages : [];
-    res.json(await respond(messages));
+    res.json(await respond(messages, req.body?.assessment));
   } catch (err: any) {
     console.error('chat error:', err);
     res.status(500).json({ reply: 'My brain glitched for a second there. Say that again?' });
@@ -182,11 +192,15 @@ const PORT = Number(process.env.PORT) || 3000;
 
 async function start() {
   await initDb();
-  loadDegrees(); // fail fast if the topology dataset is missing
+  // Fail fast if any dataset is missing rather than mid-conversation.
+  loadDegrees();
+  interviewItemCount();
+  careerProfiles();
   app.listen(PORT, () => {
     console.log(`Northr server listening on http://localhost:${PORT}`);
     console.log(`Storage: ${getRepos().backend}`);
-    console.log(`Gemini: ${process.env.GEMINI_API_KEY ? 'enabled (' + (process.env.GEMINI_MODEL || 'gemini-3.5-flash') + ')' : 'disabled — deterministic replies only'}`);
+    console.log(`Interview: ${interviewItemCount()} items, ${careerProfiles().length} career profiles`);
+    console.log(`Gemini: ${process.env.GEMINI_API_KEY ? 'enabled (' + (process.env.GEMINI_MODEL || 'gemini-3.5-flash') + ')' : 'disabled — conversation falls back to multiple choice'}`);
   });
 }
 

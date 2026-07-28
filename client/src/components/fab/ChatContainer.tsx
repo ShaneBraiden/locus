@@ -3,25 +3,13 @@ import { AnimatePresence, motion } from "motion/react";
 import { Message, Phase } from "../../types";
 import { Check, ClipboardList, Plus, Send } from "lucide-react";
 
-// FAB prefixes every question in the 15-question flow with a "(n/15)" counter
-// (see server/src/flow.ts). Reading it back is how the header knows where the
-// student is — and when the flow has ended.
-const COUNTER_RE = /\((\d{1,2})\s*\/\s*(\d{1,2})\)/;
-
-function readQuestionProgress(messages: Message[]): { current: number; total: number } | null {
-  for (let i = messages.length - 1; i >= 0; i--) {
-    const msg = messages[i];
-    if (msg.sender === "user") continue;
-
-    const match = msg.text?.match(COUNTER_RE);
-    if (!match) return null; // latest FAB turn isn't a counted question — flow is over
-
-    const current = Number(match[1]);
-    const total = Number(match[2]);
-    if (!Number.isFinite(current) || !Number.isFinite(total) || total <= 0) return null;
-    return { current: Math.min(current, total), total };
-  }
-  return null;
+// Progress is reported by the server (see FlowResponse.progress in
+// server/src/flow.ts). It used to be scraped out of a literal "(n/15)" prefix
+// in FAB's own text, which cannot work now that Gemini phrases every question
+// differently.
+interface ChatProgress {
+  answered: number;
+  total: number;
 }
 
 interface ChatContainerProps {
@@ -29,6 +17,7 @@ interface ChatContainerProps {
   onSendMessage: (text: string, optionSelected?: string) => void;
   isProcessing: boolean;
   phase: Phase;
+  progress?: ChatProgress | null;
   onNewChat?: () => void;
   // Optional: only used to render the mobile "Peep Insights" toggle bar.
   // If the parent (App.tsx) doesn't pass these, the toggle bar is simply hidden
@@ -42,6 +31,7 @@ export default function ChatContainer({
   onSendMessage,
   isProcessing,
   phase,
+  progress: serverProgress,
   onNewChat,
   onToggleSecretBoard,
   showSecretBoardMobile = false,
@@ -96,14 +86,15 @@ export default function ChatContainer({
 
   const handleOptionClick = (option: string) => {
     if (isProcessing) return;
-    onSendMessage(`Option Picked: ${option}`, option);
+    onSendMessage(option, option);
   };
 
-  // Check if the last message is from FAB and has MCQ options
-  const lastMessage = messages[messages.length - 1];
-  const hasOptions = lastMessage && (lastMessage.sender === "fab" || lastMessage.sender === "aryan") && lastMessage.options && lastMessage.options.length > 0;
-
-  const progress = readQuestionProgress(messages);
+  // Options are a shortcut, never a gate: the student can always just type.
+  // (The server matches typed text back onto the same options.)
+  const progress =
+    serverProgress && serverProgress.total > 0 && serverProgress.answered < serverProgress.total
+      ? serverProgress
+      : null;
 
   return (
     <div className="flex flex-col h-full min-w-0 bg-[#FFFDFB]">
@@ -128,7 +119,7 @@ export default function ChatContainer({
                   transition={{ duration: 0.2 }}
                   className="font-mono text-[10px] font-bold uppercase tracking-wider text-[#5C534C] tabular-nums"
                 >
-                  Question {progress.current} / {progress.total}
+                  Getting to know you {progress.answered} / {progress.total}
                 </motion.span>
               )}
             </AnimatePresence>
@@ -156,7 +147,7 @@ export default function ChatContainer({
           </div>
         </div>
 
-        {/* Slim progress bar — only while the 15-question flow is running */}
+        {/* Slim progress bar — only while the conversation is still gathering */}
         <AnimatePresence initial={false}>
           {progress && (
             <motion.div
@@ -168,13 +159,13 @@ export default function ChatContainer({
               role="progressbar"
               aria-valuemin={0}
               aria-valuemax={progress.total}
-              aria-valuenow={progress.current}
-              aria-label="Question flow progress"
+              aria-valuenow={progress.answered}
+              aria-label="Conversation progress"
             >
               <motion.div
                 className="h-full rounded-r-full bg-gradient-to-r from-[#D97706] to-[#F59E0B]"
                 initial={false}
-                animate={{ width: `${(progress.current / progress.total) * 100}%` }}
+                animate={{ width: `${(progress.answered / progress.total) * 100}%` }}
                 transition={{ type: "spring", stiffness: 160, damping: 24 }}
               />
             </motion.div>
@@ -193,8 +184,8 @@ export default function ChatContainer({
               Say hi to FAB
             </h3>
             <p className="max-w-xs text-xs font-medium leading-relaxed text-[#5C534C]">
-              Fifteen quick questions, one real answer at the end — the career path that
-              actually fits you. Start whenever you're ready.
+              Just a conversation, no right answers — and one real answer at the end: the
+              career path that actually fits you. Start whenever you're ready.
             </p>
           </div>
         )}
@@ -231,7 +222,9 @@ export default function ChatContainer({
                     <p className="whitespace-pre-wrap break-words">{message.text}</p>
                   </div>
 
-                  {/* MCQ Options (only for this message if it contains them and is not chosen yet) */}
+                  {/* Shortcut options: the degree picker, or the plain-instrument
+                      fallback when Gemini is unreachable. Tapping is optional —
+                      typing an answer works just as well. */}
                   {!isUser && message.options && message.options.length > 0 && !message.selectedOption && (
                     <div className="grid grid-cols-1 gap-2 mt-3 pt-1">
                       {message.options.map((option, idx) => (
@@ -302,29 +295,23 @@ export default function ChatContainer({
             type="text"
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
-            disabled={isProcessing || hasOptions}
+            disabled={isProcessing}
             placeholder={
-              hasOptions
-                ? "Select one of the MCQ options above..."
-                : isProcessing
-                ? "FAB is sensing the signals..."
-                : "Type your real answer..."
+              isProcessing ? "FAB is sensing the signals..." : "Say it however it comes out..."
             }
             className="flex-1 rounded-xl border border-[#EAE3D5] bg-[#FFFDFB] px-4 py-3 text-sm text-[#1A1310] placeholder-[#5C534C] focus:border-[#D97706] focus:bg-[#FFFDFB] focus:outline-none focus:ring-1 focus:ring-[#D97706] disabled:opacity-50 font-bold"
           />
           <button
             id="send-chat-btn"
             type="submit"
-            disabled={isProcessing || !inputText.trim() || hasOptions}
+            disabled={isProcessing || !inputText.trim()}
             className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#D97706] text-white hover:bg-[#B45309] transition-colors focus:outline-none focus:ring-2 focus:ring-[#D97706] focus:ring-offset-2 disabled:bg-[#FAF6F0] disabled:text-[#A39A94] cursor-pointer"
           >
             <Send className="h-4 w-4" />
           </button>
         </form>
         <p className="text-center text-[10px] text-[#5C534C] mt-2 font-semibold">
-          {hasOptions 
-            ? "FAB needs you to make a choice from the options above before continuing." 
-            : "Keep it real. Talk to FAB like you'd talk to your smartest, warmest friend."}
+          Keep it real. Talk to FAB like you'd talk to your smartest, warmest friend.
         </p>
       </div>
     </div>

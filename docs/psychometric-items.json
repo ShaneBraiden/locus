@@ -1,0 +1,2085 @@
+{
+  "version": 1,
+  "source": "locus_psychometric_engine.xlsx, parsed 2026-07-28",
+  "instrument": "LOCUS 25-question instrument",
+  "theories": {
+    "h": "Holland RIASEC",
+    "o": "Big Five OCEAN",
+    "s": "Self-Determination Theory",
+    "m": "Multiple Intelligences",
+    "d": "Career Decision-Making"
+  },
+  "maxPerItem": 5,
+  "items": [
+    {
+      "id": "p1",
+      "text": "Your college fest committee needs volunteers. Which role do you sign up for without hesitation?",
+      "options": [
+        {
+          "id": "p1a",
+          "letter": "A",
+          "label": "Set up and manage the stage equipment and sound system",
+          "scores": {
+            "h": 5,
+            "o": 1,
+            "s": 3,
+            "m": 2,
+            "d": 2
+          },
+          "theory": "Holland",
+          "construct": "Realistic (R)",
+          "constructTags": [
+            "holland:R"
+          ]
+        },
+        {
+          "id": "p1b",
+          "letter": "B",
+          "label": "Research and design the event theme with data from past fests",
+          "scores": {
+            "h": 2,
+            "o": 4,
+            "s": 4,
+            "m": 3,
+            "d": 3
+          },
+          "theory": "Holland + SDT",
+          "construct": "Investigative (I) + Autonomy",
+          "constructTags": [
+            "sdt:autonomy_high",
+            "holland:I"
+          ]
+        },
+        {
+          "id": "p1c",
+          "letter": "C",
+          "label": "Coordinate all volunteers, make sure everyone has a role",
+          "scores": {
+            "h": 2,
+            "o": 3,
+            "s": 4,
+            "m": 5,
+            "d": 4
+          },
+          "theory": "Holland + MI",
+          "construct": "Social (S) + Interpersonal Intel",
+          "constructTags": [
+            "mi:interpersonal",
+            "holland:S"
+          ]
+        },
+        {
+          "id": "p1d",
+          "letter": "D",
+          "label": "Promote the fest on social media and design creatives",
+          "scores": {
+            "h": 3,
+            "o": 2,
+            "s": 3,
+            "m": 4,
+            "d": 3
+          },
+          "theory": "Holland",
+          "construct": "Artistic (A)",
+          "constructTags": [
+            "holland:A"
+          ]
+        },
+        {
+          "id": "p1e",
+          "letter": "E",
+          "label": "Handle registrations, budget tracking, and vendor payments",
+          "scores": {
+            "h": 2,
+            "o": 4,
+            "s": 2,
+            "m": 2,
+            "d": 4
+          },
+          "theory": "Holland",
+          "construct": "Conventional (C)",
+          "constructTags": [
+            "holland:C"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "text": "You have a major exam in 3 weeks and a club event happening this weekend. What do you actually do?",
+      "options": [
+        {
+          "id": "p2a",
+          "letter": "A",
+          "label": "Skip the event, start studying immediately with a fixed schedule",
+          "scores": {
+            "h": 2,
+            "o": 5,
+            "s": 2,
+            "m": 2,
+            "d": 5
+          },
+          "theory": "Big Five",
+          "construct": "Conscientiousness (High)",
+          "constructTags": [
+            "ocean:conscientiousness_high"
+          ]
+        },
+        {
+          "id": "p2b",
+          "letter": "B",
+          "label": "Attend the event but study every other day leading up to the exam",
+          "scores": {
+            "h": 3,
+            "o": 3,
+            "s": 3,
+            "m": 3,
+            "d": 3
+          },
+          "theory": "Big Five",
+          "construct": "Conscientiousness (Mid)",
+          "constructTags": [
+            "ocean:conscientiousness_mid"
+          ]
+        },
+        {
+          "id": "p2c",
+          "letter": "C",
+          "label": "Attend the event and cram the night before the exam",
+          "scores": {
+            "h": 4,
+            "o": 1,
+            "s": 2,
+            "m": 3,
+            "d": 1
+          },
+          "theory": "Big Five",
+          "construct": "Conscientiousness (Low)",
+          "constructTags": [
+            "ocean:conscientiousness_low"
+          ]
+        },
+        {
+          "id": "p2d",
+          "letter": "D",
+          "label": "Delegate your club responsibilities to someone else so you can prepare",
+          "scores": {
+            "h": 3,
+            "o": 4,
+            "s": 4,
+            "m": 3,
+            "d": 4
+          },
+          "theory": "Big Five + SDT",
+          "construct": "Conscientiousness + Competence",
+          "constructTags": [
+            "ocean:conscientiousness_high",
+            "sdt:competence_high"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "text": "You get two internship offers. Offer A pays ₹25,000/month in a field you find boring. Offer B pays ₹8,000 in a field that genuinely interests you. What do you pick?",
+      "options": [
+        {
+          "id": "p3a",
+          "letter": "A",
+          "label": "Offer A. Money now is more important",
+          "scores": {
+            "h": 2,
+            "o": 3,
+            "s": 1,
+            "m": 2,
+            "d": 3
+          },
+          "theory": "SDT",
+          "construct": "Extrinsic Motivation",
+          "constructTags": [
+            "sdt:extrinsic"
+          ]
+        },
+        {
+          "id": "p3b",
+          "letter": "B",
+          "label": "Offer B. The learning matters more than the pay at this stage",
+          "scores": {
+            "h": 4,
+            "o": 3,
+            "s": 5,
+            "m": 4,
+            "d": 4
+          },
+          "theory": "SDT",
+          "construct": "Intrinsic Motivation + Autonomy",
+          "constructTags": [
+            "sdt:intrinsic",
+            "sdt:autonomy_high"
+          ]
+        },
+        {
+          "id": "p3c",
+          "letter": "C",
+          "label": "Negotiate Offer B's pay upward before deciding",
+          "scores": {
+            "h": 3,
+            "o": 4,
+            "s": 4,
+            "m": 3,
+            "d": 5
+          },
+          "theory": "SDT + CDM",
+          "construct": "Autonomy + Decision-Making",
+          "constructTags": [
+            "cdm:systematic",
+            "sdt:autonomy_high"
+          ]
+        },
+        {
+          "id": "p3d",
+          "letter": "D",
+          "label": "Ask family, then decide based on their input",
+          "scores": {
+            "h": 2,
+            "o": 2,
+            "s": 2,
+            "m": 2,
+            "d": 2
+          },
+          "theory": "SDT",
+          "construct": "Extrinsic + Relatedness low",
+          "constructTags": [
+            "sdt:extrinsic",
+            "sdt:relatedness_low"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "text": "A friend describes their startup idea to you. What's the first thing your mind does?",
+      "options": [
+        {
+          "id": "p4a",
+          "letter": "A",
+          "label": "Start calculating if the numbers actually work — market size, costs, margins",
+          "scores": {
+            "h": 2,
+            "o": 5,
+            "s": 3,
+            "m": 1,
+            "d": 4
+          },
+          "theory": "MI",
+          "construct": "Logical-Mathematical",
+          "constructTags": [
+            "mi:logical"
+          ]
+        },
+        {
+          "id": "p4b",
+          "letter": "B",
+          "label": "Think about how to tell the story to investors or customers",
+          "scores": {
+            "h": 3,
+            "o": 2,
+            "s": 3,
+            "m": 5,
+            "d": 3
+          },
+          "theory": "MI",
+          "construct": "Linguistic",
+          "constructTags": [
+            "mi:linguistic"
+          ]
+        },
+        {
+          "id": "p4c",
+          "letter": "C",
+          "label": "Visualise the product — what it looks like, how it flows",
+          "scores": {
+            "h": 3,
+            "o": 2,
+            "s": 3,
+            "m": 4,
+            "d": 3
+          },
+          "theory": "MI",
+          "construct": "Spatial",
+          "constructTags": [
+            "mi:spatial"
+          ]
+        },
+        {
+          "id": "p4d",
+          "letter": "D",
+          "label": "Immediately think about the team — who's needed, what roles",
+          "scores": {
+            "h": 2,
+            "o": 3,
+            "s": 4,
+            "m": 5,
+            "d": 3
+          },
+          "theory": "MI",
+          "construct": "Interpersonal",
+          "constructTags": [
+            "mi:interpersonal"
+          ]
+        },
+        {
+          "id": "p4e",
+          "letter": "E",
+          "label": "Ask whether this idea actually solves a real human problem",
+          "scores": {
+            "h": 4,
+            "o": 3,
+            "s": 5,
+            "m": 3,
+            "d": 4
+          },
+          "theory": "MI + SDT",
+          "construct": "Intrapersonal + Competence",
+          "constructTags": [
+            "sdt:competence_high",
+            "mi:intrapersonal"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "text": "You're given free time and a small budget of ₹5,000. You most naturally…",
+      "options": [
+        {
+          "id": "p5a",
+          "letter": "A",
+          "label": "Start a small resale or service business to turn a profit",
+          "scores": {
+            "h": 5,
+            "o": 3,
+            "s": 4,
+            "m": 3,
+            "d": 4
+          },
+          "theory": "Holland",
+          "construct": "Enterprising (E)",
+          "constructTags": [
+            "holland:E"
+          ]
+        },
+        {
+          "id": "p5b",
+          "letter": "B",
+          "label": "Use it to attend a skill workshop or online course",
+          "scores": {
+            "h": 3,
+            "o": 4,
+            "s": 4,
+            "m": 3,
+            "d": 4
+          },
+          "theory": "Holland + SDT",
+          "construct": "Investigative + Competence",
+          "constructTags": [
+            "sdt:competence_high",
+            "holland:I"
+          ]
+        },
+        {
+          "id": "p5c",
+          "letter": "C",
+          "label": "Organise a community event or help someone in need",
+          "scores": {
+            "h": 2,
+            "o": 3,
+            "s": 3,
+            "m": 5,
+            "d": 3
+          },
+          "theory": "Holland",
+          "construct": "Social (S)",
+          "constructTags": [
+            "holland:S"
+          ]
+        },
+        {
+          "id": "p5d",
+          "letter": "D",
+          "label": "Spend it on art supplies, music gear, or creative tools",
+          "scores": {
+            "h": 3,
+            "o": 1,
+            "s": 4,
+            "m": 4,
+            "d": 2
+          },
+          "theory": "Holland",
+          "construct": "Artistic (A)",
+          "constructTags": [
+            "holland:A"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "p6",
+      "text": "Your professor gives a completely unconventional assignment — no rules, just 'submit something meaningful'. You feel…",
+      "options": [
+        {
+          "id": "p6a",
+          "letter": "A",
+          "label": "Excited. This is when I do my best work",
+          "scores": {
+            "h": 5,
+            "o": 4,
+            "s": 5,
+            "m": 5,
+            "d": 3
+          },
+          "theory": "Big Five",
+          "construct": "Openness (High)",
+          "constructTags": [
+            "ocean:openness_high"
+          ]
+        },
+        {
+          "id": "p6b",
+          "letter": "B",
+          "label": "Curious but a little anxious — you'll work through it",
+          "scores": {
+            "h": 4,
+            "o": 3,
+            "s": 4,
+            "m": 4,
+            "d": 3
+          },
+          "theory": "Big Five",
+          "construct": "Openness (Mid-High)",
+          "constructTags": [
+            "ocean:openness_mid_high"
+          ]
+        },
+        {
+          "id": "p6c",
+          "letter": "C",
+          "label": "Frustrated. You prefer clear guidelines and rubrics",
+          "scores": {
+            "h": 2,
+            "o": 5,
+            "s": 2,
+            "m": 2,
+            "d": 4
+          },
+          "theory": "Big Five",
+          "construct": "Openness (Low)",
+          "constructTags": [
+            "ocean:openness_low"
+          ]
+        },
+        {
+          "id": "p6d",
+          "letter": "D",
+          "label": "Indifferent. You'll just do the minimum needed to pass",
+          "scores": {
+            "h": 1,
+            "o": 2,
+            "s": 1,
+            "m": 2,
+            "d": 2
+          },
+          "theory": "Big Five",
+          "construct": "Low engagement",
+          "constructTags": [
+            "meta:low_engagement"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "p7",
+      "text": "When someone asks you 'what do you want to do after graduation?', you typically…",
+      "options": [
+        {
+          "id": "p7a",
+          "letter": "A",
+          "label": "Have a clear, specific answer with a plan already in motion",
+          "scores": {
+            "h": 4,
+            "o": 4,
+            "s": 5,
+            "m": 4,
+            "d": 5
+          },
+          "theory": "CDM",
+          "construct": "Crystallization stage",
+          "constructTags": [
+            "cdm:crystallization"
+          ]
+        },
+        {
+          "id": "p7b",
+          "letter": "B",
+          "label": "Have a few options you're seriously considering but haven't decided",
+          "scores": {
+            "h": 4,
+            "o": 3,
+            "s": 4,
+            "m": 4,
+            "d": 4
+          },
+          "theory": "CDM",
+          "construct": "Exploration stage",
+          "constructTags": [
+            "cdm:exploration"
+          ]
+        },
+        {
+          "id": "p7c",
+          "letter": "C",
+          "label": "Give a vague answer because you genuinely haven't thought deeply about it",
+          "scores": {
+            "h": 2,
+            "o": 2,
+            "s": 2,
+            "m": 2,
+            "d": 2
+          },
+          "theory": "CDM",
+          "construct": "Pre-contemplation",
+          "constructTags": [
+            "cdm:precontemplation"
+          ]
+        },
+        {
+          "id": "p7d",
+          "letter": "D",
+          "label": "Get anxious — you worry you're behind everyone else",
+          "scores": {
+            "h": 2,
+            "o": 2,
+            "s": 2,
+            "m": 2,
+            "d": 1
+          },
+          "theory": "CDM",
+          "construct": "Decision paralysis",
+          "constructTags": [
+            "cdm:paralysis"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "p8",
+      "text": "You have to explain a complex topic to your class. You instinctively create…",
+      "options": [
+        {
+          "id": "p8a",
+          "letter": "A",
+          "label": "A visual diagram, infographic, or sketch",
+          "scores": {
+            "h": 3,
+            "o": 2,
+            "s": 4,
+            "m": 5,
+            "d": 3
+          },
+          "theory": "MI",
+          "construct": "Spatial Intelligence",
+          "constructTags": [
+            "mi:spatial"
+          ]
+        },
+        {
+          "id": "p8b",
+          "letter": "B",
+          "label": "A well-structured written explanation with examples",
+          "scores": {
+            "h": 4,
+            "o": 3,
+            "s": 3,
+            "m": 5,
+            "d": 3
+          },
+          "theory": "MI",
+          "construct": "Linguistic Intelligence",
+          "constructTags": [
+            "mi:linguistic"
+          ]
+        },
+        {
+          "id": "p8c",
+          "letter": "C",
+          "label": "A live demonstration or hands-on activity",
+          "scores": {
+            "h": 4,
+            "o": 2,
+            "s": 4,
+            "m": 3,
+            "d": 3
+          },
+          "theory": "MI",
+          "construct": "Bodily-Kinesthetic",
+          "constructTags": [
+            "mi:bodily"
+          ]
+        },
+        {
+          "id": "p8d",
+          "letter": "D",
+          "label": "A story or analogy that makes it relatable",
+          "scores": {
+            "h": 3,
+            "o": 2,
+            "s": 4,
+            "m": 4,
+            "d": 3
+          },
+          "theory": "MI",
+          "construct": "Linguistic + Interpersonal",
+          "constructTags": [
+            "mi:linguistic",
+            "mi:interpersonal"
+          ]
+        },
+        {
+          "id": "p8e",
+          "letter": "E",
+          "label": "A spreadsheet or data breakdown",
+          "scores": {
+            "h": 2,
+            "o": 5,
+            "s": 3,
+            "m": 1,
+            "d": 4
+          },
+          "theory": "MI",
+          "construct": "Logical-Mathematical",
+          "constructTags": [
+            "mi:logical"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "p9",
+      "text": "Your ideal study or work environment is…",
+      "options": [
+        {
+          "id": "p9a",
+          "letter": "A",
+          "label": "A busy café or co-working space with ambient noise",
+          "scores": {
+            "h": 4,
+            "o": 2,
+            "s": 3,
+            "m": 3,
+            "d": 3
+          },
+          "theory": "Big Five",
+          "construct": "Extraversion (High)",
+          "constructTags": [
+            "ocean:extraversion_high"
+          ]
+        },
+        {
+          "id": "p9b",
+          "letter": "B",
+          "label": "A quiet room, alone, with no distractions",
+          "scores": {
+            "h": 2,
+            "o": 5,
+            "s": 3,
+            "m": 2,
+            "d": 4
+          },
+          "theory": "Big Five",
+          "construct": "Extraversion (Low) / Introversion",
+          "constructTags": [
+            "ocean:extraversion_low"
+          ]
+        },
+        {
+          "id": "p9c",
+          "letter": "C",
+          "label": "A small group of 2-3 people you trust",
+          "scores": {
+            "h": 3,
+            "o": 3,
+            "s": 3,
+            "m": 4,
+            "d": 3
+          },
+          "theory": "Big Five",
+          "construct": "Ambiversion",
+          "constructTags": [
+            "ocean:extraversion_mid"
+          ]
+        },
+        {
+          "id": "p9d",
+          "letter": "D",
+          "label": "Wherever the deadline pressure pushes you",
+          "scores": {
+            "h": 2,
+            "o": 2,
+            "s": 2,
+            "m": 2,
+            "d": 2
+          },
+          "theory": "Big Five",
+          "construct": "Low self-regulation",
+          "constructTags": [
+            "ocean:conscientiousness_low"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "p10",
+      "text": "Which of these statements feels most true for you right now?",
+      "options": [
+        {
+          "id": "p10a",
+          "letter": "A",
+          "label": "I know exactly what I'm good at and I build on those strengths",
+          "scores": {
+            "h": 4,
+            "o": 4,
+            "s": 5,
+            "m": 4,
+            "d": 5
+          },
+          "theory": "SDT",
+          "construct": "Competence (High)",
+          "constructTags": [
+            "sdt:competence_high"
+          ]
+        },
+        {
+          "id": "p10b",
+          "letter": "B",
+          "label": "I'm still figuring out where my strengths really lie",
+          "scores": {
+            "h": 3,
+            "o": 3,
+            "s": 3,
+            "m": 3,
+            "d": 3
+          },
+          "theory": "SDT",
+          "construct": "Competence (Developing)",
+          "constructTags": [
+            "sdt:competence_mid"
+          ]
+        },
+        {
+          "id": "p10c",
+          "letter": "C",
+          "label": "I feel like others are more capable than me in most areas",
+          "scores": {
+            "h": 1,
+            "o": 2,
+            "s": 1,
+            "m": 2,
+            "d": 1
+          },
+          "theory": "SDT",
+          "construct": "Competence (Low)",
+          "constructTags": [
+            "sdt:competence_low"
+          ]
+        },
+        {
+          "id": "p10d",
+          "letter": "D",
+          "label": "I'm good at many things but nothing stands out",
+          "scores": {
+            "h": 3,
+            "o": 3,
+            "s": 3,
+            "m": 3,
+            "d": 3
+          },
+          "theory": "SDT",
+          "construct": "Competence (Diffuse)",
+          "constructTags": [
+            "sdt:competence_mid"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "p11",
+      "text": "You're watching a documentary. You're most drawn to content about…",
+      "options": [
+        {
+          "id": "p11a",
+          "letter": "A",
+          "label": "How diseases spread and how the body fights back",
+          "scores": {
+            "h": 3,
+            "o": 5,
+            "s": 4,
+            "m": 3,
+            "d": 3
+          },
+          "theory": "Holland + MI",
+          "construct": "Investigative + Naturalistic",
+          "constructTags": [
+            "mi:naturalistic",
+            "holland:I"
+          ]
+        },
+        {
+          "id": "p11b",
+          "letter": "B",
+          "label": "How a startup went from zero to billion-dollar company",
+          "scores": {
+            "h": 5,
+            "o": 3,
+            "s": 4,
+            "m": 3,
+            "d": 4
+          },
+          "theory": "Holland",
+          "construct": "Enterprising (E)",
+          "constructTags": [
+            "holland:E"
+          ]
+        },
+        {
+          "id": "p11c",
+          "letter": "C",
+          "label": "How ancient civilisations built structures we still can't replicate",
+          "scores": {
+            "h": 4,
+            "o": 4,
+            "s": 4,
+            "m": 4,
+            "d": 3
+          },
+          "theory": "Holland + MI",
+          "construct": "Investigative + Spatial",
+          "constructTags": [
+            "mi:spatial",
+            "holland:I"
+          ]
+        },
+        {
+          "id": "p11d",
+          "letter": "D",
+          "label": "How a director creates emotional impact through filmmaking",
+          "scores": {
+            "h": 4,
+            "o": 2,
+            "s": 4,
+            "m": 5,
+            "d": 2
+          },
+          "theory": "Holland + MI",
+          "construct": "Artistic + Spatial/Linguistic",
+          "constructTags": [
+            "mi:linguistic",
+            "mi:spatial",
+            "holland:A"
+          ]
+        },
+        {
+          "id": "p11e",
+          "letter": "E",
+          "label": "How policy changes affect millions of people across a country",
+          "scores": {
+            "h": 3,
+            "o": 3,
+            "s": 4,
+            "m": 4,
+            "d": 4
+          },
+          "theory": "Holland",
+          "construct": "Social (S)",
+          "constructTags": [
+            "holland:S"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "p12",
+      "text": "A teammate is consistently not pulling their weight on a group project. You…",
+      "options": [
+        {
+          "id": "p12a",
+          "letter": "A",
+          "label": "Confront them directly and clearly explain the impact on the team",
+          "scores": {
+            "h": 3,
+            "o": 4,
+            "s": 4,
+            "m": 3,
+            "d": 4
+          },
+          "theory": "Big Five",
+          "construct": "Agreeableness (Low-Mid) + Assertive",
+          "constructTags": [
+            "ocean:agreeableness_low",
+            "meta:assertive"
+          ]
+        },
+        {
+          "id": "p12b",
+          "letter": "B",
+          "label": "Take on their work to avoid conflict and keep the project on track",
+          "scores": {
+            "h": 2,
+            "o": 4,
+            "s": 2,
+            "m": 3,
+            "d": 3
+          },
+          "theory": "Big Five",
+          "construct": "Agreeableness (High) + Avoidant",
+          "constructTags": [
+            "ocean:agreeableness_high",
+            "meta:conflict_avoidant"
+          ]
+        },
+        {
+          "id": "p12c",
+          "letter": "C",
+          "label": "Talk to them privately, try to understand what's going wrong",
+          "scores": {
+            "h": 2,
+            "o": 4,
+            "s": 4,
+            "m": 5,
+            "d": 4
+          },
+          "theory": "Big Five + SDT",
+          "construct": "Agreeableness + Relatedness",
+          "constructTags": [
+            "ocean:agreeableness_high",
+            "sdt:relatedness"
+          ]
+        },
+        {
+          "id": "p12d",
+          "letter": "D",
+          "label": "Report it to the professor or group leader",
+          "scores": {
+            "h": 3,
+            "o": 4,
+            "s": 2,
+            "m": 2,
+            "d": 3
+          },
+          "theory": "Big Five",
+          "construct": "Rule-following / Conventional",
+          "constructTags": [
+            "holland:C"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "p13",
+      "text": "When learning something new, you absorb it best when you…",
+      "options": [
+        {
+          "id": "p13a",
+          "letter": "A",
+          "label": "Actually do it — build it, perform it, make it with your hands",
+          "scores": {
+            "h": 5,
+            "o": 2,
+            "s": 4,
+            "m": 2,
+            "d": 3
+          },
+          "theory": "MI",
+          "construct": "Bodily-Kinesthetic",
+          "constructTags": [
+            "mi:bodily"
+          ]
+        },
+        {
+          "id": "p13b",
+          "letter": "B",
+          "label": "Read about it deeply and take detailed notes",
+          "scores": {
+            "h": 2,
+            "o": 5,
+            "s": 3,
+            "m": 3,
+            "d": 4
+          },
+          "theory": "MI",
+          "construct": "Linguistic + Logical",
+          "constructTags": [
+            "mi:linguistic",
+            "mi:logical"
+          ]
+        },
+        {
+          "id": "p13c",
+          "letter": "C",
+          "label": "Watch a video or observe someone doing it first",
+          "scores": {
+            "h": 3,
+            "o": 3,
+            "s": 3,
+            "m": 4,
+            "d": 3
+          },
+          "theory": "MI",
+          "construct": "Spatial + Visual",
+          "constructTags": [
+            "mi:spatial"
+          ]
+        },
+        {
+          "id": "p13d",
+          "letter": "D",
+          "label": "Discuss it with someone else to test your understanding",
+          "scores": {
+            "h": 3,
+            "o": 3,
+            "s": 4,
+            "m": 5,
+            "d": 4
+          },
+          "theory": "MI",
+          "construct": "Interpersonal",
+          "constructTags": [
+            "mi:interpersonal"
+          ]
+        },
+        {
+          "id": "p13e",
+          "letter": "E",
+          "label": "Map it out in a diagram or framework before diving in",
+          "scores": {
+            "h": 2,
+            "o": 5,
+            "s": 3,
+            "m": 3,
+            "d": 4
+          },
+          "theory": "MI",
+          "construct": "Logical-Mathematical + Spatial",
+          "constructTags": [
+            "mi:logical",
+            "mi:spatial"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "p14",
+      "text": "A random conversation at a family event gives you an unexpected opportunity in a field you'd never considered. You…",
+      "options": [
+        {
+          "id": "p14a",
+          "letter": "A",
+          "label": "Get excited and follow up on it immediately",
+          "scores": {
+            "h": 5,
+            "o": 3,
+            "s": 5,
+            "m": 4,
+            "d": 5
+          },
+          "theory": "CDM",
+          "construct": "Happenstance readiness (High)",
+          "constructTags": [
+            "cdm:happenstance_high"
+          ]
+        },
+        {
+          "id": "p14b",
+          "letter": "B",
+          "label": "Think about it seriously before making any move",
+          "scores": {
+            "h": 4,
+            "o": 4,
+            "s": 4,
+            "m": 3,
+            "d": 4
+          },
+          "theory": "CDM",
+          "construct": "Deliberate exploration",
+          "constructTags": [
+            "cdm:exploration",
+            "cdm:systematic"
+          ]
+        },
+        {
+          "id": "p14c",
+          "letter": "C",
+          "label": "Dismiss it — it doesn't fit your current plan",
+          "scores": {
+            "h": 2,
+            "o": 4,
+            "s": 2,
+            "m": 2,
+            "d": 3
+          },
+          "theory": "CDM",
+          "construct": "Closed to happenstance",
+          "constructTags": [
+            "cdm:happenstance_low"
+          ]
+        },
+        {
+          "id": "p14d",
+          "letter": "D",
+          "label": "Mention it to family to see if they approve first",
+          "scores": {
+            "h": 2,
+            "o": 2,
+            "s": 2,
+            "m": 2,
+            "d": 2
+          },
+          "theory": "CDM + SDT",
+          "construct": "External locus + low autonomy",
+          "constructTags": [
+            "sdt:autonomy_low"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "p15",
+      "text": "You're at your most energised and 'in flow' when you are…",
+      "options": [
+        {
+          "id": "p15a",
+          "letter": "A",
+          "label": "Teaching, mentoring, or explaining something to someone",
+          "scores": {
+            "h": 2,
+            "o": 3,
+            "s": 4,
+            "m": 5,
+            "d": 4
+          },
+          "theory": "Holland + MI",
+          "construct": "Social + Interpersonal",
+          "constructTags": [
+            "mi:interpersonal",
+            "holland:S"
+          ]
+        },
+        {
+          "id": "p15b",
+          "letter": "B",
+          "label": "Solving a puzzle, debugging a problem, or figuring out how something works",
+          "scores": {
+            "h": 3,
+            "o": 5,
+            "s": 4,
+            "m": 2,
+            "d": 4
+          },
+          "theory": "Holland + MI",
+          "construct": "Investigative + Logical",
+          "constructTags": [
+            "mi:logical",
+            "holland:I"
+          ]
+        },
+        {
+          "id": "p15c",
+          "letter": "C",
+          "label": "Creating something — writing, designing, composing",
+          "scores": {
+            "h": 4,
+            "o": 2,
+            "s": 5,
+            "m": 5,
+            "d": 3
+          },
+          "theory": "Holland + MI",
+          "construct": "Artistic + Spatial/Linguistic",
+          "constructTags": [
+            "mi:linguistic",
+            "mi:spatial",
+            "holland:A"
+          ]
+        },
+        {
+          "id": "p15d",
+          "letter": "D",
+          "label": "Persuading people or negotiating a deal",
+          "scores": {
+            "h": 5,
+            "o": 3,
+            "s": 4,
+            "m": 3,
+            "d": 4
+          },
+          "theory": "Holland",
+          "construct": "Enterprising (E)",
+          "constructTags": [
+            "holland:E"
+          ]
+        },
+        {
+          "id": "p15e",
+          "letter": "E",
+          "label": "Executing a process efficiently and getting things done correctly",
+          "scores": {
+            "h": 3,
+            "o": 5,
+            "s": 3,
+            "m": 2,
+            "d": 4
+          },
+          "theory": "Holland",
+          "construct": "Conventional (C)",
+          "constructTags": [
+            "holland:C"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "p16",
+      "text": "Before a high-stakes presentation or performance, you typically feel…",
+      "options": [
+        {
+          "id": "p16a",
+          "letter": "A",
+          "label": "Calm and prepared — pressure is just part of the process",
+          "scores": {
+            "h": 4,
+            "o": 5,
+            "s": 4,
+            "m": 4,
+            "d": 5
+          },
+          "theory": "Big Five",
+          "construct": "Low Neuroticism / High Stability",
+          "constructTags": [
+            "ocean:stability_high"
+          ]
+        },
+        {
+          "id": "p16b",
+          "letter": "B",
+          "label": "Nervous but it pushes you to perform better",
+          "scores": {
+            "h": 4,
+            "o": 3,
+            "s": 4,
+            "m": 3,
+            "d": 4
+          },
+          "theory": "Big Five",
+          "construct": "Mid Neuroticism (adaptive)",
+          "constructTags": [
+            "ocean:stability_mid"
+          ]
+        },
+        {
+          "id": "p16c",
+          "letter": "C",
+          "label": "Extremely anxious — it significantly affects your performance",
+          "scores": {
+            "h": 2,
+            "o": 2,
+            "s": 2,
+            "m": 2,
+            "d": 2
+          },
+          "theory": "Big Five",
+          "construct": "High Neuroticism",
+          "constructTags": [
+            "ocean:stability_low"
+          ]
+        },
+        {
+          "id": "p16d",
+          "letter": "D",
+          "label": "Indifferent — you don't overthink these things",
+          "scores": {
+            "h": 3,
+            "o": 3,
+            "s": 3,
+            "m": 3,
+            "d": 3
+          },
+          "theory": "Big Five",
+          "construct": "Low investment",
+          "constructTags": [
+            "meta:low_engagement"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "p17",
+      "text": "Which of these describes why you want to be successful in your chosen career?",
+      "options": [
+        {
+          "id": "p17a",
+          "letter": "A",
+          "label": "I want to become genuinely good at something that matters to me",
+          "scores": {
+            "h": 4,
+            "o": 4,
+            "s": 5,
+            "m": 4,
+            "d": 5
+          },
+          "theory": "SDT",
+          "construct": "Intrinsic — Mastery",
+          "constructTags": [
+            "sdt:intrinsic",
+            "sdt:mastery"
+          ]
+        },
+        {
+          "id": "p17b",
+          "letter": "B",
+          "label": "I want financial security and a stable, respected life",
+          "scores": {
+            "h": 2,
+            "o": 3,
+            "s": 2,
+            "m": 2,
+            "d": 3
+          },
+          "theory": "SDT",
+          "construct": "Extrinsic — Status/Security",
+          "constructTags": [
+            "sdt:extrinsic",
+            "sdt:extrinsic_security"
+          ]
+        },
+        {
+          "id": "p17c",
+          "letter": "C",
+          "label": "I want my family to be proud of what I've achieved",
+          "scores": {
+            "h": 2,
+            "o": 3,
+            "s": 2,
+            "m": 3,
+            "d": 3
+          },
+          "theory": "SDT",
+          "construct": "Extrinsic — Social approval",
+          "constructTags": [
+            "sdt:extrinsic",
+            "sdt:extrinsic_approval"
+          ]
+        },
+        {
+          "id": "p17d",
+          "letter": "D",
+          "label": "I want to solve a real problem or contribute to something bigger",
+          "scores": {
+            "h": 4,
+            "o": 3,
+            "s": 5,
+            "m": 4,
+            "d": 4
+          },
+          "theory": "SDT",
+          "construct": "Intrinsic — Purpose",
+          "constructTags": [
+            "sdt:intrinsic",
+            "sdt:purpose"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "p18",
+      "text": "Which of these tasks would you actually enjoy doing as part of your regular work?",
+      "options": [
+        {
+          "id": "p18a",
+          "letter": "A",
+          "label": "Analysing large datasets to find patterns or insights",
+          "scores": {
+            "h": 2,
+            "o": 5,
+            "s": 3,
+            "m": 1,
+            "d": 4
+          },
+          "theory": "Holland + MI",
+          "construct": "Investigative + Logical-Math",
+          "constructTags": [
+            "mi:logical",
+            "holland:I"
+          ]
+        },
+        {
+          "id": "p18b",
+          "letter": "B",
+          "label": "Managing and coordinating a team's workflow and timelines",
+          "scores": {
+            "h": 3,
+            "o": 4,
+            "s": 3,
+            "m": 4,
+            "d": 4
+          },
+          "theory": "Holland",
+          "construct": "Enterprising + Conventional",
+          "constructTags": [
+            "holland:E",
+            "holland:C"
+          ]
+        },
+        {
+          "id": "p18c",
+          "letter": "C",
+          "label": "Designing visuals, user interfaces, or creative content",
+          "scores": {
+            "h": 4,
+            "o": 2,
+            "s": 4,
+            "m": 5,
+            "d": 3
+          },
+          "theory": "Holland + MI",
+          "construct": "Artistic + Spatial",
+          "constructTags": [
+            "mi:spatial",
+            "holland:A"
+          ]
+        },
+        {
+          "id": "p18d",
+          "letter": "D",
+          "label": "Conducting lab work, experiments, or technical analysis",
+          "scores": {
+            "h": 4,
+            "o": 4,
+            "s": 3,
+            "m": 2,
+            "d": 3
+          },
+          "theory": "Holland",
+          "construct": "Realistic + Investigative",
+          "constructTags": [
+            "holland:R",
+            "holland:I"
+          ]
+        },
+        {
+          "id": "p18e",
+          "letter": "E",
+          "label": "Writing reports, policies, documentation, or proposals",
+          "scores": {
+            "h": 3,
+            "o": 4,
+            "s": 3,
+            "m": 4,
+            "d": 4
+          },
+          "theory": "Holland + MI",
+          "construct": "Conventional + Linguistic",
+          "constructTags": [
+            "mi:linguistic",
+            "holland:C"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "p19",
+      "text": "When researching a major life decision (college, career, city to move to), you…",
+      "options": [
+        {
+          "id": "p19a",
+          "letter": "A",
+          "label": "Go deep — read everything, talk to people in that field, build a spreadsheet",
+          "scores": {
+            "h": 3,
+            "o": 5,
+            "s": 4,
+            "m": 3,
+            "d": 5
+          },
+          "theory": "CDM",
+          "construct": "Systematic decision-making",
+          "constructTags": [
+            "cdm:systematic"
+          ]
+        },
+        {
+          "id": "p19b",
+          "letter": "B",
+          "label": "Do a quick search, trust your gut, and move on",
+          "scores": {
+            "h": 4,
+            "o": 2,
+            "s": 4,
+            "m": 3,
+            "d": 3
+          },
+          "theory": "CDM",
+          "construct": "Intuitive decision-making",
+          "constructTags": [
+            "cdm:intuitive"
+          ]
+        },
+        {
+          "id": "p19c",
+          "letter": "C",
+          "label": "Ask people you trust and mostly go with their advice",
+          "scores": {
+            "h": 2,
+            "o": 3,
+            "s": 2,
+            "m": 3,
+            "d": 2
+          },
+          "theory": "CDM",
+          "construct": "Dependent decision-making",
+          "constructTags": [
+            "cdm:dependent"
+          ]
+        },
+        {
+          "id": "p19d",
+          "letter": "D",
+          "label": "Delay until the deadline forces a decision",
+          "scores": {
+            "h": 2,
+            "o": 2,
+            "s": 2,
+            "m": 2,
+            "d": 1
+          },
+          "theory": "CDM",
+          "construct": "Avoidant decision-making",
+          "constructTags": [
+            "cdm:avoidant"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "p20",
+      "text": "Which of these elective subjects would you have genuinely loved in school?",
+      "options": [
+        {
+          "id": "p20a",
+          "letter": "A",
+          "label": "Music theory and composition",
+          "scores": {
+            "h": 3,
+            "o": 2,
+            "s": 4,
+            "m": 5,
+            "d": 2
+          },
+          "theory": "MI",
+          "construct": "Musical Intelligence",
+          "constructTags": [
+            "mi:musical"
+          ]
+        },
+        {
+          "id": "p20b",
+          "letter": "B",
+          "label": "Environmental science and ecology",
+          "scores": {
+            "h": 3,
+            "o": 4,
+            "s": 4,
+            "m": 4,
+            "d": 3
+          },
+          "theory": "MI",
+          "construct": "Naturalistic Intelligence",
+          "constructTags": [
+            "mi:naturalistic"
+          ]
+        },
+        {
+          "id": "p20c",
+          "letter": "C",
+          "label": "Physical education, sports science, or dance",
+          "scores": {
+            "h": 5,
+            "o": 2,
+            "s": 4,
+            "m": 3,
+            "d": 2
+          },
+          "theory": "MI",
+          "construct": "Bodily-Kinesthetic",
+          "constructTags": [
+            "mi:bodily"
+          ]
+        },
+        {
+          "id": "p20d",
+          "letter": "D",
+          "label": "Computer science and programming",
+          "scores": {
+            "h": 2,
+            "o": 5,
+            "s": 3,
+            "m": 2,
+            "d": 4
+          },
+          "theory": "MI + Holland",
+          "construct": "Logical-Math + Investigative",
+          "constructTags": [
+            "mi:logical",
+            "holland:I"
+          ]
+        },
+        {
+          "id": "p20e",
+          "letter": "E",
+          "label": "Psychology and human behaviour",
+          "scores": {
+            "h": 3,
+            "o": 3,
+            "s": 4,
+            "m": 5,
+            "d": 4
+          },
+          "theory": "MI + Holland",
+          "construct": "Interpersonal + Social",
+          "constructTags": [
+            "mi:interpersonal",
+            "holland:S"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "p21",
+      "text": "You have a business idea you genuinely believe in. The only way to test it is to spend ₹20,000 of your savings. You…",
+      "options": [
+        {
+          "id": "p21a",
+          "letter": "A",
+          "label": "Do it immediately — the only way to know is to try",
+          "scores": {
+            "h": 5,
+            "o": 2,
+            "s": 5,
+            "m": 3,
+            "d": 4
+          },
+          "theory": "Holland + Big Five",
+          "construct": "Enterprising + Openness",
+          "constructTags": [
+            "ocean:openness_high",
+            "holland:E"
+          ]
+        },
+        {
+          "id": "p21b",
+          "letter": "B",
+          "label": "Build a scaled-down version to test first with minimal investment",
+          "scores": {
+            "h": 4,
+            "o": 4,
+            "s": 5,
+            "m": 3,
+            "d": 5
+          },
+          "theory": "Holland + CDM",
+          "construct": "Enterprising + Systematic",
+          "constructTags": [
+            "cdm:systematic",
+            "holland:E"
+          ]
+        },
+        {
+          "id": "p21c",
+          "letter": "C",
+          "label": "Wait until you have more certainty before spending money",
+          "scores": {
+            "h": 2,
+            "o": 4,
+            "s": 2,
+            "m": 2,
+            "d": 3
+          },
+          "theory": "Big Five",
+          "construct": "High Conscientiousness / Risk-averse",
+          "constructTags": [
+            "ocean:conscientiousness_high",
+            "meta:risk_averse"
+          ]
+        },
+        {
+          "id": "p21d",
+          "letter": "D",
+          "label": "Look for a co-founder to share the financial risk",
+          "scores": {
+            "h": 3,
+            "o": 3,
+            "s": 4,
+            "m": 4,
+            "d": 4
+          },
+          "theory": "SDT + Holland",
+          "construct": "Relatedness + Enterprising",
+          "constructTags": [
+            "sdt:relatedness",
+            "holland:E"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "p22",
+      "text": "Your parents strongly prefer you pursue a specific career. You want something different. You…",
+      "options": [
+        {
+          "id": "p22a",
+          "letter": "A",
+          "label": "Follow your own path and explain your reasoning to them over time",
+          "scores": {
+            "h": 4,
+            "o": 3,
+            "s": 5,
+            "m": 4,
+            "d": 5
+          },
+          "theory": "SDT",
+          "construct": "Autonomy (High)",
+          "constructTags": [
+            "sdt:autonomy_high"
+          ]
+        },
+        {
+          "id": "p22b",
+          "letter": "B",
+          "label": "Try to find a middle ground that satisfies both sides",
+          "scores": {
+            "h": 3,
+            "o": 3,
+            "s": 4,
+            "m": 3,
+            "d": 4
+          },
+          "theory": "SDT",
+          "construct": "Autonomy (Mid)",
+          "constructTags": [
+            "sdt:autonomy_mid"
+          ]
+        },
+        {
+          "id": "p22c",
+          "letter": "C",
+          "label": "Agree to their preference to avoid conflict, even if unhappy",
+          "scores": {
+            "h": 1,
+            "o": 2,
+            "s": 1,
+            "m": 2,
+            "d": 1
+          },
+          "theory": "SDT",
+          "construct": "Autonomy (Low) / Controlled motivation",
+          "constructTags": [
+            "sdt:autonomy_low"
+          ]
+        },
+        {
+          "id": "p22d",
+          "letter": "D",
+          "label": "Delay the decision and hope the situation resolves itself",
+          "scores": {
+            "h": 2,
+            "o": 2,
+            "s": 2,
+            "m": 2,
+            "d": 1
+          },
+          "theory": "SDT + CDM",
+          "construct": "Low autonomy + avoidant",
+          "constructTags": [
+            "sdt:autonomy_low",
+            "cdm:avoidant"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "p23",
+      "text": "You're asked to rate yourself honestly. Which statement is most accurate?",
+      "options": [
+        {
+          "id": "p23a",
+          "letter": "A",
+          "label": "I understand my strengths, weaknesses, values, and motivations clearly",
+          "scores": {
+            "h": 4,
+            "o": 4,
+            "s": 5,
+            "m": 5,
+            "d": 5
+          },
+          "theory": "MI + CDM",
+          "construct": "Intrapersonal + Self-awareness",
+          "constructTags": [
+            "mi:intrapersonal",
+            "meta:self_aware_high"
+          ]
+        },
+        {
+          "id": "p23b",
+          "letter": "B",
+          "label": "I know some things about myself but a lot is still unclear",
+          "scores": {
+            "h": 3,
+            "o": 3,
+            "s": 3,
+            "m": 3,
+            "d": 3
+          },
+          "theory": "MI + CDM",
+          "construct": "Developing self-awareness",
+          "constructTags": [
+            "meta:self_aware_mid"
+          ]
+        },
+        {
+          "id": "p23c",
+          "letter": "C",
+          "label": "I find it difficult to reflect on myself — I just go with the flow",
+          "scores": {
+            "h": 2,
+            "o": 2,
+            "s": 2,
+            "m": 2,
+            "d": 2
+          },
+          "theory": "MI + CDM",
+          "construct": "Low intrapersonal",
+          "constructTags": [
+            "mi:intrapersonal_low"
+          ]
+        },
+        {
+          "id": "p23d",
+          "letter": "D",
+          "label": "I understand myself but I often doubt what I know",
+          "scores": {
+            "h": 2,
+            "o": 3,
+            "s": 2,
+            "m": 3,
+            "d": 2
+          },
+          "theory": "MI",
+          "construct": "Intrapersonal + Neuroticism",
+          "constructTags": [
+            "ocean:stability_low",
+            "mi:intrapersonal"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "p24",
+      "text": "On a group project, which role do you naturally drift into?",
+      "options": [
+        {
+          "id": "p24a",
+          "letter": "A",
+          "label": "The one who motivates the group and keeps morale high",
+          "scores": {
+            "h": 3,
+            "o": 3,
+            "s": 4,
+            "m": 5,
+            "d": 4
+          },
+          "theory": "Holland + MI",
+          "construct": "Social + Interpersonal",
+          "constructTags": [
+            "mi:interpersonal",
+            "holland:S"
+          ]
+        },
+        {
+          "id": "p24b",
+          "letter": "B",
+          "label": "The one who structures the plan and assigns tasks",
+          "scores": {
+            "h": 3,
+            "o": 5,
+            "s": 3,
+            "m": 3,
+            "d": 5
+          },
+          "theory": "Holland",
+          "construct": "Conventional (C)",
+          "constructTags": [
+            "holland:C"
+          ]
+        },
+        {
+          "id": "p24c",
+          "letter": "C",
+          "label": "The one who generates the most ideas and challenges assumptions",
+          "scores": {
+            "h": 5,
+            "o": 3,
+            "s": 5,
+            "m": 4,
+            "d": 4
+          },
+          "theory": "Holland + Big Five",
+          "construct": "Enterprising + Openness",
+          "constructTags": [
+            "ocean:openness_high",
+            "holland:E"
+          ]
+        },
+        {
+          "id": "p24d",
+          "letter": "D",
+          "label": "The one who executes and gets the actual work done",
+          "scores": {
+            "h": 4,
+            "o": 4,
+            "s": 3,
+            "m": 3,
+            "d": 4
+          },
+          "theory": "Holland",
+          "construct": "Realistic (R)",
+          "constructTags": [
+            "holland:R"
+          ]
+        },
+        {
+          "id": "p24e",
+          "letter": "E",
+          "label": "The one who researches and makes sure decisions are evidence-based",
+          "scores": {
+            "h": 3,
+            "o": 5,
+            "s": 4,
+            "m": 2,
+            "d": 5
+          },
+          "theory": "Holland",
+          "construct": "Investigative (I)",
+          "constructTags": [
+            "holland:I"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "p25",
+      "text": "10 years from now, the version of you that feels most fulfilled is someone who…",
+      "options": [
+        {
+          "id": "p25a",
+          "letter": "A",
+          "label": "Has built something — a company, product, or system others depend on",
+          "scores": {
+            "h": 5,
+            "o": 3,
+            "s": 5,
+            "m": 4,
+            "d": 5
+          },
+          "theory": "Holland + SDT",
+          "construct": "Enterprising + Intrinsic Purpose",
+          "constructTags": [
+            "sdt:intrinsic",
+            "sdt:purpose",
+            "holland:E"
+          ]
+        },
+        {
+          "id": "p25b",
+          "letter": "B",
+          "label": "Is recognised as an expert or leader in their field",
+          "scores": {
+            "h": 4,
+            "o": 4,
+            "s": 4,
+            "m": 3,
+            "d": 5
+          },
+          "theory": "Holland + SDT",
+          "construct": "Investigative + Mastery",
+          "constructTags": [
+            "holland:I",
+            "sdt:mastery"
+          ]
+        },
+        {
+          "id": "p25c",
+          "letter": "C",
+          "label": "Has made a visible, tangible difference in people's lives",
+          "scores": {
+            "h": 3,
+            "o": 3,
+            "s": 5,
+            "m": 5,
+            "d": 5
+          },
+          "theory": "Holland + SDT",
+          "construct": "Social + Intrinsic Purpose",
+          "constructTags": [
+            "sdt:intrinsic",
+            "sdt:purpose",
+            "holland:S"
+          ]
+        },
+        {
+          "id": "p25d",
+          "letter": "D",
+          "label": "Has creative work in the world that reflects who they are",
+          "scores": {
+            "h": 4,
+            "o": 2,
+            "s": 5,
+            "m": 5,
+            "d": 4
+          },
+          "theory": "Holland + SDT",
+          "construct": "Artistic + Intrinsic",
+          "constructTags": [
+            "sdt:intrinsic",
+            "holland:A"
+          ]
+        },
+        {
+          "id": "p25e",
+          "letter": "E",
+          "label": "Has financial freedom, stability, and professional respect",
+          "scores": {
+            "h": 3,
+            "o": 4,
+            "s": 3,
+            "m": 3,
+            "d": 4
+          },
+          "theory": "SDT",
+          "construct": "Extrinsic — Security/Status",
+          "constructTags": [
+            "sdt:extrinsic",
+            "sdt:extrinsic_security"
+          ]
+        }
+      ]
+    }
+  ]
+}

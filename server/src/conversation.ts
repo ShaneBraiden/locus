@@ -38,7 +38,12 @@ Hard rules for your "reply" text:
 - React to what they actually just said before you move on. One genuine reaction line, then the next thing you are curious about.
 - Ask about ONE thing at a time. Keep it concrete and everyday, not abstract.
 - If they ask you a question, answer it briefly and warmly, then come back to what you were curious about.
-- If they are vague or say "idk", get curious about a specific angle instead of repeating yourself word for word.`;
+- If they are vague or say "idk", get curious about a specific angle instead of repeating yourself word for word.
+
+Language:
+- Most of these students are Indian and many will answer in Tamil, or in Hindi, Telugu, Malayalam, Kannada, Bengali, Marathi, Gujarati, Punjabi or Odia, or in a mix of one of those and English. Read whatever arrives exactly as carefully as you would read English, and interpret it against the readings below with the same confidence you would give the equivalent English answer. An answer in Tamil is a real answer, not a vague one.
+- Never ask them to switch to English, and never remark on which language they used.
+- Always write your own "reply" in English regardless of what they wrote. The app translates it into their language for them, so a reply in any other language reaches them twice-translated and broken.`;
 
 function describeItem(item: InterviewItem): string {
   const opts = item.options.map((o) => `      ${o.id}: ${o.label}`).join('\n');
@@ -86,6 +91,10 @@ export interface InterviewInput {
   answeredCount: number;
   totalCount: number;
   isOpening: boolean;
+  /** Long-term memory of this student (memory.ts). Empty for a new account. */
+  brief?: string;
+  /** How this turn arrived. Spoken answers need shorter, plainer sentences. */
+  channel?: 'text' | 'voice';
 }
 
 /**
@@ -95,7 +104,7 @@ export interface InterviewInput {
 export async function interviewTurn(input: InterviewInput): Promise<ConversationTurn | null> {
   const {
     name, degreeName, messages, pending, target, others,
-    followUpsSpent, answeredCount, totalCount, isOpening,
+    followUpsSpent, answeredCount, totalCount, isOpening, brief, channel,
   } = input;
 
   if (!pending && !target) return null;
@@ -119,10 +128,19 @@ export async function interviewTurn(input: InterviewInput): Promise<Conversation
     ? `\nIf their last message was too vague to read for "${pending.id}", set needsFollowUp to true and make your reply circle back on ${pending.id} from a different angle instead of asking about ${target.id}. Otherwise leave needsFollowUp false and ask about ${target.id}.`
     : '';
 
+  // A spoken answer is transcribed, so it arrives without punctuation cues and
+  // is heard back rather than read. Short plain sentences survive that trip;
+  // long ones do not.
+  const voiceNote = channel === 'voice'
+    ? `\nThis turn came in as speech and your reply will be read out loud to them. Keep it to two short spoken sentences, plain words, nothing that only works in writing.`
+    : '';
+
+  const memory = brief?.trim() ? `\n${brief.trim()}\n` : '';
+
   const prompt = `${PERSONA}
 
 You are talking to ${name}, who studies ${degreeName}. You are ${answeredCount} of about ${totalCount} things in, but NEVER mention that or any other number.
-
+${memory}
 Conversation so far:
 ${transcriptLines(messages, name) || '(nothing yet)'}
 
@@ -133,7 +151,7 @@ YOUR TWO JOBS THIS TURN:
 ${scoreable.length ? `Readings you may record:\n${scoreable.map(describeItem).join('\n')}` : ''}
 
 ${askBlock}
-${followUpRule}${followUpNote}${openingNote}
+${followUpRule}${followUpNote}${openingNote}${voiceNote}
 
 Return ONLY this JSON:
 {

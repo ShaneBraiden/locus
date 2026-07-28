@@ -8,7 +8,7 @@ import RoadmapView from "./components/fab/RoadmapView";
 import DashboardHomeView from "./components/fab/DashboardHomeView";
 import ExperimentsView from "./components/fab/ExperimentsView";
 import JourneyView from "./components/fab/JourneyView";
-import { ChatSession, Message, Phase, ProfileSignals, PracticalConstraints, CareerPath, CareerConfidence, AssessmentState, ChatProgress, PsychReadout } from "./types";
+import { ChatSession, Message, Phase, ProfileSignals, PracticalConstraints, CareerPath, CareerConfidence, AssessmentState, ChatProgress, PsychReadout, UserMemory } from "./types";
 import { motion, AnimatePresence } from "motion/react";
 import { DailyReality, CognitiveLoad, PilotExperience } from "./lib/pilotOrchestrator";
 import {
@@ -38,13 +38,25 @@ import {
   authHeaders,
   cancelStateSync,
   clearLocalState,
+  clearUserMemory,
   fetchServerState,
+  fetchUserMemory,
   flushStateSync,
+  readLocal,
   readLocalState,
   scheduleStateSync,
   writeLocal,
   writeStateToLocal,
 } from "./lib/stateSync";
+import {
+  Recording,
+  VoiceStatus,
+  fetchVoiceStatus,
+  playClips,
+  sendVoiceTurn,
+  stopSpeaking,
+  synthesize,
+} from "./lib/voice";
 import { experienceLibrary } from "./data/experienceLibrary";
 import { updateConfidence, EXPERIMENT_COMPLETED_MATCH } from "./lib/confidenceEngine";
 
@@ -119,6 +131,23 @@ function deriveStudentDegree(messages: Message[]): string {
   return "";
 }
 
+// FAB's opening line. Kept in sync with NAME_PROMPT in server/src/flow.ts: the
+// server recognises "what do I call you" in the transcript, so the first-time
+// wording must contain it and the returning-student wording must not — a
+// student FAB already knows is never asked their name twice.
+const FIRST_TIME_GREETING =
+  "Heyy! Welcome to Northr, I am FAB.\n\nBefore I can point you anywhere useful, I want to actually know you a little. So this is just a chat, no right answers.\n\nFirst things first, what do I call you?";
+
+function openingGreeting(memory: UserMemory | null): string {
+  if (!memory?.name) return FIRST_TIME_GREETING;
+
+  const degree = memory.degreeName ? ` Still ${memory.degreeName}, yeah?` : "";
+  const top = memory.topPaths[0]
+    ? ` Last time ${memory.topPaths[0].fieldName} was sitting right at the top of your list.`
+    : "";
+  return `Heyy ${memory.name}, good to see you back.${degree}${top}\n\nPick up wherever you like. Type it or just talk to me.`;
+}
+
 function Workspace({ user }: { user: AuthUser }) {
   const { token, isGuest, logout } = useAuth();
 
@@ -154,6 +183,25 @@ function Workspace({ user }: { user: AuthUser }) {
 
   // Evidence list completed in the Experiments Workspace
   const [evidenceList, setEvidenceList] = useState<any[]>([]);
+
+  // Voice chat (Sarvam, server-side). `voiceStatus` stays null until the server
+  // says it has a key, which is what hides every voice control when it does not.
+  const [voiceStatus, setVoiceStatus] = useState<VoiceStatus | null>(null);
+  const [voiceLanguage, setVoiceLanguage] = useState<string>(
+    () => readLocal<string>(STORAGE_KEYS.voiceLanguage, "auto")
+  );
+  const [autoSpeak, setAutoSpeak] = useState<boolean>(
+    () => readLocal<boolean>(STORAGE_KEYS.autoSpeak, true)
+  );
+  const [speakingMessageId, setSpeakingMessageId] = useState<string | null>(null);
+
+  // What FAB remembers about this student across every conversation. Server
+  // owned; the chat and the voice endpoints both refresh it on every turn.
+  // The ref exists because createNewChatSession is called from boot, outside
+  // the render that first receives the memory.
+  const [memory, setMemory] = useState<UserMemory | null>(null);
+  const memoryRef = useRef<UserMemory | null>(null);
+  useEffect(() => { memoryRef.current = memory; }, [memory]);
 
   // The student's real degree, learned from the FAB conversation. Empty until
   // they actually tell FAB — never seeded with sample data.
@@ -292,6 +340,40 @@ function Workspace({ user }: { user: AuthUser }) {
     careerConfidences,
     evidenceList,
   ]);
+
+  // Long-term memory, loaded once per session. It arrives after boot, so a
+  // greeting that is still sitting untouched gets upgraded in place rather than
+  // asking a student we already know who they are.
+  useEffect(() => {
+    if (!token || isGuest) return;
+    let cancelled = false;
+    fetchUserMemory(token).then((remembered) => {
+      if (!cancelled && remembered) setMemory(remembered);
+    });
+    return () => { cancelled = true; };
+  }, [token, isGuest]);
+
+  useEffect(() => {
+    if (!memory?.name) return;
+    setMessages((prev) => {
+      const untouched = prev.length === 1 && prev[0].sender === "fab" && prev[0].text === FIRST_TIME_GREETING;
+      if (!untouched) return prev;
+      return [{ ...prev[0], text: openingGreeting(memory) }];
+    });
+  }, [memory]);
+
+  // Is voice available at all? Only the server knows, because only the server
+  // has the Sarvam key. Until it answers, the chat is exactly as it was.
+  useEffect(() => {
+    let cancelled = false;
+    fetchVoiceStatus(token).then((status) => {
+      if (!cancelled && status?.enabled) setVoiceStatus(status);
+    });
+    return () => { cancelled = true; };
+  }, [token]);
+
+  // Nobody wants FAB still talking after they navigate away.
+  useEffect(() => () => stopSpeaking(), []);
 
   // Don't lose the last couple of seconds of work when the tab goes away.
   useEffect(() => {
@@ -459,7 +541,7 @@ function Workspace({ user }: { user: AuthUser }) {
       {
         id: "msg_init_" + Date.now(),
         sender: "fab",
-        text: "Heyy! Welcome to Northr, I am FAB.\n\nBefore I can point you anywhere useful, I want to actually know you a little. So this is just a chat, no right answers.\n\nFirst things first, what do I call you?",
+        text: openingGreeting(memoryRef.current),
         timestamp: new Date().toISOString()
       }
     ];
@@ -490,6 +572,14 @@ function Workspace({ user }: { user: AuthUser }) {
   const resetSession = () => {
     cancelStateSync();
     clearLocalState();
+    stopSpeaking();
+    setSpeakingMessageId(null);
+
+    // Starting fresh means FAB forgets too, otherwise the next conversation
+    // greets them by a name they just asked us to drop.
+    setMemory(null);
+    memoryRef.current = null;
+    void clearUserMemory(token);
 
     setCompletedExperienceIds([]);
     prevCompletedRef.current = [];
@@ -592,6 +682,77 @@ function Workspace({ user }: { user: AuthUser }) {
     }
   };
 
+  /**
+   * Folds one FAB turn into app state, whether it arrived from the typed
+   * endpoint or the spoken one. Both return the identical payload — the server
+   * runs the same flow for both — so there is exactly one place that knows how
+   * to apply it. Returns FAB's new message so a voice turn can play it.
+   */
+  const applyTurn = (data: any, currentMessages: Message[], userText: string): Message => {
+    const newFabMessage: Message = {
+      id: `fab_${Date.now()}`,
+      sender: "fab",
+      text: data.reply || "Thinking...",
+      timestamp: new Date().toISOString(),
+      options: data.options || undefined,
+      language: data.languageCode || undefined,
+      // Only when it differs: FAB spoke their language, the transcript stays English.
+      spokenText: data.spokenText && data.spokenText !== data.reply ? data.spokenText : undefined
+    };
+
+    // Check if phase transition occurred
+    let nextPhase = data.updatedPhase || phase;
+
+    // Update state arrays with response values
+    const mergedMsgs = [...currentMessages, newFabMessage];
+    const mergedPaths = data.bestFitPaths || bestFitPaths;
+
+    // Handle reflection approvals
+    let nextRefApproved = reflectionApproved;
+    if (phase === "reflection" && userText.toLowerCase().match(/(yes|correct|close|spot on|agree|perfect|absolutely)/)) {
+      nextRefApproved = true;
+    }
+
+    const nextSignals = data.updatedSignals ? mergeSignals(data.updatedSignals) : signals;
+    const nextConstraints = data.updatedConstraints
+      ? mergeConstraints(data.updatedConstraints)
+      : constraints;
+
+    const nextAssessment = data.assessment ?? assessment;
+    const nextProgress = data.progress ?? progress;
+    const nextPsych = data.psychometrics ?? psychometrics;
+
+    setPhase(nextPhase);
+    setMessages(mergedMsgs);
+    if (data.updatedSignals) setSignals(nextSignals);
+    if (data.updatedConstraints) setConstraints(nextConstraints);
+    if (data.reflectionText) setReflectionText(data.reflectionText);
+    if (data.bestFitPaths && data.bestFitPaths.length > 0) {
+      setBestFitPaths(data.bestFitPaths);
+    }
+    setAssessment(nextAssessment);
+    setProgress(nextProgress);
+    if (data.psychometrics) setPsychometrics(data.psychometrics);
+    if (data.degreeName) setStudentDegree(data.degreeName);
+    // What FAB now remembers about them, across every session and both channels.
+    if (data.memory) setMemory(data.memory);
+
+    saveSession({
+      phase: nextPhase,
+      signals: nextSignals,
+      constraints: nextConstraints,
+      messages: mergedMsgs,
+      bestFitPaths: mergedPaths,
+      reflectionText: data.reflectionText || reflectionText || undefined,
+      reflectionApproved: nextRefApproved,
+      assessment: nextAssessment,
+      progress: nextProgress,
+      psychometrics: nextPsych
+    });
+
+    return newFabMessage;
+  };
+
   const handleSendMessage = async (text: string, optionSelected?: string) => {
     if (isProcessing) return;
     setErrorMessage(null);
@@ -635,63 +796,7 @@ function Workspace({ user }: { user: AuthUser }) {
         throw new Error(data?.error || `Server returned HTTP ${response.status}`);
       }
 
-      const data = await response.json();
-
-      const newFabMessage: Message = {
-        id: `fab_${Date.now()}`,
-        sender: "fab",
-        text: data.reply || "Thinking...",
-        timestamp: new Date().toISOString(),
-        options: data.options || undefined
-      };
-
-      // Check if phase transition occurred
-      let nextPhase = data.updatedPhase || phase;
-
-      // Update state arrays with response values
-      const mergedMsgs = [...currentMessages, newFabMessage];
-      const mergedPaths = data.bestFitPaths || bestFitPaths;
-
-      // Handle reflection approvals
-      let nextRefApproved = reflectionApproved;
-      if (phase === "reflection" && text.toLowerCase().match(/(yes|correct|close|spot on|agree|perfect|absolutely)/)) {
-        nextRefApproved = true;
-      }
-
-      const nextSignals = data.updatedSignals ? mergeSignals(data.updatedSignals) : signals;
-      const nextConstraints = data.updatedConstraints
-        ? mergeConstraints(data.updatedConstraints)
-        : constraints;
-
-      const nextAssessment = data.assessment ?? assessment;
-      const nextProgress = data.progress ?? progress;
-      const nextPsych = data.psychometrics ?? psychometrics;
-
-      setPhase(nextPhase);
-      setMessages(mergedMsgs);
-      if (data.updatedSignals) setSignals(nextSignals);
-      if (data.updatedConstraints) setConstraints(nextConstraints);
-      if (data.reflectionText) setReflectionText(data.reflectionText);
-      if (data.bestFitPaths && data.bestFitPaths.length > 0) {
-        setBestFitPaths(data.bestFitPaths);
-      }
-      setAssessment(nextAssessment);
-      setProgress(nextProgress);
-      if (data.psychometrics) setPsychometrics(data.psychometrics);
-      if (data.degreeName) setStudentDegree(data.degreeName);
-
-      saveSession({
-        phase: nextPhase,
-        signals: nextSignals,
-        constraints: nextConstraints,
-        messages: mergedMsgs,
-        bestFitPaths: mergedPaths,
-        reflectionText: data.reflectionText || reflectionText || undefined,
-        reflectionApproved: nextRefApproved,
-        assessment: nextAssessment,
-        progress: nextProgress,
-        psychometrics: nextPsych
-      });
+      applyTurn(await response.json(), currentMessages, text);
 
     } catch (err: any) {
       console.error("Failed to connect to FAB AI service:", err);
@@ -710,6 +815,89 @@ function Workspace({ user }: { user: AuthUser }) {
     } finally {
       setIsProcessing(false);
     }
+  };
+
+  // --- Voice -----------------------------------------------------------------
+
+  /**
+   * A spoken turn. The recording goes up, Sarvam transcribes it, the same FAB
+   * flow that serves typed messages runs, and the answer comes back as text
+   * plus audio. Nothing about the conversation forks: the transcript lands in
+   * `messages` as an ordinary user message, so the next typed turn continues it.
+   */
+  const handleSendVoice = async (recording: Recording) => {
+    if (isProcessing) return;
+    setErrorMessage(null);
+    setIsProcessing(true);
+    stopSpeaking();
+    setSpeakingMessageId(null);
+
+    try {
+      const data = await sendVoiceTurn(token, {
+        recording,
+        messages,
+        assessment,
+        language: voiceLanguage,
+        speak: autoSpeak,
+      });
+
+      // The server already built the user message from what it heard; using its
+      // copy keeps the client transcript identical to the one FAB reasoned over.
+      const withUserTurn = [...messages, data.userMessage];
+      setMessages(withUserTurn);
+
+      const fabMessage = applyTurn(data, withUserTurn, data.transcript);
+
+      if (autoSpeak && data.audio?.length) {
+        setSpeakingMessageId(fabMessage.id);
+        void playClips(data.audio).finally(() =>
+          setSpeakingMessageId((current) => (current === fabMessage.id ? null : current))
+        );
+      }
+    } catch (err: any) {
+      console.error("Voice turn failed:", err);
+      setErrorMessage(err?.message || "Could not send that recording. You can still type to FAB.");
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  /** Read one FAB message out loud, or stop it if it is already talking. */
+  const handleSpeakMessage = async (message: Message) => {
+    if (speakingMessageId === message.id) {
+      stopSpeaking();
+      setSpeakingMessageId(null);
+      return;
+    }
+
+    stopSpeaking();
+    setSpeakingMessageId(message.id);
+    try {
+      const { audio } = await synthesize(token, message.text, message.language || voiceLanguage);
+      await playClips(audio);
+    } catch (err: any) {
+      console.error("Could not speak that message:", err);
+      setErrorMessage(err?.message || "Could not read that out just now.");
+    } finally {
+      setSpeakingMessageId((current) => (current === message.id ? null : current));
+    }
+  };
+
+  const handleVoiceLanguageChange = (code: string) => {
+    setVoiceLanguage(code);
+    writeLocal(STORAGE_KEYS.voiceLanguage, code);
+  };
+
+  const handleToggleAutoSpeak = () => {
+    setAutoSpeak((prev) => {
+      const next = !prev;
+      writeLocal(STORAGE_KEYS.autoSpeak, next);
+      if (!next) {
+        stopSpeaking();
+        setSpeakingMessageId(null);
+      }
+      return next;
+    });
   };
 
   const handleToggleCompare = (path: CareerPath) => {
@@ -1105,6 +1293,21 @@ function Workspace({ user }: { user: AuthUser }) {
                     phase={phase}
                     progress={progress}
                     onNewChat={createNewChatSession}
+                    voice={
+                      voiceStatus
+                        ? {
+                            enabled: true,
+                            languages: voiceStatus.languages,
+                            language: voiceLanguage,
+                            onLanguageChange: handleVoiceLanguageChange,
+                            autoSpeak,
+                            onToggleAutoSpeak: handleToggleAutoSpeak,
+                            onSendVoice: handleSendVoice,
+                            onSpeakMessage: handleSpeakMessage,
+                            speakingMessageId,
+                          }
+                        : undefined
+                    }
                   />
                 </motion.div>
               )}

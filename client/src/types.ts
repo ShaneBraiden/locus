@@ -47,6 +47,39 @@ export interface Message {
   timestamp: string;
   options?: string[]; // For scenario questions (MCQ)
   selectedOption?: string; // If user clicked an MCQ option
+  /** How the turn arrived. Absent means typed; both share one conversation. */
+  channel?: 'text' | 'voice';
+  /** BCP-47 language a spoken turn was heard in, or spoken back in. */
+  language?: string;
+  /**
+   * What FAB actually said out loud, when that differs from `text` — i.e. the
+   * student is not on English. `text` stays the canonical English transcript
+   * the interviewer reasons over; this is only ever displayed.
+   */
+  spokenText?: string;
+}
+
+/** A language Sarvam can both hear and speak. Served by /api/voice/status. */
+export interface VoiceLanguage {
+  code: string;
+  label: string;
+}
+
+/**
+ * What FAB remembers about the student across every conversation, typed or
+ * spoken. Server-owned (see server/src/memory.ts) — read-only here.
+ */
+export interface UserMemory {
+  name: string | null;
+  degreeName: string | null;
+  language: string;
+  traits: string[];
+  topPaths: { fieldName: string; matchScore: number }[];
+  fitScore: number | null;
+  notes: { text: string; at: string }[];
+  turns: { text: number; voice: number };
+  firstSeen: string;
+  lastSeen: string;
 }
 
 export interface ProfileSignals {

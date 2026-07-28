@@ -1,4 +1,4 @@
-import { CareerConfidence, CareerPath, ChatSession, PracticalConstraints, ProfileSignals } from "../types";
+import { CareerConfidence, CareerPath, ChatSession, PracticalConstraints, ProfileSignals, UserMemory } from "../types";
 import { CognitiveLoad, DailyReality, PilotExperience } from "./pilotOrchestrator";
 import { GUEST_TOKEN } from "../auth/AuthContext";
 
@@ -42,6 +42,11 @@ export const STORAGE_KEYS = {
   completedExperienceIds: "northr_completed_exp_ids",
   careerConfidences: "northr_career_confidences",
   evidenceList: "northr_evidence",
+  // Voice preferences are device-local on purpose: which mic language you use
+  // and whether FAB talks back are properties of where you are sitting, not of
+  // your account. The language FAB actually heard is remembered server-side.
+  voiceLanguage: "northr_voice_language",
+  autoSpeak: "northr_voice_autospeak",
 } as const;
 
 const SYNC_DEBOUNCE_MS = 2000;
@@ -153,6 +158,33 @@ export async function fetchServerState(token: string | null): Promise<NorthrSync
   } catch (err) {
     console.warn("Could not load your saved profile from the server:", err);
     return null;
+  }
+}
+
+/**
+ * What FAB remembers about this student across every conversation, typed or
+ * spoken (server/src/memory.ts). Read-only: the client never writes it, the
+ * chat and voice endpoints keep it current on every turn.
+ */
+export async function fetchUserMemory(token: string | null): Promise<UserMemory | null> {
+  if (isGuestToken(token)) return null;
+  try {
+    const res = await fetch("/api/memory", { headers: authHeaders(token) });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return (data?.memory as UserMemory) ?? null;
+  } catch {
+    return null;
+  }
+}
+
+/** Makes FAB forget this student entirely. Used by "Start Fresh". */
+export async function clearUserMemory(token: string | null): Promise<void> {
+  if (isGuestToken(token)) return;
+  try {
+    await fetch("/api/memory", { method: "DELETE", headers: authHeaders(token) });
+  } catch (err) {
+    console.warn("Could not clear your saved profile on the server:", err);
   }
 }
 

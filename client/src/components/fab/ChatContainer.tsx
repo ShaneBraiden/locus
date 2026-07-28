@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { Message, Phase } from "../../types";
-import { Check, ClipboardList, Plus, Send } from "lucide-react";
+import { Message, Phase, VoiceLanguage } from "../../types";
+import { Check, ClipboardList, Loader2, Mic, Plus, Send, Square, Volume2, VolumeX, X } from "lucide-react";
+import { Recorder, Recording, isRecordingSupported, startRecording } from "../../lib/voice";
 
 // Progress is reported by the server (see FlowResponse.progress in
 // server/src/flow.ts). It used to be scraped out of a literal "(n/15)" prefix
@@ -12,6 +13,33 @@ interface ChatProgress {
   total: number;
 }
 
+/**
+ * Everything the spoken half of the chat needs. Voice is powered by Sarvam on
+ * the server and shares this exact conversation: a recording is sent to the
+ * same FAB turn a typed message is, so the two can be mixed freely.
+ *
+ * Omitted (or `enabled: false`, when the server has no Sarvam key) hides every
+ * voice control and leaves the typed chat untouched.
+ */
+interface VoiceControls {
+  enabled: boolean;
+  languages: VoiceLanguage[];
+  /** Selected language, or "auto" to let Sarvam detect it each time. */
+  language: string;
+  onLanguageChange: (code: string) => void;
+  /** Whether FAB's replies play out loud on their own. */
+  autoSpeak: boolean;
+  onToggleAutoSpeak: () => void;
+  onSendVoice: (recording: Recording) => void;
+  /** Read one message out loud. Called again while playing means stop. */
+  onSpeakMessage: (message: Message) => void;
+  /** Id of the message being spoken right now, if any. */
+  speakingMessageId: string | null;
+}
+
+/** A minute is already past what the transcription endpoint handles well. */
+const MAX_RECORDING_SECONDS = 60;
+
 interface ChatContainerProps {
   messages: Message[];
   onSendMessage: (text: string, optionSelected?: string) => void;
@@ -19,6 +47,7 @@ interface ChatContainerProps {
   phase: Phase;
   progress?: ChatProgress | null;
   onNewChat?: () => void;
+  voice?: VoiceControls;
   // Optional: only used to render the mobile "Peep Insights" toggle bar.
   // If the parent (App.tsx) doesn't pass these, the toggle bar is simply hidden
   // and everything else works exactly the same.
@@ -33,12 +62,84 @@ export default function ChatContainer({
   phase,
   progress: serverProgress,
   onNewChat,
+  voice,
   onToggleSecretBoard,
   showSecretBoardMobile = false,
 }: ChatContainerProps) {
   const [inputText, setInputText] = useState("");
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // --- Voice -----------------------------------------------------------------
+  const canRecord = Boolean(voice?.enabled) && isRecordingSupported();
+  const [isRecording, setIsRecording] = useState(false);
+  const [elapsed, setElapsed] = useState(0);
+  const [voiceError, setVoiceError] = useState<string | null>(null);
+  // A clip is in flight and we do not yet know what it said — transcription
+  // happens server-side, so the student's own words arrive with FAB's reply.
+  const [awaitingTranscript, setAwaitingTranscript] = useState(false);
+  const recorderRef = useRef<Recorder | null>(null);
+
+  const finishRecording = async (send: boolean) => {
+    const recorder = recorderRef.current;
+    recorderRef.current = null;
+    setIsRecording(false);
+    if (!recorder) return;
+
+    if (!send) {
+      recorder.cancel();
+      return;
+    }
+    try {
+      const recording = await recorder.stop();
+      if (!recording) {
+        setVoiceError("That was too short to hear. Hold the mic a little longer.");
+        return;
+      }
+      setAwaitingTranscript(true);
+      voice?.onSendVoice(recording);
+    } catch (err: any) {
+      setVoiceError(err?.message || "Recording failed. Try again, or just type.");
+    }
+  };
+
+  const beginRecording = async () => {
+    setVoiceError(null);
+    try {
+      recorderRef.current = await startRecording();
+      setElapsed(0);
+      setIsRecording(true);
+    } catch (err: any) {
+      setVoiceError(err?.message || "Could not start recording.");
+    }
+  };
+
+  const toggleRecording = () => {
+    if (isProcessing && !isRecording) return;
+    if (isRecording) void finishRecording(true);
+    else void beginRecording();
+  };
+
+  // Tick the elapsed counter, and stop on our own before the clip gets too long
+  // for the transcription endpoint to handle.
+  useEffect(() => {
+    if (!isRecording) return;
+    const id = setInterval(() => {
+      setElapsed((prev) => {
+        const next = prev + 1;
+        if (next >= MAX_RECORDING_SECONDS) void finishRecording(true);
+        return next;
+      });
+    }, 1000);
+    return () => clearInterval(id);
+  }, [isRecording]);
+
+  // The transcript landing in the feed is what resolves the placeholder,
+  // whether the turn succeeded or errored out.
+  useEffect(() => setAwaitingTranscript(false), [messages]);
+
+  // Never leave the microphone open behind us.
+  useEffect(() => () => recorderRef.current?.cancel(), []);
 
   // Helper to scroll the container to the absolute bottom
   const scrollToBottom = (behavior: "smooth" | "auto" = "smooth") => {
@@ -124,6 +225,38 @@ export default function ChatContainer({
               )}
             </AnimatePresence>
 
+            {voice?.enabled && (
+              <>
+                <select
+                  id="voice-language"
+                  value={voice.language}
+                  onChange={(e) => voice.onLanguageChange(e.target.value)}
+                  title="Language FAB listens and replies in"
+                  className="rounded-lg border border-[#EAE3D5] bg-[#FFFDFB] px-2 py-1 text-[11px] font-semibold text-[#5C534C] shadow-xs hover:border-[#D97706] focus:border-[#D97706] focus:outline-none cursor-pointer"
+                >
+                  <option value="auto">Auto</option>
+                  {voice.languages.map((lang) => (
+                    <option key={lang.code} value={lang.code}>
+                      {lang.label}
+                    </option>
+                  ))}
+                </select>
+
+                <button
+                  onClick={voice.onToggleAutoSpeak}
+                  title={voice.autoSpeak ? "FAB reads replies out loud" : "FAB stays silent"}
+                  aria-pressed={voice.autoSpeak}
+                  className={`flex items-center rounded-lg border px-2 py-1 text-[11px] font-semibold shadow-xs transition-colors cursor-pointer ${
+                    voice.autoSpeak
+                      ? "border-[#D97706] bg-[#FFFBF3] text-[#D97706]"
+                      : "border-[#EAE3D5] bg-[#FFFDFB] text-[#5C534C] hover:border-[#D97706]"
+                  }`}
+                >
+                  {voice.autoSpeak ? <Volume2 className="h-3.5 w-3.5" /> : <VolumeX className="h-3.5 w-3.5" />}
+                </button>
+              </>
+            )}
+
             {onNewChat && (
               <button
                 onClick={onNewChat}
@@ -206,9 +339,31 @@ export default function ChatContainer({
                 )}
 
                 <div className="min-w-0 flex-1 space-y-1">
-                  {/* Sender Name */}
-                  <div className={`text-[10px] font-mono tracking-wider uppercase text-[#5C534C] font-bold ${isUser ? "text-right" : "text-left"}`}>
-                    {isUser ? "You" : "FAB"}
+                  {/* Sender name, plus the voice affordances: a mic marker on
+                      anything the student spoke, and a replay button on FAB's
+                      side so even a typed conversation can be listened to. */}
+                  <div
+                    className={`flex items-center gap-1.5 text-[10px] font-mono tracking-wider uppercase text-[#5C534C] font-bold ${
+                      isUser ? "justify-end" : "justify-start"
+                    }`}
+                  >
+                    <span>{isUser ? "You" : "FAB"}</span>
+                    {isUser && message.channel === "voice" && (
+                      <Mic className="h-3 w-3 text-[#D97706]" aria-label="Spoken" />
+                    )}
+                    {!isUser && voice?.enabled && message.text && (
+                      <button
+                        onClick={() => voice.onSpeakMessage(message)}
+                        title={voice.speakingMessageId === message.id ? "Stop" : "Read this out loud"}
+                        className="rounded p-0.5 text-[#5C534C] transition-colors hover:text-[#D97706] cursor-pointer"
+                      >
+                        {voice.speakingMessageId === message.id ? (
+                          <Square className="h-3 w-3 fill-current text-[#D97706]" />
+                        ) : (
+                          <Volume2 className="h-3 w-3" />
+                        )}
+                      </button>
+                    )}
                   </div>
 
                   {/* Message Bubble */}
@@ -220,6 +375,14 @@ export default function ChatContainer({
                     }`}
                   >
                     <p className="whitespace-pre-wrap break-words">{message.text}</p>
+
+                    {/* What FAB actually said out loud, when the student is
+                        not on English. The English above stays the record. */}
+                    {!isUser && message.spokenText && (
+                      <p className="mt-2 whitespace-pre-wrap break-words border-t border-[#EAE3D5] pt-2 text-[13px] text-[#5C534C]">
+                        {message.spokenText}
+                      </p>
+                    )}
                   </div>
 
                   {/* Shortcut options: the degree picker, or the plain-instrument
@@ -263,6 +426,26 @@ export default function ChatContainer({
           );
         })}
 
+        {/* The clip is on its way up but nobody has read it back to us yet */}
+        {awaitingTranscript && isProcessing && (
+          <div className="flex w-full justify-end">
+            <div className="flex min-w-0 items-start space-x-3 max-w-[85%] sm:max-w-[75%]">
+              <div className="min-w-0 flex-1 space-y-1">
+                <div className="flex items-center justify-end gap-1.5 text-[10px] font-mono tracking-wider uppercase text-[#5C534C] font-bold">
+                  <span>You</span>
+                  <Mic className="h-3 w-3 text-[#D97706]" />
+                </div>
+                <div className="flex items-center gap-2 rounded-2xl border border-[#D97706]/40 bg-[#FFFBF3] px-4 py-3 shadow-xs">
+                  <Loader2 className="h-3.5 w-3.5 shrink-0 animate-spin text-[#D97706]" />
+                  <span className="text-[13px] font-semibold text-[#5C534C]">
+                    Working out what you said...
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* FAB Typing thoughts status */}
         {isProcessing && (
           <div className="flex justify-start">
@@ -287,31 +470,97 @@ export default function ChatContainer({
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input bar */}
+      {/* Input bar: type it or say it, same conversation either way */}
       <div className="border-t border-[#EAE3D5] bg-[#FAF6F0] p-4">
+        {voiceError && (
+          <div className="mx-auto mb-2 flex max-w-4xl items-start gap-2 rounded-lg border border-[#F5D9B8] bg-[#FFFBF3] px-3 py-2">
+            <span className="min-w-0 flex-1 break-words text-[11.5px] font-semibold text-[#92400E]">
+              {voiceError}
+            </span>
+            <button
+              onClick={() => setVoiceError(null)}
+              className="shrink-0 text-[#92400E] hover:text-[#B45309] cursor-pointer"
+              aria-label="Dismiss"
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="mx-auto max-w-4xl flex items-center space-x-2">
-          <input
-            id="user-chat-input"
-            type="text"
-            value={inputText}
-            onChange={(e) => setInputText(e.target.value)}
-            disabled={isProcessing}
-            placeholder={
-              isProcessing ? "FAB is sensing the signals..." : "Say it however it comes out..."
-            }
-            className="flex-1 rounded-xl border border-[#EAE3D5] bg-[#FFFDFB] px-4 py-3 text-sm text-[#1A1310] placeholder-[#5C534C] focus:border-[#D97706] focus:bg-[#FFFDFB] focus:outline-none focus:ring-1 focus:ring-[#D97706] disabled:opacity-50 font-bold"
-          />
+          {canRecord && (
+            <button
+              id="voice-record-btn"
+              type="button"
+              onClick={toggleRecording}
+              disabled={isProcessing && !isRecording}
+              title={isRecording ? "Send what you said" : "Talk to FAB"}
+              aria-label={isRecording ? "Stop recording and send" : "Record a voice message"}
+              aria-pressed={isRecording}
+              className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border transition-colors focus:outline-none focus:ring-2 focus:ring-[#D97706] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer ${
+                isRecording
+                  ? "border-[#B45309] bg-[#D97706] text-white"
+                  : "border-[#EAE3D5] bg-[#FFFDFB] text-[#D97706] hover:border-[#D97706] hover:bg-[#FFFBF3]"
+              }`}
+            >
+              {isRecording ? (
+                <Square className="h-4 w-4 fill-current" />
+              ) : (
+                <Mic className="h-4 w-4" />
+              )}
+            </button>
+          )}
+
+          {isRecording ? (
+            <div className="flex flex-1 items-center gap-3 rounded-xl border border-[#D97706] bg-[#FFFBF3] px-4 py-3">
+              <span className="relative flex h-2.5 w-2.5 shrink-0">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#D97706] opacity-75" />
+                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#D97706]" />
+              </span>
+              <span className="min-w-0 flex-1 truncate text-sm font-bold text-[#1A1310]">
+                Listening... tap the square when you're done
+              </span>
+              <span className="shrink-0 font-mono text-xs font-bold tabular-nums text-[#5C534C]">
+                {String(Math.floor(elapsed / 60)).padStart(2, "0")}:
+                {String(elapsed % 60).padStart(2, "0")}
+              </span>
+              <button
+                type="button"
+                onClick={() => void finishRecording(false)}
+                title="Discard this recording"
+                aria-label="Discard recording"
+                className="shrink-0 text-[#5C534C] hover:text-[#B45309] cursor-pointer"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          ) : (
+            <input
+              id="user-chat-input"
+              type="text"
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              disabled={isProcessing}
+              placeholder={
+                isProcessing ? "FAB is sensing the signals..." : "Say it however it comes out..."
+              }
+              className="flex-1 rounded-xl border border-[#EAE3D5] bg-[#FFFDFB] px-4 py-3 text-sm text-[#1A1310] placeholder-[#5C534C] focus:border-[#D97706] focus:bg-[#FFFDFB] focus:outline-none focus:ring-1 focus:ring-[#D97706] disabled:opacity-50 font-bold"
+            />
+          )}
+
           <button
             id="send-chat-btn"
             type="submit"
-            disabled={isProcessing || !inputText.trim()}
+            disabled={isProcessing || isRecording || !inputText.trim()}
             className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#D97706] text-white hover:bg-[#B45309] transition-colors focus:outline-none focus:ring-2 focus:ring-[#D97706] focus:ring-offset-2 disabled:bg-[#FAF6F0] disabled:text-[#A39A94] cursor-pointer"
           >
-            <Send className="h-4 w-4" />
+            {isProcessing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
           </button>
         </form>
         <p className="text-center text-[10px] text-[#5C534C] mt-2 font-semibold">
-          Keep it real. Talk to FAB like you'd talk to your smartest, warmest friend.
+          {canRecord
+            ? "Type it or tap the mic and say it. FAB remembers either way."
+            : "Keep it real. Talk to FAB like you'd talk to your smartest, warmest friend."}
         </p>
       </div>
     </div>

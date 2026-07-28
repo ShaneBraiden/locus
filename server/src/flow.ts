@@ -11,6 +11,7 @@ import {
 } from './conversation.js';
 import { casualReply, narrateRecommendation, narrateReflection } from './gemini.js';
 import { degreeNames, findDegree, loadDegrees } from './topology.js';
+import { DEFAULT_LANGUAGE, toEnglish } from './sarvam.js';
 import type {
   AssessmentState, CareerPath, Degree, Message, Phase, PsychAnswer, PsychReadout,
 } from './types.js';
@@ -123,10 +124,54 @@ function recoverFromTranscript(messages: Message[], s: AssessmentState): void {
   }
 }
 
-function parseName(text: string): string {
-  const raw = text.trim().replace(/^(i am|i'm|my name is|call me|im)\s+/i, '');
-  const first = raw.split(/[\s,!.]+/).filter(Boolean)[0] ?? 'friend';
-  return first.charAt(0).toUpperCase() + first.slice(1, 20);
+/**
+ * Words that are never a name. Without these the first word of "எனக்கு ராம்"
+ * or "मेरा नाम राम है" gets captured and FAB spends the whole conversation
+ * calling the student "to me".
+ */
+const NAME_JUNK = new Set([
+  'i', 'im', 'me', 'my', 'mine', 'myself', 'you', 'it', 'is', 'am', 'are', 'was',
+  'the', 'a', 'an', 'to', 'for', 'of', 'this', 'that', 'here', 'there',
+  'hi', 'hello', 'hey', 'yes', 'no', 'ok', 'okay', 'name', 'call',
+  // Tamil
+  'வணக்கம்', 'நான்', 'என்', 'எனது', 'எனக்கு', 'என்னுடைய', 'பெயர்',
+  // Hindi
+  'नमस्ते', 'मैं', 'मेरा', 'मेरी', 'नाम', 'है', 'हूँ', 'हूं',
+]);
+
+/**
+ * Pulls a name out of whatever the student said. `english` is the translated
+ * answer (which strips "my name is" reliably); `original` is what they actually
+ * typed or spoke, used when the translation gives back nothing usable — better
+ * to greet someone in their own script than to invent a name.
+ */
+export function parseName(english: string, original: string = english): string {
+  const pick = (raw: string): string | null => {
+    const stripped = raw.trim()
+      .replace(/^(?:hi|hello|hey)\b[\s,!.]*/i, '')
+      .replace(/^(?:i am|i'm|im|my name is|my name's|name is|myself|this is|it is|it's|call me)\s+/i, '');
+    // First word that could actually be a name — "என் பெயர் முருகன்" has to
+    // walk past two of them. \p{M} keeps Tamil vowel signs attached; without it
+    // "எனக்கு" decays to "எனகக" and stops matching anything.
+    for (const token of stripped.split(/[\s,!.?]+/)) {
+      const clean = token.replace(/[^\p{L}\p{N}\p{M}'-]/gu, '');
+      if (!clean || NAME_JUNK.has(clean.toLowerCase())) continue;
+      const chars = [...clean];
+      return chars[0].toUpperCase() + chars.slice(1, 20).join('');
+    }
+    return null;
+  };
+  return pick(english) ?? pick(original) ?? 'friend';
+}
+
+/**
+ * True when the text carries characters outside Latin — Tamil, Devanagari,
+ * Bengali and the rest. Those survive none of the English matchers, which
+ * normalise to `[a-z0-9]` and would otherwise see an empty string.
+ */
+function hasNonLatinScript(text: string): boolean {
+  for (const ch of text) if (ch.codePointAt(0)! > 0x024f) return true;
+  return false;
 }
 
 /** Local option matching for the fallback path, when a student types instead of tapping. */
@@ -207,10 +252,29 @@ function readout(s: AssessmentState, paths: CareerPath[]): PsychReadout {
   };
 }
 
+/**
+ * Everything about a turn that is not the transcript or the flow position.
+ *
+ * `brief` is the student's long-term memory (memory.ts) and `channel` says
+ * whether they typed or spoke. Both are passed straight to the prompts and
+ * touch nothing that is scored, which is why a voice turn and a typed turn are
+ * the same turn as far as the instrument is concerned.
+ */
+export interface TurnContext {
+  brief?: string;
+  channel?: 'text' | 'voice';
+  /**
+   * Identity we already hold from earlier conversations. Lets a returning
+   * student start a brand new chat without being asked their name and degree
+   * all over again. Re-validated here like everything else.
+   */
+  known?: { name: string | null; degreeId: string | null };
+}
+
 export async function respond(
-  messages: Message[], rawAssessment?: unknown,
+  messages: Message[], rawAssessment?: unknown, ctx: TurnContext = {},
 ): Promise<FlowResponse> {
-  const res = await runFlow(messages, rawAssessment);
+  const res = await runFlow(messages, rawAssessment, ctx);
   if (res.assessment.degreeId) {
     res.degreeName = loadDegrees().find((d) => d.id === res.assessment.degreeId)?.name;
   }
@@ -218,20 +282,50 @@ export async function respond(
 }
 
 async function runFlow(
-  messages: Message[], rawAssessment?: unknown,
+  messages: Message[], rawAssessment: unknown, ctx: TurnContext,
 ): Promise<FlowResponse> {
   const s = sanitizeAssessment(rawAssessment);
   if (!s.name || !s.degreeId) recoverFromTranscript(messages, s);
+
+  // Long-term memory is the last resort, after this conversation's own state
+  // and its transcript. A new chat with a student we know skips the intro.
+  if (!s.name && ctx.known?.name) s.name = ctx.known.name.trim().slice(0, 40) || null;
+  if (!s.degreeId && ctx.known?.degreeId) {
+    const remembered = ctx.known.degreeId;
+    s.degreeId = loadDegrees().some((d) => d.id === remembered) ? remembered : null;
+  }
 
   const lastUser = [...messages].reverse().find((m) => m.sender === 'user');
   const lastUserText = lastUser?.text?.trim() ?? '';
   const fabSaid = (probe: string) => messages.some((m) => m.sender !== 'user' && m.text.includes(probe));
 
+  // Every local matcher below — the name parser, the degree catalogue, the
+  // option labels — is written in English, and a Tamil answer normalises to an
+  // empty string against all of them. So the answer is brought into English
+  // once per turn and reused, instead of each matcher failing in its own way.
+  //
+  // Lazy on purpose: the interview itself is read by Gemini, which handles
+  // Tamil natively, so most turns never pay for the translation call. Falls
+  // back to the raw text whenever Sarvam is unavailable.
+  let englishCache: string | null = null;
+  const answerInEnglish = async (): Promise<string> => {
+    if (englishCache !== null) return englishCache;
+    if (!lastUserText || !hasNonLatinScript(lastUserText)) return (englishCache = lastUserText);
+    const lang = lastUser?.language ?? DEFAULT_LANGUAGE;
+    englishCache = (await toEnglish(lastUserText, lang)) ?? lastUserText;
+    if (englishCache !== lastUserText) {
+      console.log(`[flow] read ${lang} answer as: ${englishCache}`);
+    }
+    return englishCache;
+  };
+
   // ---- Step 1: name ------------------------------------------------------
   let consumedThisTurn = false;
   if (!s.name) {
     if (fabSaid(NAME_PROBE) && lastUserText) {
-      s.name = parseName(lastUserText);
+      // Through English so "என் பெயர் ராம்" loses the "my name is" and keeps
+      // the name, rather than handing back the first word of the sentence.
+      s.name = parseName(await answerInEnglish(), lastUserText);
       consumedThisTurn = true;
     } else {
       return { reply: NAME_PROMPT, updatedPhase: 'phase1', assessment: s };
@@ -242,7 +336,8 @@ async function runFlow(
   // ---- Step 2: degree ----------------------------------------------------
   if (!s.degreeId) {
     if (fabSaid(DEGREE_PROBE) && lastUserText && !consumedThisTurn) {
-      s.degreeId = findDegree(lastUserText)?.id ?? null;
+      // A student speaking Tamil says "நர்சிங்", not "B.Sc. Nursing".
+      s.degreeId = findDegree(lastUserText)?.id ?? findDegree(await answerInEnglish())?.id ?? null;
       consumedThisTurn = true;
     }
     if (!s.degreeId) {
@@ -272,14 +367,18 @@ async function runFlow(
     // scoring never depends on Gemini being reachable.
     if (s.fallbackItemId && lastUserText && !consumedThisTurn) {
       const item = interviewItemById(s.fallbackItemId);
-      const optionId = item ? matchOption(item, lastUserText) : null;
+      // Option labels are English, so a Tamil answer has to be read in English
+      // before it can be matched to one.
+      const optionId = item
+        ? matchOption(item, lastUserText) ?? matchOption(item, await answerInEnglish())
+        : null;
       if (item && optionId) {
         record(s, { itemId: item.id, optionId, rawText: lastUserText, confidence: 1 });
         consumedThisTurn = true;
       }
       s.fallbackItemId = null;
       open = openItems(s);
-      if (!open.length) return await finish(s, degree, name, messages);
+      if (!open.length) return await finish(s, degree, name, messages, ctx);
     }
 
     const stillPending = pending && !covered(s).has(pending.id) ? pending : null;
@@ -298,6 +397,8 @@ async function runFlow(
         answeredCount: covered(s).size,
         totalCount: interviewItems().length,
         isOpening: s.answers.length === 0 && s.skipped.length === 0,
+        brief: ctx.brief,
+        channel: ctx.channel,
       });
 
     if (turn) {
@@ -331,7 +432,7 @@ async function runFlow(
       }
 
       open = openItems(s);
-      if (!open.length) return await finish(s, degree, name, messages);
+      if (!open.length) return await finish(s, degree, name, messages, ctx);
 
       const askedAbout = turn.needsFollowUp && stillPending && !covered(s).has(stillPending.id)
         ? stillPending.id
@@ -368,7 +469,7 @@ async function runFlow(
     };
   }
 
-  return await finish(s, degree, name, messages);
+  return await finish(s, degree, name, messages, ctx);
 }
 
 function record(s: AssessmentState, a: PsychAnswer): void {
@@ -385,7 +486,7 @@ function phaseFor(s: AssessmentState): Phase {
 
 /** Reflection, then recommendation, then open chat. */
 async function finish(
-  s: AssessmentState, degree: Degree, name: string, messages: Message[],
+  s: AssessmentState, degree: Degree, name: string, messages: Message[], ctx: TurnContext,
 ): Promise<FlowResponse> {
   const profile = buildPsychProfile(s.answers);
 
@@ -393,7 +494,7 @@ async function finish(
   if (!s.reflectionShown) {
     const deterministic = reflectionText(name, degree, profile);
     const narrated = await narrateReflection(
-      name, degree.name, deterministic, profile.reflections.slice(0, 6),
+      name, degree.name, deterministic, profile.reflections.slice(0, 6), ctx.brief,
     );
     const text = narrated ? sanitizeReply(narrated) : deterministic;
     s.reflectionShown = true;
@@ -427,7 +528,7 @@ async function finish(
 
     let narrative = await narrateRecommendation(name, degree, profile, paths, {
       scores: psych.scores, matches: psych.topMatches, motivationNote: psych.motivationNote,
-    });
+    }, ctx.brief);
 
     if (narrative) {
       narrative = sanitizeReply(narrative);
@@ -456,7 +557,7 @@ async function finish(
   // ---- Step 6: open chat -------------------------------------------------
   const paths = buildCareerPaths(degree, profile, 5);
   const canned = `I'm right here, ${name}. Your paths are saved in the Best Fit Paths tab — poke around the roadmaps and tell me what feels right or what feels off. That reaction is real data too.`;
-  const reply = (await casualReply(name, messages, paths[0]?.fieldName ?? null)) ?? canned;
+  const reply = (await casualReply(name, messages, paths[0]?.fieldName ?? null, ctx.brief)) ?? canned;
   return {
     reply: sanitizeReply(reply),
     updatedPhase: 'closing',

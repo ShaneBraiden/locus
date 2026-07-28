@@ -23,6 +23,12 @@ export interface Repos {
     get(userId: string): Promise<unknown | null>;
     set(userId: string, state: unknown): Promise<void>;
   };
+  /** Long-term per-user memory shared by the typed and spoken chat (memory.ts). */
+  context: {
+    get(userId: string): Promise<unknown | null>;
+    set(userId: string, context: unknown): Promise<void>;
+    clear(userId: string): Promise<void>;
+  };
 }
 
 const userSchema = new mongoose.Schema(
@@ -42,6 +48,14 @@ const stateSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
+const contextSchema = new mongoose.Schema(
+  {
+    userId: { type: String, required: true, unique: true, index: true },
+    context: { type: mongoose.Schema.Types.Mixed },
+  },
+  { timestamps: true },
+);
+
 function toRecord(doc: any): UserRecord {
   return {
     id: String(doc._id),
@@ -55,6 +69,7 @@ function toRecord(doc: any): UserRecord {
 function mongoRepos(): Repos {
   const User = mongoose.models.User ?? mongoose.model('User', userSchema);
   const UserState = mongoose.models.UserState ?? mongoose.model('UserState', stateSchema);
+  const UserContextDoc = mongoose.models.UserContext ?? mongoose.model('UserContext', contextSchema);
   return {
     backend: 'mongodb',
     users: {
@@ -81,6 +96,18 @@ function mongoRepos(): Repos {
         await UserState.updateOne({ userId }, { $set: { state } }, { upsert: true });
       },
     },
+    context: {
+      async get(userId) {
+        const d = await UserContextDoc.findOne({ userId }).lean();
+        return (d as any)?.context ?? null;
+      },
+      async set(userId, context) {
+        await UserContextDoc.updateOne({ userId }, { $set: { context } }, { upsert: true });
+      },
+      async clear(userId) {
+        await UserContextDoc.deleteOne({ userId });
+      },
+    },
   };
 }
 
@@ -88,6 +115,7 @@ function memoryRepos(): Repos {
   const users = new Map<string, UserRecord>(); // by id
   const byEmail = new Map<string, string>();
   const states = new Map<string, unknown>();
+  const contexts = new Map<string, unknown>();
   let seq = 0;
   return {
     backend: 'memory',
@@ -113,6 +141,11 @@ function memoryRepos(): Repos {
     state: {
       async get(userId) { return states.get(userId) ?? null; },
       async set(userId, state) { states.set(userId, state); },
+    },
+    context: {
+      async get(userId) { return contexts.get(userId) ?? null; },
+      async set(userId, context) { contexts.set(userId, context); },
+      async clear(userId) { contexts.delete(userId); },
     },
   };
 }

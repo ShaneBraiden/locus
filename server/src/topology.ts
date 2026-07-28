@@ -106,31 +106,102 @@ export function loadDegrees(): Degree[] {
 }
 
 const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+/** Separator-free key: "b.sc nursing", "B.Sc.Nursing" and "bsc nursing" all collapse to one string. */
+const squash = (s: string) => norm(s).replace(/ /g, '');
 
+/** Words a student wraps an answer in. Dropped before matching. */
+const FILLER = new Set([
+  'i', 'im', 'am', 'my', 'me', 'a', 'an', 'the', 'is', 'was', 'are',
+  'doing', 'do', 'study', 'studying', 'studied', 'pursuing', 'pursue',
+  'currently', 'now', 'presently', 'course', 'degree', 'student', 'college',
+  'year', 'first', 'second', 'third', 'fourth', 'final', '1st', '2nd', '3rd', '4th',
+  'in', 'at', 'of', 'and', 'for', 'to', 'it', 'its',
+]);
+
+/** Qualification prefixes — they say the level, not the subject. */
+const PREFIX = new Set(['b', 'sc', 'bsc', 'tech', 'btech', 'bachelor', 'of', 'and', 'in']);
+
+/** Shared across half the catalogue, so never enough to identify a degree alone. */
+const GENERIC = new Set([
+  'technology', 'science', 'sciences', 'medical', 'medicine', 'therapy', 'care', 'bachelor',
+]);
+
+const surfaceForms = (d: Degree) => [d.name, ...d.aliases].map((f) => f.trim()).filter(Boolean);
+
+/** "Bachelor of Physiotherapy (BPT)" -> "physiotherapy". Drops prefixes and parentheticals. */
+function subjects(d: Degree): string[] {
+  return surfaceForms(d)
+    .map((f) => norm(f.replace(/\([^)]*\)/g, ' ')).split(' ').filter((t) => t && !PREFIX.has(t)).join(' '))
+    .filter(Boolean);
+}
+
+/** Equal, or one is a prefix of the other — "lab" matches "laboratory". */
+const tokenish = (a: string, b: string) =>
+  a === b || (a.length >= 3 && b.length >= 3 && (a.startsWith(b) || b.startsWith(a)));
+
+/**
+ * Resolves whatever the student said into one of the 26 degrees.
+ *
+ * Students do not answer with a catalogue name. They say "bsc nursing", "I'm
+ * in my 3rd year of b.pharm", or just "nursing", and every one of those has to
+ * land without making them hunt through a 26-item list. Returns undefined only
+ * when the answer is genuinely ambiguous ("biotechnology" is two different
+ * degrees here) — then asking is the right move, not guessing.
+ */
 export function findDegree(input: string): Degree | undefined {
   const degrees = loadDegrees();
   const q = norm(input);
   if (!q) return undefined;
-  // Exact on id / name / alias first
+  const qs = squash(q);
+  const meaningful = q.split(' ').filter((t) => t && !FILLER.has(t));
+
+  // 1. The id, or a full name/alias on its own.
   for (const d of degrees) {
-    if (d.id === slug(input) || norm(d.name) === q) return d;
-    if (d.aliases.some((a) => norm(a) === q)) return d;
+    if (d.id === slug(input)) return d;
+    if (surfaceForms(d).some((f) => squash(f) === qs)) return d;
   }
-  // Then containment either way (user typed "nursing" or "b.sc nursing student")
+
+  // 2. A full name/alias sitting anywhere inside the answer, matched with all
+  //    separators stripped. This is what makes "bsc nursing" and "I'm studying
+  //    B.Sc. Nursing" behave identically. Longest form wins, so "b.tech
+  //    biotechnology" beats the shorter "biotechnology" reading.
+  let best: { d: Degree; len: number } | null = null;
   for (const d of degrees) {
-    const names = [d.name, ...d.aliases].map(norm);
-    if (names.some((n) => n.includes(q) || q.includes(n))) return d;
+    for (const f of surfaceForms(d)) {
+      const key = squash(f);
+      if (key.length >= 5 && qs.includes(key) && (!best || key.length > best.len)) {
+        best = { d, len: key.length };
+      }
+    }
   }
-  // Last resort: token overlap (>= 2 shared tokens, ignoring degree prefixes)
-  const stop = new Set(['b', 'sc', 'tech', 'bachelor', 'of', 'and']);
-  const qTokens = q.split(' ').filter((t) => t && !stop.has(t));
-  let best: { d: Degree; hits: number } | null = null;
+  if (best) return best.d;
+
+  // 3. Subject match — "nursing", "medical lab technology", "cardiac care".
+  //    Requires a distinctive (non-generic) word, so a bare "technology" or
+  //    "therapy" falls through to the picker instead of guessing.
+  const hits: { d: Degree; score: number }[] = [];
   for (const d of degrees) {
-    const tokens = new Set(norm(`${d.name} ${d.aliases.join(' ')}`).split(' '));
-    const hits = qTokens.filter((t) => tokens.has(t)).length;
-    if (hits >= 2 && (!best || hits > best.hits)) best = { d, hits };
+    for (const s of subjects(d)) {
+      const sTokens = s.split(' ').filter(Boolean);
+      const covered = sTokens.filter((t) => meaningful.some((m) => tokenish(m, t))).length;
+      if (!covered) continue;
+      const distinctive = meaningful.some(
+        (m) => !GENERIC.has(m) && sTokens.some((t) => tokenish(m, t) && !GENERIC.has(t)),
+      );
+      if (!distinctive) continue;
+      const back = meaningful.filter((m) => sTokens.some((t) => tokenish(m, t))).length;
+      // The whole subject is present, or the answer is a subset of it.
+      if (covered === sTokens.length || (back === meaningful.length && meaningful.length > 0)) {
+        hits.push({ d, score: covered * 10 + back });
+      }
+    }
   }
-  return best?.d;
+  if (hits.length) {
+    const top = Math.max(...hits.map((h) => h.score));
+    const winners = [...new Set(hits.filter((h) => h.score === top).map((h) => h.d))];
+    if (winners.length === 1) return winners[0];
+  }
+  return undefined;
 }
 
 export function degreeNames(): string[] {

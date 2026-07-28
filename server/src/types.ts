@@ -18,6 +18,10 @@ export interface Message {
   timestamp: string;
   options?: string[];
   selectedOption?: string;
+  /** How the turn arrived. Absent means typed; both share one conversation. */
+  channel?: 'text' | 'voice';
+  /** BCP-47 language a spoken turn was heard in. */
+  language?: string;
 }
 
 export interface SignalEntry {
@@ -220,6 +224,33 @@ export interface AssessmentState {
   reflectionShown: boolean;
   reflectionAnswered: boolean;
   recommendationShown: boolean;
+}
+
+/**
+ * The student's long-term memory, one record per account. Unlike
+ * AssessmentState it outlives a single chat session, and both the typed and
+ * the spoken path read and write the same copy — see server/src/memory.ts.
+ *
+ * Server-owned: it is never accepted from a request body.
+ */
+export interface UserContext {
+  v: 1;
+  userId: string;
+  name: string | null;
+  degreeId: string | null;
+  degreeName: string | null;
+  /** BCP-47 code FAB speaks to them in. `en-IN` unless voice detected otherwise. */
+  language: string;
+  /** Deterministic reflections from the committed item bank, not model output. */
+  traits: string[];
+  topPaths: { fieldName: string; matchScore: number }[];
+  fitScore: number | null;
+  motivationNote: string | null;
+  /** Things the student said, verbatim, that no scored item captures. */
+  notes: { text: string; at: string }[];
+  turns: { text: number; voice: number };
+  firstSeen: string;
+  lastSeen: string;
 }
 
 /** What the client needs to render the psychometric read. */

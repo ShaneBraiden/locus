@@ -1,8 +1,318 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
 @import "tailwindcss";
 
+/* ============================================================================
+   NORTHR DESIGN SYSTEM
+   ----------------------------------------------------------------------------
+   One source of truth for colour, type, spacing, elevation and motion.
+
+   Before this file existed the app carried three competing visual languages —
+   a violet/slate shell, an amber/stone chat, and a black/gold logo — spread
+   across 49 hardcoded hex values. Everything below collapses that into a
+   single ramp set derived from the logo: near-black ink, gold as the primary
+   accent, violet kept only as a secondary/data accent.
+
+   RULE: never write a raw hex or a `text-[13px]` in a component again. If a
+   value is missing here, add it here first.
+   ========================================================================= */
+
 @theme {
+  /* --- Type families ----------------------------------------------------- */
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Space Grotesk", sans-serif;
+  --font-display: "Space Grotesk", "Inter", sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* --- Type scale --------------------------------------------------------
+     Replaces the ad-hoc text-[9px]/[10px]/[11px]/[11.5px]/[13px]/[14.5px]
+     soup. Ten steps, each with a paired line-height and tracking. `micro`
+     and `tiny` are the only sizes below 12px, and both are reserved for
+     uppercase mono labels — never for reading copy. */
+  --text-micro: 0.625rem;      /* 10px — mono eyebrow labels only          */
+  --text-micro--line-height: 1.1;
+  --text-micro--letter-spacing: 0.08em;
+  --text-tiny: 0.6875rem;      /* 11px — dense metadata, badges            */
+  --text-tiny--line-height: 1.25;
+  --text-tiny--letter-spacing: 0.04em;
+  --text-xs: 0.75rem;          /* 12px — secondary UI text                 */
+  --text-xs--line-height: 1.4;
+  --text-sm: 0.875rem;         /* 14px — default UI text                   */
+  --text-sm--line-height: 1.55;
+  --text-base: 1rem;           /* 16px — body copy, chat bubbles           */
+  --text-base--line-height: 1.65;
+  --text-lg: 1.125rem;         /* 18px — card titles                       */
+  --text-lg--line-height: 1.45;
+  --text-lg--letter-spacing: -0.01em;
+  --text-xl: 1.375rem;         /* 22px — section headings                  */
+  --text-xl--line-height: 1.3;
+  --text-xl--letter-spacing: -0.02em;
+  --text-2xl: 1.75rem;         /* 28px — view titles                       */
+  --text-2xl--line-height: 1.2;
+  --text-2xl--letter-spacing: -0.03em;
+  --text-3xl: 2.25rem;         /* 36px — hero numbers                      */
+  --text-3xl--line-height: 1.05;
+  --text-3xl--letter-spacing: -0.035em;
+  --text-4xl: 3rem;            /* 48px — display                           */
+  --text-4xl--line-height: 1;
+  --text-4xl--letter-spacing: -0.04em;
+
+  /* --- Ink: the single neutral ramp --------------------------------------
+     Warm-tinted so it sits with the gold instead of fighting it. This one
+     ramp replaces every previous use of slate-*, stone-*, #0F172A, #5C534C,
+     #A89F91, #EAE3D5, #1A1310 and friends. */
+  --color-ink-0:   #FFFFFF;
+  --color-ink-25:  #FCFBFA;
+  --color-ink-50:  #F7F5F2;
+  --color-ink-100: #EFEBE6;
+  --color-ink-200: #E2DCD4;
+  --color-ink-300: #CBC3B8;
+  --color-ink-400: #A69C8E;
+  /* ink-450 is the lightest warm grey that still clears 3:1 against both
+     white and ink-50, so it is the only value allowed for a control border
+     or any other meaningful non-text boundary (WCAG 1.4.11). */
+  --color-ink-450: #988C7C;
+  /* ink-500 is tuned to clear 4.5:1 on white *and* on ink-50, because
+     secondary text lands on both. The original #7D7466 passed on white and
+     missed on ink-50. */
+  --color-ink-500: #786D5E;
+  --color-ink-600: #5A5247;
+  --color-ink-700: #3E382F;
+  --color-ink-800: #26221C;
+  --color-ink-900: #16130F;
+  --color-ink-950: #0B0907;
+
+  /* --- Gold: primary accent, taken from the logo gradient ---------------- */
+  --color-gold-50:  #FDF8EE;
+  --color-gold-100: #FAEFD6;
+  --color-gold-200: #F4DCA9;
+  --color-gold-300: #EAC276;
+  --color-gold-400: #DFA84C;
+  --color-gold-500: #C98A28;
+  --color-gold-600: #A96D1C;
+  --color-gold-700: #85531A;
+  --color-gold-800: #5F3C15;
+  --color-gold-900: #3D270F;
+
+  /* --- Violet: secondary accent, kept for data + wayfinding -------------- */
+  --color-violet-50:  #F5F2FF;
+  --color-violet-100: #EAE4FF;
+  --color-violet-200: #D6CBFF;
+  --color-violet-300: #B7A3FB;
+  --color-violet-400: #9575F3;
+  --color-violet-500: #7B50E8;
+  --color-violet-600: #6535D0;
+  --color-violet-700: #5227A8;
+  --color-violet-800: #3E1D7E;
+  --color-violet-900: #2A1355;
+
+  /* --- Status ------------------------------------------------------------ */
+  --color-good-50:  #ECFDF3;
+  --color-good-100: #D1FADF;
+  --color-good-300: #6CE9A6;
+  --color-good-500: #12B76A;
+  --color-good-700: #027A48;
+  --color-good-900: #054F31;
+
+  --color-warn-50:  #FFFAEB;
+  --color-warn-100: #FEF0C7;
+  --color-warn-300: #FEC84B;
+  --color-warn-500: #F79009;
+  --color-warn-700: #B54708;
+  --color-warn-900: #7A2E0E;
+
+  --color-bad-50:  #FEF3F2;
+  --color-bad-100: #FEE4E2;
+  --color-bad-300: #FDA29B;
+  --color-bad-500: #F04438;
+  --color-bad-700: #B42318;
+  --color-bad-900: #7A271A;
+
+  --color-info-50:  #EFF8FF;
+  --color-info-100: #D1E9FF;
+  --color-info-300: #84CAFF;
+  --color-info-500: #2E90FA;
+  --color-info-700: #175CD3;
+  --color-info-900: #102F6B;
+
+  /* --- Radii -------------------------------------------------------------
+     Previously every surface was rounded-xl regardless of size, which made
+     small chips look bloated and big panels look timid. Scaled properly. */
+  --radius-xs:  0.25rem;
+  --radius-sm:  0.375rem;
+  --radius-md:  0.5rem;
+  --radius-lg:  0.75rem;
+  --radius-xl:  1rem;
+  --radius-2xl: 1.25rem;
+  --radius-3xl: 1.75rem;
+
+  /* --- Elevation ---------------------------------------------------------
+     Warm-tinted shadows. Cool grey shadows over a warm surface are what made
+     the old cards look dirty. */
+  --shadow-e1: 0 1px 2px 0 rgb(22 19 15 / 0.05);
+  --shadow-e2: 0 1px 3px 0 rgb(22 19 15 / 0.07), 0 1px 2px -1px rgb(22 19 15 / 0.06);
+  --shadow-e3: 0 4px 12px -2px rgb(22 19 15 / 0.08), 0 2px 4px -2px rgb(22 19 15 / 0.05);
+  --shadow-e4: 0 12px 28px -6px rgb(22 19 15 / 0.12), 0 4px 10px -4px rgb(22 19 15 / 0.06);
+  --shadow-e5: 0 28px 60px -12px rgb(22 19 15 / 0.20), 0 8px 20px -8px rgb(22 19 15 / 0.10);
+  --shadow-glow-gold: 0 0 0 1px rgb(201 138 40 / 0.25), 0 6px 20px -6px rgb(201 138 40 / 0.35);
+  --shadow-glow-violet: 0 0 0 1px rgb(101 53 208 / 0.25), 0 6px 20px -6px rgb(101 53 208 / 0.35);
+
+  /* --- Motion ------------------------------------------------------------ */
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out-soft: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* --- Layout ------------------------------------------------------------ */
+  --spacing-rail: 4.75rem;   /* collapsed sidebar */
+  --spacing-sidebar: 16rem;  /* expanded sidebar  */
+  --spacing-topbar: 3.5rem;
+}
+
+/* ============================================================================
+   SEMANTIC ALIASES
+   Components reference these, not the raw ramps, so a future re-theme (or a
+   dark mode) is a change in one place.
+   ========================================================================= */
+@theme {
+  --color-surface:         var(--color-ink-0);
+  --color-surface-sunken:  var(--color-ink-50);
+  --color-surface-inverse: var(--color-ink-950);
+
+  --color-line:        var(--color-ink-100);
+  --color-line-strong: var(--color-ink-200);
+  /* Boundaries a user has to perceive to operate the control. */
+  --color-field:       var(--color-ink-450);
+
+  --color-content:        var(--color-ink-900);
+  --color-content-muted:  var(--color-ink-600);
+  --color-content-subtle: var(--color-ink-400);
+  --color-content-invert: var(--color-ink-0);
+
+  --color-brand:       var(--color-gold-500);
+  --color-brand-hover: var(--color-gold-600);
+  --color-brand-soft:  var(--color-gold-50);
+}
+
+/* ============================================================================
+   BASE
+   ========================================================================= */
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    background-color: var(--color-ink-50);
+    color: var(--color-ink-900);
+    font-family: var(--font-sans);
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overscroll-behavior-y: none;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--color-ink-900);
+  }
+
+  /* Numbers should never wobble as they tick. */
+  time, [data-numeric] {
+    font-variant-numeric: tabular-nums;
+  }
+
+  button, [role="button"] {
+    cursor: pointer;
+  }
+  button:disabled {
+    cursor: not-allowed;
+  }
+
+  /* One focus treatment everywhere, instead of the eight different
+     focus:ring-* combinations the old code used. */
+  :where(a, button, input, select, textarea, [tabindex]):focus-visible {
+    outline: 2px solid var(--color-gold-500);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+
+  ::selection {
+    background: var(--color-gold-200);
+    color: var(--color-ink-900);
+  }
+}
+
+/* ============================================================================
+   SCROLLBARS — thin and warm, instead of the OS default grey.
+   ========================================================================= */
+@layer components {
+  .scroll-slim {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-ink-300) transparent;
+  }
+  .scroll-slim::-webkit-scrollbar { width: 8px; height: 8px; }
+  .scroll-slim::-webkit-scrollbar-track { background: transparent; }
+  .scroll-slim::-webkit-scrollbar-thumb {
+    background-color: var(--color-ink-300);
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+  .scroll-slim::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-ink-400);
+    background-clip: content-box;
+  }
+
+  /* Mono uppercase label. Used for every eyebrow/kicker in the app.
+     ink-500 rather than ink-400: at 10px this is small text and has to clear
+     4.5:1, which ink-400 (2.70:1) did not. */
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--text-micro);
+    line-height: 1.1;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--color-ink-500);
+  }
+
+  /* Consistent page gutter + max width for every scrolling view. */
+  .page {
+    width: 100%;
+    max-width: 80rem;
+    margin-inline: auto;
+    padding-inline: 1rem;
+    padding-block: 1.25rem;
+  }
+  @media (min-width: 640px) {
+    .page { padding-inline: 1.5rem; padding-block: 1.75rem; }
+  }
+  @media (min-width: 1024px) {
+    .page { padding-inline: 2rem; padding-block: 2rem; }
+  }
+
+  /* Gold text gradient matched to the logo. Sparingly, on hero numbers. */
+  .text-gradient-gold {
+    background-image: linear-gradient(120deg, #FDF3DC 0%, #E5C898 30%, #D3A86C 60%, #9A6932 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Hairline that survives a transform, unlike a border on a scaled element. */
+  .hairline-b { box-shadow: inset 0 -1px 0 0 var(--color-ink-100); }
+}
+
+/* ============================================================================
+   MOTION — respect the OS setting. The old build animated regardless.
+   ========================================================================= */
+@layer utilities {
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
 }

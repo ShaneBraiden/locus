@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { Message, Phase, VoiceLanguage } from "../../types";
 import { Check, ClipboardList, Loader2, Mic, Plus, Send, Square, Volume2, VolumeX, X } from "lucide-react";
 import { Recorder, Recording, isRecordingSupported, startRecording } from "../../lib/voice";
+import { Button, EmptyState, Progress } from "../../ui";
 
 // Progress is reported by the server (see FlowResponse.progress in
 // server/src/flow.ts). It used to be scraped out of a literal "(n/15)" prefix
@@ -198,33 +199,24 @@ export default function ChatContainer({
       : null;
 
   return (
-    <div className="flex flex-col h-full min-w-0 bg-[#FFFDFB]">
-      {/* Chat header: identity + live question-flow progress */}
-      <div className="shrink-0 border-b border-[#EAE3D5] bg-[#FAF6F0]">
-        <div className="flex items-center justify-between gap-3 px-4 py-3">
-          <div className="flex min-w-0 items-center space-x-2">
-            <span className="relative flex h-2 w-2 shrink-0">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D97706] opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#D97706]"></span>
+    <div className="flex h-full min-w-0 flex-col bg-white">
+      {/* Chat header. Everything used to sit in one row that overflowed on a
+          phone the moment the voice controls appeared; the counter now lives
+          with the progress bar and the controls collapse to icons. */}
+      <header className="shrink-0 border-b border-ink-100 bg-white/90 backdrop-blur-md">
+        <div className="mx-auto flex w-full max-w-3xl items-center justify-between gap-2 px-4 py-2.5 sm:px-6">
+          <div className="flex min-w-0 items-center gap-2.5">
+            <span className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-ink-900 font-display text-sm font-bold text-gold-300">
+              F
+              <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-white bg-good-500" />
             </span>
-            <span className="truncate text-xs font-bold text-[#1A1310]">FAB (Northr Companion)</span>
+            <span className="min-w-0">
+              <span className="block truncate text-sm font-bold leading-tight text-ink-900">FAB</span>
+              <span className="block truncate text-tiny text-ink-500">Your Northr companion</span>
+            </span>
           </div>
 
-          <div className="flex shrink-0 items-center gap-2">
-            <AnimatePresence initial={false}>
-              {progress && (
-                <motion.span
-                  initial={{ opacity: 0, y: -4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -4 }}
-                  transition={{ duration: 0.2 }}
-                  className="font-mono text-[10px] font-bold uppercase tracking-wider text-[#5C534C] tabular-nums"
-                >
-                  Getting to know you {progress.answered} / {progress.total}
-                </motion.span>
-              )}
-            </AnimatePresence>
-
+          <div className="flex shrink-0 items-center gap-1.5">
             {voice?.enabled && (
               <>
                 <select
@@ -232,7 +224,8 @@ export default function ChatContainer({
                   value={voice.language}
                   onChange={(e) => voice.onLanguageChange(e.target.value)}
                   title="Language FAB listens and replies in"
-                  className="rounded-lg border border-[#EAE3D5] bg-[#FFFDFB] px-2 py-1 text-[11px] font-semibold text-[#5C534C] shadow-xs hover:border-[#D97706] focus:border-[#D97706] focus:outline-none cursor-pointer"
+                  aria-label="Voice language"
+                  className="h-8 max-w-28 rounded-lg border border-ink-450 bg-white px-2 text-tiny font-semibold text-ink-700 shadow-e1 transition-colors hover:border-ink-600"
                 >
                   <option value="auto">Auto</option>
                   {voice.languages.map((lang) => (
@@ -242,136 +235,128 @@ export default function ChatContainer({
                   ))}
                 </select>
 
-                <button
+                <Button
+                  size="sm"
+                  variant={voice.autoSpeak ? "primary" : "outline"}
                   onClick={voice.onToggleAutoSpeak}
                   title={voice.autoSpeak ? "FAB reads replies out loud" : "FAB stays silent"}
                   aria-pressed={voice.autoSpeak}
-                  className={`flex items-center rounded-lg border px-2 py-1 text-[11px] font-semibold shadow-xs transition-colors cursor-pointer ${
-                    voice.autoSpeak
-                      ? "border-[#D97706] bg-[#FFFBF3] text-[#D97706]"
-                      : "border-[#EAE3D5] bg-[#FFFDFB] text-[#5C534C] hover:border-[#D97706]"
-                  }`}
+                  aria-label="Toggle spoken replies"
+                  className="w-8 px-0"
                 >
                   {voice.autoSpeak ? <Volume2 className="h-3.5 w-3.5" /> : <VolumeX className="h-3.5 w-3.5" />}
-                </button>
+                </Button>
               </>
             )}
 
             {onNewChat && (
-              <button
-                onClick={onNewChat}
-                title="New Conversation"
-                className="flex items-center space-x-1 rounded-lg border border-[#EAE3D5] bg-[#FFFDFB] px-2 py-1 text-[11px] font-semibold text-[#5C534C] shadow-xs hover:border-[#D97706] hover:bg-[#FFFBF3] hover:text-[#D97706] active:bg-[#FAF6F0] transition-colors cursor-pointer"
-              >
-                <Plus className="h-3.5 w-3.5 text-[#D97706]" />
+              <Button size="sm" variant="outline" onClick={onNewChat} title="New conversation">
+                <Plus className="h-3.5 w-3.5" />
                 <span className="hidden sm:inline">New</span>
-              </button>
+              </Button>
             )}
 
             {onToggleSecretBoard && (
-              <button
-                onClick={onToggleSecretBoard}
-                className="lg:hidden flex items-center space-x-1.5 rounded-lg border border-[#EAE3D5] bg-[#FFFDFB] px-2.5 py-1 text-[11px] font-semibold text-[#5C534C] shadow-sm active:bg-[#FAF6F0] cursor-pointer"
-              >
-                <ClipboardList className="h-3.5 w-3.5 text-[#D97706]" />
-                <span>{showSecretBoardMobile ? "Hide Insights" : "Peep Insights"}</span>
-              </button>
+              <Button size="sm" variant="outline" onClick={onToggleSecretBoard} className="lg:hidden">
+                <ClipboardList className="h-3.5 w-3.5" />
+                <span className="hidden xs:inline">{showSecretBoardMobile ? "Hide" : "Insights"}</span>
+              </Button>
             )}
           </div>
         </div>
 
-        {/* Slim progress bar — only while the conversation is still gathering */}
+        {/* Progress: label and bar together, so the count reads as progress
+            rather than as one more control competing in the header row. */}
         <AnimatePresence initial={false}>
           {progress && (
             <motion.div
               initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 3, opacity: 1 }}
+              animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.25 }}
-              className="w-full overflow-hidden bg-[#EAE3D5]"
-              role="progressbar"
-              aria-valuemin={0}
-              aria-valuemax={progress.total}
-              aria-valuenow={progress.answered}
-              aria-label="Conversation progress"
+              className="overflow-hidden"
             >
-              <motion.div
-                className="h-full rounded-r-full bg-gradient-to-r from-[#D97706] to-[#F59E0B]"
-                initial={false}
-                animate={{ width: `${(progress.answered / progress.total) * 100}%` }}
-                transition={{ type: "spring", stiffness: 160, damping: 24 }}
-              />
+              <div className="mx-auto w-full max-w-3xl px-4 pb-2.5 sm:px-6">
+                <div className="mb-1.5 flex items-baseline justify-between gap-2">
+                  <span className="eyebrow">Getting to know you</span>
+                  <span data-numeric className="font-mono text-micro font-bold text-ink-500">
+                    {progress.answered} / {progress.total}
+                  </span>
+                </div>
+                <Progress
+                  value={(progress.answered / progress.total) * 100}
+                  size="sm"
+                  tone="gold"
+                  label="Conversation progress"
+                />
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
+      </header>
 
-      {/* Message Feed */}
-      <div ref={scrollContainerRef} className="flex-1 overflow-y-auto px-4 py-6 sm:px-6 space-y-6 bg-[#FFFDFB]">
+      {/* Message feed. The old feed had no max width, so on a wide monitor a
+          reply ran the full 1900px and became unreadable. */}
+      <div
+        ref={scrollContainerRef}
+        className="scroll-slim flex-1 overflow-y-auto bg-white"
+      >
+        <div className="mx-auto w-full max-w-3xl space-y-5 px-4 py-6 sm:px-6">
         {messages.length === 0 && !isProcessing && (
-          <div className="flex h-full flex-col items-center justify-center gap-3 px-6 text-center">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-[#C6F3F7] bg-[#EAFDFE] font-display text-lg font-extrabold text-[#D97706] shadow-sm">
-              F
-            </div>
-            <h3 className="font-display text-base font-bold text-[#1A1310]">
-              Say hi to FAB
-            </h3>
-            <p className="max-w-xs text-xs font-medium leading-relaxed text-[#5C534C]">
-              Just a conversation, no right answers — and one real answer at the end: the
-              career path that actually fits you. Start whenever you're ready.
-            </p>
-          </div>
+          <EmptyState
+            className="border-none bg-transparent py-16"
+            title="Say hi to FAB"
+            description="Just a conversation, no right answers — and one real answer at the end: the career path that actually fits you. Start whenever you're ready."
+          />
         )}
 
-        {messages.map((message) => {
+        {messages.map((message, i) => {
           const isUser = message.sender === "user";
+          // Consecutive messages from the same side used to repeat the avatar
+          // and the "FAB"/"You" label on every single bubble, which made a long
+          // reply chain look like six separate speakers.
+          const prev = messages[i - 1];
+          const startsGroup = !prev || (prev.sender === "user") !== isUser;
+
           return (
             <div
               key={message.id}
-              className={`flex w-full ${isUser ? "justify-end" : "justify-start"}`}
+              className={`flex w-full ${isUser ? "justify-end" : "justify-start"} ${
+                startsGroup ? "" : "-mt-3"
+              }`}
             >
-              <div className={`flex min-w-0 items-start space-x-3 max-w-[85%] sm:max-w-[75%]`}>
-                {/* FAB Avatar */}
-                {!isUser && (
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#EAFDFE] border border-[#C6F3F7] text-[#D97706] font-extrabold text-sm shadow-sm font-display">
-                    F
-                  </div>
-                )}
+              <div className="flex min-w-0 max-w-[88%] items-start gap-2.5 sm:max-w-[80%]">
+                {/* FAB avatar — a spacer keeps grouped bubbles aligned. */}
+                {!isUser &&
+                  (startsGroup ? (
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-ink-900 font-display text-sm font-bold text-gold-300">
+                      F
+                    </span>
+                  ) : (
+                    <span className="h-0 w-8 shrink-0" aria-hidden />
+                  ))}
 
                 <div className="min-w-0 flex-1 space-y-1">
-                  {/* Sender name, plus the voice affordances: a mic marker on
-                      anything the student spoke, and a replay button on FAB's
-                      side so even a typed conversation can be listened to. */}
-                  <div
-                    className={`flex items-center gap-1.5 text-[10px] font-mono tracking-wider uppercase text-[#5C534C] font-bold ${
-                      isUser ? "justify-end" : "justify-start"
-                    }`}
-                  >
-                    <span>{isUser ? "You" : "FAB"}</span>
-                    {isUser && message.channel === "voice" && (
-                      <Mic className="h-3 w-3 text-[#D97706]" aria-label="Spoken" />
-                    )}
-                    {!isUser && voice?.enabled && message.text && (
-                      <button
-                        onClick={() => voice.onSpeakMessage(message)}
-                        title={voice.speakingMessageId === message.id ? "Stop" : "Read this out loud"}
-                        className="rounded p-0.5 text-[#5C534C] transition-colors hover:text-[#D97706] cursor-pointer"
-                      >
-                        {voice.speakingMessageId === message.id ? (
-                          <Square className="h-3 w-3 fill-current text-[#D97706]" />
-                        ) : (
-                          <Volume2 className="h-3 w-3" />
-                        )}
-                      </button>
-                    )}
-                  </div>
+                  {startsGroup && (
+                    <div
+                      className={`flex items-center gap-1.5 ${
+                        isUser ? "justify-end" : "justify-start"
+                      }`}
+                    >
+                      <span className="eyebrow">{isUser ? "You" : "FAB"}</span>
+                      {isUser && message.channel === "voice" && (
+                        <Mic className="h-3 w-3 text-gold-600" aria-label="Spoken" />
+                      )}
+                    </div>
+                  )}
 
-                  {/* Message Bubble */}
+                  {/* Message bubble. The tail corner is squared off on the
+                      speaker's side so direction reads at a glance. */}
                   <div
-                    className={`rounded-2xl px-4 py-3 text-[14.5px] leading-relaxed shadow-xs border ${
+                    className={`relative rounded-2xl px-4 py-3 text-base ${
                       isUser
-                        ? "bg-[#D97706] text-white border-[#D97706]"
-                        : "bg-[#FAF6F0] text-[#1A1310] border-[#EAE3D5]"
+                        ? "rounded-br-md bg-ink-900 text-white"
+                        : "rounded-bl-md border border-ink-100 bg-ink-50 text-ink-900"
                     }`}
                   >
                     <p className="whitespace-pre-wrap break-words">{message.text}</p>
@@ -379,30 +364,52 @@ export default function ChatContainer({
                     {/* What FAB actually said out loud, when the student is
                         not on English. The English above stays the record. */}
                     {!isUser && message.spokenText && (
-                      <p className="mt-2 whitespace-pre-wrap break-words border-t border-[#EAE3D5] pt-2 text-[13px] text-[#5C534C]">
+                      <p className="mt-2 whitespace-pre-wrap break-words border-t border-ink-200 pt-2 text-sm text-ink-600">
                         {message.spokenText}
                       </p>
                     )}
                   </div>
 
+                  {/* Replay control moved below the bubble — in the header row
+                      it was a 12px tap target wedged against the label. */}
+                  {!isUser && voice?.enabled && message.text && (
+                    <button
+                      onClick={() => voice.onSpeakMessage(message)}
+                      title={voice.speakingMessageId === message.id ? "Stop" : "Read this out loud"}
+                      className="inline-flex items-center gap-1.5 rounded-md px-1.5 py-1 text-micro font-bold uppercase tracking-wider text-ink-400 transition-colors hover:bg-ink-100 hover:text-gold-700"
+                    >
+                      {voice.speakingMessageId === message.id ? (
+                        <>
+                          <Square className="h-3 w-3 fill-current" />
+                          <span>Stop</span>
+                        </>
+                      ) : (
+                        <>
+                          <Volume2 className="h-3 w-3" />
+                          <span>Listen</span>
+                        </>
+                      )}
+                    </button>
+                  )}
+
                   {/* Shortcut options: the degree picker, or the plain-instrument
                       fallback when Gemini is unreachable. Tapping is optional —
                       typing an answer works just as well. */}
                   {!isUser && message.options && message.options.length > 0 && !message.selectedOption && (
-                    <div className="grid grid-cols-1 gap-2 mt-3 pt-1">
+                    <div className="mt-3 grid grid-cols-1 gap-2">
                       {message.options.map((option, idx) => (
                         <motion.button
                           key={idx}
                           id={`mcq-option-${idx}`}
                           initial={{ opacity: 0, y: 8 }}
                           animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: idx * 0.05, duration: 0.25, ease: "easeOut" }}
+                          transition={{ delay: idx * 0.04, duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
                           whileTap={{ scale: 0.985 }}
                           onClick={() => handleOptionClick(option)}
                           disabled={isProcessing}
-                          className="group flex w-full items-center gap-3 rounded-xl border border-[#EAE3D5] bg-white px-3.5 py-3 text-left text-[13px] font-semibold leading-snug text-[#1A1310] shadow-xs transition-colors duration-150 hover:border-[#D97706] hover:bg-[#FFFBF3] focus:outline-none focus:ring-2 focus:ring-[#D97706]/40 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
+                          className="group flex w-full items-center gap-3 rounded-xl border border-ink-200 bg-white px-3.5 py-3 text-left text-sm font-semibold leading-snug text-ink-900 shadow-e1 transition-[border-color,background-color,box-shadow] duration-150 hover:border-gold-400 hover:bg-gold-50 hover:shadow-e2 disabled:opacity-50"
                         >
-                          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-[#EAE3D5] bg-[#FAF6F0] font-mono text-[11px] font-extrabold text-[#5C534C] transition-colors duration-150 group-hover:border-[#D97706] group-hover:bg-[#D97706] group-hover:text-white">
+                          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-ink-200 bg-ink-50 font-mono text-tiny font-bold text-ink-500 transition-colors duration-150 group-hover:border-gold-500 group-hover:bg-gold-500 group-hover:text-white">
                             {String.fromCharCode(65 + idx)}
                           </span>
                           <span className="min-w-0 flex-1 break-words">{option}</span>
@@ -411,11 +418,11 @@ export default function ChatContainer({
                     </div>
                   )}
 
-                  {/* Chosen Option status */}
+                  {/* Chosen option status */}
                   {!isUser && message.selectedOption && (
-                    <div className="mt-2 flex items-start gap-2 rounded-lg border border-[#E4EFE6] bg-[#F3FAF4] px-3 py-2">
-                      <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-600" />
-                      <span className="min-w-0 break-words text-[11.5px] font-semibold text-emerald-800">
+                    <div className="mt-2 flex items-start gap-2 rounded-lg border border-good-300/50 bg-good-50 px-3 py-2">
+                      <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-good-700" />
+                      <span className="min-w-0 break-words text-xs font-semibold text-good-700">
                         {message.selectedOption}
                       </span>
                     </div>
@@ -429,16 +436,16 @@ export default function ChatContainer({
         {/* The clip is on its way up but nobody has read it back to us yet */}
         {awaitingTranscript && isProcessing && (
           <div className="flex w-full justify-end">
-            <div className="flex min-w-0 items-start space-x-3 max-w-[85%] sm:max-w-[75%]">
+            <div className="flex min-w-0 max-w-[88%] items-start gap-2.5 sm:max-w-[80%]">
               <div className="min-w-0 flex-1 space-y-1">
-                <div className="flex items-center justify-end gap-1.5 text-[10px] font-mono tracking-wider uppercase text-[#5C534C] font-bold">
-                  <span>You</span>
-                  <Mic className="h-3 w-3 text-[#D97706]" />
+                <div className="flex items-center justify-end gap-1.5">
+                  <span className="eyebrow">You</span>
+                  <Mic className="h-3 w-3 text-gold-600" />
                 </div>
-                <div className="flex items-center gap-2 rounded-2xl border border-[#D97706]/40 bg-[#FFFBF3] px-4 py-3 shadow-xs">
-                  <Loader2 className="h-3.5 w-3.5 shrink-0 animate-spin text-[#D97706]" />
-                  <span className="text-[13px] font-semibold text-[#5C534C]">
-                    Working out what you said...
+                <div className="flex items-center gap-2 rounded-2xl rounded-br-md border border-ink-200 bg-ink-50 px-4 py-3">
+                  <Loader2 className="h-3.5 w-3.5 shrink-0 animate-spin text-gold-600" />
+                  <span className="text-sm font-medium text-ink-600">
+                    Working out what you said…
                   </span>
                 </div>
               </div>
@@ -446,21 +453,27 @@ export default function ChatContainer({
           </div>
         )}
 
-        {/* FAB Typing thoughts status */}
+        {/* FAB is thinking */}
         {isProcessing && (
           <div className="flex justify-start">
-            <div className="flex items-start space-x-3 max-w-[75%]">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#EAFDFE] border border-[#C6F3F7] text-[#D97706] font-extrabold text-sm shadow-sm animate-pulse font-display">
+            <div className="flex max-w-[80%] items-start gap-2.5">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-ink-900 font-display text-sm font-bold text-gold-300">
                 F
-              </div>
+              </span>
               <div className="space-y-1">
-                <div className="text-[10px] font-mono tracking-wider uppercase text-[#5C534C] font-bold">
-                  FAB is feeling the vibe...
-                </div>
-                <div className="rounded-2xl px-4 py-3 bg-[#FAF6F0] border border-[#EAE3D5] shadow-xs flex items-center space-x-1.5">
-                  <div className="h-2 w-2 rounded-full bg-[#D97706] animate-bounce" style={{ animationDelay: "0ms" }}></div>
-                  <div className="h-2 w-2 rounded-full bg-[#D97706] animate-bounce" style={{ animationDelay: "150ms" }}></div>
-                  <div className="h-2 w-2 rounded-full bg-[#D97706] animate-bounce" style={{ animationDelay: "300ms" }}></div>
+                <div className="eyebrow">FAB is thinking</div>
+                <div
+                  className="flex items-center gap-1.5 rounded-2xl rounded-bl-md border border-ink-100 bg-ink-50 px-4 py-3.5"
+                  role="status"
+                  aria-label="FAB is composing a reply"
+                >
+                  {[0, 150, 300].map((d) => (
+                    <span
+                      key={d}
+                      className="h-1.5 w-1.5 animate-bounce rounded-full bg-ink-400"
+                      style={{ animationDelay: `${d}ms` }}
+                    />
+                  ))}
                 </div>
               </div>
             </div>
@@ -468,100 +481,111 @@ export default function ChatContainer({
         )}
 
         <div ref={messagesEndRef} />
+        </div>
       </div>
 
       {/* Input bar: type it or say it, same conversation either way */}
-      <div className="border-t border-[#EAE3D5] bg-[#FAF6F0] p-4">
-        {voiceError && (
-          <div className="mx-auto mb-2 flex max-w-4xl items-start gap-2 rounded-lg border border-[#F5D9B8] bg-[#FFFBF3] px-3 py-2">
-            <span className="min-w-0 flex-1 break-words text-[11.5px] font-semibold text-[#92400E]">
-              {voiceError}
-            </span>
-            <button
-              onClick={() => setVoiceError(null)}
-              className="shrink-0 text-[#92400E] hover:text-[#B45309] cursor-pointer"
-              aria-label="Dismiss"
-            >
-              <X className="h-3.5 w-3.5" />
-            </button>
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="mx-auto max-w-4xl flex items-center space-x-2">
-          {canRecord && (
-            <button
-              id="voice-record-btn"
-              type="button"
-              onClick={toggleRecording}
-              disabled={isProcessing && !isRecording}
-              title={isRecording ? "Send what you said" : "Talk to FAB"}
-              aria-label={isRecording ? "Stop recording and send" : "Record a voice message"}
-              aria-pressed={isRecording}
-              className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border transition-colors focus:outline-none focus:ring-2 focus:ring-[#D97706] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer ${
-                isRecording
-                  ? "border-[#B45309] bg-[#D97706] text-white"
-                  : "border-[#EAE3D5] bg-[#FFFDFB] text-[#D97706] hover:border-[#D97706] hover:bg-[#FFFBF3]"
-              }`}
-            >
-              {isRecording ? (
-                <Square className="h-4 w-4 fill-current" />
-              ) : (
-                <Mic className="h-4 w-4" />
-              )}
-            </button>
-          )}
-
-          {isRecording ? (
-            <div className="flex flex-1 items-center gap-3 rounded-xl border border-[#D97706] bg-[#FFFBF3] px-4 py-3">
-              <span className="relative flex h-2.5 w-2.5 shrink-0">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#D97706] opacity-75" />
-                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#D97706]" />
-              </span>
-              <span className="min-w-0 flex-1 truncate text-sm font-bold text-[#1A1310]">
-                Listening... tap the square when you're done
-              </span>
-              <span className="shrink-0 font-mono text-xs font-bold tabular-nums text-[#5C534C]">
-                {String(Math.floor(elapsed / 60)).padStart(2, "0")}:
-                {String(elapsed % 60).padStart(2, "0")}
+      <div className="shrink-0 border-t border-ink-100 bg-white px-4 pb-4 pt-3 sm:px-6">
+        <div className="mx-auto w-full max-w-3xl">
+          {voiceError && (
+            <div className="mb-2 flex items-start gap-2 rounded-lg border border-warn-300/60 bg-warn-50 px-3 py-2">
+              <span className="min-w-0 flex-1 break-words text-xs font-semibold text-warn-700">
+                {voiceError}
               </span>
               <button
-                type="button"
-                onClick={() => void finishRecording(false)}
-                title="Discard this recording"
-                aria-label="Discard recording"
-                className="shrink-0 text-[#5C534C] hover:text-[#B45309] cursor-pointer"
+                onClick={() => setVoiceError(null)}
+                className="shrink-0 text-warn-700 transition-colors hover:text-warn-900"
+                aria-label="Dismiss"
               >
-                <X className="h-4 w-4" />
+                <X className="h-3.5 w-3.5" />
               </button>
             </div>
-          ) : (
-            <input
-              id="user-chat-input"
-              type="text"
-              value={inputText}
-              onChange={(e) => setInputText(e.target.value)}
-              disabled={isProcessing}
-              placeholder={
-                isProcessing ? "FAB is sensing the signals..." : "Say it however it comes out..."
-              }
-              className="flex-1 rounded-xl border border-[#EAE3D5] bg-[#FFFDFB] px-4 py-3 text-sm text-[#1A1310] placeholder-[#5C534C] focus:border-[#D97706] focus:bg-[#FFFDFB] focus:outline-none focus:ring-1 focus:ring-[#D97706] disabled:opacity-50 font-bold"
-            />
           )}
 
-          <button
-            id="send-chat-btn"
-            type="submit"
-            disabled={isProcessing || isRecording || !inputText.trim()}
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#D97706] text-white hover:bg-[#B45309] transition-colors focus:outline-none focus:ring-2 focus:ring-[#D97706] focus:ring-offset-2 disabled:bg-[#FAF6F0] disabled:text-[#A39A94] cursor-pointer"
+          {/* The composer is now one bordered surface with the controls inset,
+              rather than three separate floating pills that wrapped awkwardly
+              on narrow screens. */}
+          <form
+            onSubmit={handleSubmit}
+            className={`flex items-center gap-2 rounded-2xl border bg-white p-1.5 shadow-e2 transition-[border-color,box-shadow] ${
+              isRecording
+                ? "border-gold-400 shadow-glow-gold"
+                : "border-ink-200 focus-within:border-gold-400 focus-within:shadow-glow-gold"
+            }`}
           >
-            {isProcessing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-          </button>
-        </form>
-        <p className="text-center text-[10px] text-[#5C534C] mt-2 font-semibold">
-          {canRecord
-            ? "Type it or tap the mic and say it. FAB remembers either way."
-            : "Keep it real. Talk to FAB like you'd talk to your smartest, warmest friend."}
-        </p>
+            {canRecord && (
+              <button
+                id="voice-record-btn"
+                type="button"
+                onClick={toggleRecording}
+                disabled={isProcessing && !isRecording}
+                title={isRecording ? "Send what you said" : "Talk to FAB"}
+                aria-label={isRecording ? "Stop recording and send" : "Record a voice message"}
+                aria-pressed={isRecording}
+                className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-colors disabled:opacity-40 ${
+                  isRecording
+                    ? "bg-gold-500 text-white"
+                    : "text-ink-500 hover:bg-ink-100 hover:text-gold-700"
+                }`}
+              >
+                {isRecording ? <Square className="h-4 w-4 fill-current" /> : <Mic className="h-4.5 w-4.5" />}
+              </button>
+            )}
+
+            {isRecording ? (
+              <div className="flex min-w-0 flex-1 items-center gap-2.5 px-1">
+                <span className="relative flex h-2.5 w-2.5 shrink-0">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-gold-500 opacity-75" />
+                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-gold-500" />
+                </span>
+                <span className="min-w-0 flex-1 truncate text-sm font-semibold text-ink-900">
+                  Listening…
+                </span>
+                <span data-numeric className="shrink-0 font-mono text-xs font-bold text-ink-500">
+                  {String(Math.floor(elapsed / 60)).padStart(2, "0")}:
+                  {String(elapsed % 60).padStart(2, "0")}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => void finishRecording(false)}
+                  title="Discard this recording"
+                  aria-label="Discard recording"
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-ink-400 transition-colors hover:bg-ink-100 hover:text-bad-700"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            ) : (
+              <input
+                id="user-chat-input"
+                type="text"
+                value={inputText}
+                onChange={(e) => setInputText(e.target.value)}
+                disabled={isProcessing}
+                placeholder={
+                  isProcessing ? "FAB is sensing the signals…" : "Say it however it comes out…"
+                }
+                className="min-w-0 flex-1 border-0 bg-transparent px-2 py-2 text-sm font-medium text-ink-900 placeholder:font-normal placeholder:text-ink-500 focus:outline-none disabled:opacity-50"
+              />
+            )}
+
+            <button
+              id="send-chat-btn"
+              type="submit"
+              disabled={isProcessing || isRecording || !inputText.trim()}
+              aria-label="Send message"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-ink-900 text-white transition-colors hover:bg-ink-800 disabled:bg-ink-100 disabled:text-ink-400"
+            >
+              {isProcessing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+            </button>
+          </form>
+
+          <p className="mt-2 text-center text-tiny text-ink-400">
+            {canRecord
+              ? "Type it or tap the mic and say it. FAB remembers either way."
+              : "Talk to FAB like you'd talk to your smartest, warmest friend."}
+          </p>
+        </div>
       </div>
     </div>
   );

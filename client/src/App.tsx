@@ -26,10 +26,14 @@ import {
   Loader2,
   Cloud,
   CloudOff,
-  LogOut
+  LogOut,
+  PanelLeftClose,
+  PanelLeftOpen,
+  X
 } from "lucide-react";
 
 import { Logo } from "./components/Logo";
+import { Button, Segmented } from "./ui";
 import AuthPage from "./components/auth/AuthPage";
 import { AuthUser, useAuth } from "./auth/AuthContext";
 import {
@@ -155,6 +159,22 @@ function Workspace({ user }: { user: AuthUser }) {
   const [activeTab, setActiveTab] = useState<"home" | "fab" | "experiments" | "paths" | "journey">("home");
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => typeof window !== "undefined" ? window.innerWidth < 1024 : false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // The mobile drawer previously had no keyboard escape and let the page
+  // behind it scroll while open.
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsMobileMenuOpen(false);
+    };
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [isMobileMenuOpen]);
 
   // Sub-tabs inside Career Paths to allow rich drill-down views
   const [pathsSubTab, setPathsSubTab] = useState<"list" | "detail" | "universities" | "roadmap">("list");
@@ -934,27 +954,58 @@ function Workspace({ user }: { user: AuthUser }) {
 
   const completedCount = evidenceList.length;
 
-  return (
-    <div className="flex flex-col h-[100dvh] overflow-hidden bg-slate-50 text-slate-900 font-sans">
+  /** The one place navigation is defined. Both the sidebar and the mobile bar
+   *  render from this, so they can never drift apart again. */
+  const NAV_ITEMS = [
+    { id: "home",        label: "Home",        short: "Home",  icon: Home },
+    { id: "fab",         label: "FAB Chat",    short: "Chat",  icon: MessageSquare },
+    { id: "paths",       label: "Career Paths",short: "Paths", icon: Layers },
+    { id: "experiments", label: "Experiments", short: "Lab",   icon: Beaker },
+    { id: "journey",     label: "Journey",     short: "Journey", icon: BookOpen },
+  ] as const;
 
-      {/* Mobile Top Bar (Visible only on small screens) */}
-      {activeTab === "home" && (
-        <div className="md:hidden flex items-center justify-between p-4 bg-white border-b border-slate-200 sticky top-0 z-30">
-          <div className="flex items-center space-x-2">
-            <div className="flex shrink-0 h-8 w-8 items-center justify-center">
-              <Logo className="h-8 w-8 rounded-lg" />
-            </div>
-            <span className="font-display font-extrabold text-slate-900 text-lg tracking-tight">northr</span>
+  const go = (tab: (typeof NAV_ITEMS)[number]["id"]) => {
+    setActiveTab(tab as any);
+    setPathsSubTab("list");
+    setIsMobileMenuOpen(false);
+  };
+
+  const railed = isSidebarCollapsed && !isMobileMenuOpen;
+
+  return (
+    <div className="flex h-[100dvh] flex-col overflow-hidden bg-ink-50 font-sans text-ink-900">
+
+      {/* Mobile top bar — now on every tab. It used to render only on Home,
+          which left the other four tabs with no way to reach the menu. */}
+      <header className="flex h-14 shrink-0 items-center justify-between gap-2 border-b border-ink-100 bg-white px-3 md:hidden">
+        <div className="flex min-w-0 items-center gap-2.5">
+          <Logo className="h-8 w-8 rounded-lg" />
+          <div className="min-w-0 leading-none">
+            <span className="block truncate font-display text-lg font-bold tracking-tight text-ink-900">
+              northr
+            </span>
           </div>
+        </div>
+        <div className="flex shrink-0 items-center gap-1">
+          <button
+            onClick={resetSession}
+            disabled={isProcessing}
+            title="Start fresh"
+            aria-label="Start fresh"
+            className="flex h-10 w-10 items-center justify-center rounded-lg text-ink-400 transition-colors hover:bg-ink-100 hover:text-ink-900 disabled:opacity-40"
+          >
+            <RefreshCw className={`h-4.5 w-4.5 ${isProcessing ? "animate-spin" : ""}`} />
+          </button>
           <button
             onClick={() => setIsMobileMenuOpen(true)}
-            className="p-1.5 -mr-1.5 text-slate-500 hover:text-slate-900 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer"
-            title="Open Menu"
+            aria-label="Open menu"
+            aria-expanded={isMobileMenuOpen}
+            className="flex h-10 w-10 items-center justify-center rounded-lg text-ink-500 transition-colors hover:bg-ink-100 hover:text-ink-900"
           >
             <Menu className="h-5 w-5" />
           </button>
         </div>
-      )}
+      </header>
 
       {/* Error Warnings */}
       <AnimatePresence>
@@ -964,13 +1015,16 @@ function Workspace({ user }: { user: AuthUser }) {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="overflow-hidden shrink-0"
+            className="shrink-0 overflow-hidden"
           >
-            <div className="bg-rose-50 text-rose-800 border-b border-rose-100 px-4 py-2.5 flex items-center justify-center gap-3 text-xs font-bold">
-              <span className="text-center">{errorMessage}</span>
+            <div
+              role="alert"
+              className="flex items-center justify-center gap-3 border-b border-bad-100 bg-bad-50 px-4 py-2.5 text-xs font-semibold text-bad-700"
+            >
+              <span className="text-center text-pretty">{errorMessage}</span>
               <button
                 onClick={() => setErrorMessage(null)}
-                className="shrink-0 rounded-md px-2 py-0.5 text-[10px] uppercase tracking-wider text-rose-600 hover:bg-rose-100 transition-colors cursor-pointer"
+                className="shrink-0 rounded-md px-2 py-1 text-micro font-bold uppercase tracking-wider text-bad-700 transition-colors hover:bg-bad-100"
               >
                 Dismiss
               </button>
@@ -979,190 +1033,155 @@ function Workspace({ user }: { user: AuthUser }) {
         )}
       </AnimatePresence>
 
-      {/* Main SaaS split screen layout */}
-      <div className="flex-1 flex overflow-hidden">
+      {/* Main split-screen layout */}
+      <div className="flex flex-1 overflow-hidden">
 
         {/* SIDEBAR: LEFT COLUMN NAVIGATION */}
         <>
-          {/* Mobile Overlay */}
+          {/* Mobile scrim */}
           {isMobileMenuOpen && (
             <div
-              className="fixed inset-0 bg-slate-900/50 z-40 md:hidden backdrop-blur-sm"
+              className="fixed inset-0 z-40 bg-ink-950/50 backdrop-blur-sm md:hidden"
               onClick={() => setIsMobileMenuOpen(false)}
+              aria-hidden
             />
           )}
 
-          <div className={`fixed inset-y-0 left-0 z-50 bg-white border-r border-slate-200 transition-all duration-300 ease-in-out md:sticky md:translate-x-0 shrink-0 h-screen top-0 flex flex-col ${
-            (isSidebarCollapsed && !isMobileMenuOpen) ? "w-[76px]" : "w-64"
-          } ${
-            isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
-          }`}>
+          {/* The old sidebar was `fixed … h-screen` even on desktop, so it
+              ignored the error banner and mobile bar above it and spilled past
+              the viewport. It is now a normal flex child on desktop (h-full)
+              and only goes fixed for the mobile drawer. */}
+          <nav
+            aria-label="Primary"
+            className={`fixed inset-y-0 left-0 z-50 flex h-full w-64 shrink-0 flex-col border-r border-ink-100 bg-white transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] md:relative md:inset-auto md:translate-x-0 md:transition-[width] ${
+              railed ? "md:w-rail" : "md:w-sidebar"
+            } ${isMobileMenuOpen ? "translate-x-0 shadow-e5" : "-translate-x-full"}`}
+          >
 
-            {/* Brand Logo Header inside the sidebar */}
-            <div className={`p-4 border-b border-slate-100 flex items-center h-[72px] ${(isSidebarCollapsed && !isMobileMenuOpen) ? "justify-center cursor-pointer hover:bg-slate-50 transition-colors" : "justify-between"}`} onClick={() => { if (isSidebarCollapsed) setIsSidebarCollapsed(false) }}>
-              <div className="flex items-center space-x-3 overflow-hidden">
-                <div className="flex shrink-0 h-9 w-9 items-center justify-center">
-                  <Logo className="h-9 w-9 rounded-lg" />
-                </div>
-                {(!isSidebarCollapsed || isMobileMenuOpen) && (
-                  <div className="min-w-0">
-                    <div className="flex items-center space-x-1.5">
-                      <span className="font-display text-lg font-extrabold tracking-tight text-slate-900 truncate">
+            {/* Brand header */}
+            <div
+              className={`flex h-16 shrink-0 items-center gap-2 border-b border-ink-100 px-3 ${
+                railed ? "justify-center" : "justify-between"
+              }`}
+            >
+              <button
+                onClick={() => railed && setIsSidebarCollapsed(false)}
+                aria-label={railed ? "Expand sidebar" : "Northr"}
+                tabIndex={railed ? 0 : -1}
+                className={`flex min-w-0 items-center gap-2.5 rounded-lg ${
+                  railed ? "hover:opacity-80" : "cursor-default"
+                }`}
+              >
+                <Logo className="h-9 w-9 shrink-0 rounded-lg" />
+                {!railed && (
+                  <span className="min-w-0 text-left">
+                    <span className="flex items-center gap-1.5">
+                      <span className="truncate font-display text-lg font-bold tracking-tight text-ink-900">
                         northr
                       </span>
-                      <span className="rounded-full bg-purple-50 border border-purple-100 px-1.5 py-0.5 text-[8px] font-mono font-bold text-[#4C1D95] uppercase shrink-0">
+                      <span className="shrink-0 rounded-full border border-gold-200 bg-gold-50 px-1.5 py-0.5 font-mono text-micro font-bold uppercase text-gold-700">
                         Pro
                       </span>
-                    </div>
-                    <p className="font-sans text-[9px] text-slate-400 font-bold tracking-wider uppercase truncate">
-                      Your Career OS
-                    </p>
-                  </div>
+                    </span>
+                    <span className="eyebrow mt-0.5 block truncate">Your Career OS</span>
+                  </span>
                 )}
-              </div>
-              {(!isSidebarCollapsed || isMobileMenuOpen) && (
+              </button>
+
+              {!railed && (
                 <button
-                  onClick={(e) => { e.stopPropagation(); setIsSidebarCollapsed(!isSidebarCollapsed); }}
-                  className="hidden md:flex p-2 text-slate-400 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer shrink-0"
-                  title="Collapse Sidebar"
+                  onClick={() => setIsSidebarCollapsed(true)}
+                  className="hidden h-9 w-9 shrink-0 items-center justify-center rounded-lg text-ink-400 transition-colors hover:bg-ink-100 hover:text-ink-900 md:flex"
+                  title="Collapse sidebar"
+                  aria-label="Collapse sidebar"
                 >
-                  <Menu className="h-5 w-5" />
+                  <PanelLeftClose className="h-4.5 w-4.5" />
                 </button>
               )}
+
               <button
-                onClick={(e) => { e.stopPropagation(); setIsMobileMenuOpen(false); }}
-                className="md:hidden p-2 text-slate-400 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer shrink-0"
+                onClick={() => setIsMobileMenuOpen(false)}
+                aria-label="Close menu"
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-ink-400 transition-colors hover:bg-ink-100 hover:text-ink-900 md:hidden"
               >
-                <ChevronRight className="h-5 w-5 rotate-180" />
+                <X className="h-5 w-5" />
               </button>
             </div>
 
-            <div className={`flex-1 py-6 space-y-1.5 overflow-y-auto ${(isSidebarCollapsed && !isMobileMenuOpen) ? "px-2" : "px-4"}`}>
+            {/* Five identical buttons used to be copy-pasted here, 18 lines
+                each. One map over NAV_ITEMS now. */}
+            <div className={`scroll-slim flex-1 space-y-1 overflow-y-auto py-4 ${railed ? "px-2" : "px-3"}`}>
+              {NAV_ITEMS.map(({ id, label, icon: Icon }) => {
+                const active = activeTab === id;
+                return (
+                  <button
+                    key={id}
+                    id={`sidebar-${id}`}
+                    onClick={() => go(id)}
+                    title={railed ? label : undefined}
+                    aria-current={active ? "page" : undefined}
+                    className={`group relative flex w-full items-center rounded-lg py-2.5 text-sm font-semibold transition-colors duration-150 ${
+                      railed ? "justify-center px-0" : "gap-3 px-3"
+                    } ${
+                      active
+                        ? "bg-ink-900 text-white shadow-e2"
+                        : "text-ink-500 hover:bg-ink-50 hover:text-ink-900"
+                    }`}
+                  >
+                    {active && (
+                      <span className="absolute left-0 top-1/2 h-5 w-0.5 -translate-y-1/2 rounded-r-full bg-gold-400" />
+                    )}
+                    <Icon className={`h-4.5 w-4.5 shrink-0 ${active ? "text-gold-300" : ""}`} />
+                    {!railed && <span className="truncate">{label}</span>}
+                  </button>
+                );
+              })}
 
-              <button
-                id="sidebar-home"
-                onClick={() => { setActiveTab("home"); setIsMobileMenuOpen(false); }}
-                title={(isSidebarCollapsed && !isMobileMenuOpen) ? "Home" : undefined}
-                className={`w-full flex items-center ${(isSidebarCollapsed && !isMobileMenuOpen) ? "justify-center" : "space-x-3 px-4"} py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer relative group ${
-                  activeTab === "home"
-                    ? "bg-[#4C1D95] text-white shadow-md shadow-purple-100"
-                    : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
-                }`}
-              >
-                {activeTab === "home" && (isSidebarCollapsed && !isMobileMenuOpen) && (
-                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-1/2 bg-white rounded-r-full" />
-                )}
-                <Home className="h-4 w-4 shrink-0" />
-                {(!isSidebarCollapsed || isMobileMenuOpen) && <span className="truncate">Home</span>}
-
-              </button>
-
-              <button
-                id="sidebar-fab"
-                onClick={() => { setActiveTab("fab"); setIsMobileMenuOpen(false); }}
-                title={(isSidebarCollapsed && !isMobileMenuOpen) ? "FAB Chat" : undefined}
-                className={`w-full flex items-center ${(isSidebarCollapsed && !isMobileMenuOpen) ? "justify-center" : "space-x-3 px-4"} py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer relative group ${
-                  activeTab === "fab"
-                    ? "bg-[#4C1D95] text-white shadow-md shadow-purple-100"
-                    : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
-                }`}
-              >
-                {activeTab === "fab" && (isSidebarCollapsed && !isMobileMenuOpen) && (
-                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-1/2 bg-white rounded-r-full" />
-                )}
-                <MessageSquare className="h-4 w-4 shrink-0" />
-                {(!isSidebarCollapsed || isMobileMenuOpen) && <span className="truncate">FAB Chat</span>}
-
-              </button>
-
-              <button
-                id="sidebar-paths"
-                onClick={() => { setActiveTab("paths"); setIsMobileMenuOpen(false); }}
-                title={(isSidebarCollapsed && !isMobileMenuOpen) ? "Career Paths" : undefined}
-                className={`w-full flex items-center ${(isSidebarCollapsed && !isMobileMenuOpen) ? "justify-center" : "space-x-3 px-4"} py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer relative group ${
-                  activeTab === "paths"
-                    ? "bg-[#4C1D95] text-white shadow-md shadow-purple-100"
-                    : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
-                }`}
-              >
-                {activeTab === "paths" && (isSidebarCollapsed && !isMobileMenuOpen) && (
-                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-1/2 bg-white rounded-r-full" />
-                )}
-                <Layers className="h-4 w-4 shrink-0" />
-                {(!isSidebarCollapsed || isMobileMenuOpen) && <span className="truncate">Career Paths</span>}
-
-              </button>
-
-              <button
-                id="sidebar-experiments"
-                onClick={() => { setActiveTab("experiments"); setIsMobileMenuOpen(false); }}
-                title={(isSidebarCollapsed && !isMobileMenuOpen) ? "Experiments" : undefined}
-                className={`w-full flex items-center ${(isSidebarCollapsed && !isMobileMenuOpen) ? "justify-center" : "space-x-3 px-4"} py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer relative group ${
-                  activeTab === "experiments"
-                    ? "bg-[#4C1D95] text-white shadow-md shadow-purple-100"
-                    : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
-                }`}
-              >
-                {activeTab === "experiments" && (isSidebarCollapsed && !isMobileMenuOpen) && (
-                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-1/2 bg-white rounded-r-full" />
-                )}
-                <Beaker className="h-4 w-4 shrink-0" />
-                {(!isSidebarCollapsed || isMobileMenuOpen) && <span className="truncate">Experiments</span>}
-
-              </button>
-
-              <button
-                id="sidebar-journey"
-                onClick={() => { setActiveTab("journey"); setIsMobileMenuOpen(false); }}
-                title={(isSidebarCollapsed && !isMobileMenuOpen) ? "Journey" : undefined}
-                className={`w-full flex items-center ${(isSidebarCollapsed && !isMobileMenuOpen) ? "justify-center" : "space-x-3 px-4"} py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer relative group ${
-                  activeTab === "journey"
-                    ? "bg-[#4C1D95] text-white shadow-md shadow-purple-100"
-                    : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
-                }`}
-              >
-                {activeTab === "journey" && (isSidebarCollapsed && !isMobileMenuOpen) && (
-                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-1/2 bg-white rounded-r-full" />
-                )}
-                <BookOpen className="h-4 w-4 shrink-0" />
-                {(!isSidebarCollapsed || isMobileMenuOpen) && <span className="truncate">Journey</span>}
-
-              </button>
-
-              </div>
-              {/* Functional Profile and Start Fresh */}
-            <div className={`mt-auto border-t border-slate-100 bg-slate-50 flex flex-col shrink-0`}>
-              <div className={`p-4 flex items-center ${(isSidebarCollapsed && !isMobileMenuOpen) ? "justify-center" : "justify-between space-x-2"} overflow-hidden min-h-[72px]`}>
-                <div className={`flex items-center space-x-2 min-w-0`}>
-                  <div className="h-8 w-8 rounded-full bg-[#4C1D95] text-white flex items-center justify-center text-xs font-bold uppercase shrink-0">
-                    {displayName.charAt(0)}
-                  </div>
-                  {(!isSidebarCollapsed || isMobileMenuOpen) && (
-                    <div className="truncate text-left min-w-0 flex-1">
-                      <span className="block text-xs font-black text-slate-900 leading-tight truncate">
+              {railed && (
+                <button
+                  onClick={() => setIsSidebarCollapsed(false)}
+                  title="Expand sidebar"
+                  aria-label="Expand sidebar"
+                  className="mt-2 hidden h-10 w-full items-center justify-center rounded-lg text-ink-400 transition-colors hover:bg-ink-50 hover:text-ink-900 md:flex"
+                >
+                  <PanelLeftOpen className="h-4.5 w-4.5" />
+                </button>
+              )}
+            </div>
+            {/* Account, sync status, reset */}
+            <div className="mt-auto flex shrink-0 flex-col gap-3 border-t border-ink-100 bg-ink-25 p-3">
+              <div className={`flex items-center gap-2 ${railed ? "justify-center" : ""}`}>
+                <span
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-ink-900 text-xs font-bold uppercase text-gold-300"
+                  title={railed ? displayName : undefined}
+                >
+                  {displayName.charAt(0)}
+                </span>
+                {!railed && (
+                  <>
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-xs font-bold leading-tight text-ink-900">
                         {displayName}
                       </span>
-                      <span className="block text-[10px] text-slate-500 font-mono font-bold leading-none truncate mt-0.5">
+                      <span className="mt-0.5 block truncate font-mono text-micro text-ink-500">
                         {user.email || "Guest session"}
                       </span>
-                    </div>
-                  )}
-                </div>
-
-                {(!isSidebarCollapsed || isMobileMenuOpen) && (
-                  <button
-                    onClick={handleSignOut}
-                    className="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition-colors shrink-0 cursor-pointer"
-                    title="Sign out"
-                  >
-                    <LogOut className="h-4 w-4" />
-                  </button>
+                    </span>
+                    <button
+                      onClick={handleSignOut}
+                      title="Sign out"
+                      aria-label="Sign out"
+                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-ink-400 transition-colors hover:bg-bad-50 hover:text-bad-700"
+                    >
+                      <LogOut className="h-4 w-4" />
+                    </button>
+                  </>
                 )}
               </div>
 
-              {(!isSidebarCollapsed || isMobileMenuOpen) && (
-                <div className="px-4 -mt-1 pb-3">
-                  <div className="flex items-center gap-1.5 text-[9px] font-mono font-bold uppercase tracking-wider text-slate-400">
+              {!railed && (
+                <>
+                  <div className="flex items-center gap-1.5 font-mono text-micro font-bold uppercase tracking-wider text-ink-400">
                     {isGuest ? (
                       <>
                         <CloudOff className="h-3 w-3 shrink-0" />
@@ -1175,74 +1194,73 @@ function Workspace({ user }: { user: AuthUser }) {
                       </>
                     ) : (
                       <>
-                        <Cloud className="h-3 w-3 shrink-0 text-emerald-500" />
+                        <Cloud className="h-3 w-3 shrink-0 text-good-500" />
                         <span className="truncate">Synced to your account</span>
                       </>
                     )}
                   </div>
-                </div>
-              )}
 
-              <div className={`px-4 pb-4 ${(isSidebarCollapsed && !isMobileMenuOpen) ? "hidden" : "block"}`}>
-                <button
-                  onClick={resetSession}
-                  disabled={isProcessing}
-                  className="w-full flex items-center justify-center space-x-2 px-3 py-2 bg-white border border-slate-200 text-slate-700 text-xs font-bold uppercase tracking-wider rounded-xl cursor-pointer hover:bg-slate-50 transition-all shadow-xs disabled:opacity-50"
-                >
-                  <RefreshCw className={`h-3.5 w-3.5 ${isProcessing ? 'animate-spin' : ''}`} />
-                  <span>Start Fresh</span>
-                </button>
-              </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    block
+                    onClick={resetSession}
+                    disabled={isProcessing}
+                  >
+                    <RefreshCw className={`h-3.5 w-3.5 ${isProcessing ? "animate-spin" : ""}`} />
+                    <span>Start Fresh</span>
+                  </Button>
+                </>
+              )}
             </div>
-          </div>
+          </nav>
         </>
         {/* MAIN WORKSPACE AREA */}
-        <div className={`flex-1 flex flex-col min-w-0 bg-[#F8FAFC] ${activeTab === "fab" ? "overflow-hidden h-full" : "overflow-y-auto"}`}>
+        <main
+          className={`flex min-w-0 flex-1 flex-col bg-ink-50 ${
+            activeTab === "fab" ? "h-full overflow-hidden" : "scroll-slim overflow-y-auto"
+          }`}
+        >
 
-          {/* Sub-tab navigation bar for paths sub-views (rendered only inside Paths tab) */}
+          {/* Paths sub-navigation. Previously a wrapping row of pill buttons
+              that broke onto three lines on a phone; now a sticky bar with a
+              real back affordance and a horizontally scrolling segmented
+              control. */}
           {activeTab === "paths" && pathsSubTab !== "list" && (
-            <div className="bg-slate-50 border-b border-slate-200 px-4 sm:px-6 py-3 flex flex-wrap items-center gap-2">
-              <button
-                onClick={() => setPathsSubTab("list")}
-                className="px-3 py-1 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-bold rounded-xl transition-all flex items-center space-x-1 cursor-pointer shadow-xs"
-              >
-                <span>← Back to Hypotheses</span>
-              </button>
+            <div className="sticky top-0 z-20 flex shrink-0 flex-wrap items-center gap-3 border-b border-ink-100 bg-white/85 px-4 py-2.5 backdrop-blur-md sm:px-6">
+              <Button size="sm" variant="ghost" onClick={() => setPathsSubTab("list")}>
+                <ChevronRight className="h-3.5 w-3.5 rotate-180" />
+                <span>Hypotheses</span>
+              </Button>
 
-              <button
-                onClick={() => setPathsSubTab("detail")}
-                className={`px-3 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center space-x-1 ${
-                  pathsSubTab === "detail" ? "bg-violet-600 text-white" : "text-slate-500 hover:text-slate-900"
-                }`}
-              >
-                <Info className="h-3.5 w-3.5" />
-                <span>Details</span>
-              </button>
+              {selectedPath && (
+                <span className="hidden min-w-0 max-w-[14rem] truncate text-xs font-semibold text-ink-500 sm:block">
+                  {selectedPath.fieldName}
+                </span>
+              )}
 
-              <button
-                onClick={() => setPathsSubTab("universities")}
-                className={`px-3 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center space-x-1 ${
-                  pathsSubTab === "universities" ? "bg-violet-600 text-white" : "text-slate-500 hover:text-slate-900"
-                }`}
-              >
-                <GraduationCap className="h-3.5 w-3.5" />
-                <span>Universities</span>
-              </button>
-
-              <button
-                onClick={() => setPathsSubTab("roadmap")}
-                className={`px-3 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center space-x-1 ${
-                  pathsSubTab === "roadmap" ? "bg-violet-600 text-white" : "text-slate-500 hover:text-slate-900"
-                }`}
-              >
-                <CalendarRange className="h-3.5 w-3.5" />
-                <span>90-Day Roadmap</span>
-              </button>
+              <Segmented
+                className="ml-auto"
+                ariaLabel="Career path sections"
+                value={pathsSubTab as "detail" | "universities" | "roadmap"}
+                onChange={(v) => setPathsSubTab(v)}
+                options={[
+                  { value: "detail", label: "Details", icon: Info },
+                  { value: "universities", label: "Universities", icon: GraduationCap },
+                  { value: "roadmap", label: "90-Day Plan", icon: CalendarRange },
+                ]}
+              />
             </div>
           )}
 
           {/* DYNAMIC VIEW CONTAINER */}
-          <div className={`flex-1 ${(activeTab === "fab" || activeTab === "experiments") ? "p-0 h-full flex flex-col" : "p-4 sm:p-6 lg:p-8"}`}>
+          <div
+            className={`flex-1 ${
+              activeTab === "fab" || activeTab === "experiments"
+                ? "flex h-full flex-col p-0"
+                : "page"
+            }`}
+          >
             <AnimatePresence mode="wait">
 
               {/* TAB 1: HOME WORKSPACE */}
@@ -1340,7 +1358,6 @@ function Workspace({ user }: { user: AuthUser }) {
                     setXp={setXp}
                     studentName={displayName}
                     studentDegree={studentDegree}
-                    onOpenMenu={() => setIsMobileMenuOpen(true)}
                   />
                 </motion.div>
               )}
@@ -1455,48 +1472,42 @@ function Workspace({ user }: { user: AuthUser }) {
             </AnimatePresence>
           </div>
 
-        </div>
+        </main>
 
       </div>
 
-      {/* Mobile Bottom Navigation */}
-      <div className="md:hidden flex items-center justify-around bg-white border-t border-slate-200 py-1 px-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.05)] z-40 shrink-0">
-        <button
-          onClick={() => { setActiveTab("home"); setPathsSubTab("list"); }}
-          className={`flex flex-col items-center justify-center w-16 h-12 rounded-xl transition-colors ${activeTab === "home" ? "text-[#4C1D95]" : "text-slate-400 hover:text-slate-900"}`}
-        >
-          <Home className={`h-5 w-5 mb-1 ${activeTab === "home" ? "fill-purple-100" : ""}`} />
-          <span className="text-[9px] font-bold tracking-wide">Home</span>
-        </button>
-        <button
-          onClick={() => { setActiveTab("fab"); setPathsSubTab("list"); }}
-          className={`flex flex-col items-center justify-center w-16 h-12 rounded-xl transition-colors ${activeTab === "fab" ? "text-[#4C1D95]" : "text-slate-400 hover:text-slate-900"}`}
-        >
-          <MessageSquare className={`h-5 w-5 mb-1 ${activeTab === "fab" ? "fill-purple-100" : ""}`} />
-          <span className="text-[9px] font-bold tracking-wide">Chat</span>
-        </button>
-        <button
-          onClick={() => { setActiveTab("paths"); setPathsSubTab("list"); }}
-          className={`flex flex-col items-center justify-center w-16 h-12 rounded-xl transition-colors ${activeTab === "paths" ? "text-[#4C1D95]" : "text-slate-400 hover:text-slate-900"}`}
-        >
-          <Layers className={`h-5 w-5 mb-1 ${activeTab === "paths" ? "fill-purple-100" : ""}`} />
-          <span className="text-[9px] font-bold tracking-wide">Paths</span>
-        </button>
-        <button
-          onClick={() => { setActiveTab("experiments"); setPathsSubTab("list"); }}
-          className={`flex flex-col items-center justify-center w-16 h-12 rounded-xl transition-colors ${activeTab === "experiments" ? "text-[#4C1D95]" : "text-slate-400 hover:text-slate-900"}`}
-        >
-          <Beaker className={`h-5 w-5 mb-1 ${activeTab === "experiments" ? "fill-purple-100" : ""}`} />
-          <span className="text-[9px] font-bold tracking-wide">Experiments</span>
-        </button>
-        <button
-          onClick={() => { setActiveTab("journey"); setPathsSubTab("list"); }}
-          className={`flex flex-col items-center justify-center w-16 h-12 rounded-xl transition-colors ${activeTab === "journey" ? "text-[#4C1D95]" : "text-slate-400 hover:text-slate-900"}`}
-        >
-          <BookOpen className={`h-5 w-5 mb-1 ${activeTab === "journey" ? "fill-purple-100" : ""}`} />
-          <span className="text-[9px] font-bold tracking-wide">Journey</span>
-        </button>
-      </div>
+      {/* Mobile bottom navigation. The old version hardcoded w-16 per item and
+          used the full "Experiments" label, which clipped on a 360px screen;
+          items now flex evenly and use the short labels from NAV_ITEMS. */}
+      <nav
+        aria-label="Primary mobile"
+        className="z-40 flex shrink-0 items-stretch gap-0.5 border-t border-ink-100 bg-white/95 px-1 pb-[max(0.25rem,env(safe-area-inset-bottom))] pt-1 backdrop-blur-md md:hidden"
+      >
+        {NAV_ITEMS.map(({ id, short, icon: Icon }) => {
+          const active = activeTab === id;
+          return (
+            <button
+              key={id}
+              onClick={() => go(id)}
+              aria-current={active ? "page" : undefined}
+              className={`flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-lg py-1.5 transition-colors ${
+                active ? "text-ink-900" : "text-ink-400 active:bg-ink-50"
+              }`}
+            >
+              <span
+                className={`flex h-7 w-full max-w-12 items-center justify-center rounded-full transition-colors ${
+                  active ? "bg-gold-100" : ""
+                }`}
+              >
+                <Icon className={`h-4.5 w-4.5 ${active ? "text-gold-700" : ""}`} />
+              </span>
+              <span className="w-full truncate text-center text-micro font-bold tracking-normal">
+                {short}
+              </span>
+            </button>
+          );
+        })}
+      </nav>
 
     </div>
   );
@@ -1505,9 +1516,9 @@ function Workspace({ user }: { user: AuthUser }) {
 /** Full-screen splash shown while the stored token is being validated. */
 function BootSplash() {
   return (
-    <div className="flex h-[100dvh] w-full flex-col items-center justify-center gap-5 bg-[#050505]">
+    <div className="flex h-[100dvh] w-full flex-col items-center justify-center gap-5 bg-ink-950">
       <Logo className="h-14 w-14 rounded-2xl" />
-      <div className="flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-wider text-white/40">
+      <div className="flex items-center gap-2 font-mono text-micro font-bold uppercase tracking-wider text-white/40">
         <Loader2 className="h-3.5 w-3.5 animate-spin" />
         <span>Restoring your session</span>
       </div>

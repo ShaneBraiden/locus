@@ -344,27 +344,27 @@ export default function RoadmapView({ roadmap, onBack }: RoadmapViewProps) {
   // Infer Readiness Classification (Step 1)
   // Exploration -> Preparation -> Application -> Finalization
   let readinessStage: "Exploration" | "Preparation" | "Application" | "Finalization" = "Exploration";
-  let stageColor = "text-purple-600 bg-purple-50 border-purple-200";
-  let stageDot = "bg-purple-500";
+  let stageColor = "text-violet-600 bg-violet-50 border-violet-200";
+  let stageDot = "bg-violet-500";
   let stageBefore = "None";
   let stageAfter = "Preparation";
 
   if (computedConfidence >= 90) {
     readinessStage = "Finalization";
-    stageColor = "text-purple-700 bg-purple-50 border-purple-200";
-    stageDot = "bg-purple-500";
+    stageColor = "text-violet-700 bg-violet-50 border-violet-200";
+    stageDot = "bg-violet-500";
     stageBefore = "Application";
     stageAfter = "Arrival / Placement";
   } else if (computedConfidence >= 75) {
     readinessStage = "Application";
-    stageColor = "text-blue-700 bg-blue-50 border-blue-200";
-    stageDot = "bg-blue-500";
+    stageColor = "text-info-700 bg-info-50 border-info-100";
+    stageDot = "bg-info-500";
     stageBefore = "Preparation";
     stageAfter = "Finalization";
   } else if (computedConfidence >= 60) {
     readinessStage = "Preparation";
-    stageColor = "text-purple-700 bg-purple-50 border-purple-200";
-    stageDot = "bg-purple-500";
+    stageColor = "text-violet-700 bg-violet-50 border-violet-200";
+    stageDot = "bg-violet-500";
     stageBefore = "Exploration";
     stageAfter = "Application";
   }
@@ -389,11 +389,11 @@ export default function RoadmapView({ roadmap, onBack }: RoadmapViewProps) {
           impact: "Critical",
           actionSnippetLabel: "View Case Baseline Guide",
           actionSnippetContent: (
-            <div className="text-xs bg-[#F5F3FF] p-4 rounded-xl border border-slate-100 shadow-sm space-y-2 font-mono">
-              <p className="font-bold text-[#0F172A]">🚀 Core Consulting Framework (Structure First):</p>
-              <p className="text-[#5C534C]">1. <strong>Profits Formulation:</strong> Profit = (Price × Volume) - (Fixed Costs + Variable Costs)</p>
-              <p className="text-[#5C534C]">2. <strong>Market Entry:</strong> Market Size → Competitors → Regulatory Hurdles → Logistics → Financial Feasibility</p>
-              <p className="text-[#5C534C]">Try calculating: How many hospital beds are required in Bangalore city?</p>
+            <div className="text-xs bg-violet-50 p-4 rounded-xl border border-ink-100 shadow-e2 space-y-2 font-mono">
+              <p className="font-bold text-ink-900">🚀 Core Consulting Framework (Structure First):</p>
+              <p className="text-ink-600">1. <strong>Profits Formulation:</strong> Profit = (Price × Volume) - (Fixed Costs + Variable Costs)</p>
+              <p className="text-ink-600">2. <strong>Market Entry:</strong> Market Size → Competitors → Regulatory Hurdles → Logistics → Financial Feasibility</p>
+              <p className="text-ink-600">Try calculating: How many hospital beds are required in Bangalore city?</p>
             </div>
           )
         },
@@ -418,10 +418,10 @@ export default function RoadmapView({ roadmap, onBack }: RoadmapViewProps) {
           impact: "Critical",
           actionSnippetLabel: "Analyze Resume Bullet Template",
           actionSnippetContent: (
-            <div className="text-xs bg-[#F5F3FF] p-4 rounded-xl border border-slate-100 shadow-sm space-y-2 font-mono">
-              <p className="font-bold text-[#0F172A]">⭐ STAR Resume Template:</p>
-              <p className="text-red-700 italic">❌ Weak: \"Worked in a clinical project analyzing patient data.\"</p>
-              <p className="text-purple-700 font-bold">✔️ Strong: \"Engineered a clinical throughput model for 500+ patients, reducing laboratory bottleneck delays by 22% and saving $14,000 in monthly hospital operations cost.\"</p>
+            <div className="text-xs bg-violet-50 p-4 rounded-xl border border-ink-100 shadow-e2 space-y-2 font-mono">
+              <p className="font-bold text-ink-900">⭐ STAR Resume Template:</p>
+              <p className="text-bad-700 italic">❌ Weak: \"Worked in a clinical project analyzing patient data.\"</p>
+              <p className="text-violet-700 font-bold">✔️ Strong: \"Engineered a clinical throughput model for 500+ patients, reducing laboratory bottleneck delays by 22% and saving $14,000 in monthly hospital operations cost.\"</p>
             </div>
           )
         },
@@ -477,9 +477,9 @@ export default function RoadmapView({ roadmap, onBack }: RoadmapViewProps) {
           impact: "Critical",
           actionSnippetLabel: "Run Python Sequence Audit Code",
           actionSnippetContent: (
-            <div className="text-xs bg-[#F5F3FF] p-4 rounded-xl border border-slate-100 shadow-sm space-y-2 font-mono">
-              <p className="font-bold text-[#0F172A]">🐍 Simple RNA Transcript Count:</p>
-              <pre className="bg-[#0F172A] text-purple-600 p-2.5 rounded-lg text-[10px] overflow-x-auto">
+            <div className="text-xs bg-violet-50 p-4 rounded-xl border border-ink-100 shadow-e2 space-y-2 font-mono">
+              <p className="font-bold text-ink-900">🐍 Simple RNA Transcript Count:</p>
+              <pre className="scroll-slim overflow-x-auto rounded-lg bg-ink-900 p-2.5 text-micro text-gold-300">
 {`def gc_content(seq):
     return (seq.count('G') + seq.count('C')) / len(seq) * 100
 
@@ -508,11 +508,11 @@ print(f"GC content: {gc_content('ATGCGATCG'):.1f}%")`}
           impact: "Critical",
           actionSnippetLabel: "View Pipeline Structure Outline",
           actionSnippetContent: (
-            <div className="text-xs bg-[#F5F3FF] p-4 rounded-xl border border-slate-100 shadow-sm space-y-2 font-mono">
-              <p className="font-bold text-[#0F172A]">🧬 Required Repository Layout:</p>
-              <p className="text-[#5C534C]">📂 <strong>/pipeline:</strong> contains raw FastQC shell scripts</p>
-              <p className="text-[#5C534C]">📂 <strong>/docker:</strong> holds container configuration for scalable AWS cluster execution</p>
-              <p className="text-[#5C534C]">📂 <strong>/results:</strong> visual plots mapping genomic variants vs. public ClinVar labels</p>
+            <div className="text-xs bg-violet-50 p-4 rounded-xl border border-ink-100 shadow-e2 space-y-2 font-mono">
+              <p className="font-bold text-ink-900">🧬 Required Repository Layout:</p>
+              <p className="text-ink-600">📂 <strong>/pipeline:</strong> contains raw FastQC shell scripts</p>
+              <p className="text-ink-600">📂 <strong>/docker:</strong> holds container configuration for scalable AWS cluster execution</p>
+              <p className="text-ink-600">📂 <strong>/results:</strong> visual plots mapping genomic variants vs. public ClinVar labels</p>
             </div>
           )
         },
@@ -568,10 +568,10 @@ print(f"GC content: {gc_content('ATGCGATCG'):.1f}%")`}
           impact: "Critical",
           actionSnippetLabel: "View Basic R Epidemic Formula",
           actionSnippetContent: (
-            <div className="text-xs bg-[#F5F3FF] p-4 rounded-xl border border-slate-100 shadow-sm space-y-2 font-mono">
-              <p className="font-bold text-[#0F172A]">📊 Odds Ratio (OR) Calculation in Epidemiology:</p>
-              <p className="text-[#5C534C]">OR = (Exposed Cases / Unexposed Cases) / (Exposed Controls / Unexposed Controls)</p>
-              <p className="text-[#5C534C]">An OR &gt; 1 indicates strong exposure-disease correlation.</p>
+            <div className="text-xs bg-violet-50 p-4 rounded-xl border border-ink-100 shadow-e2 space-y-2 font-mono">
+              <p className="font-bold text-ink-900">📊 Odds Ratio (OR) Calculation in Epidemiology:</p>
+              <p className="text-ink-600">OR = (Exposed Cases / Unexposed Cases) / (Exposed Controls / Unexposed Controls)</p>
+              <p className="text-ink-600">An OR &gt; 1 indicates strong exposure-disease correlation.</p>
             </div>
           )
         },
@@ -645,10 +645,10 @@ print(f"GC content: {gc_content('ATGCGATCG'):.1f}%")`}
           impact: "Critical",
           actionSnippetLabel: "View Regulation Audit Checklist",
           actionSnippetContent: (
-            <div className="text-xs bg-[#F5F3FF] p-4 rounded-xl border border-slate-100 shadow-sm space-y-2 font-mono">
-              <p className="font-bold text-[#0F172A]">📋 Quality and Biosafety Core Areas:</p>
-              <p className="text-[#5C534C]">1. <strong>GLP (Good Laboratory Practice):</strong> Traceability, equipment calibration, documentation audits.</p>
-              <p className="text-[#5C534C]">2. <strong>CTD Structure:</strong> Module 1 (Admin) &rarr; Module 2 (Summaries) &rarr; Module 3 (Quality/CMC).</p>
+            <div className="text-xs bg-violet-50 p-4 rounded-xl border border-ink-100 shadow-e2 space-y-2 font-mono">
+              <p className="font-bold text-ink-900">📋 Quality and Biosafety Core Areas:</p>
+              <p className="text-ink-600">1. <strong>GLP (Good Laboratory Practice):</strong> Traceability, equipment calibration, documentation audits.</p>
+              <p className="text-ink-600">2. <strong>CTD Structure:</strong> Module 1 (Admin) &rarr; Module 2 (Summaries) &rarr; Module 3 (Quality/CMC).</p>
             </div>
           )
         },
@@ -784,52 +784,52 @@ ADAPTIVE READINESS PROGRESSION:
   };
 
   return (
-    <div className="max-w-6xl mx-auto my-6 px-4 pb-12 text-[#0F172A] font-sans">
+    <div className="max-w-6xl mx-auto my-6 px-4 pb-12 text-ink-900 font-sans">
       {/* Navigation and Back Button */}
       <div className="flex items-center justify-between mb-6">
         {onBack && (
           <button
             id="back-to-career-details-btn"
             onClick={onBack}
-            className="inline-flex items-center space-x-2 text-xs font-bold uppercase tracking-wider text-[#5C534C] hover:text-[#0F172A] transition-colors cursor-pointer bg-white hover:bg-stone-50 px-4 py-2.5 rounded-xl border border-slate-100 shadow-sm"
+            className="inline-flex items-center space-x-2 text-xs font-bold uppercase tracking-wider text-ink-600 hover:text-ink-900 transition-colors cursor-pointer bg-white hover:bg-ink-50 px-4 py-2.5 rounded-xl border border-ink-100 shadow-e2"
           >
             <ArrowLeft className="h-4 w-4" />
             <span>Back to Career Profile</span>
           </button>
         )}
-        <div className="flex items-center space-x-2 bg-[#F5F3FF] px-3.5 py-1.5 rounded-xl border border-slate-100 shadow-sm">
-          <Activity className="h-4 w-4 text-purple-600" />
-          <span className="text-xs font-mono font-extrabold text-purple-600 uppercase tracking-wider">
+        <div className="flex items-center space-x-2 bg-violet-50 px-3.5 py-1.5 rounded-xl border border-ink-100 shadow-e2">
+          <Activity className="h-4 w-4 text-violet-600" />
+          <span className="text-xs font-mono font-extrabold text-violet-600 uppercase tracking-wider">
             Execution Intelligence Active
           </span>
         </div>
       </div>
 
       {/* Premium Master Layout Card */}
-      <div className="bg-white border border-slate-100 rounded-3xl shadow-xl overflow-hidden mb-8">
+      <div className="bg-white border border-ink-100 rounded-3xl shadow-e5 overflow-hidden mb-8">
         {/* SaaS-Style Dashboard Header */}
-        <div className="bg-[#F5F3FF] p-6 sm:p-8 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="bg-violet-50 p-6 sm:p-8 border-b border-ink-100 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2">
-            <span className="bg-[#D97706] text-white text-[9px] font-mono tracking-widest font-extrabold px-2.5 py-1 rounded uppercase">
+            <span className="bg-gold-600 text-white text-micro font-mono tracking-widest font-extrabold px-2.5 py-1 rounded uppercase">
               Module 3: Decision Lab
             </span>
-            <h2 className="text-2xl sm:text-3xl font-display font-extrabold tracking-tight text-[#0F172A]">
+            <h2 className="text-2xl sm:text-3xl font-display font-extrabold tracking-tight text-ink-900">
               Personalized Readiness Intelligence
             </h2>
-            <p className="text-xs sm:text-sm text-[#5C534C] font-semibold leading-relaxed">
-              Target Career: <strong className="text-purple-600">{roadmap.fieldName}</strong>
+            <p className="text-xs sm:text-sm text-ink-600 font-semibold leading-relaxed">
+              Target Career: <strong className="text-violet-600">{roadmap.fieldName}</strong>
             </p>
           </div>
 
           {/* Tab Selection */}
-          <div className="flex items-center w-full sm:w-auto bg-[#FFFDFB] p-1 rounded-xl border border-slate-100 shadow-sm shadow-inner">
+          <div className="flex items-center w-full sm:w-auto bg-ink-0 p-1 rounded-xl border border-ink-100 shadow-e2 shadow-inner">
             <button
               id="switch-to-system-tab"
               onClick={() => setActiveTab("system")}
-              className={`flex-1 sm:flex-initial text-center px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-lg text-[10px] sm:text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
+              className={`flex-1 sm:flex-initial text-center px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-lg text-micro sm:text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
                 activeTab === "system"
-                  ? "bg-[#D97706] text-white shadow-xs"
-                  : "text-[#5C534C] hover:text-[#0F172A]"
+                  ? "bg-gold-600 text-white shadow-e1"
+                  : "text-ink-600 hover:text-ink-900"
               }`}
             >
               Intelligence System
@@ -837,10 +837,10 @@ ADAPTIVE READINESS PROGRESSION:
             <button
               id="switch-to-prep-tab"
               onClick={() => setActiveTab("interactive_prep")}
-              className={`flex-1 sm:flex-initial text-center px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-lg text-[10px] sm:text-xs font-bold uppercase tracking-wider transition-all cursor-pointer flex items-center justify-center gap-1 sm:gap-1.5 ${
+              className={`flex-1 sm:flex-initial text-center px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-lg text-micro sm:text-xs font-bold uppercase tracking-wider transition-all cursor-pointer flex items-center justify-center gap-1 sm:gap-1.5 ${
                 activeTab === "interactive_prep"
-                  ? "bg-[#D97706] text-white shadow-xs"
-                  : "text-[#5C534C] hover:text-[#0F172A]"
+                  ? "bg-gold-600 text-white shadow-e1"
+                  : "text-ink-600 hover:text-ink-900"
               }`}
             >
               <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
@@ -857,10 +857,10 @@ ADAPTIVE READINESS PROGRESSION:
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
               
               {/* Classification Card */}
-              <div className="lg:col-span-5 bg-white border border-slate-100 rounded-2xl p-6 shadow-xs flex flex-col justify-between">
+              <div className="lg:col-span-5 bg-white border border-ink-100 rounded-2xl p-6 shadow-e1 flex flex-col justify-between">
                 <div>
-                  <div className="flex items-center space-x-2 text-[10px] font-mono uppercase tracking-widest text-[#5C534C] font-extrabold mb-4">
-                    <Activity className="h-4.5 w-4.5 text-purple-600" />
+                  <div className="flex items-center space-x-2 text-micro font-mono uppercase tracking-widest text-ink-600 font-extrabold mb-4">
+                    <Activity className="h-4.5 w-4.5 text-violet-600" />
                     <span>Inferred Readiness Stage</span>
                   </div>
                   
@@ -869,50 +869,50 @@ ADAPTIVE READINESS PROGRESSION:
                     <span>{readinessStage} Stage</span>
                   </div>
 
-                  <p className="text-xs text-[#5C534C] font-semibold leading-relaxed mb-4">
+                  <p className="text-xs text-ink-600 font-semibold leading-relaxed mb-4">
                     Northr inferred this from your bioengineering profile, clinical career goals, and current financial boundaries.
                   </p>
                 </div>
 
                 {/* STEP 7: PROGRESSION LOGIC */}
-                <div className="bg-[#F5F3FF] p-4 rounded-xl border border-slate-100 shadow-sm space-y-2">
-                  <span className="text-[9px] font-mono uppercase tracking-widest text-stone-500 font-extrabold block">Readiness Progression Timeline</span>
-                  <div className="flex items-center justify-between text-xs text-stone-700 font-bold font-mono">
-                    <span className="line-through text-stone-400">{stageBefore}</span>
-                    <ArrowRight className="h-3 w-3 text-purple-600" />
-                    <span className="text-purple-600 underline">{readinessStage}</span>
-                    <ArrowRight className="h-3 w-3 text-stone-400" />
-                    <span className="text-stone-400">{stageAfter}</span>
+                <div className="bg-violet-50 p-4 rounded-xl border border-ink-100 shadow-e2 space-y-2">
+                  <span className="text-micro font-mono uppercase tracking-widest text-ink-500 font-extrabold block">Readiness Progression Timeline</span>
+                  <div className="flex items-center justify-between text-xs text-ink-700 font-bold font-mono">
+                    <span className="line-through text-ink-400">{stageBefore}</span>
+                    <ArrowRight className="h-3 w-3 text-violet-600" />
+                    <span className="text-violet-600 underline">{readinessStage}</span>
+                    <ArrowRight className="h-3 w-3 text-ink-400" />
+                    <span className="text-ink-400">{stageAfter}</span>
                   </div>
                 </div>
               </div>
 
               {/* Confidence Score Card */}
-              <div className="lg:col-span-7 bg-white border border-slate-100 rounded-2xl p-6 shadow-xs flex flex-col justify-between">
+              <div className="lg:col-span-7 bg-white border border-ink-100 rounded-2xl p-6 shadow-e1 flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center space-x-2 text-[10px] font-mono uppercase tracking-widest text-[#5C534C] font-extrabold">
-                      <Sliders className="h-4.5 w-4.5 text-purple-600" />
+                    <div className="flex items-center space-x-2 text-micro font-mono uppercase tracking-widest text-ink-600 font-extrabold">
+                      <Sliders className="h-4.5 w-4.5 text-violet-600" />
                       <span>Decision Confidence Metric</span>
                     </div>
-                    <span className="text-[10px] font-mono bg-purple-50 text-purple-800 border border-purple-200 font-bold px-2 py-0.5 rounded">
+                    <span className="text-micro font-mono bg-violet-50 text-violet-800 border border-violet-200 font-bold px-2 py-0.5 rounded">
                       Real-Time Calculation
                     </span>
                   </div>
 
                   <div className="flex items-baseline space-x-3 mb-4">
-                    <span className="text-4xl sm:text-5xl font-display font-black text-[#0F172A] tracking-tight">
+                    <span className="text-4xl sm:text-5xl font-display font-extrabold text-ink-900 tracking-tight">
                       {computedConfidence}%
                     </span>
-                    <span className="text-xs font-mono font-bold text-purple-900">
+                    <span className="text-xs font-mono font-bold text-violet-900">
                       {computedConfidence >= 80 ? "🎯 Highly Aligned" : "💡 Building Momentum"}
                     </span>
                   </div>
 
                   {/* Confidence Bar */}
-                  <div className="w-full bg-stone-100 h-2.5 rounded-full overflow-hidden mb-6 border border-stone-200/40">
+                  <div className="w-full bg-ink-100 h-2.5 rounded-full overflow-hidden mb-6 border border-ink-200/40">
                     <div 
-                      className="bg-purple-600 h-full rounded-full transition-all duration-500"
+                      className="bg-violet-600 h-full rounded-full transition-all duration-500"
                       style={{ width: `${computedConfidence}%` }}
                     />
                   </div>
@@ -921,19 +921,19 @@ ADAPTIVE READINESS PROGRESSION:
                 {/* Why confidence is not higher */}
                 {confidenceBlockers.length > 0 ? (
                   <div className="space-y-2">
-                    <span className="text-[9px] font-mono uppercase tracking-widest text-stone-500 font-extrabold block">Why confidence is not yet 100%</span>
+                    <span className="text-micro font-mono uppercase tracking-widest text-ink-500 font-extrabold block">Why confidence is not yet 100%</span>
                     <ul className="space-y-1.5">
                       {confidenceBlockers.map((blocker, idx) => (
-                        <li key={idx} className="flex items-start text-xs text-[#0F172A] font-bold">
-                          <XCircle className="h-3.5 w-3.5 text-purple-600 shrink-0 mr-2 mt-0.5" />
+                        <li key={idx} className="flex items-start text-xs text-ink-900 font-bold">
+                          <XCircle className="h-3.5 w-3.5 text-violet-600 shrink-0 mr-2 mt-0.5" />
                           <span>{blocker} remains unresolved</span>
                         </li>
                       ))}
                     </ul>
                   </div>
                 ) : (
-                  <div className="flex items-center space-x-2 text-xs text-purple-800 font-bold bg-purple-50 border border-purple-100 p-3 rounded-xl">
-                    <CheckCircle2 className="h-4.5 w-4.5 text-purple-600" />
+                  <div className="flex items-center space-x-2 text-xs text-violet-800 font-bold bg-violet-50 border border-violet-100 p-3 rounded-xl">
+                    <CheckCircle2 className="h-4.5 w-4.5 text-violet-600" />
                     <span>All major structural readiness gaps resolved! Ready for final execution templates.</span>
                   </div>
                 )}
@@ -943,7 +943,7 @@ ADAPTIVE READINESS PROGRESSION:
             {/* STEP 5: NEXT BEST ACTION ENGINE (CORE OUTPUT) */}
             <motion.div 
               id="next-best-action-card" 
-              className="bg-[#D97706] text-white rounded-2xl p-6 sm:p-8 relative overflow-hidden shadow-md"
+              className="bg-gold-600 text-white rounded-2xl p-6 sm:p-8 relative overflow-hidden shadow-e3"
               whileHover={{ scale: 1.01 }}
               transition={{ duration: 0.2 }}
             >
@@ -951,8 +951,8 @@ ADAPTIVE READINESS PROGRESSION:
                 <Compass className="h-40 w-40" />
               </div>
 
-              <div className="flex items-center space-x-2 text-[10px] font-mono uppercase tracking-widest text-white/80 font-bold mb-4">
-                <Sparkles className="h-4.5 w-4.5 text-purple-300" />
+              <div className="flex items-center space-x-2 text-micro font-mono uppercase tracking-widest text-white/80 font-bold mb-4">
+                <Sparkles className="h-4.5 w-4.5 text-violet-300" />
                 <span>Your Next Best Action</span>
               </div>
 
@@ -963,7 +963,7 @@ ADAPTIVE READINESS PROGRESSION:
                 <p className="text-xs sm:text-sm text-white/95 leading-relaxed font-semibold italic">
                   "{nextBestAction.why}"
                 </p>
-                <p className="text-[10px] text-white/80 font-mono tracking-wide uppercase pt-2">
+                <p className="text-micro text-white/80 font-mono tracking-wide uppercase pt-2">
                   *Do this single action to significantly reduce career entry uncertainty.
                 </p>
               </div>
@@ -977,7 +977,7 @@ ADAPTIVE READINESS PROGRESSION:
                       setActiveTab("interactive_prep");
                       setExpandedTask(nextBestAction.taskRefId || null);
                     }}
-                    className="bg-white hover:bg-[#F5F3FF] text-purple-600 text-xs font-extrabold uppercase tracking-wider px-5 py-3 rounded-xl shadow-sm transition-all cursor-pointer flex items-center gap-1.5"
+                    className="bg-white hover:bg-violet-50 text-violet-600 text-xs font-extrabold uppercase tracking-wider px-5 py-3 rounded-xl shadow-e2 transition-all cursor-pointer flex items-center gap-1.5"
                   >
                     <span>Activate Interactive Drill</span>
                     <ArrowRight className="h-3.5 w-3.5" />
@@ -988,7 +988,7 @@ ADAPTIVE READINESS PROGRESSION:
                     onClick={() => {
                       alert(`Initiated preparation file draft for: ${nextBestAction.title}`);
                     }}
-                    className="bg-white hover:bg-[#F5F3FF] text-purple-600 text-xs font-extrabold uppercase tracking-wider px-5 py-3 rounded-xl shadow-sm transition-all cursor-pointer"
+                    className="bg-white hover:bg-violet-50 text-violet-600 text-xs font-extrabold uppercase tracking-wider px-5 py-3 rounded-xl shadow-e2 transition-all cursor-pointer"
                   >
                     Generate Study File
                   </button>
@@ -1011,19 +1011,19 @@ ADAPTIVE READINESS PROGRESSION:
 
             {/* STEP 3: READINESS GAP DIAGNOSTIC (GAP ANALYSIS) */}
             <div id="gap-analysis-section" className="space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div className="flex items-center justify-between border-b border-ink-100 pb-3">
                 <div className="flex items-center space-x-2.5">
-                  <ShieldAlert className="h-5 w-5 text-purple-600" />
-                  <h3 className="text-base sm:text-lg font-display font-extrabold text-[#0F172A]">
+                  <ShieldAlert className="h-5 w-5 text-violet-600" />
+                  <h3 className="text-base sm:text-lg font-display font-extrabold text-ink-900">
                     Readiness Gap Analysis &amp; Diagnostic
                   </h3>
                 </div>
-                <span className="text-[10px] font-mono text-stone-500 font-extrabold uppercase">
+                <span className="text-micro font-mono text-ink-500 font-extrabold uppercase">
                   Verify or Unblock Gaps
                 </span>
               </div>
 
-              <p className="text-xs sm:text-sm text-[#5C534C] font-semibold leading-relaxed">
+              <p className="text-xs sm:text-sm text-ink-600 font-semibold leading-relaxed">
                 Admissions officers look for specific credentials. Toggle gaps as you complete them to see your confidence score and tasks update live:
               </p>
 
@@ -1035,43 +1035,43 @@ ADAPTIVE READINESS PROGRESSION:
                       key={gap.id}
                       className={`p-4 rounded-2xl border transition-all duration-300 flex flex-col justify-between ${
                         isCleared 
-                          ? "bg-purple-50/40 border-purple-200 shadow-inner" 
-                          : "bg-white border-slate-100/80 hover:border-purple-200 hover:bg-purple-50/10 shadow-xs"
+                          ? "bg-violet-50/40 border-violet-200 shadow-inner" 
+                          : "bg-white border-ink-100/80 hover:border-violet-200 hover:bg-violet-50/10 shadow-e1"
                       }`}
                     >
                       {/* Top match score pill */}
                       <div className="space-y-2">
-                        <span className="text-[9px] font-mono font-bold bg-purple-500 text-stone-950 px-2.5 py-1 rounded-full uppercase">
+                        <span className="text-micro font-mono font-bold bg-violet-500 text-ink-950 px-2.5 py-1 rounded-full uppercase">
                           {gap.category} Gap
                         </span>
                         
-                        <h4 className="text-xs sm:text-sm font-bold text-[#0F172A]">
+                        <h4 className="text-xs sm:text-sm font-bold text-ink-900">
                           {gap.title}
                         </h4>
                         
-                        <p className="text-xs text-[#5C534C] leading-relaxed">
+                        <p className="text-xs text-ink-600 leading-relaxed">
                           {gap.description}
                         </p>
                       </div>
 
-                      <div className="mt-4 pt-3 border-t border-dashed border-stone-200 flex flex-col gap-2">
+                      <div className="mt-4 pt-3 border-t border-dashed border-ink-200 flex flex-col gap-2">
                         <div className="flex items-center justify-between">
                           <button
                             onClick={() => toggleGap(gap.id)}
-                            className={`py-1.5 px-3 rounded-lg border text-[10px] font-mono font-bold transition-colors cursor-pointer ${
+                            className={`py-1.5 px-3 rounded-lg border text-micro font-mono font-bold transition-colors cursor-pointer ${
                               isCleared 
-                                ? "bg-purple-100 text-purple-800 border-purple-300 hover:bg-purple-200" 
-                                : "bg-stone-50 text-[#5C534C] border-slate-100 hover:bg-stone-100"
+                                ? "bg-violet-100 text-violet-800 border-violet-300 hover:bg-violet-200" 
+                                : "bg-ink-50 text-ink-600 border-ink-100 hover:bg-ink-100"
                             }`}
                           >
                             {isCleared ? "✓ Resolved" : "Unresolved"}
                           </button>
                         </div>
-                        <span className="text-[10px] font-semibold text-purple-855 flex items-center gap-1.5 leading-tight">
-                          <AlertCircle className="h-3.5 w-3.5 text-purple-600 shrink-0" />
+                        <span className="text-micro font-semibold text-violet-700 flex items-center gap-1.5 leading-tight">
+                          <AlertCircle className="h-3.5 w-3.5 text-violet-600 shrink-0" />
                           <span>{gap.unresolvedWarning}</span>
                         </span>
-                        <span className="text-[9px] font-mono text-stone-400 font-medium">
+                        <span className="text-micro font-mono text-ink-400 font-medium">
                           {gap.officialSource}
                         </span>
                       </div>
@@ -1083,22 +1083,22 @@ ADAPTIVE READINESS PROGRESSION:
 
             {/* STEP 4: ADAPTIVE EXECUTION LEVELS */}
             <div id="execution-levels-section" className="space-y-6">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-4">
-                <h3 className="font-display font-black text-lg text-stone-900">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-ink-100 pb-4">
+                <h3 className="font-display font-extrabold text-lg text-ink-900">
                   Adaptive Execution Framework
                 </h3>
                 
                 {/* Level Tabs */}
-                <div className="flex flex-wrap gap-1 bg-stone-100 p-0.5 rounded-xl border border-stone-200">
+                <div className="flex flex-wrap gap-1 bg-ink-100 p-0.5 rounded-xl border border-ink-200">
                   {[1, 2, 3, 4].map((lvl) => (
                     <button
                       key={lvl}
                       id={`level-tab-${lvl}`}
                       onClick={() => setActiveLevel(lvl)}
-                      className={`px-3 py-1.5 rounded-lg text-[10px] font-extrabold uppercase tracking-wider transition-all cursor-pointer ${
+                      className={`px-3 py-1.5 rounded-lg text-micro font-extrabold uppercase tracking-wider transition-all cursor-pointer ${
                         activeLevel === lvl 
-                          ? "bg-[#D97706] text-white shadow-xs" 
-                          : "text-stone-500 hover:text-stone-800"
+                          ? "bg-gold-600 text-white shadow-e1" 
+                          : "text-ink-500 hover:text-ink-800"
                       }`}
                     >
                       Lvl {lvl}
@@ -1108,22 +1108,22 @@ ADAPTIVE READINESS PROGRESSION:
               </div>
 
               {/* Goal & Description of Active Level */}
-              <div className="bg-[#F5F3FF] p-4 rounded-2xl border border-slate-100 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="bg-violet-50 p-4 rounded-2xl border border-ink-100 shadow-e2 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                  <span className="text-[9px] font-mono uppercase tracking-widest text-purple-900 font-extrabold">
+                  <span className="text-micro font-mono uppercase tracking-widest text-violet-900 font-extrabold">
                     {activeLevel === 1 && "LEVEL 1 — FOUNDATION READINESS"}
                     {activeLevel === 2 && "LEVEL 2 — PROFILE BUILDING READINESS"}
                     {activeLevel === 3 && "LEVEL 3 — APPLICATION READINESS"}
                     {activeLevel === 4 && "LEVEL 4 — FINALIZATION READINESS"}
                   </span>
-                  <h4 className="text-sm font-bold text-[#0F172A] mt-1">
+                  <h4 className="text-sm font-bold text-ink-900 mt-1">
                     {activeLevel === 1 && "Goal: Build clarity and baseline eligibility"}
                     {activeLevel === 2 && "Goal: Develop highly competitive profiles"}
                     {activeLevel === 3 && "Goal: Execute flawless application packages"}
                     {activeLevel === 4 && "Goal: Secure final visas, funding & travel details"}
                   </h4>
                 </div>
-                <span className="text-[10px] font-mono text-stone-500 font-bold">
+                <span className="text-micro font-mono text-ink-500 font-bold">
                   {activeLevel === 1 && "Includes baseline, validation, & requirements"}
                   {activeLevel === 2 && "Includes resumes, SOP drafts, & references"}
                   {activeLevel === 3 && "Includes shortlists, exams, & submissions"}
@@ -1138,35 +1138,35 @@ ADAPTIVE READINESS PROGRESSION:
                   return (
                     <div 
                       key={task.id}
-                      className="bg-white border border-slate-100 rounded-2xl overflow-hidden transition-all duration-300 shadow-xs"
+                      className="bg-white border border-ink-100 rounded-2xl overflow-hidden transition-all duration-300 shadow-e1"
                     >
                       <div 
                         onClick={() => handleTaskClick(task.id)}
-                        className="p-4 flex items-center justify-between gap-4 cursor-pointer hover:bg-stone-50/40"
+                        className="p-4 flex items-center justify-between gap-4 cursor-pointer hover:bg-ink-50/40"
                       >
                         <div className="flex items-start gap-3">
-                          <div className="h-6 w-6 rounded-full bg-purple-50 border border-purple-200 flex items-center justify-center shrink-0 text-[10px] font-mono font-extrabold text-purple-600 mt-0.5">
+                          <div className="h-6 w-6 rounded-full bg-violet-50 border border-violet-200 flex items-center justify-center shrink-0 text-micro font-mono font-extrabold text-violet-600 mt-0.5">
                             {task.level}
                           </div>
                           <div>
-                            <h4 className="text-xs sm:text-sm font-bold text-[#0F172A] leading-snug">
+                            <h4 className="text-xs sm:text-sm font-bold text-ink-900 leading-snug">
                               {task.title}
                             </h4>
-                            <p className="text-xs text-[#5C534C] mt-0.5">
+                            <p className="text-xs text-ink-600 mt-0.5">
                               {task.whyThisMatters}
                             </p>
                           </div>
                         </div>
 
                         <div className="flex items-center gap-2 shrink-0">
-                          <span className={`text-[8px] font-mono uppercase tracking-wider font-extrabold px-2 py-1 rounded ${
-                            task.difficulty === "Easy" ? "bg-purple-50 text-purple-700" :
-                            task.difficulty === "Medium" ? "bg-purple-50 text-purple-700" :
-                            "bg-rose-50 text-rose-700"
+                          <span className={`text-micro font-mono uppercase tracking-wider font-extrabold px-2 py-1 rounded ${
+                            task.difficulty === "Easy" ? "bg-violet-50 text-violet-700" :
+                            task.difficulty === "Medium" ? "bg-violet-50 text-violet-700" :
+                            "bg-bad-50 text-bad-700"
                           }`}>
                             {task.difficulty}
                           </span>
-                          <span className="text-[10px] text-[#5C534C]">
+                          <span className="text-micro text-ink-600">
                             {isExpanded ? "▲" : "▼"}
                           </span>
                         </div>
@@ -1174,21 +1174,21 @@ ADAPTIVE READINESS PROGRESSION:
 
                       {/* Expanded Task details (Step 6 Task Design) */}
                       {isExpanded && (
-                        <div className="px-11 pb-4 pt-1 border-t border-slate-100/60 space-y-3 bg-[#F5F3FF]/20">
+                        <div className="px-11 pb-4 pt-1 border-t border-ink-100/60 space-y-3 bg-violet-50/20">
                           <div className="grid grid-cols-2 gap-4 text-xs">
                             <div>
-                              <span className="text-[9px] font-mono uppercase text-stone-500 font-bold block">Expected Impact</span>
-                              <span className="text-stone-800 font-bold">{task.impact} on Readiness Score</span>
+                              <span className="text-micro font-mono uppercase text-ink-500 font-bold block">Expected Impact</span>
+                              <span className="text-ink-800 font-bold">{task.impact} on Readiness Score</span>
                             </div>
                             <div>
-                              <span className="text-[9px] font-mono uppercase text-stone-500 font-bold block">Dependency</span>
-                              <span className="text-stone-800 font-bold">{task.dependency || "None (Immediate Trigger)"}</span>
+                              <span className="text-micro font-mono uppercase text-ink-500 font-bold block">Dependency</span>
+                              <span className="text-ink-800 font-bold">{task.dependency || "None (Immediate Trigger)"}</span>
                             </div>
                           </div>
 
                           {task.actionSnippetContent && (
                             <div className="pt-2">
-                              <span className="text-[9px] font-mono uppercase text-purple-600 font-extrabold block mb-1.5">Interactive Framework Preview</span>
+                              <span className="text-micro font-mono uppercase text-violet-600 font-extrabold block mb-1.5">Interactive Framework Preview</span>
                               {task.actionSnippetContent}
                             </div>
                           )}
@@ -1201,13 +1201,13 @@ ADAPTIVE READINESS PROGRESSION:
             </div>
 
             {/* STEP 11: IS THIS STILL A GOOD FIT? (REFLECTIVE DIAGNOSTIC) */}
-            <div className="bg-[#F5F3FF] border border-slate-100 rounded-2xl p-6 sm:p-8 space-y-4">
-              <div className="flex items-center space-x-2 text-[10px] font-mono uppercase tracking-widest text-purple-600 font-bold">
+            <div className="bg-violet-50 border border-ink-100 rounded-2xl p-6 sm:p-8 space-y-4">
+              <div className="flex items-center space-x-2 text-micro font-mono uppercase tracking-widest text-violet-600 font-bold">
                 <HelpCircle className="h-4.5 w-4.5" />
                 <span>Is this career path still a good fit?</span>
               </div>
               
-              <h3 className="text-sm sm:text-base font-bold text-[#0F172A]">
+              <h3 className="text-sm sm:text-base font-bold text-ink-900">
                 After reviewing the readiness gaps, daily realities, and progression timelines, how is your excitation level?
               </h3>
 
@@ -1227,7 +1227,7 @@ ADAPTIVE READINESS PROGRESSION:
                       setFeedbackSaved(true);
                       setTimeout(() => setFeedbackSaved(false), 2000);
                     }}
-                    className="bg-white hover:bg-stone-50 border border-slate-100 shadow-sm hover:border-[#D97706] px-3 py-2 rounded-xl text-xs font-bold transition-all text-[#0F172A] cursor-pointer text-center"
+                    className="bg-white hover:bg-ink-50 border border-ink-100 shadow-e2 hover:border-gold-600 px-3 py-2 rounded-xl text-xs font-bold transition-all text-ink-900 cursor-pointer text-center"
                   >
                     {opt.level}
                   </button>
@@ -1235,8 +1235,8 @@ ADAPTIVE READINESS PROGRESSION:
               </div>
 
               {feedbackSaved && (
-                <div className="text-xs text-purple-800 font-bold flex items-center gap-1">
-                  <CheckCircle2 className="h-4 w-4 text-purple-600" />
+                <div className="text-xs text-violet-800 font-bold flex items-center gap-1">
+                  <CheckCircle2 className="h-4 w-4 text-violet-600" />
                   <span>Feedback stored securely. This will influence future career suggestions dynamically!</span>
                 </div>
               )}
@@ -1249,14 +1249,14 @@ ADAPTIVE READINESS PROGRESSION:
         {activeTab === "interactive_prep" && (
           <div className="p-6 sm:p-8 space-y-8">
             <div className="space-y-2">
-              <div className="flex items-center space-x-2 text-[10px] font-mono uppercase tracking-widest text-purple-600 font-extrabold">
+              <div className="flex items-center space-x-2 text-micro font-mono uppercase tracking-widest text-violet-600 font-extrabold">
                 <Sparkles className="h-4.5 w-4.5" />
                 <span>Interactive Drills &amp; Micro-Diagnostic Modules</span>
               </div>
-              <h3 className="text-base sm:text-lg font-display font-extrabold text-[#0F172A]">
+              <h3 className="text-base sm:text-lg font-display font-extrabold text-ink-900">
                 Build Proof-of-Work Competence
               </h3>
-              <p className="text-xs sm:text-sm text-[#5C534C] font-semibold leading-relaxed">
+              <p className="text-xs sm:text-sm text-ink-600 font-semibold leading-relaxed">
                 Test yourself with rapid-fire questions to clear readiness benchmarks immediately.
               </p>
             </div>
@@ -1264,26 +1264,26 @@ ADAPTIVE READINESS PROGRESSION:
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
               
               {/* Question Drill Panel */}
-              <div className="lg:col-span-7 bg-white border border-slate-100 rounded-2xl p-6 shadow-xs space-y-6">
-                <h4 className="text-xs font-mono uppercase text-purple-600 tracking-wider font-extrabold border-b border-slate-100 pb-2.5">
+              <div className="lg:col-span-7 bg-white border border-ink-100 rounded-2xl p-6 shadow-e1 space-y-6">
+                <h4 className="text-xs font-mono uppercase text-violet-600 tracking-wider font-extrabold border-b border-ink-100 pb-2.5">
                   Analytical Competency Drill
                 </h4>
 
                 {isConsulting && (
                   <div className="space-y-4 text-xs">
-                    <p className="font-bold text-[#0F172A]">Q: A global hospital chain experiences a 15% drop in operating margins. Which is the best structured root-cause hypothesis to present first?</p>
+                    <p className="font-bold text-ink-900">Q: A global hospital chain experiences a 15% drop in operating margins. Which is the best structured root-cause hypothesis to present first?</p>
                     <div className="space-y-2">
                       <button 
                         id="consulting-drill-opt-1"
                         onClick={() => setActionOutput("correct_cons")}
-                        className="w-full text-left p-3 rounded-xl border border-slate-100 shadow-sm hover:border-[#D97706] hover:bg-stone-50 font-bold transition-all cursor-pointer"
+                        className="w-full text-left p-3 rounded-xl border border-ink-100 shadow-e2 hover:border-gold-600 hover:bg-ink-50 font-bold transition-all cursor-pointer"
                       >
                         A. Check price vs volume trends across both elective surgeries and emergency outpatient clinics. (Isolates MECE variables)
                       </button>
                       <button 
                         id="consulting-drill-opt-2"
                         onClick={() => setActionOutput("wrong_cons")}
-                        className="w-full text-left p-3 rounded-xl border border-slate-100 shadow-sm hover:border-[#D97706] hover:bg-stone-50 font-bold transition-all cursor-pointer"
+                        className="w-full text-left p-3 rounded-xl border border-ink-100 shadow-e2 hover:border-gold-600 hover:bg-ink-50 font-bold transition-all cursor-pointer"
                       >
                         B. Advise them to fire 10% of diagnostic staff immediately to save direct operational expenditures.
                       </button>
@@ -1293,19 +1293,19 @@ ADAPTIVE READINESS PROGRESSION:
 
                 {isBioinformatics && (
                   <div className="space-y-4 text-xs">
-                    <p className="font-bold text-[#0F172A]">Q: You have a memory-bound process aligning 100 whole genomes. How should you optimize file handling to prevent container out-of-memory (OOM) crashes?</p>
+                    <p className="font-bold text-ink-900">Q: You have a memory-bound process aligning 100 whole genomes. How should you optimize file handling to prevent container out-of-memory (OOM) crashes?</p>
                     <div className="space-y-2">
                       <button 
                         id="bioinformatics-drill-opt-1"
                         onClick={() => setActionOutput("correct_bio")}
-                        className="w-full text-left p-3 rounded-xl border border-slate-100 shadow-sm hover:border-[#D97706] hover:bg-stone-50 font-bold transition-all cursor-pointer"
+                        className="w-full text-left p-3 rounded-xl border border-ink-100 shadow-e2 hover:border-gold-600 hover:bg-ink-50 font-bold transition-all cursor-pointer"
                       >
                         A. Stream datasets using Samtools block compression and deploy parallel workers bounded by Nextflow memory caps.
                       </button>
                       <button 
                         id="bioinformatics-drill-opt-2"
                         onClick={() => setActionOutput("wrong_bio")}
-                        className="w-full text-left p-3 rounded-xl border border-slate-100 shadow-sm hover:border-[#D97706] hover:bg-stone-50 font-bold transition-all cursor-pointer"
+                        className="w-full text-left p-3 rounded-xl border border-ink-100 shadow-e2 hover:border-gold-600 hover:bg-ink-50 font-bold transition-all cursor-pointer"
                       >
                         B. Load all FASTQ files completely into a single local pandas dataframe arrays.
                       </button>
@@ -1315,19 +1315,19 @@ ADAPTIVE READINESS PROGRESSION:
 
                 {!isConsulting && !isBioinformatics && (
                   <div className="space-y-4 text-xs">
-                    <p className="font-bold text-[#0F172A]">Q: How do you verify quality and biosafety compliance parameters before drafting the core Module 3 dossier for regulatory submissions?</p>
+                    <p className="font-bold text-ink-900">Q: How do you verify quality and biosafety compliance parameters before drafting the core Module 3 dossier for regulatory submissions?</p>
                     <div className="space-y-2">
                       <button 
                         id="default-drill-opt-1"
                         onClick={() => setActionOutput("correct_default")}
-                        className="w-full text-left p-3 rounded-xl border border-slate-100 shadow-sm hover:border-[#D97706] hover:bg-stone-50 font-bold transition-all cursor-pointer"
+                        className="w-full text-left p-3 rounded-xl border border-ink-100 shadow-e2 hover:border-gold-600 hover:bg-ink-50 font-bold transition-all cursor-pointer"
                       >
                         A. Cross-reference stable physical laboratory assays and audit batch-record sanitization logs.
                       </button>
                       <button 
                         id="default-drill-opt-2"
                         onClick={() => setActionOutput("wrong_default")}
-                        className="w-full text-left p-3 rounded-xl border border-slate-100 shadow-sm hover:border-[#D97706] hover:bg-stone-50 font-bold transition-all cursor-pointer"
+                        className="w-full text-left p-3 rounded-xl border border-ink-100 shadow-e2 hover:border-gold-600 hover:bg-ink-50 font-bold transition-all cursor-pointer"
                       >
                         B. Guess baseline metrics based on previously published marketing literature.
                       </button>
@@ -1339,8 +1339,8 @@ ADAPTIVE READINESS PROGRESSION:
                 {actionOutput && (
                   <div className={`p-4 rounded-xl border text-xs leading-relaxed ${
                     actionOutput.startsWith("correct") 
-                      ? "bg-purple-50 border-purple-200 text-purple-800" 
-                      : "bg-rose-50 border-rose-200 text-rose-800"
+                      ? "bg-violet-50 border-violet-200 text-violet-800" 
+                      : "bg-bad-50 border-bad-100 text-bad-700"
                   }`}>
                     {actionOutput === "correct_cons" && "🎉 Correct! Testing Price vs Volume trends is Mutually Exclusive & Collectively Exhaustive (MECE), preventing premature solution bias."}
                     {actionOutput === "wrong_cons" && "❌ Incorrect. Recommending staff firing without isolating the operational segment is highly unstructured and violates MECE principles."}
@@ -1353,17 +1353,17 @@ ADAPTIVE READINESS PROGRESSION:
               </div>
 
               {/* Sidebar: Interview Quick Prep */}
-              <div className="lg:col-span-5 bg-[#F5F3FF] rounded-2xl p-6 border border-slate-100 shadow-sm space-y-4">
-                <span className="text-[9px] font-mono uppercase text-purple-900 font-extrabold block">
+              <div className="lg:col-span-5 bg-violet-50 rounded-2xl p-6 border border-ink-100 shadow-e2 space-y-4">
+                <span className="text-micro font-mono uppercase text-violet-900 font-extrabold block">
                   Quick Interview Prep Tip
                 </span>
 
                 <div className="space-y-3 text-xs leading-relaxed">
-                  <h5 className="font-bold text-[#0F172A]">The 30-Second Elevator Pitch</h5>
-                  <p className="text-[#5C534C] font-semibold">
+                  <h5 className="font-bold text-ink-900">The 30-Second Elevator Pitch</h5>
+                  <p className="text-ink-600 font-semibold">
                     When an admissions director asks <em>\"Why should we choose you for this program?\"</em>, answer using the **Triangle Alignment Method**:
                   </p>
-                  <ul className="space-y-2 list-disc pl-4 font-bold text-stone-800">
+                  <ul className="space-y-2 list-disc pl-4 font-bold text-ink-800">
                     <li>1. **Academic foundation** in biotechnology and health sciences.</li>
                     <li>2. **Practical gap closure** (e.g., your Nextflow projects or STAR-based operations experience).</li>
                     <li>3. **Specific future bet** matching their department's ongoing research or placement clusters.</li>
@@ -1376,8 +1376,8 @@ ADAPTIVE READINESS PROGRESSION:
         )}
 
         {/* Footer / Actions (Section 12 Next Actions) */}
-        <div className="border-t border-slate-100 bg-[#F5F3FF] p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6">
-          <p className="text-xs text-[#5C534C] text-center sm:text-left font-semibold">
+        <div className="border-t border-ink-100 bg-violet-50 p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+          <p className="text-xs text-ink-600 text-center sm:text-left font-semibold">
             Progress is stored locally. This framework guarantees <strong>Readiness Progression</strong> over simple calendar deadlines.
           </p>
           <div className="flex flex-col sm:flex-row items-center gap-3.5 w-full sm:w-auto">
@@ -1385,7 +1385,7 @@ ADAPTIVE READINESS PROGRESSION:
               <button
                 id="back-to-profiles-bottom-btn"
                 onClick={onBack}
-                className="w-full sm:w-auto text-center px-5 py-3 rounded-xl border border-slate-100 shadow-sm hover:bg-stone-50 text-xs font-bold uppercase tracking-wider text-[#5C534C] transition-colors cursor-pointer bg-white"
+                className="w-full sm:w-auto text-center px-5 py-3 rounded-xl border border-ink-100 shadow-e2 hover:bg-ink-50 text-xs font-bold uppercase tracking-wider text-ink-600 transition-colors cursor-pointer bg-white"
               >
                 Back to Top Recommendations
               </button>
@@ -1393,7 +1393,7 @@ ADAPTIVE READINESS PROGRESSION:
             <button
               id="download-execution-report-btn"
               onClick={handleDownloadReport}
-              className="w-full sm:w-auto text-center px-5.5 py-3.5 rounded-xl bg-[#D97706] hover:bg-[#B45309] text-white text-xs font-extrabold uppercase tracking-widest shadow-md transition-colors cursor-pointer flex items-center justify-center gap-1.5"
+              className="w-full sm:w-auto text-center px-5.5 py-3.5 rounded-xl bg-gold-600 hover:bg-gold-700 text-white text-xs font-extrabold uppercase tracking-widest shadow-e3 transition-colors cursor-pointer flex items-center justify-center gap-1.5"
             >
               <FileText className="h-4.5 w-4.5" />
               <span>Download Intelligence Report</span>

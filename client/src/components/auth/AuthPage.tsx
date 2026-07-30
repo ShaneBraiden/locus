@@ -10,6 +10,8 @@ import {
   User,
 } from "lucide-react";
 import { useAuth } from "../../auth/AuthContext";
+import { Logo } from "../Logo";
+import { Button, cx, inputClass } from "../../ui";
 
 type Mode = "login" | "register";
 
@@ -51,11 +53,11 @@ function Field({
 }: FieldProps) {
   return (
     <div className="space-y-1.5">
-      <label htmlFor={id} className="block text-xs font-semibold text-slate-700">
+      <label htmlFor={id} className="block text-xs font-semibold text-ink-700">
         {label}
       </label>
       <div className="relative">
-        <Icon className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+        <Icon className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-400" />
         <input
           id={id}
           name={id}
@@ -67,13 +69,7 @@ function Field({
           disabled={disabled}
           aria-invalid={!!error}
           aria-describedby={error ? `${id}-error` : undefined}
-          className={`w-full rounded-lg border bg-white py-3 pl-10 text-sm text-slate-900 placeholder-slate-400 transition focus:outline-none focus:ring-3 disabled:cursor-not-allowed disabled:opacity-60 ${
-            trailing ? "pr-11" : "pr-4"
-          } ${
-            error
-              ? "border-rose-300 focus:border-rose-400 focus:ring-rose-100"
-              : "border-slate-200 focus:border-[#4C1D95] focus:ring-purple-100"
-          }`}
+          className={cx(inputClass(!!error, true), trailing ? "pr-11" : "pr-3")}
         />
         {trailing && (
           <div className="absolute right-2 top-1/2 -translate-y-1/2">{trailing}</div>
@@ -82,7 +78,8 @@ function Field({
       {error && (
         <p
           id={`${id}-error`}
-          className="flex items-center gap-1 text-xs font-medium text-rose-600"
+          role="alert"
+          className="flex items-center gap-1 text-tiny font-semibold text-bad-700"
         >
           <AlertCircle className="h-3 w-3 shrink-0" />
           {error}
@@ -105,7 +102,7 @@ function PasswordToggle({
       onClick={onToggle}
       tabIndex={-1}
       aria-label={visible ? "Hide password" : "Show password"}
-      className="rounded-md p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 cursor-pointer"
+      className="rounded-md p-2 text-ink-400 transition-colors hover:bg-ink-100 hover:text-ink-700 cursor-pointer"
     >
       {visible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
     </button>
@@ -199,47 +196,115 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="flex min-h-[100dvh] w-full items-center justify-center bg-slate-100 px-4 py-8 font-sans text-slate-900">
-      <div className="w-full max-w-sm rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-        <div className="mb-6">
-          <h1 className="font-display text-2xl font-bold text-slate-950">
-            {isRegister ? "Create account" : "Sign in"}
-          </h1>
-          <p className="mt-1 text-sm text-slate-500">
-            {isRegister ? "Register to continue." : "Welcome back to Northr."}
+    // Split screen: brand on the left, form on the right. The old page was a
+    // single grey box centred on a grey field, which gave the product no
+    // first impression at all.
+    <div className="grid min-h-[100dvh] w-full font-sans text-ink-900 lg:grid-cols-[1.1fr_1fr]">
+
+      {/* Brand panel — desktop only. */}
+      <aside className="relative hidden flex-col justify-between overflow-hidden bg-ink-950 p-12 lg:flex">
+        {/* Ambient gold wash, echoing the logo's gradient. */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -left-32 -top-32 h-[36rem] w-[36rem] rounded-full opacity-25 blur-3xl"
+          style={{ background: "radial-gradient(circle, #D3A86C 0%, transparent 65%)" }}
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -bottom-40 -right-24 h-[30rem] w-[30rem] rounded-full opacity-15 blur-3xl"
+          style={{ background: "radial-gradient(circle, #7B50E8 0%, transparent 65%)" }}
+        />
+
+        <div className="relative flex items-center gap-3">
+          <Logo className="h-11 w-11 rounded-xl" />
+          <div>
+            <div className="font-display text-xl font-bold tracking-tight text-white">northr</div>
+            <div className="font-mono text-micro font-bold uppercase tracking-widest text-white/40">
+              Your Career OS
+            </div>
+          </div>
+        </div>
+
+        <div className="relative max-w-md">
+          <h2 className="font-display text-4xl font-bold leading-[1.05] tracking-tight text-white text-balance">
+            From clinical chaos to{" "}
+            <span className="text-gradient-gold">actual clarity.</span>
+          </h2>
+          <p className="mt-5 text-base leading-relaxed text-white/60 text-pretty">
+            FAB just talks to you. Underneath, every answer maps onto a 25-item
+            psychometric instrument and a 127-career fit table — so what comes out
+            the other end is a real answer, not a personality quiz.
           </p>
         </div>
 
-        <div
-          role="tablist"
-          aria-label="Authentication mode"
-          className="mb-6 grid grid-cols-2 gap-2"
-        >
-          {(["login", "register"] as Mode[]).map((m) => (
-            <button
-              key={m}
-              role="tab"
-              type="button"
-              aria-selected={mode === m}
-              onClick={() => switchMode(m)}
-              className={`rounded-lg border px-3 py-2 text-sm font-semibold transition-colors cursor-pointer ${
-                mode === m
-                  ? "border-[#4C1D95] bg-[#4C1D95] text-white"
-                  : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
-              }`}
-            >
-              {m === "login" ? "Login" : "Register"}
-            </button>
+        <dl className="relative grid grid-cols-3 gap-6 border-t border-white/10 pt-6">
+          {[
+            ["127", "careers scored"],
+            ["26", "degree pathways"],
+            ["11", "languages"],
+          ].map(([n, label]) => (
+            <div key={label}>
+              <dt data-numeric className="font-display text-2xl font-bold text-gold-300">
+                {n}
+              </dt>
+              <dd className="mt-1 font-mono text-micro font-bold uppercase tracking-widest text-white/40">
+                {label}
+              </dd>
+            </div>
           ))}
-        </div>
+        </dl>
+      </aside>
+
+      {/* Form panel */}
+      <main className="flex items-center justify-center bg-white px-4 py-10 sm:px-8">
+        <div className="w-full max-w-sm">
+          {/* Compact brand lockup, mobile only. */}
+          <div className="mb-8 flex items-center gap-2.5 lg:hidden">
+            <Logo className="h-10 w-10 rounded-xl" />
+            <span className="font-display text-xl font-bold tracking-tight">northr</span>
+          </div>
+
+          <div className="mb-6">
+            <h1 className="font-display text-2xl font-bold text-ink-950">
+              {isRegister ? "Create your account" : "Welcome back"}
+            </h1>
+            <p className="mt-1.5 text-sm text-ink-500">
+              {isRegister
+                ? "A minute to set up. Your progress follows you across devices."
+                : "Pick up exactly where you left off."}
+            </p>
+          </div>
+
+          <div
+            role="tablist"
+            aria-label="Authentication mode"
+            className="mb-6 grid grid-cols-2 gap-1 rounded-xl border border-ink-100 bg-ink-50 p-1"
+          >
+            {(["login", "register"] as Mode[]).map((m) => (
+              <button
+                key={m}
+                role="tab"
+                type="button"
+                aria-selected={mode === m}
+                onClick={() => switchMode(m)}
+                className={`rounded-lg px-3 py-2 text-sm font-semibold transition-colors ${
+                  mode === m
+                    ? "bg-white text-ink-900 shadow-e2"
+                    : "text-ink-500 hover:text-ink-800"
+                }`}
+              >
+                {m === "login" ? "Sign in" : "Register"}
+              </button>
+            ))}
+          </div>
 
         {serverError && (
           <div
             role="alert"
-            className="mb-5 flex items-start gap-2 rounded-lg border border-rose-200 bg-rose-50 px-3 py-2.5"
+            className="mb-5 flex items-start gap-2 rounded-lg border border-bad-100 bg-bad-50 px-3 py-2.5"
           >
-            <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-rose-500" />
-            <p className="text-sm font-medium leading-relaxed text-rose-800">
+            <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-bad-500" />
+            <p className="text-sm font-medium leading-relaxed text-bad-700">
               {serverError}
             </p>
           </div>
@@ -308,45 +373,53 @@ export default function AuthPage() {
             />
           )}
 
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#4C1D95] px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-[#3B0764] focus:outline-none focus:ring-3 focus:ring-purple-200 disabled:cursor-not-allowed disabled:opacity-70 cursor-pointer"
-          >
-            {isSubmitting ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" />
-                <span>{isRegister ? "Creating account" : "Signing in"}</span>
-              </>
-            ) : (
-              <>
-                <span>{isRegister ? "Create account" : "Sign in"}</span>
-                <ArrowRight className="h-4 w-4" />
-              </>
-            )}
-          </button>
-        </form>
+            <Button
+              type="submit"
+              variant="inverse"
+              size="lg"
+              block
+              disabled={isSubmitting}
+              className="mt-1"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span>{isRegister ? "Creating account" : "Signing in"}</span>
+                </>
+              ) : (
+                <>
+                  <span>{isRegister ? "Create account" : "Sign in"}</span>
+                  <ArrowRight className="h-4 w-4" />
+                </>
+              )}
+            </Button>
+          </form>
 
-        <button
-          type="button"
-          onClick={loginAsGuest}
-          disabled={isSubmitting}
-          className="mt-3 w-full rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50 focus:outline-none focus:ring-3 focus:ring-slate-100 disabled:opacity-60 cursor-pointer"
-        >
-          Continue as guest
-        </button>
+          <div className="my-5 flex items-center gap-3">
+            <span className="h-px flex-1 bg-ink-100" />
+            <span className="eyebrow">or</span>
+            <span className="h-px flex-1 bg-ink-100" />
+          </div>
 
-        <p className="mt-5 text-center text-sm text-slate-500">
-          {isRegister ? "Already have an account?" : "Need an account?"}{" "}
-          <button
-            type="button"
-            onClick={() => switchMode(isRegister ? "login" : "register")}
-            className="font-semibold text-[#4C1D95] underline-offset-2 transition-colors hover:text-[#3B0764] hover:underline cursor-pointer"
-          >
-            {isRegister ? "Sign in" : "Register"}
-          </button>
-        </p>
-      </div>
+          <Button variant="outline" size="lg" block onClick={loginAsGuest} disabled={isSubmitting}>
+            Continue as guest
+          </Button>
+          <p className="mt-2 text-center text-tiny text-ink-400">
+            Guest progress is saved on this device only.
+          </p>
+
+          <p className="mt-6 text-center text-sm text-ink-500">
+            {isRegister ? "Already have an account?" : "Need an account?"}{" "}
+            <button
+              type="button"
+              onClick={() => switchMode(isRegister ? "login" : "register")}
+              className="font-semibold text-ink-900 underline decoration-gold-400 decoration-2 underline-offset-4 transition-colors hover:text-gold-700"
+            >
+              {isRegister ? "Sign in" : "Register"}
+            </button>
+          </p>
+        </div>
+      </main>
     </div>
   );
 }

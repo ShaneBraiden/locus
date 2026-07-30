@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Area, AreaChart } from "recharts";
 import { CareerConfidence, CareerPath, PracticalConstraints, ProfileSignals } from "../../types";
+import { CHART } from "../../ui";
 
 type TimeFilter = "6M" | "3M" | "1M" | "All";
 
@@ -146,14 +147,14 @@ export default function JourneyView({
           </div>
 
           {/* Hero Card */}
-          <div className="relative overflow-hidden bg-gradient-to-br from-white to-violet-50 rounded-3xl p-6 shadow-e2 border border-violet-100/50">
+          <div className="relative overflow-hidden bg-gradient-to-br from-white to-clay-50 rounded-3xl p-6 shadow-e2 border border-clay-100/50">
             <div className="absolute right-0 top-0 opacity-20 pointer-events-none" aria-hidden>
               <svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M150 50 L100 150 L50 100" stroke="#4C1D95" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                <circle cx="150" cy="50" r="4" fill="#4C1D95" />
-                <circle cx="100" cy="150" r="4" fill="#4C1D95" />
-                <circle cx="50" cy="100" r="4" fill="#4C1D95" />
-                <path strokeDasharray="4 4" d="M150 50 Q 200 100 100 150" stroke="#4C1D95" strokeWidth="1" fill="none" />
+                <path d="M150 50 L100 150 L50 100" stroke={CHART.moss} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                <circle cx="150" cy="50" r="4" fill={CHART.moss} />
+                <circle cx="100" cy="150" r="4" fill={CHART.clay} />
+                <circle cx="50" cy="100" r="4" fill={CHART.moss} />
+                <path strokeDasharray="4 4" d="M150 50 Q 200 100 100 150" stroke={CHART.clay} strokeWidth="1" fill="none" />
               </svg>
             </div>
             <div className="relative z-10">
@@ -178,7 +179,7 @@ export default function JourneyView({
                     </p>
                     <button
                       onClick={() => goTo("fab")}
-                      className="inline-flex items-center gap-1.5 rounded-xl bg-violet-700 px-4 py-2 text-tiny font-bold uppercase tracking-wider text-white transition-colors hover:bg-violet-900 cursor-pointer"
+                      className="inline-flex items-center gap-1.5 rounded-xl bg-clay-700 px-4 py-2 text-tiny font-bold uppercase tracking-wider text-white transition-colors hover:bg-clay-900 cursor-pointer"
                     >
                       <MessageSquare className="h-3.5 w-3.5" />
                       Chat with FAB
@@ -187,7 +188,7 @@ export default function JourneyView({
                 ) : (
                   <>
                     <div className="flex items-baseline justify-between mt-2">
-                      <span className="text-4xl font-display font-extrabold text-violet-700 tabular-nums">
+                      <span className="text-4xl font-display font-extrabold text-clay-700 tabular-nums">
                         {currentConfidence}%
                       </span>
                       {topPath && (
@@ -196,12 +197,12 @@ export default function JourneyView({
                         </span>
                       )}
                     </div>
-                    <div className="h-1.5 w-full bg-violet-100 rounded-full mt-4 overflow-hidden">
+                    <div className="h-1.5 w-full bg-clay-100 rounded-full mt-4 overflow-hidden">
                       <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: `${currentConfidence}%` }}
                         transition={{ duration: 1, ease: "easeOut" }}
-                        className="h-full bg-violet-700 rounded-full"
+                        className="h-full bg-clay-700 rounded-full"
                       />
                     </div>
                   </>
@@ -219,7 +220,7 @@ export default function JourneyView({
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-white rounded-2xl p-5 shadow-e2 border border-ink-100">
                 <div className="flex items-center gap-2 mb-3">
-                  <div className="bg-violet-50 p-2 rounded-xl text-violet-600">
+                  <div className="bg-clay-50 p-2 rounded-xl text-clay-600">
                     <FlaskConical className="h-4 w-4" />
                   </div>
                   <span className="text-xs font-bold text-ink-700">Evidence</span>
@@ -234,7 +235,7 @@ export default function JourneyView({
 
               <div className="bg-white rounded-2xl p-5 shadow-e2 border border-ink-100">
                 <div className="flex items-center gap-2 mb-3">
-                  <div className="bg-violet-50 p-2 rounded-xl text-violet-600">
+                  <div className="bg-clay-50 p-2 rounded-xl text-clay-600">
                     <Sparkles className="h-4 w-4" />
                   </div>
                   <span className="text-xs font-bold text-ink-700">Signals</span>
@@ -249,7 +250,7 @@ export default function JourneyView({
 
               <div className="bg-white rounded-2xl p-5 shadow-e2 border border-ink-100">
                 <div className="flex items-center gap-2 mb-3">
-                  <div className="bg-violet-50 p-2 rounded-xl text-violet-600">
+                  <div className="bg-clay-50 p-2 rounded-xl text-clay-600">
                     <Compass className="h-4 w-4" />
                   </div>
                   <span className="text-xs font-bold text-ink-700">Paths</span>
@@ -264,7 +265,7 @@ export default function JourneyView({
 
               <div className="bg-white rounded-2xl p-5 shadow-e2 border border-ink-100">
                 <div className="flex items-center gap-2 mb-3">
-                  <div className="bg-violet-50 p-2 rounded-xl text-violet-600">
+                  <div className="bg-clay-50 p-2 rounded-xl text-clay-600">
                     <BookOpen className="h-4 w-4" />
                   </div>
                   <span className="text-xs font-bold text-ink-700">Pathways Tracked</span>
@@ -292,10 +293,10 @@ export default function JourneyView({
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
                       placeholder="Search journey..."
-                      className="pl-8 pr-3 py-1.5 bg-white border border-ink-200 rounded-lg text-xs w-full sm:w-48 focus:outline-none focus:ring-2 focus:ring-violet-600/20"
+                      className="pl-8 pr-3 py-1.5 bg-white border border-ink-200 rounded-lg text-xs w-full sm:w-48 focus:outline-none focus:ring-2 focus:ring-clay-600/20"
                     />
                     <svg
-                      className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-ink-400"
+                      className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-ink-500"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
@@ -311,7 +312,7 @@ export default function JourneyView({
               )}
             </div>
 
-            <div className="relative pl-6 space-y-8 before:absolute before:inset-0 before:ml-8 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-violet-200 before:to-transparent">
+            <div className="relative pl-6 space-y-8 before:absolute before:inset-0 before:ml-8 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-clay-200 before:to-transparent">
               {!hasEvidence ? (
                 <div className="bg-white rounded-2xl p-6 border border-ink-100 shadow-e2 text-center space-y-3">
                   <p className="text-sm text-ink-500">
@@ -321,7 +322,7 @@ export default function JourneyView({
                   </p>
                   <button
                     onClick={() => goTo("experiments")}
-                    className="inline-flex items-center gap-1.5 rounded-xl bg-violet-700 px-4 py-2 text-tiny font-bold uppercase tracking-wider text-white transition-colors hover:bg-violet-900 cursor-pointer"
+                    className="inline-flex items-center gap-1.5 rounded-xl bg-clay-700 px-4 py-2 text-tiny font-bold uppercase tracking-wider text-white transition-colors hover:bg-clay-900 cursor-pointer"
                   >
                     <FlaskConical className="h-3.5 w-3.5" />
                     Run your first experiment
@@ -341,7 +342,7 @@ export default function JourneyView({
                     className="relative flex items-start gap-6 group"
                   >
                     <div className="absolute -left-6 bg-ink-25 p-1">
-                      <div className="h-5 w-5 rounded-md bg-white border border-violet-200 text-violet-600 flex items-center justify-center shadow-e2">
+                      <div className="h-5 w-5 rounded-md bg-white border border-clay-200 text-clay-600 flex items-center justify-center shadow-e2">
                         <CheckCircle2 className="h-3 w-3" />
                       </div>
                     </div>
@@ -350,7 +351,7 @@ export default function JourneyView({
                       onClick={() => setExpandedMilestone(expandedMilestone === ev.id ? null : ev.id)}
                     >
                       <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 bg-violet-50 rounded-xl text-violet-600 shrink-0">
+                        <div className="p-2 bg-clay-50 rounded-xl text-clay-600 shrink-0">
                           <FlaskConical className="h-4 w-4" />
                         </div>
                         <h4 className="font-bold text-ink-900 text-sm min-w-0 break-words">
@@ -375,7 +376,7 @@ export default function JourneyView({
                           ))}
                         </div>
                         {Number.isFinite(timestampOf(ev)) && (
-                          <span className="text-micro font-mono text-ink-400">
+                          <span className="text-micro font-mono text-ink-500">
                             {new Date(timestampOf(ev)).toLocaleDateString()}
                           </span>
                         )}
@@ -415,7 +416,7 @@ export default function JourneyView({
         {/* RIGHT COLUMN: CHARTS & INSIGHTS */}
         <div className="w-full lg:w-[55%] flex flex-col space-y-8 mt-12 lg:mt-0 lg:sticky lg:top-8 self-start min-w-0">
           <div className="space-y-1">
-            <h3 className="text-micro font-bold text-violet-600 uppercase tracking-wider">
+            <h3 className="text-micro font-bold text-clay-600 uppercase tracking-wider">
               Your track record
             </h3>
             <h2 className="text-3xl font-display font-extrabold text-ink-900 leading-tight">
@@ -437,7 +438,7 @@ export default function JourneyView({
                     onClick={() => setTimeFilter(filter)}
                     className={`px-3 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer ${
                       timeFilter === filter
-                        ? "bg-white text-violet-700 shadow-e2"
+                        ? "bg-white text-clay-700 shadow-e2"
                         : "text-ink-500 hover:text-ink-900"
                     }`}
                   >
@@ -453,39 +454,40 @@ export default function JourneyView({
                   <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                     <defs>
                       <linearGradient id="colorEvidence" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#4C1D95" stopOpacity={0.15} />
-                        <stop offset="95%" stopColor="#4C1D95" stopOpacity={0} />
+                        <stop offset="5%" stopColor={CHART.moss} stopOpacity={0.22} />
+                        <stop offset="95%" stopColor={CHART.moss} stopOpacity={0} />
                       </linearGradient>
                     </defs>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={CHART.grid} />
                     <XAxis
                       dataKey="name"
                       axisLine={false}
                       tickLine={false}
-                      tick={{ fontSize: 10, fill: "#64748B", fontWeight: 600 }}
+                      tick={{ fontSize: 10, fill: CHART.axis, fontWeight: 700 }}
                       dy={10}
                     />
                     <YAxis
                       axisLine={false}
                       tickLine={false}
                       allowDecimals={false}
-                      tick={{ fontSize: 10, fill: "#64748B", fontWeight: 600 }}
+                      tick={{ fontSize: 10, fill: CHART.axis, fontWeight: 700 }}
                     />
                     <Tooltip
                       contentStyle={{
-                        borderRadius: "12px",
-                        border: "none",
-                        boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+                        borderRadius: "1.25rem",
+                        border: `1px solid ${CHART.grid}`,
+                        background: CHART.surface,
+                        boxShadow: "0 4px 20px -2px rgb(93 112 82 / 0.15)",
                         fontSize: "12px",
                         fontWeight: "bold",
                       }}
-                      itemStyle={{ color: "#4C1D95" }}
+                      itemStyle={{ color: CHART.moss }}
                     />
                     <Area
                       type="monotone"
                       dataKey="evidence"
                       name="Evidence"
-                      stroke="#4C1D95"
+                      stroke={CHART.moss}
                       strokeWidth={3}
                       fillOpacity={1}
                       fill="url(#colorEvidence)"
@@ -495,7 +497,7 @@ export default function JourneyView({
               </div>
             ) : (
               <div className="flex h-[200px] flex-col items-center justify-center gap-3 text-center">
-                <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-violet-100 bg-violet-50 text-violet-700">
+                <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-clay-100 bg-clay-50 text-clay-700">
                   <TrendingUp className="h-4 w-4" />
                 </div>
                 <p className="max-w-xs text-xs font-medium leading-relaxed text-ink-500">
@@ -503,7 +505,7 @@ export default function JourneyView({
                 </p>
                 <button
                   onClick={() => goTo("experiments")}
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-violet-700 px-4 py-2 text-tiny font-bold uppercase tracking-wider text-white transition-colors hover:bg-violet-900 cursor-pointer"
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-clay-700 px-4 py-2 text-tiny font-bold uppercase tracking-wider text-white transition-colors hover:bg-clay-900 cursor-pointer"
                 >
                   Go to experiments
                 </button>
@@ -525,26 +527,26 @@ export default function JourneyView({
                       className="flex items-center justify-between gap-3 p-4 hover:bg-ink-50 transition-colors rounded-2xl group"
                     >
                       <div className="flex items-center gap-4 min-w-0">
-                        <div className="bg-violet-50 p-2 rounded-xl text-violet-600 shrink-0">
+                        <div className="bg-clay-50 p-2 rounded-xl text-clay-600 shrink-0">
                           <Compass className="h-4 w-4" />
                         </div>
                         <div className="min-w-0">
                           <span className="block text-sm font-medium text-ink-700 truncate">
                             {c.careerPathway}
                           </span>
-                          <span className="text-micro font-mono text-ink-400">
+                          <span className="text-micro font-mono text-ink-500">
                             {c.evidenceCount} signal{c.evidenceCount === 1 ? "" : "s"}
                           </span>
                         </div>
                       </div>
-                      <span className="font-display font-extrabold text-violet-700 tabular-nums shrink-0">
+                      <span className="font-display font-extrabold text-clay-700 tabular-nums shrink-0">
                         {Math.round(c.score)}%
                       </span>
                     </div>
                   ))
               ) : (
                 <div className="flex flex-col items-center gap-3 p-8 text-center">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-violet-100 bg-violet-50 text-violet-700">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-clay-100 bg-clay-50 text-clay-700">
                     <Compass className="h-4 w-4" />
                   </div>
                   <p className="max-w-xs text-xs font-medium leading-relaxed text-ink-500">
@@ -559,7 +561,7 @@ export default function JourneyView({
           <div className="space-y-4 pt-4">
             <h3 className="font-bold text-ink-900 flex items-center gap-2 flex-wrap">
               Top Strengths{" "}
-              <span className="text-micro font-normal text-ink-400 uppercase tracking-wider">
+              <span className="text-micro font-normal text-ink-500 uppercase tracking-wider">
                 (Based on detected signals)
               </span>
             </h3>
@@ -597,7 +599,7 @@ export default function JourneyView({
                   </p>
                   <button
                     onClick={() => goTo("fab")}
-                    className="inline-flex items-center gap-1.5 rounded-xl bg-violet-700 px-4 py-2 text-tiny font-bold uppercase tracking-wider text-white transition-colors hover:bg-violet-900 cursor-pointer"
+                    className="inline-flex items-center gap-1.5 rounded-xl bg-clay-700 px-4 py-2 text-tiny font-bold uppercase tracking-wider text-white transition-colors hover:bg-clay-900 cursor-pointer"
                   >
                     <MessageSquare className="h-3.5 w-3.5" />
                     Chat with FAB
@@ -610,7 +612,7 @@ export default function JourneyView({
           {/* Next Action */}
           <button
             onClick={() => goTo(bestFitPaths.length > 0 ? "paths" : "fab")}
-            className="w-full bg-violet-700 hover:bg-violet-800 text-white rounded-2xl py-4 font-bold transition-all shadow-e3 shadow-violet-900/20 flex items-center justify-center gap-2 mt-4 cursor-pointer"
+            className="w-full bg-clay-700 hover:bg-clay-800 text-white rounded-2xl py-4 font-bold transition-all shadow-e3 shadow-clay-900/20 flex items-center justify-center gap-2 mt-4 cursor-pointer"
           >
             <Sparkles className="h-4 w-4" />
             {bestFitPaths.length > 0 ? "Review your pathways" : "Find your direction"}

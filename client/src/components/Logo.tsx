@@ -1,33 +1,44 @@
 import React from 'react';
 
+/**
+ * The Northr mark: an N with a four-point star at its shoulder.
+ *
+ * Colour note — the tile is deep loam rather than the near-black it used to
+ * be, and the mark sweeps pale mist → moss → clay rather than running the old
+ * gold gradient. Loam keeps the mark bright without the hard black rectangle
+ * punching a hole in a page made of paper.
+ *
+ * Rounding is left to the caller so the logo can be a circle in the nav and a
+ * softer squircle at hero size; every call site uses `rounded-full`.
+ */
 export const Logo = ({ className = "w-8 h-8", style }: { className?: string, style?: React.CSSProperties }) => (
-  <div 
+  <div
     className={`relative flex items-center justify-center overflow-hidden shrink-0 ${className}`}
-    style={{ backgroundColor: '#020202', ...style }}
+    style={{ backgroundColor: '#2C2C24', ...style }}
   >
     <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="absolute inset-0 w-full h-full">
       <defs>
-        <linearGradient id="gold" x1="10%" y1="0%" x2="90%" y2="100%">
-          <stop offset="0%" stopColor="#fdf3dc" />
-          <stop offset="30%" stopColor="#e5c898" />
-          <stop offset="60%" stopColor="#d3a86c" />
-          <stop offset="100%" stopColor="#9a6932" />
+        <linearGradient id="moss" x1="10%" y1="0%" x2="90%" y2="100%">
+          <stop offset="0%" stopColor="#F1F4EF" />
+          <stop offset="28%" stopColor="#C3D0BA" />
+          <stop offset="58%" stopColor="#7C9070" />
+          <stop offset="100%" stopColor="#C18C5D" />
         </linearGradient>
-        
+
         <linearGradient id="starGlowH" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#9a6932" stopOpacity="0" />
-          <stop offset="40%" stopColor="#fdf3dc" stopOpacity="1" />
+          <stop offset="0%" stopColor="#C18C5D" stopOpacity="0" />
+          <stop offset="40%" stopColor="#F1F4EF" stopOpacity="1" />
           <stop offset="50%" stopColor="#ffffff" stopOpacity="1" />
-          <stop offset="60%" stopColor="#fdf3dc" stopOpacity="1" />
-          <stop offset="100%" stopColor="#9a6932" stopOpacity="0" />
+          <stop offset="60%" stopColor="#F1F4EF" stopOpacity="1" />
+          <stop offset="100%" stopColor="#C18C5D" stopOpacity="0" />
         </linearGradient>
-        
+
         <linearGradient id="starGlowV" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="#9a6932" stopOpacity="0" />
-          <stop offset="40%" stopColor="#fdf3dc" stopOpacity="1" />
+          <stop offset="0%" stopColor="#C18C5D" stopOpacity="0" />
+          <stop offset="40%" stopColor="#F1F4EF" stopOpacity="1" />
           <stop offset="50%" stopColor="#ffffff" stopOpacity="1" />
-          <stop offset="60%" stopColor="#fdf3dc" stopOpacity="1" />
-          <stop offset="100%" stopColor="#9a6932" stopOpacity="0" />
+          <stop offset="60%" stopColor="#F1F4EF" stopOpacity="1" />
+          <stop offset="100%" stopColor="#C18C5D" stopOpacity="0" />
         </linearGradient>
 
         <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
@@ -56,7 +67,7 @@ export const Logo = ({ className = "w-8 h-8", style }: { className?: string, sty
         V 52
         L 50 24
         Z
-      " fill="url(#gold)" />
+      " fill="url(#moss)" />
       
       {/* 4-Point Star Base */}
       <path d="
@@ -66,7 +77,7 @@ export const Logo = ({ className = "w-8 h-8", style }: { className?: string, sty
         Q 70 31 88 31
         Q 70 31 70 12
         Z
-      " fill="url(#gold)" filter="url(#glowStrong)" opacity="0.6" />
+      " fill="url(#moss)" filter="url(#glowStrong)" opacity="0.6" />
       
       {/* 4-Point Star Inner Brightness */}
       <path d="

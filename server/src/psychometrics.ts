@@ -2,7 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import type {
-  CareerMatch, PsychAnswer, PsychScores, TheoryScores,
+  CareerDegreeInfo, CareerMatch, CareerTrack, DegreePivot,
+  PsychAnswer, PsychScores, TheoryScores,
 } from './types.js';
 
 // The LOCUS psychometric layer. Pure arithmetic over two committed datasets —
@@ -36,6 +37,7 @@ interface CareerProfile {
   name: string;
   domain: string;
   profile: TheoryScores;
+  degree: CareerDegreeInfo;
 }
 
 const THEORIES: (keyof TheoryScores)[] = ['h', 'o', 's', 'm', 'd'];
@@ -90,9 +92,13 @@ function findDataFile(name: string): string {
   throw new Error(`${name} not found. Generate it with: node docs/parse-psychometrics.mjs`);
 }
 
+/** How many "open to any degree" careers a student must always be shown. */
+const MIN_PIVOTS_SHOWN = 3;
+
 let itemCache: PsychItem[] | null = null;
 let optionIndex: Map<string, { item: PsychItem; option: PsychOption }> | null = null;
 let careerCache: CareerProfile[] | null = null;
+let pivotCache: DegreePivot[] | null = null;
 
 export function items(): PsychItem[] {
   if (itemCache) return itemCache;
@@ -114,6 +120,25 @@ export function careers(): CareerProfile[] {
   careerCache = data.careers as CareerProfile[];
   console.log(`[psychometrics] loaded ${careerCache.length} career profiles from ${file}`);
   return careerCache;
+}
+
+/**
+ * The degree → career pivot map. 48 rows, of which the first 26 are keyed to
+ * the topology's degree ids so a student's degree resolves in one lookup.
+ */
+export function degreePivots(): DegreePivot[] {
+  if (pivotCache) return pivotCache;
+  const file = findDataFile('degree-pivots.json');
+  const data = JSON.parse(fs.readFileSync(file, 'utf-8'));
+  pivotCache = data.degrees as DegreePivot[];
+  console.log(`[psychometrics] loaded ${pivotCache.length} degree pivot rows from ${file}`);
+  return pivotCache;
+}
+
+/** Pivot row for a topology degree id, or null if that degree has no row. */
+export function pivotForDegree(degreeId: string | null): DegreePivot | null {
+  if (!degreeId) return null;
+  return degreePivots().find((p) => p.topologyDegreeId === degreeId) ?? null;
 }
 
 export function itemById(id: string): PsychItem | undefined {
@@ -180,7 +205,7 @@ export function scoreAnswers(answers: PsychAnswer[]): PsychScores {
 
 /**
  * Absolute per-theory delta against each career's success profile, weighted.
- * Returns all 127 sorted best-first; callers slice what they need.
+ * Returns all 252 sorted best-first; callers slice what they need.
  */
 export function matchCareers(scores: PsychScores): CareerMatch[] {
   const { pct } = scores;
@@ -201,11 +226,168 @@ export function matchCareers(scores: PsychScores): CareerMatch[] {
           fitScore >= BEST_FIT_AT ? 'best_fit'
             : fitScore >= CONSIDER_AT ? 'consider'
               : 'mismatch',
+        degree: c.degree,
       } as Omit<CareerMatch, 'rank'>;
     })
     // Name as the tiebreak keeps ordering stable when fit scores collide.
     .sort((a, b) => b.fitScore - a.fitScore || a.name.localeCompare(b.name))
     .map((c, i) => ({ ...c, rank: i + 1 }));
+}
+
+// ---------------------------------------------------------------- degree track
+
+/**
+ * Career names have to be compared across two hand-maintained sources: the
+ * workbook's career list ("Medical Coder / Health Information Manager") and the
+ * pivot map's prose lists ("Medical Coder (CPC)"). Normalising drops the
+ * parenthetical, everything after a slash, and all punctuation, which makes
+ * those two collapse onto "medical coder".
+ */
+function normName(s: string): string {
+  return s
+    .replace(/\([^)]*\)/g, ' ')
+    .split(/[/·]/)[0]
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
+}
+
+/** Substring match in either direction, with a floor so "it" cannot match "fit". */
+function namesOverlap(a: string, b: string): boolean {
+  if (!a || !b) return false;
+  if (a === b) return true;
+  const [short, long] = a.length <= b.length ? [a, b] : [b, a];
+  return short.length >= 5 && long.includes(short);
+}
+
+/**
+ * Search keys for a degree: the whole name, plus any parenthesised
+ * abbreviation. "B.Sc. Medical Laboratory Technology (BMLT)" yields
+ * ["b sc medical laboratory technology", "bmlt"], which is what lets us spot
+ * the degree inside a career's free-text `typical` and `pivotFrom` columns.
+ *
+ * Keys shorter than 6 characters are dropped: "b sc" and "ba" appear in half
+ * the table and would make everything look aligned.
+ */
+function degreeKeys(pivot: DegreePivot): string[] {
+  const keys: string[] = [];
+  for (const m of pivot.degreeName.matchAll(/\(([^)]*)\)/g)) keys.push(normName(m[1]));
+  keys.push(normName(pivot.degreeName.replace(/\([^)]*\)/g, ' ')));
+  return keys.filter((k) => k.length >= 6);
+}
+
+/**
+ * True when a career's own degree columns name the student's degree — which
+ * means the student already holds the qualification the career expects.
+ *
+ * This is what stops a B.Sc Nursing student being told that Nursing Professional
+ * "would need a different degree": the career is gated on B.Sc Nursing, and
+ * B.Sc Nursing is exactly what they have.
+ */
+function degreeIsNamed(career: Pick<CareerMatch, 'degree'>, pivot: DegreePivot): boolean {
+  const haystack = `${normName(career.degree.typical)} ${normName(career.degree.pivotFrom)}`;
+  return degreeKeys(pivot).some((k) => haystack.includes(k));
+}
+
+/**
+ * Where a career sits relative to the degree this student actually holds, and
+ * how we know.
+ *
+ * `mapped` means the answer came from researched, degree-specific data — the
+ * pivot row naming the career, or the career naming the degree. `inferred`
+ * means we fell back to the career's own gate column, which is true in general
+ * but was never checked against this particular degree. Callers rank mapped
+ * ahead of inferred so the confident answers are the ones a student sees.
+ */
+function classify(
+  career: Pick<CareerMatch, 'name' | 'degree'>,
+  pivot: DegreePivot | null,
+): { track: CareerTrack; mapped: boolean } {
+  const name = normName(career.name);
+
+  if (pivot) {
+    if (pivot.direct.some((d) => namesOverlap(name, normName(d)))) {
+      return { track: 'aligned', mapped: true };
+    }
+    // The degree the career expects is the degree they hold. Checked before the
+    // adjacent/full lists so holding the qualification always reads as aligned.
+    if (degreeIsNamed(career, pivot)) return { track: 'aligned', mapped: true };
+
+    if (pivot.adjacent.some((d) => namesOverlap(name, normName(d)))) {
+      return { track: 'bridge', mapped: true };
+    }
+    if (pivot.fullPivots.some((d) => namesOverlap(name, normName(d)))) {
+      // A row can only list a locked career as a "full pivot" by mistake; the
+      // gate column wins there so we never promise an unreachable path.
+      return career.degree.gate === 'locked'
+        ? { track: 'locked', mapped: true }
+        : { track: 'pivot', mapped: true };
+    }
+  }
+
+  switch (career.degree.gate) {
+    case 'open': return { track: 'pivot', mapped: false };
+    case 'bridge': return { track: 'bridge', mapped: false };
+    default: return { track: 'locked', mapped: false };
+  }
+}
+
+/** The track alone. See `classify` for how it is decided. */
+export function classifyTrack(
+  career: Pick<CareerMatch, 'name' | 'degree'>,
+  pivot: DegreePivot | null,
+): CareerTrack {
+  return classify(career, pivot).track;
+}
+
+/**
+ * Split ranked matches into the four tracks the UI renders.
+ *
+ * `limit` caps each track so the client is not handed 250 rows, with one
+ * exception: the pivot track is topped up to MIN_PIVOTS_SHOWN from the full
+ * ranking even when those careers scored below the display threshold. A student
+ * whose strongest matches are all locked behind a degree they do not have must
+ * still leave with somewhere to go.
+ */
+export function splitByTrack(
+  all: CareerMatch[],
+  pivot: DegreePivot | null,
+  limit = 6,
+): { aligned: CareerMatch[]; bridge: CareerMatch[]; pivot: CareerMatch[]; locked: CareerMatch[] } {
+  const tracked = all.map((m) => {
+    const { track, mapped } = classify(m, pivot);
+    return { ...m, track, mapped };
+  });
+
+  // Researched answers first, then fit score. Without this a lab-science student
+  // is told Commercial Pilot is "one bridge away" — true of the career in the
+  // abstract, but it outranks the clinical-research route that was actually
+  // checked against their degree.
+  const of = (t: CareerTrack) => tracked
+    .filter((m) => m.track === t)
+    .sort((a, b) => Number(b.mapped) - Number(a.mapped) || b.fitScore - a.fitScore)
+    .map(({ mapped: _mapped, ...m }) => m);
+
+  const shown = (t: CareerTrack) =>
+    of(t).filter((m) => m.status !== 'mismatch').slice(0, limit);
+
+  const pivots = shown('pivot');
+  if (pivots.length < MIN_PIVOTS_SHOWN) {
+    const already = new Set(pivots.map((m) => m.careerId));
+    for (const m of of('pivot')) {
+      if (pivots.length >= MIN_PIVOTS_SHOWN) break;
+      if (!already.has(m.careerId)) pivots.push(m);
+    }
+  }
+
+  return {
+    aligned: shown('aligned'),
+    bridge: shown('bridge'),
+    pivot: pivots,
+    // Locked careers are only worth showing if the student actually scored well
+    // on them — that is the whole point of surfacing the gate at all.
+    locked: of('locked').filter((m) => m.status === 'best_fit').slice(0, limit),
+  };
 }
 
 /** The workbook's UI copy for a student running on external motivation. */

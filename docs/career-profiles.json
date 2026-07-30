@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "source": "locus_psychometric_engine.xlsx, parsed 2026-07-28",
+  "source": "locus_psychometric_engine.xlsx, parsed 2026-07-30",
   "weights": {
     "h": 0.25,
     "o": 0.2,
@@ -18,6 +18,11 @@
     "bestFit": 72,
     "consider": 52
   },
+  "gates": {
+    "locked": 21,
+    "bridge": 36,
+    "open": 195
+  },
   "careers": [
     {
       "id": "c1-medical-doctor-mbbs-md",
@@ -29,6 +34,13 @@
         "s": 80,
         "m": 70,
         "d": 80
+      },
+      "degree": {
+        "typical": "MBBS (via NEET-UG)",
+        "agnostic": "No",
+        "gate": "locked",
+        "altEntryRoute": "None — MBBS is statutorily mandatory; NEET-UG is the only entry",
+        "pivotFrom": "Class 12 PCB only"
       }
     },
     {
@@ -41,6 +53,13 @@
         "s": 75,
         "m": 75,
         "d": 80
+      },
+      "degree": {
+        "typical": "MBBS → MS/DNB (NEET-PG)",
+        "agnostic": "No",
+        "gate": "locked",
+        "altEntryRoute": "None — MBBS then NEET-PG surgical branch",
+        "pivotFrom": "MBBS only"
       }
     },
     {
@@ -53,6 +72,13 @@
         "s": 75,
         "m": 70,
         "d": 75
+      },
+      "degree": {
+        "typical": "BDS (via NEET-UG)",
+        "agnostic": "No",
+        "gate": "locked",
+        "altEntryRoute": "None — BDS is mandatory for dental practice",
+        "pivotFrom": "Class 12 PCB only"
       }
     },
     {
@@ -65,6 +91,13 @@
         "s": 70,
         "m": 65,
         "d": 75
+      },
+      "degree": {
+        "typical": "B.Pharm / D.Pharm",
+        "agnostic": "No",
+        "gate": "locked",
+        "altEntryRoute": "D.Pharm (2 yr) is the shorter licensure route; lateral entry into B.Pharm 2nd yr",
+        "pivotFrom": "Class 12 PCB/PCM; D.Pharm holders"
       }
     },
     {
@@ -77,6 +110,13 @@
         "s": 80,
         "m": 65,
         "d": 80
+      },
+      "degree": {
+        "typical": "B.Sc/B.Tech Biotech → M.Sc/PhD",
+        "agnostic": "Partly",
+        "gate": "bridge",
+        "altEntryRoute": "M.Sc via CUET-PG, or PhD via CSIR-NET/GATE-BT from any life-science degree",
+        "pivotFrom": "B.Sc Bio/Biotech/Zoology/Chemistry, B.Pharm, BE Biomedical"
       }
     },
     {
@@ -89,6 +129,13 @@
         "s": 80,
         "m": 60,
         "d": 80
+      },
+      "degree": {
+        "typical": "B.Sc Genetics/Biotech → M.Sc/PhD",
+        "agnostic": "Partly",
+        "gate": "bridge",
+        "altEntryRoute": "M.Sc Genetics via CUET-PG; PhD via CSIR-NET JRF",
+        "pivotFrom": "B.Sc Bio/Biotech/Microbiology/Biochemistry, B.Pharm, MBBS"
       }
     },
     {
@@ -101,6 +148,13 @@
         "s": 80,
         "m": 60,
         "d": 75
+      },
+      "degree": {
+        "typical": "B.Sc Microbiology → M.Sc",
+        "agnostic": "Partly",
+        "gate": "bridge",
+        "altEntryRoute": "M.Sc Microbiology open to any B.Sc life-science graduate",
+        "pivotFrom": "B.Sc Bio/Biotech/Biochem/Botany/Zoology"
       }
     },
     {
@@ -113,6 +167,13 @@
         "s": 80,
         "m": 60,
         "d": 75
+      },
+      "degree": {
+        "typical": "B.Sc Biochemistry → M.Sc",
+        "agnostic": "Partly",
+        "gate": "bridge",
+        "altEntryRoute": "M.Sc via CUET-PG from allied B.Sc streams",
+        "pivotFrom": "B.Sc Chemistry/Bio/Biotech, B.Pharm"
       }
     },
     {
@@ -125,6 +186,13 @@
         "s": 85,
         "m": 60,
         "d": 80
+      },
+      "degree": {
+        "typical": "B.Sc/B.Tech → M.Sc/PhD Neuroscience",
+        "agnostic": "Partly",
+        "gate": "bridge",
+        "altEntryRoute": "PhD at NBRC/IISc/JNU via entrance — open to bio, psychology, physics and CS backgrounds",
+        "pivotFrom": "B.Sc Bio, BA/B.Sc Psychology, BE CS/Biomedical, MBBS"
       }
     },
     {
@@ -137,6 +205,13 @@
         "s": 85,
         "m": 75,
         "d": 80
+      },
+      "degree": {
+        "typical": "BA/B.Sc Psychology → RCI M.Phil/PsyD",
+        "agnostic": "Partly",
+        "gate": "bridge",
+        "altEntryRoute": "MA Psychology is open to any graduate at most universities, then RCI-approved M.Phil Clinical Psychology",
+        "pivotFrom": "Any degree → MA Psychology → RCI M.Phil"
       }
     },
     {
@@ -149,6 +224,13 @@
         "s": 85,
         "m": 70,
         "d": 80
+      },
+      "degree": {
+        "typical": "MBBS → MD Psychiatry",
+        "agnostic": "No",
+        "gate": "locked",
+        "altEntryRoute": "None — MBBS then NEET-PG for MD Psychiatry",
+        "pivotFrom": "MBBS only"
       }
     },
     {
@@ -161,6 +243,13 @@
         "s": 75,
         "m": 75,
         "d": 70
+      },
+      "degree": {
+        "typical": "BPT (4.5 yr incl. internship)",
+        "agnostic": "No",
+        "gate": "locked",
+        "altEntryRoute": "None — BPT is required for state physiotherapy council registration",
+        "pivotFrom": "Class 12 PCB only"
       }
     },
     {
@@ -173,6 +262,13 @@
         "s": 75,
         "m": 75,
         "d": 70
+      },
+      "degree": {
+        "typical": "BOT (4.5 yr incl. internship)",
+        "agnostic": "No",
+        "gate": "locked",
+        "altEntryRoute": "None — BOT is required for AIOTA registration",
+        "pivotFrom": "Class 12 PCB only"
       }
     },
     {
@@ -185,6 +281,13 @@
         "s": 75,
         "m": 65,
         "d": 70
+      },
+      "degree": {
+        "typical": "B.Sc Nutrition/Food Science → M.Sc + RD",
+        "agnostic": "Partly",
+        "gate": "bridge",
+        "altEntryRoute": "PG Diploma in Dietetics; Registered Dietitian exam via IDA after M.Sc",
+        "pivotFrom": "B.Sc Bio/Food Tech/Home Science, B.Pharm, BPT, nursing"
       }
     },
     {
@@ -197,6 +300,13 @@
         "s": 75,
         "m": 65,
         "d": 70
+      },
+      "degree": {
+        "typical": "B.V.Sc & AH (via NEET-UG)",
+        "agnostic": "No",
+        "gate": "locked",
+        "altEntryRoute": "None — B.V.Sc is mandatory for VCI registration",
+        "pivotFrom": "Class 12 PCB only"
       }
     },
     {
@@ -209,6 +319,13 @@
         "s": 80,
         "m": 70,
         "d": 70
+      },
+      "degree": {
+        "typical": "B.Sc/B.Tech Environmental Science",
+        "agnostic": "Partly",
+        "gate": "bridge",
+        "altEntryRoute": "M.Sc Env. Science open to most B.Sc/B.Tech grads; PG Diploma in EIA",
+        "pivotFrom": "B.Sc Chem/Bio/Geology, BE Civil/Chemical, B.Arch"
       }
     },
     {
@@ -221,6 +338,13 @@
         "s": 80,
         "m": 70,
         "d": 65
+      },
+      "degree": {
+        "typical": "B.Sc Marine Biology/Zoology → M.Sc",
+        "agnostic": "Partly",
+        "gate": "bridge",
+        "altEntryRoute": "M.Sc Marine Biology via CUET-PG from any life-science degree",
+        "pivotFrom": "B.Sc Zoology/Bio/Fisheries/Env Science"
       }
     },
     {
@@ -233,6 +357,13 @@
         "s": 85,
         "m": 55,
         "d": 80
+      },
+      "degree": {
+        "typical": "B.Sc/B.Tech Physics → M.Sc → PhD",
+        "agnostic": "No",
+        "gate": "locked",
+        "altEntryRoute": "JEST/GATE-PH → PhD at IUCAA, IIA, TIFR, ARIES",
+        "pivotFrom": "B.Sc Physics; BE with strong physics/maths via JEST"
       }
     },
     {
@@ -245,6 +376,13 @@
         "s": 70,
         "m": 55,
         "d": 75
+      },
+      "degree": {
+        "typical": "B.Tech Nuclear/Mechanical → BARC OCES",
+        "agnostic": "Partly",
+        "gate": "bridge",
+        "altEntryRoute": "BARC OCES/DGFS accepts Mechanical, Chemical, Electrical, Metallurgy and M.Sc Physics",
+        "pivotFrom": "BE Mech/Chem/Elec/Metallurgy, M.Sc Physics/Chemistry"
       }
     },
     {
@@ -257,6 +395,13 @@
         "s": 70,
         "m": 60,
         "d": 75
+      },
+      "degree": {
+        "typical": "B.Tech Aerospace/Aeronautical",
+        "agnostic": "Partly",
+        "gate": "bridge",
+        "altEntryRoute": "M.Tech Aero via GATE from Mechanical/Civil; ISRO ICRB also recruits Mech/Elec/CS",
+        "pivotFrom": "BE Mech/Elec/CS/Civil"
       }
     },
     {
@@ -269,6 +414,13 @@
         "s": 65,
         "m": 55,
         "d": 75
+      },
+      "degree": {
+        "typical": "B.Tech Mechanical",
+        "agnostic": "No",
+        "gate": "locked",
+        "altEntryRoute": "Diploma in Mechanical (3 yr) → lateral entry to B.Tech 2nd year",
+        "pivotFrom": "Diploma Mechanical; B.Sc PCM via B.Tech lateral"
       }
     },
     {
@@ -281,6 +433,13 @@
         "s": 65,
         "m": 55,
         "d": 75
+      },
+      "degree": {
+        "typical": "B.Tech Civil",
+        "agnostic": "No",
+        "gate": "locked",
+        "altEntryRoute": "Diploma in Civil → lateral entry B.Tech; B.Arch grads can enter via M.Tech Structural",
+        "pivotFrom": "Diploma Civil, B.Arch (structural specialisation)"
       }
     },
     {
@@ -293,6 +452,13 @@
         "s": 65,
         "m": 55,
         "d": 75
+      },
+      "degree": {
+        "typical": "B.Tech Chemical",
+        "agnostic": "No",
+        "gate": "locked",
+        "altEntryRoute": "Diploma → lateral entry; limited M.Tech Chemical access for B.Sc Chemistry grads",
+        "pivotFrom": "Diploma Chemical, allied B.Tech branches"
       }
     },
     {
@@ -305,6 +471,13 @@
         "s": 65,
         "m": 55,
         "d": 75
+      },
+      "degree": {
+        "typical": "B.Tech Electrical",
+        "agnostic": "No",
+        "gate": "locked",
+        "altEntryRoute": "Diploma in Electrical → lateral entry to B.Tech 2nd year",
+        "pivotFrom": "Diploma Electrical/Electronics"
       }
     },
     {
@@ -317,6 +490,13 @@
         "s": 65,
         "m": 55,
         "d": 75
+      },
+      "degree": {
+        "typical": "B.Tech ECE",
+        "agnostic": "No",
+        "gate": "locked",
+        "altEntryRoute": "Diploma ECE → lateral entry; B.Sc Electronics → M.Sc/M.Tech route",
+        "pivotFrom": "Diploma ECE, B.Sc Electronics"
       }
     },
     {
@@ -329,6 +509,13 @@
         "s": 70,
         "m": 45,
         "d": 80
+      },
+      "degree": {
+        "typical": "B.Tech CSE",
+        "agnostic": "Partly",
+        "gate": "bridge",
+        "altEntryRoute": "BCA/B.Sc CS → MCA; or a self-taught portfolio route straight into software roles",
+        "pivotFrom": "BCA, B.Sc CS/IT/Maths, any BE branch"
       }
     },
     {
@@ -341,6 +528,13 @@
         "s": 70,
         "m": 45,
         "d": 80
+      },
+      "degree": {
+        "typical": "B.Tech CSE / BCA",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Bootcamps, open-source portfolio and DSA prep — most product firms hire any-degree candidates",
+        "pivotFrom": "ANY degree with a strong coding portfolio"
       }
     },
     {
@@ -353,6 +547,13 @@
         "s": 75,
         "m": 40,
         "d": 80
+      },
+      "degree": {
+        "typical": "B.Tech / B.Sc Statistics or Maths",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "M.Sc Data Science, PG Diploma (IIIT-B, ISI, IIT), or a Kaggle + project portfolio",
+        "pivotFrom": "ANY quantitative degree — Stats, Economics, Physics, Engineering, Commerce"
       }
     },
     {
@@ -365,6 +566,13 @@
         "s": 75,
         "m": 40,
         "d": 80
+      },
+      "degree": {
+        "typical": "B.Tech CSE/AI",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Self-study plus reproduced research and open-source work; M.Tech AI via GATE",
+        "pivotFrom": "B.Sc Maths/Physics/Stats, any BE branch, BCA"
       }
     },
     {
@@ -377,6 +585,13 @@
         "s": 70,
         "m": 40,
         "d": 80
+      },
+      "degree": {
+        "typical": "B.Tech CSE/IT",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "CEH, CompTIA Security+, OSCP — certifications outweigh the degree in hiring",
+        "pivotFrom": "BCA, B.Sc IT, ANY degree with security certifications"
       }
     },
     {
@@ -389,6 +604,13 @@
         "s": 70,
         "m": 45,
         "d": 80
+      },
+      "degree": {
+        "typical": "B.Tech CSE/IT",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "AWS/Azure/GCP Architect certification after IT support or development experience",
+        "pivotFrom": "BCA, B.Sc IT, ANY degree with cloud certifications"
       }
     },
     {
@@ -401,6 +623,13 @@
         "s": 65,
         "m": 40,
         "d": 75
+      },
+      "degree": {
+        "typical": "B.Tech CSE/IT",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Linux + Docker/Kubernetes certification; a very common pivot from sysadmin or QA",
+        "pivotFrom": "BCA, B.Sc IT, ANY degree with DevOps certifications"
       }
     },
     {
@@ -413,6 +642,13 @@
         "s": 75,
         "m": 90,
         "d": 70
+      },
+      "degree": {
+        "typical": "B.Des / B.Tech + design training",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Google UX certificate and portfolio-first hiring; NID/NIFT PG Diploma open to any graduate",
+        "pivotFrom": "ANY degree — Psychology, Architecture, Fine Arts and Engineering are all common"
       }
     },
     {
@@ -425,6 +661,13 @@
         "s": 80,
         "m": 75,
         "d": 85
+      },
+      "degree": {
+        "typical": "B.Tech or any degree + MBA (typical)",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "APM programmes; internal pivot from BA, marketing or support; MBA via CAT from any degree",
+        "pivotFrom": "ANY degree — Engineering, Commerce, Design and Liberal Arts all feed it"
       }
     },
     {
@@ -437,6 +680,13 @@
         "s": 70,
         "m": 65,
         "d": 85
+      },
+      "degree": {
+        "typical": "Any bachelor's + analytics skills",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "CBAP/ECBA certification; in practice SQL + Excel + domain knowledge is the real gate",
+        "pivotFrom": "B.Com, BBA, BE, B.Sc, BA Economics"
       }
     },
     {
@@ -449,6 +699,13 @@
         "s": 65,
         "m": 35,
         "d": 85
+      },
+      "degree": {
+        "typical": "Any degree + IAI actuarial exams",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Institute of Actuaries of India: ACET entrance then 13 exams — degree is irrelevant",
+        "pivotFrom": "B.Sc Maths/Stats, B.Com, BE, Economics"
       }
     },
     {
@@ -461,6 +718,13 @@
         "s": 60,
         "m": 40,
         "d": 85
+      },
+      "degree": {
+        "typical": "ICAI CA — no degree required",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Foundation route after Class 12, or Direct Entry after ANY graduation",
+        "pivotFrom": "ANY graduate via ICAI Direct Entry"
       }
     },
     {
@@ -473,6 +737,13 @@
         "s": 70,
         "m": 55,
         "d": 85
+      },
+      "degree": {
+        "typical": "B.Com/BBA/BE + MBA Finance",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "CFA plus networking; analyst roles open to any degree that can demonstrate modelling skill",
+        "pivotFrom": "B.Com, Economics, Engineering, CA"
       }
     },
     {
@@ -485,6 +756,13 @@
         "s": 70,
         "m": 50,
         "d": 85
+      },
+      "degree": {
+        "typical": "B.Com/Economics + CFA or MBA",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "CFA Level I–III, or NISM Research Analyst certification",
+        "pivotFrom": "B.Com, BBA, BE, Economics, CA"
       }
     },
     {
@@ -497,6 +775,13 @@
         "s": 70,
         "m": 60,
         "d": 80
+      },
+      "degree": {
+        "typical": "Any degree + CFP",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "CFP (FPSB India) or NISM Investment Adviser certification",
+        "pivotFrom": "ANY degree"
       }
     },
     {
@@ -509,6 +794,13 @@
         "s": 80,
         "m": 65,
         "d": 90
+      },
+      "degree": {
+        "typical": "Any degree + MBA or operating experience",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Analyst roles via startup operating experience, CA, or a consulting background",
+        "pivotFrom": "Engineering, Commerce, CA, ex-founders from any field"
       }
     },
     {
@@ -521,6 +813,13 @@
         "s": 95,
         "m": 75,
         "d": 85
+      },
+      "degree": {
+        "typical": "No degree requirement",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Build and ship; incubators (IIT/IIM E-Cells, T-Hub, Atal) accept anyone",
+        "pivotFrom": "ANY degree, or none"
       }
     },
     {
@@ -533,6 +832,13 @@
         "s": 75,
         "m": 70,
         "d": 90
+      },
+      "degree": {
+        "typical": "Any degree + MBA (top-tier)",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "CAT/GMAT → MBA; analyst roles also hire directly from IIT/IISc and liberal-arts programmes",
+        "pivotFrom": "Engineering, Economics, Commerce, Liberal Arts, CA"
       }
     },
     {
@@ -545,6 +851,13 @@
         "s": 65,
         "m": 65,
         "d": 85
+      },
+      "degree": {
+        "typical": "BBA/B.Tech + MBA Operations",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Internal promotion from executive roles; Six Sigma Green/Black Belt",
+        "pivotFrom": "ANY degree — BBA, BE, B.Com, BA"
       }
     },
     {
@@ -557,6 +870,13 @@
         "s": 65,
         "m": 60,
         "d": 80
+      },
+      "degree": {
+        "typical": "BBA/B.Tech + MBA SCM",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "CSCP/CPIM (APICS) certification; pivot from operations or procurement",
+        "pivotFrom": "BE Mech/Industrial, B.Com, BBA, ANY degree"
       }
     },
     {
@@ -569,6 +889,13 @@
         "s": 70,
         "m": 80,
         "d": 80
+      },
+      "degree": {
+        "typical": "Any degree + MBA-HR / MSW / PGDM",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "MBA-HR via CAT/XAT, TISS MA-HRM, XLRI PG certification, or SHRM-CP; internal move from ops or admin also works",
+        "pivotFrom": "ANY degree — Psychology, Commerce, Engineering and Arts are all common"
       }
     },
     {
@@ -581,6 +908,13 @@
         "s": 75,
         "m": 80,
         "d": 80
+      },
+      "degree": {
+        "typical": "Any degree + MBA Marketing",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Digital marketing certifications plus portfolio; internal pivot from sales or content",
+        "pivotFrom": "ANY degree"
       }
     },
     {
@@ -593,6 +927,13 @@
         "s": 75,
         "m": 85,
         "d": 75
+      },
+      "degree": {
+        "typical": "Any degree + MBA / Mass Comm",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Agency planner route; MICA PGDM; a portfolio of campaign work",
+        "pivotFrom": "Liberal Arts, Psychology, Commerce, Design"
       }
     },
     {
@@ -605,6 +946,13 @@
         "s": 70,
         "m": 80,
         "d": 75
+      },
+      "degree": {
+        "typical": "Any bachelor's degree",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Google Ads/Analytics, Meta Blueprint and HubSpot certifications — degree is irrelevant",
+        "pivotFrom": "ANY degree"
       }
     },
     {
@@ -617,6 +965,13 @@
         "s": 75,
         "m": 75,
         "d": 75
+      },
+      "degree": {
+        "typical": "Any bachelor's degree",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Field sales → team lead → manager; there is no certification gate",
+        "pivotFrom": "ANY degree"
       }
     },
     {
@@ -629,6 +984,13 @@
         "s": 65,
         "m": 70,
         "d": 70
+      },
+      "degree": {
+        "typical": "BBA or any degree",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Store executive → manager progression; retail management diploma optional",
+        "pivotFrom": "ANY degree"
       }
     },
     {
@@ -641,6 +1003,13 @@
         "s": 75,
         "m": 75,
         "d": 85
+      },
+      "degree": {
+        "typical": "LLB (3 yr after any degree) or 5-yr BA-LLB",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "The 3-year LLB is open to ANY graduate → AIBE for bar enrolment",
+        "pivotFrom": "ANY bachelor's degree via the 3-yr LLB route"
       }
     },
     {
@@ -653,6 +1022,13 @@
         "s": 70,
         "m": 65,
         "d": 90
+      },
+      "degree": {
+        "typical": "LLB → State Judicial Services exam",
+        "agnostic": "Partly",
+        "gate": "bridge",
+        "altEntryRoute": "3-year LLB after any degree → PCS-J / State Judiciary exam",
+        "pivotFrom": "ANY degree → LLB → PCS-J"
       }
     },
     {
@@ -665,6 +1041,13 @@
         "s": 75,
         "m": 65,
         "d": 90
+      },
+      "degree": {
+        "typical": "LLB / BA-LLB + corporate practice",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "3-yr LLB after any degree; CS-qualified professionals also work in this space",
+        "pivotFrom": "ANY degree → LLB; also CA and CS professionals"
       }
     },
     {
@@ -677,6 +1060,13 @@
         "s": 75,
         "m": 70,
         "d": 85
+      },
+      "degree": {
+        "typical": "LLB → bar enrolment",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "3-yr LLB after any degree → AIBE → chamber apprenticeship under a senior",
+        "pivotFrom": "ANY degree → LLB"
       }
     },
     {
@@ -689,6 +1079,13 @@
         "s": 85,
         "m": 70,
         "d": 85
+      },
+      "degree": {
+        "typical": "LLB + LLM / PG Diploma in Human Rights",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "3-yr LLB after any degree; NGO legal roles also take MSW and policy graduates",
+        "pivotFrom": "ANY degree → LLB; Sociology, Political Science, MSW"
       }
     },
     {
@@ -701,6 +1098,13 @@
         "s": 80,
         "m": 70,
         "d": 90
+      },
+      "degree": {
+        "typical": "Any bachelor's degree + UPSC CSE",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "UPSC CSE is open to ANY graduate, and the optional subject can be from any discipline",
+        "pivotFrom": "ANY degree — Engineering, Medicine, Arts and Commerce grads all clear it"
       }
     },
     {
@@ -713,6 +1117,13 @@
         "s": 80,
         "m": 70,
         "d": 90
+      },
+      "degree": {
+        "typical": "Any bachelor's degree + UPSC CSE",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "UPSC CSE; IFS is allotted by rank and service preference — any degree is eligible",
+        "pivotFrom": "ANY degree"
       }
     },
     {
@@ -725,6 +1136,13 @@
         "s": 80,
         "m": 65,
         "d": 90
+      },
+      "degree": {
+        "typical": "Any degree + MA Public Policy",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "MPP/MA Public Policy (NLSIU, Ashoka, IIM), or think-tank research associate roles",
+        "pivotFrom": "Economics, Political Science, Engineering, Law, ANY degree"
       }
     },
     {
@@ -737,6 +1155,13 @@
         "s": 75,
         "m": 70,
         "d": 85
+      },
+      "degree": {
+        "typical": "B.Arch / B.Plan → M.Plan",
+        "agnostic": "Partly",
+        "gate": "bridge",
+        "altEntryRoute": "M.Plan via GATE-AR — open to B.Arch, Civil Engineering, Geography and Economics graduates",
+        "pivotFrom": "B.Arch, BE Civil, BA Geography/Economics"
       }
     },
     {
@@ -749,6 +1174,13 @@
         "s": 75,
         "m": 65,
         "d": 85
+      },
+      "degree": {
+        "typical": "Any degree + CDS/AFCAT (or NDA after Class 12)",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "NDA after Class 12; CDS, AFCAT and TES after graduation — most streams are eligible",
+        "pivotFrom": "ANY degree (technical entries require BE/B.Tech)"
       }
     },
     {
@@ -761,6 +1193,13 @@
         "s": 70,
         "m": 65,
         "d": 80
+      },
+      "degree": {
+        "typical": "Any degree + UPSC / State PSC / SI exam",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "State Sub-Inspector exams and UPSC CSE are both open to any graduate",
+        "pivotFrom": "ANY degree"
       }
     },
     {
@@ -773,6 +1212,13 @@
         "s": 80,
         "m": 80,
         "d": 75
+      },
+      "degree": {
+        "typical": "Any degree + B.Ed + CTET/TET",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "B.Ed (2 yr) after ANY bachelor's → CTET or State TET",
+        "pivotFrom": "ANY degree — the teaching subject matters more than the stream"
       }
     },
     {
@@ -785,6 +1231,13 @@
         "s": 85,
         "m": 70,
         "d": 85
+      },
+      "degree": {
+        "typical": "Master's in the subject + NET / PhD",
+        "agnostic": "Partly",
+        "gate": "bridge",
+        "altEntryRoute": "UGC-NET/JRF then PhD; entry is subject-locked rather than degree-locked",
+        "pivotFrom": "ANY master's in the subject taught"
       }
     },
     {
@@ -797,6 +1250,13 @@
         "s": 80,
         "m": 80,
         "d": 80
+      },
+      "degree": {
+        "typical": "Any degree + instructional design skills",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Instructional design certification plus a portfolio of built courses",
+        "pivotFrom": "Education, Design, Technology, or any subject-matter degree"
       }
     },
     {
@@ -809,6 +1269,13 @@
         "s": 85,
         "m": 80,
         "d": 70
+      },
+      "degree": {
+        "typical": "Any degree + RCI-approved B.Ed Special Education",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "RCI B.Ed (Special Education) or RCI Diploma; RCI registration is the actual requirement",
+        "pivotFrom": "ANY degree; Psychology and MSW are common"
       }
     },
     {
@@ -821,6 +1288,13 @@
         "s": 85,
         "m": 80,
         "d": 65
+      },
+      "degree": {
+        "typical": "BSW or MSW",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "MSW (TISS and most universities) is open to ANY bachelor's degree",
+        "pivotFrom": "ANY degree → MSW"
       }
     },
     {
@@ -833,6 +1307,13 @@
         "s": 85,
         "m": 75,
         "d": 75
+      },
+      "degree": {
+        "typical": "Any degree + MSW / MA Development",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "MA Development Studies, MSW, or documented field experience with a grassroots org",
+        "pivotFrom": "ANY degree"
       }
     },
     {
@@ -845,6 +1326,13 @@
         "s": 80,
         "m": 75,
         "d": 70
+      },
+      "degree": {
+        "typical": "Any degree + MSW / MA Rural Development",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "MA Rural Development or MSW; State rural-development recruitment",
+        "pivotFrom": "ANY degree"
       }
     },
     {
@@ -857,6 +1345,13 @@
         "s": 85,
         "m": 80,
         "d": 75
+      },
+      "degree": {
+        "typical": "BA/B.Sc Psychology → MA + counselling training",
+        "agnostic": "Partly",
+        "gate": "bridge",
+        "altEntryRoute": "MA Psychology is open to any graduate at most universities, then supervised practice hours",
+        "pivotFrom": "ANY degree → MA Psychology; MSW is also a valid route"
       }
     },
     {
@@ -869,6 +1364,13 @@
         "s": 85,
         "m": 80,
         "d": 70
+      },
+      "degree": {
+        "typical": "No formal degree required",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "ICF-accredited coach certification; credibility comes from prior domain expertise",
+        "pivotFrom": "ANY degree, or a prior career in any field"
       }
     },
     {
@@ -881,6 +1383,13 @@
         "s": 80,
         "m": 95,
         "d": 65
+      },
+      "degree": {
+        "typical": "B.Des / BFA Applied Art",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Portfolio-first hiring; NID/NIFT PG Diploma open to any graduate; self-taught is common",
+        "pivotFrom": "ANY degree with a portfolio"
       }
     },
     {
@@ -893,6 +1402,13 @@
         "s": 75,
         "m": 95,
         "d": 65
+      },
+      "degree": {
+        "typical": "B.Des Animation / BFA",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Studio diploma (MAAC, Arena, Whistling Woods) — the showreel matters more than the degree",
+        "pivotFrom": "ANY degree with a showreel"
       }
     },
     {
@@ -905,6 +1421,13 @@
         "s": 85,
         "m": 90,
         "d": 70
+      },
+      "degree": {
+        "typical": "BA Film / Mass Communication",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "FTII/SRFTI PG programmes are open to ANY graduate; assistant-director apprenticeship route",
+        "pivotFrom": "ANY degree"
       }
     },
     {
@@ -917,6 +1440,13 @@
         "s": 85,
         "m": 90,
         "d": 65
+      },
+      "degree": {
+        "typical": "Any bachelor's degree",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "FTII screenwriting course, writers' rooms, spec scripts — there is no degree gate",
+        "pivotFrom": "ANY degree, especially Literature and Journalism"
       }
     },
     {
@@ -929,6 +1459,13 @@
         "s": 80,
         "m": 85,
         "d": 75
+      },
+      "degree": {
+        "typical": "BA Journalism / Mass Communication",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "PG Diploma (IIMC, ACJ, Xavier's) open to ANY graduate; published clips matter most",
+        "pivotFrom": "ANY degree — science and economics grads are valued for specialist beats"
       }
     },
     {
@@ -941,6 +1478,13 @@
         "s": 80,
         "m": 85,
         "d": 60
+      },
+      "degree": {
+        "typical": "No degree requirement",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Build an audience directly; there is no gate at all",
+        "pivotFrom": "ANY degree, or none"
       }
     },
     {
@@ -953,6 +1497,13 @@
         "s": 80,
         "m": 90,
         "d": 60
+      },
+      "degree": {
+        "typical": "BFA / B.Des Photography",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Assist a working photographer; portfolio-led with no degree gate",
+        "pivotFrom": "ANY degree"
       }
     },
     {
@@ -965,6 +1516,13 @@
         "s": 80,
         "m": 95,
         "d": 65
+      },
+      "degree": {
+        "typical": "B.Des at NIFT / NID / Pearl",
+        "agnostic": "Partly",
+        "gate": "bridge",
+        "altEntryRoute": "NIFT/NID PG (M.Des, M.F.Tech) is open to ANY graduate; boutique apprenticeship also works",
+        "pivotFrom": "ANY degree → NIFT PG; Textile and Fine Arts backgrounds"
       }
     },
     {
@@ -977,6 +1535,13 @@
         "s": 80,
         "m": 90,
         "d": 80
+      },
+      "degree": {
+        "typical": "B.Arch (via NATA/JEE Paper 2) + CoA registration",
+        "agnostic": "No",
+        "gate": "locked",
+        "altEntryRoute": "None — B.Arch is statutorily required to practise and register with the Council of Architecture",
+        "pivotFrom": "Class 12 PCM + NATA only"
       }
     },
     {
@@ -989,6 +1554,13 @@
         "s": 75,
         "m": 90,
         "d": 70
+      },
+      "degree": {
+        "typical": "B.Des / B.Sc Interior Design",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Diploma plus portfolio; no statutory licence is required in India",
+        "pivotFrom": "ANY degree, B.Arch, Fine Arts"
       }
     },
     {
@@ -1001,6 +1573,13 @@
         "s": 75,
         "m": 85,
         "d": 75
+      },
+      "degree": {
+        "typical": "B.Des Product Design",
+        "agnostic": "Partly",
+        "gate": "bridge",
+        "altEntryRoute": "M.Des at NID or IIT IDC via CEED — open to BE, B.Arch, B.Des and other graduates",
+        "pivotFrom": "BE Mechanical, B.Arch, B.Des, Fine Arts"
       }
     },
     {
@@ -1013,6 +1592,13 @@
         "s": 85,
         "m": 95,
         "d": 65
+      },
+      "degree": {
+        "typical": "No degree requirement",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "DAW self-training, Berklee Online, or a studio-assistant route",
+        "pivotFrom": "ANY degree, or none"
       }
     },
     {
@@ -1025,6 +1611,13 @@
         "s": 85,
         "m": 95,
         "d": 55
+      },
+      "degree": {
+        "typical": "No degree requirement",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Guru-shishya training, conservatory diploma, or self-taught plus gigging",
+        "pivotFrom": "ANY degree, or none"
       }
     },
     {
@@ -1037,6 +1630,13 @@
         "s": 85,
         "m": 85,
         "d": 55
+      },
+      "degree": {
+        "typical": "No degree requirement",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "NSD/FTII acting programmes (open to any graduate), theatre groups, auditions",
+        "pivotFrom": "ANY degree, or none"
       }
     },
     {
@@ -1049,6 +1649,13 @@
         "s": 85,
         "m": 90,
         "d": 55
+      },
+      "degree": {
+        "typical": "No degree requirement",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Guru-shishya training or BPA Dance; performance credits are the real currency",
+        "pivotFrom": "ANY degree, or none"
       }
     },
     {
@@ -1061,6 +1668,13 @@
         "s": 90,
         "m": 90,
         "d": 70
+      },
+      "degree": {
+        "typical": "No degree requirement",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Publish, pitch and build a body of work — there is no formal gate",
+        "pivotFrom": "ANY degree"
       }
     },
     {
@@ -1073,6 +1687,13 @@
         "s": 85,
         "m": 90,
         "d": 55
+      },
+      "degree": {
+        "typical": "No degree requirement",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Literary magazines, readings and residencies; an MFA is optional",
+        "pivotFrom": "ANY degree"
       }
     },
     {
@@ -1085,6 +1706,13 @@
         "s": 80,
         "m": 90,
         "d": 75
+      },
+      "degree": {
+        "typical": "B.Des / B.Tech + game development skills",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Unity/Unreal portfolio and game jams; DSK and Backstage Pass diplomas",
+        "pivotFrom": "ANY degree with shipped game projects"
       }
     },
     {
@@ -1097,6 +1725,13 @@
         "s": 80,
         "m": 75,
         "d": 70
+      },
+      "degree": {
+        "typical": "No degree requirement",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Academy → state → national selection; sports quota seats in colleges and PSUs",
+        "pivotFrom": "ANY degree, or none"
       }
     },
     {
@@ -1109,6 +1744,13 @@
         "s": 80,
         "m": 80,
         "d": 75
+      },
+      "degree": {
+        "typical": "BPEd or any degree + NIS Patiala diploma",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "NSNIS Patiala coaching diploma is open to any graduate with a playing background",
+        "pivotFrom": "ANY degree, BPEd, former athletes"
       }
     },
     {
@@ -1121,6 +1763,13 @@
         "s": 75,
         "m": 75,
         "d": 70
+      },
+      "degree": {
+        "typical": "BPT → MPT (Sports)",
+        "agnostic": "No",
+        "gate": "locked",
+        "altEntryRoute": "BPT is required for registration; then MPT Sports or a sports physiotherapy certification",
+        "pivotFrom": "BPT only"
       }
     },
     {
@@ -1133,6 +1782,13 @@
         "s": 75,
         "m": 70,
         "d": 75
+      },
+      "degree": {
+        "typical": "Any degree + MBA Sports Management",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "IISM/NASM sports management PG programmes and agency internships",
+        "pivotFrom": "ANY degree"
       }
     },
     {
@@ -1145,6 +1801,13 @@
         "s": 75,
         "m": 70,
         "d": 65
+      },
+      "degree": {
+        "typical": "No degree required — certification based",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "ACE, NASM, K11 or ISSA certification — the certification is the gate, not a degree",
+        "pivotFrom": "ANY degree, or none"
       }
     },
     {
@@ -1157,6 +1820,13 @@
         "s": 70,
         "m": 70,
         "d": 80
+      },
+      "degree": {
+        "typical": "BHM (Hotel Management)",
+        "agnostic": "Partly",
+        "gate": "bridge",
+        "altEntryRoute": "BHM is typical, but MBA Hospitality is open to any graduate and floor-ops promotion also works",
+        "pivotFrom": "ANY degree → MBA Hospitality; BHM"
       }
     },
     {
@@ -1169,6 +1839,13 @@
         "s": 80,
         "m": 80,
         "d": 65
+      },
+      "degree": {
+        "typical": "BHM / culinary diploma",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "IHM diploma, culinary institute certificate, or a kitchen apprenticeship (commis → chef)",
+        "pivotFrom": "ANY degree, or none"
       }
     },
     {
@@ -1181,6 +1858,13 @@
         "s": 75,
         "m": 75,
         "d": 80
+      },
+      "degree": {
+        "typical": "Any bachelor's degree",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "NAEMD/EMDI diploma or an agency coordinator route — the degree is irrelevant",
+        "pivotFrom": "ANY degree"
       }
     },
     {
@@ -1193,6 +1877,13 @@
         "s": 70,
         "m": 70,
         "d": 75
+      },
+      "degree": {
+        "typical": "BTTM or any degree",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "IATA certification; IITTM PG Diploma is open to any graduate",
+        "pivotFrom": "ANY degree"
       }
     },
     {
@@ -1205,6 +1896,13 @@
         "s": 85,
         "m": 70,
         "d": 80
+      },
+      "degree": {
+        "typical": "Any degree + sustainability PG / certification",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "GRI or SASB certification, M.Sc Climate Science, or ESG analyst credentials",
+        "pivotFrom": "Engineering, Economics, Env. Science, Commerce, ANY degree"
       }
     },
     {
@@ -1217,6 +1915,13 @@
         "s": 90,
         "m": 70,
         "d": 85
+      },
+      "degree": {
+        "typical": "B.Tech / M.Sc Biotech + venture experience",
+        "agnostic": "Partly",
+        "gate": "bridge",
+        "altEntryRoute": "Real domain depth is needed; BIRAC BIG grants and C-CAMP/IKP incubators fund entry",
+        "pivotFrom": "B.Tech Biotech, M.Sc Life Sciences, MBBS, B.Pharm"
       }
     },
     {
@@ -1229,6 +1934,13 @@
         "s": 90,
         "m": 70,
         "d": 85
+      },
+      "degree": {
+        "typical": "Any degree + healthcare or tech insight",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Domain experience plus a complementary co-founder; there is no formal route",
+        "pivotFrom": "MBBS, Engineering, MBA, ANY degree"
       }
     },
     {
@@ -1241,6 +1953,13 @@
         "s": 90,
         "m": 75,
         "d": 85
+      },
+      "degree": {
+        "typical": "Any degree + teaching or product insight",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Teaching experience or a product background; incubators, no formal route",
+        "pivotFrom": "ANY degree"
       }
     },
     {
@@ -1253,6 +1972,13 @@
         "s": 75,
         "m": 60,
         "d": 85
+      },
+      "degree": {
+        "typical": "B.Com / BE + finance knowledge",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "NISM certifications, SQL and product analytics; pivot from banking or engineering",
+        "pivotFrom": "B.Com, BBA, BE, Economics, CA"
       }
     },
     {
@@ -1265,6 +1991,13 @@
         "s": 75,
         "m": 45,
         "d": 80
+      },
+      "degree": {
+        "typical": "B.Tech CSE or any degree + Solidity skills",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Self-taught Solidity/Rust, hackathons and open-source contributions",
+        "pivotFrom": "ANY degree with a coding portfolio"
       }
     },
     {
@@ -1277,6 +2010,13 @@
         "s": 70,
         "m": 60,
         "d": 75
+      },
+      "degree": {
+        "typical": "B.Tech Mechanical / ECE / CSE",
+        "agnostic": "Partly",
+        "gate": "bridge",
+        "altEntryRoute": "M.Tech Robotics via GATE from Mechanical, Electrical or CS; a ROS project portfolio helps",
+        "pivotFrom": "BE Mech/ECE/EEE/CSE/Instrumentation"
       }
     },
     {
@@ -1289,6 +2029,13 @@
         "s": 75,
         "m": 60,
         "d": 80
+      },
+      "degree": {
+        "typical": "B.Tech Aerospace / Mechanical / ECE",
+        "agnostic": "Partly",
+        "gate": "bridge",
+        "altEntryRoute": "ISRO ICRB exam (any BE/B.Tech), the IIST route, or M.Tech via GATE",
+        "pivotFrom": "BE Mech/ECE/EEE/CSE/Aero, M.Sc Physics"
       }
     },
     {
@@ -1301,6 +2048,13 @@
         "s": 78,
         "m": 55,
         "d": 78
+      },
+      "degree": {
+        "typical": "B.Tech / M.Sc Nanotechnology or Materials",
+        "agnostic": "Partly",
+        "gate": "bridge",
+        "altEntryRoute": "M.Tech or M.Sc Nanoscience via GATE/JAM from Physics, Chemistry or Materials",
+        "pivotFrom": "B.Sc Physics/Chemistry, BE Materials/Chemical/ECE"
       }
     },
     {
@@ -1313,6 +2067,13 @@
         "s": 72,
         "m": 60,
         "d": 75
+      },
+      "degree": {
+        "typical": "B.Sc Forensic Science → M.Sc",
+        "agnostic": "Partly",
+        "gate": "bridge",
+        "altEntryRoute": "M.Sc Forensic Science is open to B.Sc Chemistry, Biology, Physics and Zoology graduates",
+        "pivotFrom": "B.Sc Chem/Bio/Physics/Microbiology, B.Pharm"
       }
     },
     {
@@ -1325,6 +2086,13 @@
         "s": 80,
         "m": 60,
         "d": 80
+      },
+      "degree": {
+        "typical": "MBBS or B.Sc + MPH / M.Sc Epidemiology",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "MPH is open to ANY graduate at many schools (IIPH, TISS); strong statistics helps",
+        "pivotFrom": "MBBS, BDS, B.Sc, Statistics, ANY degree → MPH"
       }
     },
     {
@@ -1337,6 +2105,13 @@
         "s": 75,
         "m": 72,
         "d": 75
+      },
+      "degree": {
+        "typical": "B.Sc Sports Science / BPEd → M.Sc",
+        "agnostic": "Partly",
+        "gate": "bridge",
+        "altEntryRoute": "M.Sc Sports Science, or strength & conditioning certification (NSCA-CSCS)",
+        "pivotFrom": "BPT, B.Sc Biology, BPEd, ANY degree with certification"
       }
     },
     {
@@ -1349,6 +2124,13 @@
         "s": 62,
         "m": 38,
         "d": 88
+      },
+      "degree": {
+        "typical": "ICAI — no degree required",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Foundation route after Class 12, or Direct Entry after ANY graduation",
+        "pivotFrom": "ANY graduate via ICAI Direct Entry"
       }
     },
     {
@@ -1361,6 +2143,13 @@
         "s": 60,
         "m": 38,
         "d": 85
+      },
+      "degree": {
+        "typical": "ICSI — no degree required",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "CSEET after Class 12, or direct Executive-level entry after ANY graduation",
+        "pivotFrom": "ANY graduate; Commerce and Law are common"
       }
     },
     {
@@ -1373,6 +2162,13 @@
         "s": 60,
         "m": 38,
         "d": 85
+      },
+      "degree": {
+        "typical": "ICMAI — no degree required",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Foundation after Class 12, or direct Intermediate entry after ANY graduation",
+        "pivotFrom": "ANY graduate"
       }
     },
     {
@@ -1385,6 +2181,13 @@
         "s": 80,
         "m": 72,
         "d": 88
+      },
+      "degree": {
+        "typical": "Bachelor's with a prescribed science/engineering subject",
+        "agnostic": "Partly",
+        "gate": "bridge",
+        "altEntryRoute": "IFoS requires a degree containing Animal Husbandry, Botany, Chemistry, Geology, Maths, Physics, Statistics, Zoology, or Agriculture/Forestry/Engineering",
+        "pivotFrom": "B.Sc science streams, BE/B.Tech, B.Sc Agriculture/Forestry"
       }
     },
     {
@@ -1397,6 +2200,13 @@
         "s": 75,
         "m": 65,
         "d": 85
+      },
+      "degree": {
+        "typical": "Any bachelor's degree",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "State PSC examination — open to ANY graduate",
+        "pivotFrom": "ANY degree"
       }
     },
     {
@@ -1409,6 +2219,13 @@
         "s": 65,
         "m": 58,
         "d": 80
+      },
+      "degree": {
+        "typical": "Any bachelor's degree",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "IBPS PO / SBI PO — open to ANY graduate in any discipline",
+        "pivotFrom": "ANY degree"
       }
     },
     {
@@ -1421,6 +2238,13 @@
         "s": 65,
         "m": 55,
         "d": 78
+      },
+      "degree": {
+        "typical": "Any degree + Insurance Institute of India certification",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "III Licentiate / Associate / Fellowship examinations",
+        "pivotFrom": "B.Com, BBA, B.Sc, ANY degree"
       }
     },
     {
@@ -1433,6 +2257,13 @@
         "s": 78,
         "m": 68,
         "d": 72
+      },
+      "degree": {
+        "typical": "B.Sc Agriculture → M.Sc (ICAR)",
+        "agnostic": "Partly",
+        "gate": "bridge",
+        "altEntryRoute": "ICAR AIEEA-PG — open to B.Sc Agriculture, Horticulture, Forestry and life sciences",
+        "pivotFrom": "B.Sc Agriculture/Horticulture/Biology, B.Tech Agricultural Engineering"
       }
     },
     {
@@ -1445,6 +2276,13 @@
         "s": 78,
         "m": 68,
         "d": 70
+      },
+      "degree": {
+        "typical": "BAMS (via NEET-UG)",
+        "agnostic": "No",
+        "gate": "locked",
+        "altEntryRoute": "None — BAMS is mandatory for NCISM registration",
+        "pivotFrom": "Class 12 PCB only"
       }
     },
     {
@@ -1457,6 +2295,13 @@
         "s": 75,
         "m": 65,
         "d": 68
+      },
+      "degree": {
+        "typical": "BHMS (via NEET-UG)",
+        "agnostic": "No",
+        "gate": "locked",
+        "altEntryRoute": "None — BHMS is mandatory for NCH registration",
+        "pivotFrom": "Class 12 PCB only"
       }
     },
     {
@@ -1469,6 +2314,13 @@
         "s": 82,
         "m": 78,
         "d": 60
+      },
+      "degree": {
+        "typical": "No degree required — YCB certification",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Yoga Certification Board (YCB) Level 1–3; BNYS is needed only for clinical yoga therapy",
+        "pivotFrom": "ANY degree, or none"
       }
     },
     {
@@ -1481,6 +2333,13 @@
         "s": 88,
         "m": 80,
         "d": 60
+      },
+      "degree": {
+        "typical": "No degree required",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Mindfulness teacher training (MBSR) or wellness coaching certification",
+        "pivotFrom": "ANY degree, or none"
       }
     },
     {
@@ -1493,6 +2352,13 @@
         "s": 70,
         "m": 82,
         "d": 72
+      },
+      "degree": {
+        "typical": "NIFT B.F.Tech / BBA + retail experience",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "NIFT PG, or progression through a retail buying role; any degree with a fashion internship works",
+        "pivotFrom": "ANY degree, B.Com, BBA, NIFT"
       }
     },
     {
@@ -1505,6 +2371,13 @@
         "s": 78,
         "m": 90,
         "d": 65
+      },
+      "degree": {
+        "typical": "B.Des Textile (NIFT / NID)",
+        "agnostic": "Partly",
+        "gate": "bridge",
+        "altEntryRoute": "NIFT/NID PG is open to ANY graduate; craft-cluster apprenticeship is an alternative",
+        "pivotFrom": "ANY degree → NIFT PG; Fine Arts, Fashion"
       }
     },
     {
@@ -1517,6 +2390,13 @@
         "s": 78,
         "m": 90,
         "d": 62
+      },
+      "degree": {
+        "typical": "B.Des Jewellery / GIA diploma",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "GIA or IIGJ diploma open to any graduate; karigar apprenticeship route",
+        "pivotFrom": "ANY degree, Fine Arts, Design"
       }
     },
     {
@@ -1529,6 +2409,13 @@
         "s": 78,
         "m": 93,
         "d": 65
+      },
+      "degree": {
+        "typical": "B.Des / BFA + studio training",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "MAAC, Arena or Whistling Woods diploma; reel-first hiring",
+        "pivotFrom": "ANY degree with a showreel"
       }
     },
     {
@@ -1541,6 +2428,2388 @@
         "s": 82,
         "m": 85,
         "d": 62
+      },
+      "degree": {
+        "typical": "No degree requirement",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "RJ auditions; a mass-comm diploma is optional, a self-published podcast is a valid portfolio",
+        "pivotFrom": "ANY degree, or none"
+      }
+    },
+    {
+      "id": "c128-hr-business-partner",
+      "name": "HR Business Partner",
+      "domain": "Human Resources",
+      "profile": {
+        "h": 68,
+        "o": 72,
+        "s": 72,
+        "m": 70,
+        "d": 72
+      },
+      "degree": {
+        "typical": "Any degree + MBA-HR / MSW",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "MBA-HR via CAT/XAT/TISSNET, SHRM-CP certification, or an internal move up from HR operations",
+        "pivotFrom": "ANY degree — Psychology, Commerce, Engineering and Arts are all common"
+      }
+    },
+    {
+      "id": "c129-talent-acquisition-specialist",
+      "name": "Talent Acquisition Specialist",
+      "domain": "Human Resources",
+      "profile": {
+        "h": 62,
+        "o": 66,
+        "s": 68,
+        "m": 66,
+        "d": 66
+      },
+      "degree": {
+        "typical": "Any bachelor's degree",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Direct entry as an agency recruiter — there is no certification gate; LinkedIn Recruiter certification helps",
+        "pivotFrom": "ANY degree"
+      }
+    },
+    {
+      "id": "c130-technical-recruiter",
+      "name": "Technical Recruiter",
+      "domain": "Human Resources",
+      "profile": {
+        "h": 62,
+        "o": 66,
+        "s": 66,
+        "m": 70,
+        "d": 66
+      },
+      "degree": {
+        "typical": "Any degree + technical literacy",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Recruitment agency training; understanding tech stacks matters far more than holding a CS degree",
+        "pivotFrom": "ANY degree; BCA/BE backgrounds have an edge"
+      }
+    },
+    {
+      "id": "c131-learning-development-manager",
+      "name": "Learning & Development Manager",
+      "domain": "Human Resources",
+      "profile": {
+        "h": 66,
+        "o": 70,
+        "s": 76,
+        "m": 74,
+        "d": 70
+      },
+      "degree": {
+        "typical": "Any degree + MBA-HR or ID certification",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Instructional design certification, ATD credentials, or an internal move from a training role",
+        "pivotFrom": "ANY degree — Education, Psychology and Commerce are common"
+      }
+    },
+    {
+      "id": "c132-compensation-benefits-analyst",
+      "name": "Compensation & Benefits Analyst",
+      "domain": "Human Resources",
+      "profile": {
+        "h": 58,
+        "o": 74,
+        "s": 64,
+        "m": 74,
+        "d": 70
+      },
+      "degree": {
+        "typical": "Any degree + MBA-HR / Finance",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "GRP or CCP certification (WorldatWork); advanced Excel and market-survey skill is the real requirement",
+        "pivotFrom": "B.Com, Statistics, Economics, ANY degree"
+      }
+    },
+    {
+      "id": "c133-hr-operations-hris-analyst",
+      "name": "HR Operations / HRIS Analyst",
+      "domain": "Human Resources",
+      "profile": {
+        "h": 55,
+        "o": 76,
+        "s": 62,
+        "m": 72,
+        "d": 68
+      },
+      "degree": {
+        "typical": "Any degree + HRIS tooling",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Workday, SuccessFactors or Darwinbox certification; a natural pivot from HR administration",
+        "pivotFrom": "ANY degree; BCA and B.Com are common"
+      }
+    },
+    {
+      "id": "c134-employee-relations-manager",
+      "name": "Employee Relations Manager",
+      "domain": "Human Resources",
+      "profile": {
+        "h": 66,
+        "o": 72,
+        "s": 70,
+        "m": 68,
+        "d": 72
+      },
+      "degree": {
+        "typical": "Any degree + MBA-HR or LLB",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "PG Diploma in Labour Law, XLRI/TISS industrial relations programmes; LLB holders also enter this space",
+        "pivotFrom": "ANY degree; Law, Psychology and MSW backgrounds"
+      }
+    },
+    {
+      "id": "c135-organisational-development-consultant",
+      "name": "Organisational Development Consultant",
+      "domain": "Human Resources",
+      "profile": {
+        "h": 64,
+        "o": 72,
+        "s": 78,
+        "m": 76,
+        "d": 72
+      },
+      "degree": {
+        "typical": "Any degree + MA Organisational Behaviour",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "MA Organisational Psychology, OD certification, or a consulting-firm route",
+        "pivotFrom": "Psychology, MBA, ANY degree"
+      }
+    },
+    {
+      "id": "c136-diversity-inclusion-manager",
+      "name": "Diversity & Inclusion Manager",
+      "domain": "Human Resources",
+      "profile": {
+        "h": 68,
+        "o": 70,
+        "s": 80,
+        "m": 70,
+        "d": 70
+      },
+      "degree": {
+        "typical": "Any degree + DEI certification",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "DEI certification, or an internal move from HRBP or CSR; lived experience carries real weight",
+        "pivotFrom": "ANY degree — Sociology, Psychology, Law and HR"
+      }
+    },
+    {
+      "id": "c137-industrial-relations-labour-officer",
+      "name": "Industrial Relations / Labour Officer",
+      "domain": "Human Resources",
+      "profile": {
+        "h": 62,
+        "o": 72,
+        "s": 66,
+        "m": 66,
+        "d": 72
+      },
+      "degree": {
+        "typical": "Any degree + MBA-IR or LLB",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "XLRI PGDM-HRM, PG Diploma in Labour Law, or a 3-yr LLB after any degree",
+        "pivotFrom": "ANY degree; Law, Commerce, Sociology"
+      }
+    },
+    {
+      "id": "c138-executive-search-consultant",
+      "name": "Executive Search Consultant",
+      "domain": "Human Resources",
+      "profile": {
+        "h": 64,
+        "o": 68,
+        "s": 66,
+        "m": 70,
+        "d": 70
+      },
+      "degree": {
+        "typical": "Any bachelor's degree",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Entry as a research analyst in a search firm — no certification gate exists",
+        "pivotFrom": "ANY degree"
+      }
+    },
+    {
+      "id": "c139-hr-analytics-specialist",
+      "name": "HR Analytics Specialist",
+      "domain": "Human Resources",
+      "profile": {
+        "h": 52,
+        "o": 76,
+        "s": 66,
+        "m": 80,
+        "d": 70
+      },
+      "degree": {
+        "typical": "Any degree + analytics skills",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "SQL/Python plus a people-analytics certification; pivot from HR operations or BI",
+        "pivotFrom": "Statistics, Economics, BCA, ANY degree"
+      }
+    },
+    {
+      "id": "c140-corporate-trainer",
+      "name": "Corporate Trainer",
+      "domain": "Human Resources",
+      "profile": {
+        "h": 66,
+        "o": 68,
+        "s": 78,
+        "m": 74,
+        "d": 68
+      },
+      "degree": {
+        "typical": "Any degree + domain expertise",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Train-the-trainer certification; credibility comes from your prior domain career, not a degree",
+        "pivotFrom": "ANY degree with genuine subject expertise"
+      }
+    },
+    {
+      "id": "c141-payroll-specialist",
+      "name": "Payroll Specialist",
+      "domain": "Human Resources",
+      "profile": {
+        "h": 50,
+        "o": 78,
+        "s": 58,
+        "m": 70,
+        "d": 68
+      },
+      "degree": {
+        "typical": "B.Com or any degree",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Payroll software certification; a common pivot from accounts or HR administration",
+        "pivotFrom": "B.Com, BBA, ANY degree"
+      }
+    },
+    {
+      "id": "c142-customer-success-manager",
+      "name": "Customer Success Manager",
+      "domain": "Business",
+      "profile": {
+        "h": 66,
+        "o": 70,
+        "s": 70,
+        "m": 68,
+        "d": 68
+      },
+      "degree": {
+        "typical": "Any bachelor's degree",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Entry via support or account management — SaaS product knowledge is the real gate",
+        "pivotFrom": "ANY degree"
+      }
+    },
+    {
+      "id": "c143-account-manager-b2b",
+      "name": "Account Manager (B2B)",
+      "domain": "Business",
+      "profile": {
+        "h": 64,
+        "o": 68,
+        "s": 66,
+        "m": 66,
+        "d": 68
+      },
+      "degree": {
+        "typical": "Any bachelor's degree",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Sales executive → account manager progression; no certification gate",
+        "pivotFrom": "ANY degree"
+      }
+    },
+    {
+      "id": "c144-business-development-manager",
+      "name": "Business Development Manager",
+      "domain": "Business",
+      "profile": {
+        "h": 66,
+        "o": 66,
+        "s": 68,
+        "m": 66,
+        "d": 68
+      },
+      "degree": {
+        "typical": "Any bachelor's degree",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "SDR or inside-sales entry then progression; MBA is optional, not required",
+        "pivotFrom": "ANY degree"
+      }
+    },
+    {
+      "id": "c145-inside-sales-sdr",
+      "name": "Inside Sales / SDR",
+      "domain": "Business",
+      "profile": {
+        "h": 62,
+        "o": 62,
+        "s": 64,
+        "m": 62,
+        "d": 60
+      },
+      "degree": {
+        "typical": "Any bachelor's degree",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Direct-entry role — frequently the first job for non-technical graduates in tech companies",
+        "pivotFrom": "ANY degree"
+      }
+    },
+    {
+      "id": "c146-category-manager-e-commerce",
+      "name": "Category Manager (E-commerce)",
+      "domain": "Business",
+      "profile": {
+        "h": 58,
+        "o": 72,
+        "s": 68,
+        "m": 74,
+        "d": 70
+      },
+      "degree": {
+        "typical": "Any degree + MBA (typical)",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Pivot from operations, buying or analytics; category-ops is a common entry role",
+        "pivotFrom": "B.Com, BBA, BE, ANY degree"
+      }
+    },
+    {
+      "id": "c147-program-manager",
+      "name": "Program Manager",
+      "domain": "Business",
+      "profile": {
+        "h": 60,
+        "o": 76,
+        "s": 70,
+        "m": 74,
+        "d": 72
+      },
+      "degree": {
+        "typical": "Any degree + MBA or PMP",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "PMP or PRINCE2 certification; internal promotion from project coordinator",
+        "pivotFrom": "ANY degree"
+      }
+    },
+    {
+      "id": "c148-project-manager-pmp",
+      "name": "Project Manager (PMP)",
+      "domain": "Business",
+      "profile": {
+        "h": 58,
+        "o": 76,
+        "s": 66,
+        "m": 72,
+        "d": 72
+      },
+      "degree": {
+        "typical": "Any degree + PMP",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "PMP certification requires documented experience, not a specific degree",
+        "pivotFrom": "ANY degree"
+      }
+    },
+    {
+      "id": "c149-chief-of-staff",
+      "name": "Chief of Staff",
+      "domain": "Business",
+      "profile": {
+        "h": 64,
+        "o": 74,
+        "s": 74,
+        "m": 76,
+        "d": 74
+      },
+      "degree": {
+        "typical": "Any degree + MBA or consulting background",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Consulting or founder's-office route; there is no formal qualification for this role",
+        "pivotFrom": "ANY degree"
+      }
+    },
+    {
+      "id": "c150-strategy-operations-associate",
+      "name": "Strategy & Operations Associate",
+      "domain": "Business",
+      "profile": {
+        "h": 58,
+        "o": 74,
+        "s": 72,
+        "m": 76,
+        "d": 72
+      },
+      "degree": {
+        "typical": "Any degree + MBA",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Consulting or startup-ops entry; CAT/GMAT → MBA is open from any degree",
+        "pivotFrom": "ANY degree"
+      }
+    },
+    {
+      "id": "c151-procurement-sourcing-specialist",
+      "name": "Procurement / Sourcing Specialist",
+      "domain": "Business",
+      "profile": {
+        "h": 55,
+        "o": 74,
+        "s": 62,
+        "m": 68,
+        "d": 68
+      },
+      "degree": {
+        "typical": "Any degree + supply chain certification",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "CIPS or CPSM certification; a common pivot from operations or accounts",
+        "pivotFrom": "B.Com, BBA, BE, ANY degree"
+      }
+    },
+    {
+      "id": "c152-logistics-warehouse-manager",
+      "name": "Logistics & Warehouse Manager",
+      "domain": "Business",
+      "profile": {
+        "h": 55,
+        "o": 74,
+        "s": 60,
+        "m": 64,
+        "d": 66
+      },
+      "degree": {
+        "typical": "Any degree + logistics diploma",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "CILT or IIMM diploma; floor-supervisor promotion route also works",
+        "pivotFrom": "ANY degree"
+      }
+    },
+    {
+      "id": "c153-quality-six-sigma-analyst",
+      "name": "Quality / Six Sigma Analyst",
+      "domain": "Business",
+      "profile": {
+        "h": 52,
+        "o": 78,
+        "s": 64,
+        "m": 74,
+        "d": 70
+      },
+      "degree": {
+        "typical": "Any degree + Six Sigma certification",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Green Belt → Black Belt certification; a common pivot from operations or manufacturing",
+        "pivotFrom": "BE, B.Sc, B.Com, ANY degree"
+      }
+    },
+    {
+      "id": "c154-revenue-operations-analyst",
+      "name": "Revenue Operations Analyst",
+      "domain": "Business",
+      "profile": {
+        "h": 52,
+        "o": 76,
+        "s": 64,
+        "m": 76,
+        "d": 70
+      },
+      "degree": {
+        "typical": "Any degree + CRM & analytics skills",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Salesforce/HubSpot admin certification plus SQL; pivot from sales operations",
+        "pivotFrom": "ANY degree"
+      }
+    },
+    {
+      "id": "c155-franchise-territory-manager",
+      "name": "Franchise / Territory Manager",
+      "domain": "Business",
+      "profile": {
+        "h": 62,
+        "o": 70,
+        "s": 64,
+        "m": 64,
+        "d": 66
+      },
+      "degree": {
+        "typical": "Any bachelor's degree",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Field sales progression; no certification gate",
+        "pivotFrom": "ANY degree"
+      }
+    },
+    {
+      "id": "c156-real-estate-consultant",
+      "name": "Real Estate Consultant",
+      "domain": "Business",
+      "profile": {
+        "h": 62,
+        "o": 64,
+        "s": 64,
+        "m": 62,
+        "d": 62
+      },
+      "degree": {
+        "typical": "No degree required + RERA registration",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "RERA agent registration is the only requirement — no degree of any kind is needed",
+        "pivotFrom": "ANY degree, or none"
+      }
+    },
+    {
+      "id": "c157-export-import-trade-consultant",
+      "name": "Export-Import / Trade Consultant",
+      "domain": "Business",
+      "profile": {
+        "h": 58,
+        "o": 70,
+        "s": 64,
+        "m": 66,
+        "d": 66
+      },
+      "degree": {
+        "typical": "Any degree + IEC / trade course",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "IIFT or FIEO certificate courses; an IEC code lets you trade independently",
+        "pivotFrom": "B.Com, ANY degree"
+      }
+    },
+    {
+      "id": "c158-freelance-consultant-solopreneur",
+      "name": "Freelance Consultant / Solopreneur",
+      "domain": "Business",
+      "profile": {
+        "h": 60,
+        "o": 70,
+        "s": 80,
+        "m": 74,
+        "d": 70
+      },
+      "degree": {
+        "typical": "Any degree + domain expertise",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Credibility carries over from a prior career; there is no formal route or gate",
+        "pivotFrom": "ANY degree with a track record"
+      }
+    },
+    {
+      "id": "c159-market-research-analyst",
+      "name": "Market Research Analyst",
+      "domain": "Business",
+      "profile": {
+        "h": 52,
+        "o": 74,
+        "s": 66,
+        "m": 78,
+        "d": 68
+      },
+      "degree": {
+        "typical": "Any degree + research methods",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "MRSI certification; entry via a field-research or analytics role",
+        "pivotFrom": "Statistics, Economics, Psychology, ANY degree"
+      }
+    },
+    {
+      "id": "c160-growth-marketer",
+      "name": "Growth Marketer",
+      "domain": "Business",
+      "profile": {
+        "h": 58,
+        "o": 70,
+        "s": 70,
+        "m": 78,
+        "d": 68
+      },
+      "degree": {
+        "typical": "Any bachelor's degree",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "An analytics and experimentation portfolio; a common startup entry role",
+        "pivotFrom": "ANY degree"
+      }
+    },
+    {
+      "id": "c161-content-strategist",
+      "name": "Content Strategist",
+      "domain": "Media",
+      "profile": {
+        "h": 62,
+        "o": 68,
+        "s": 74,
+        "m": 76,
+        "d": 68
+      },
+      "degree": {
+        "typical": "Any bachelor's degree",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "A portfolio of published work; content writer → strategist progression",
+        "pivotFrom": "ANY degree — Literature, Journalism and Engineering are all common"
+      }
+    },
+    {
+      "id": "c162-seo-specialist",
+      "name": "SEO Specialist",
+      "domain": "Media",
+      "profile": {
+        "h": 52,
+        "o": 70,
+        "s": 68,
+        "m": 74,
+        "d": 66
+      },
+      "degree": {
+        "typical": "Any bachelor's degree",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Google, Ahrefs and Semrush certifications plus demonstrable ranking results",
+        "pivotFrom": "ANY degree"
+      }
+    },
+    {
+      "id": "c163-performance-marketing-analyst",
+      "name": "Performance Marketing Analyst",
+      "domain": "Media",
+      "profile": {
+        "h": 52,
+        "o": 72,
+        "s": 66,
+        "m": 78,
+        "d": 68
+      },
+      "degree": {
+        "typical": "Any bachelor's degree",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Google Ads and Meta Blueprint certification plus a spend-management track record",
+        "pivotFrom": "ANY degree"
+      }
+    },
+    {
+      "id": "c164-social-media-manager",
+      "name": "Social Media Manager",
+      "domain": "Media",
+      "profile": {
+        "h": 60,
+        "o": 66,
+        "s": 72,
+        "m": 72,
+        "d": 64
+      },
+      "degree": {
+        "typical": "Any bachelor's degree",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "A portfolio of managed accounts with growth metrics; no certification gate",
+        "pivotFrom": "ANY degree"
+      }
+    },
+    {
+      "id": "c165-copywriter",
+      "name": "Copywriter",
+      "domain": "Creative",
+      "profile": {
+        "h": 62,
+        "o": 64,
+        "s": 76,
+        "m": 78,
+        "d": 64
+      },
+      "degree": {
+        "typical": "Any bachelor's degree",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Portfolio-first hiring; agency internship or freelance samples",
+        "pivotFrom": "ANY degree"
+      }
+    },
+    {
+      "id": "c166-public-relations-specialist",
+      "name": "Public Relations Specialist",
+      "domain": "Media",
+      "profile": {
+        "h": 66,
+        "o": 66,
+        "s": 70,
+        "m": 72,
+        "d": 66
+      },
+      "degree": {
+        "typical": "Any degree + Mass Comm (optional)",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Agency executive entry; IIMC and Xavier's PG Diplomas are open to any graduate",
+        "pivotFrom": "ANY degree"
+      }
+    },
+    {
+      "id": "c167-corporate-communications-manager",
+      "name": "Corporate Communications Manager",
+      "domain": "Media",
+      "profile": {
+        "h": 64,
+        "o": 72,
+        "s": 72,
+        "m": 74,
+        "d": 70
+      },
+      "degree": {
+        "typical": "Any degree + Mass Comm or MBA",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Pivot from PR, journalism or marketing; there is no fixed route",
+        "pivotFrom": "ANY degree"
+      }
+    },
+    {
+      "id": "c168-community-manager",
+      "name": "Community Manager",
+      "domain": "Media",
+      "profile": {
+        "h": 66,
+        "o": 66,
+        "s": 74,
+        "m": 68,
+        "d": 64
+      },
+      "degree": {
+        "typical": "Any bachelor's degree",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Run a community and show engagement metrics — that is the entire gate",
+        "pivotFrom": "ANY degree"
+      }
+    },
+    {
+      "id": "c169-video-editor",
+      "name": "Video Editor",
+      "domain": "Creative",
+      "profile": {
+        "h": 55,
+        "o": 66,
+        "s": 74,
+        "m": 80,
+        "d": 64
+      },
+      "degree": {
+        "typical": "Any degree + editing skills",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Software skill plus a showreel; MAAC/Arena diploma is optional",
+        "pivotFrom": "ANY degree, or none"
+      }
+    },
+    {
+      "id": "c170-podcast-producer",
+      "name": "Podcast Producer",
+      "domain": "Media",
+      "profile": {
+        "h": 58,
+        "o": 68,
+        "s": 74,
+        "m": 74,
+        "d": 64
+      },
+      "degree": {
+        "typical": "Any bachelor's degree",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "A portfolio of produced episodes plus audio-engineering basics",
+        "pivotFrom": "ANY degree, or none"
+      }
+    },
+    {
+      "id": "c171-technical-writer",
+      "name": "Technical Writer",
+      "domain": "Media",
+      "profile": {
+        "h": 50,
+        "o": 74,
+        "s": 66,
+        "m": 80,
+        "d": 68
+      },
+      "degree": {
+        "typical": "Any degree + domain literacy",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Writing samples plus API/product understanding — a common pivot for engineers who prefer writing",
+        "pivotFrom": "BE, B.Sc, English, ANY degree"
+      }
+    },
+    {
+      "id": "c172-localisation-translation-specialist",
+      "name": "Localisation / Translation Specialist",
+      "domain": "Media",
+      "profile": {
+        "h": 50,
+        "o": 72,
+        "s": 70,
+        "m": 82,
+        "d": 66
+      },
+      "degree": {
+        "typical": "Any degree + language proficiency",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Language proficiency certification (JLPT, DELF, Goethe, HSK) — no degree gate",
+        "pivotFrom": "ANY degree with a second language"
+      }
+    },
+    {
+      "id": "c173-esports-gaming-content-manager",
+      "name": "Esports / Gaming Content Manager",
+      "domain": "Media",
+      "profile": {
+        "h": 62,
+        "o": 66,
+        "s": 76,
+        "m": 72,
+        "d": 64
+      },
+      "degree": {
+        "typical": "Any bachelor's degree",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "A community and content portfolio; there is no gate",
+        "pivotFrom": "ANY degree, or none"
+      }
+    },
+    {
+      "id": "c174-sports-broadcaster-commentator",
+      "name": "Sports Broadcaster / Commentator",
+      "domain": "Media",
+      "profile": {
+        "h": 64,
+        "o": 66,
+        "s": 76,
+        "m": 76,
+        "d": 64
+      },
+      "degree": {
+        "typical": "Any bachelor's degree",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Audition-led; sports knowledge and voice matter, mass communication is optional",
+        "pivotFrom": "ANY degree; former athletes have an edge"
+      }
+    },
+    {
+      "id": "c175-financial-analyst-fp-a",
+      "name": "Financial Analyst (FP&A)",
+      "domain": "Finance",
+      "profile": {
+        "h": 50,
+        "o": 76,
+        "s": 66,
+        "m": 78,
+        "d": 70
+      },
+      "degree": {
+        "typical": "B.Com/BBA/any degree + CFA or MBA",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "CFA or FMVA certification; Excel modelling skill is the real gate",
+        "pivotFrom": "B.Com, BBA, BE, Economics, CA"
+      }
+    },
+    {
+      "id": "c176-credit-analyst",
+      "name": "Credit Analyst",
+      "domain": "Finance",
+      "profile": {
+        "h": 50,
+        "o": 76,
+        "s": 62,
+        "m": 76,
+        "d": 70
+      },
+      "degree": {
+        "typical": "B.Com or any degree",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "NISM or Moody's credit certification; bank management-trainee route",
+        "pivotFrom": "B.Com, BBA, Economics, ANY degree"
+      }
+    },
+    {
+      "id": "c177-risk-analyst",
+      "name": "Risk Analyst",
+      "domain": "Finance",
+      "profile": {
+        "h": 50,
+        "o": 78,
+        "s": 64,
+        "m": 78,
+        "d": 70
+      },
+      "degree": {
+        "typical": "Any degree + FRM or PRM",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "FRM (GARP) is open to any degree — quantitative skill is what matters",
+        "pivotFrom": "Statistics, Maths, BE, B.Com, ANY degree"
+      }
+    },
+    {
+      "id": "c178-compliance-officer",
+      "name": "Compliance Officer",
+      "domain": "Finance",
+      "profile": {
+        "h": 52,
+        "o": 78,
+        "s": 66,
+        "m": 72,
+        "d": 72
+      },
+      "degree": {
+        "typical": "Any degree + compliance certification",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "NISM and IIBF compliance certifications; a common pivot from audit, law or operations",
+        "pivotFrom": "B.Com, LLB, CS, ANY degree"
+      }
+    },
+    {
+      "id": "c179-internal-auditor",
+      "name": "Internal Auditor",
+      "domain": "Finance",
+      "profile": {
+        "h": 50,
+        "o": 80,
+        "s": 64,
+        "m": 74,
+        "d": 72
+      },
+      "degree": {
+        "typical": "B.Com or any degree + CIA/CA",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "CIA (Institute of Internal Auditors) certification is open to any graduate",
+        "pivotFrom": "B.Com, CA, BBA, ANY degree"
+      }
+    },
+    {
+      "id": "c180-forensic-auditor-fraud-investigator",
+      "name": "Forensic Auditor / Fraud Investigator",
+      "domain": "Finance",
+      "profile": {
+        "h": 52,
+        "o": 78,
+        "s": 70,
+        "m": 78,
+        "d": 72
+      },
+      "degree": {
+        "typical": "Any degree + CFE",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "CFE (ACFE) certification; pivot from audit, law enforcement or accounting",
+        "pivotFrom": "B.Com, CA, Law, ANY degree"
+      }
+    },
+    {
+      "id": "c181-wealth-manager-relationship-manager",
+      "name": "Wealth Manager / Relationship Manager",
+      "domain": "Finance",
+      "profile": {
+        "h": 62,
+        "o": 70,
+        "s": 66,
+        "m": 70,
+        "d": 68
+      },
+      "degree": {
+        "typical": "Any degree + NISM or CFP",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "NISM Investment Adviser or CFP; bank RM entry is open to any graduate",
+        "pivotFrom": "ANY degree"
+      }
+    },
+    {
+      "id": "c182-treasury-analyst",
+      "name": "Treasury Analyst",
+      "domain": "Finance",
+      "profile": {
+        "h": 50,
+        "o": 76,
+        "s": 62,
+        "m": 78,
+        "d": 70
+      },
+      "degree": {
+        "typical": "B.Com/BBA + finance certification",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "ACT or CTP certification; a pivot from accounts or banking operations",
+        "pivotFrom": "B.Com, BBA, Economics, ANY degree"
+      }
+    },
+    {
+      "id": "c183-insurance-underwriter",
+      "name": "Insurance Underwriter",
+      "domain": "Finance",
+      "profile": {
+        "h": 48,
+        "o": 78,
+        "s": 60,
+        "m": 74,
+        "d": 68
+      },
+      "degree": {
+        "typical": "Any degree + III certification",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Insurance Institute of India Licentiate and Fellowship examinations",
+        "pivotFrom": "ANY degree"
+      }
+    },
+    {
+      "id": "c184-loan-mortgage-officer",
+      "name": "Loan / Mortgage Officer",
+      "domain": "Finance",
+      "profile": {
+        "h": 58,
+        "o": 72,
+        "s": 60,
+        "m": 66,
+        "d": 64
+      },
+      "degree": {
+        "typical": "Any bachelor's degree",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Bank or NBFC sales entry; IIBF certification is optional",
+        "pivotFrom": "ANY degree"
+      }
+    },
+    {
+      "id": "c185-esg-analyst",
+      "name": "ESG Analyst",
+      "domain": "Finance",
+      "profile": {
+        "h": 55,
+        "o": 74,
+        "s": 78,
+        "m": 76,
+        "d": 70
+      },
+      "degree": {
+        "typical": "Any degree + ESG certification",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "CFA ESG Investing certificate or GRI Standards certification; pivot from research or sustainability",
+        "pivotFrom": "Economics, Env. Science, Commerce, Engineering, ANY degree"
+      }
+    },
+    {
+      "id": "c186-data-analyst",
+      "name": "Data Analyst",
+      "domain": "Technology",
+      "profile": {
+        "h": 50,
+        "o": 74,
+        "s": 66,
+        "m": 80,
+        "d": 68
+      },
+      "degree": {
+        "typical": "Any degree + SQL & BI skills",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "SQL + Excel + Power BI/Tableau portfolio — the single most common non-CS entry into tech",
+        "pivotFrom": "ANY degree — Commerce, Economics, Statistics and Arts all work"
+      }
+    },
+    {
+      "id": "c187-business-intelligence-analyst",
+      "name": "Business Intelligence Analyst",
+      "domain": "Technology",
+      "profile": {
+        "h": 50,
+        "o": 76,
+        "s": 66,
+        "m": 80,
+        "d": 70
+      },
+      "degree": {
+        "typical": "Any degree + BI tooling",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Power BI or Tableau certification; a natural pivot from data analyst or MIS roles",
+        "pivotFrom": "ANY degree"
+      }
+    },
+    {
+      "id": "c188-data-engineer",
+      "name": "Data Engineer",
+      "domain": "Technology",
+      "profile": {
+        "h": 48,
+        "o": 76,
+        "s": 66,
+        "m": 80,
+        "d": 70
+      },
+      "degree": {
+        "typical": "B.Tech or any degree + pipeline skills",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Python/SQL/Spark plus a cloud certification; a common pivot from analyst or ETL support",
+        "pivotFrom": "BCA, B.Sc, ANY degree with coding ability"
+      }
+    },
+    {
+      "id": "c189-qa-test-engineer",
+      "name": "QA / Test Engineer",
+      "domain": "Technology",
+      "profile": {
+        "h": 48,
+        "o": 78,
+        "s": 62,
+        "m": 74,
+        "d": 66
+      },
+      "degree": {
+        "typical": "Any degree + testing skills",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "ISTQB certification; manual QA is a well-worn no-CS-degree entry route into tech",
+        "pivotFrom": "ANY degree"
+      }
+    },
+    {
+      "id": "c190-site-reliability-engineer",
+      "name": "Site Reliability Engineer",
+      "domain": "Technology",
+      "profile": {
+        "h": 48,
+        "o": 78,
+        "s": 66,
+        "m": 78,
+        "d": 70
+      },
+      "degree": {
+        "typical": "B.Tech or any degree + ops skills",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Linux and Kubernetes certification; pivot from sysadmin or DevOps",
+        "pivotFrom": "BCA, B.Sc IT, ANY degree with certifications"
+      }
+    },
+    {
+      "id": "c191-salesforce-crm-administrator",
+      "name": "Salesforce / CRM Administrator",
+      "domain": "Technology",
+      "profile": {
+        "h": 50,
+        "o": 76,
+        "s": 64,
+        "m": 72,
+        "d": 68
+      },
+      "degree": {
+        "typical": "Any degree + Salesforce certification",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Salesforce Administrator certification — explicitly has no degree requirement",
+        "pivotFrom": "ANY degree"
+      }
+    },
+    {
+      "id": "c192-it-support-systems-administrator",
+      "name": "IT Support / Systems Administrator",
+      "domain": "Technology",
+      "profile": {
+        "h": 48,
+        "o": 74,
+        "s": 58,
+        "m": 68,
+        "d": 64
+      },
+      "degree": {
+        "typical": "BCA/B.Sc IT or any degree",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "CompTIA A+/Network+ or RHCSA; helpdesk entry accepts any degree",
+        "pivotFrom": "ANY degree"
+      }
+    },
+    {
+      "id": "c193-technical-support-engineer",
+      "name": "Technical Support Engineer",
+      "domain": "Technology",
+      "profile": {
+        "h": 55,
+        "o": 74,
+        "s": 62,
+        "m": 72,
+        "d": 66
+      },
+      "degree": {
+        "typical": "Any degree + product literacy",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Product certification; a very common non-CS entry into product companies",
+        "pivotFrom": "ANY degree"
+      }
+    },
+    {
+      "id": "c194-solutions-pre-sales-engineer",
+      "name": "Solutions / Pre-Sales Engineer",
+      "domain": "Technology",
+      "profile": {
+        "h": 62,
+        "o": 72,
+        "s": 68,
+        "m": 76,
+        "d": 70
+      },
+      "degree": {
+        "typical": "B.Tech or any degree + product depth",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Pivot from support, QA or sales once you hold real technical product knowledge",
+        "pivotFrom": "BE, BCA, ANY degree"
+      }
+    },
+    {
+      "id": "c195-scrum-master-agile-coach",
+      "name": "Scrum Master / Agile Coach",
+      "domain": "Technology",
+      "profile": {
+        "h": 62,
+        "o": 74,
+        "s": 72,
+        "m": 72,
+        "d": 70
+      },
+      "degree": {
+        "typical": "Any degree + CSM or PSM",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "CSM or PSM certification — there is no degree prerequisite whatsoever",
+        "pivotFrom": "ANY degree"
+      }
+    },
+    {
+      "id": "c196-technical-program-manager",
+      "name": "Technical Program Manager",
+      "domain": "Technology",
+      "profile": {
+        "h": 55,
+        "o": 76,
+        "s": 70,
+        "m": 78,
+        "d": 72
+      },
+      "degree": {
+        "typical": "B.Tech or any degree + delivery record",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Pivot from engineering, QA or program management",
+        "pivotFrom": "BE, BCA, ANY degree"
+      }
+    },
+    {
+      "id": "c197-no-code-automation-specialist",
+      "name": "No-Code / Automation Specialist",
+      "domain": "Technology",
+      "profile": {
+        "h": 52,
+        "o": 74,
+        "s": 68,
+        "m": 76,
+        "d": 66
+      },
+      "degree": {
+        "typical": "Any bachelor's degree",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Zapier, Make, Airtable and Power Automate certifications plus a portfolio of built workflows",
+        "pivotFrom": "ANY degree"
+      }
+    },
+    {
+      "id": "c198-ethical-hacker-penetration-tester",
+      "name": "Ethical Hacker / Penetration Tester",
+      "domain": "Technology",
+      "profile": {
+        "h": 52,
+        "o": 72,
+        "s": 74,
+        "m": 80,
+        "d": 68
+      },
+      "degree": {
+        "typical": "Any degree + OSCP or CEH",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "OSCP or CEH; CTF placements and bug-bounty payouts outweigh any degree",
+        "pivotFrom": "ANY degree with a security portfolio"
+      }
+    },
+    {
+      "id": "c199-ai-solutions-prompt-engineer",
+      "name": "AI Solutions / Prompt Engineer",
+      "domain": "Technology",
+      "profile": {
+        "h": 55,
+        "o": 72,
+        "s": 72,
+        "m": 80,
+        "d": 68
+      },
+      "degree": {
+        "typical": "Any degree + AI tooling fluency",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "A portfolio of built AI workflows; genuinely no degree gate — the field is too new to have one",
+        "pivotFrom": "ANY degree"
+      }
+    },
+    {
+      "id": "c200-digital-product-designer",
+      "name": "Digital Product Designer",
+      "domain": "Design",
+      "profile": {
+        "h": 62,
+        "o": 70,
+        "s": 74,
+        "m": 78,
+        "d": 68
+      },
+      "degree": {
+        "typical": "B.Des or any degree + portfolio",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Portfolio-first; a UX bootcamp, or NID/IIT-IDC PG which is open to any graduate",
+        "pivotFrom": "ANY degree"
+      }
+    },
+    {
+      "id": "c201-clinical-research-associate",
+      "name": "Clinical Research Associate",
+      "domain": "Research",
+      "profile": {
+        "h": 55,
+        "o": 76,
+        "s": 70,
+        "m": 74,
+        "d": 70
+      },
+      "degree": {
+        "typical": "B.Sc/B.Pharm + PG Dip Clinical Research",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "PG Diploma in Clinical Research — open to any life-science, pharmacy or nursing graduate",
+        "pivotFrom": "B.Sc, B.Pharm, BPT, BDS, B.Sc Nursing, any life science"
+      }
+    },
+    {
+      "id": "c202-pharmacovigilance-associate",
+      "name": "Pharmacovigilance Associate",
+      "domain": "Research",
+      "profile": {
+        "h": 48,
+        "o": 78,
+        "s": 66,
+        "m": 74,
+        "d": 68
+      },
+      "degree": {
+        "typical": "B.Pharm/B.Sc + PV certification",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "PG Diploma in Pharmacovigilance — open to pharmacy, life-science and nursing graduates",
+        "pivotFrom": "B.Pharm, B.Sc Biology, BDS, B.Sc Nursing"
+      }
+    },
+    {
+      "id": "c203-medical-writer",
+      "name": "Medical Writer",
+      "domain": "Media",
+      "profile": {
+        "h": 48,
+        "o": 76,
+        "s": 70,
+        "m": 80,
+        "d": 68
+      },
+      "degree": {
+        "typical": "Life-science degree + writing samples",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Medical writing certification (AMWA/ISMPP); open to B.Pharm, B.Sc, BDS, BPT and MBBS graduates",
+        "pivotFrom": "B.Pharm, B.Sc, BDS, MBBS, BPT"
+      }
+    },
+    {
+      "id": "c204-medical-coder-health-information-manager",
+      "name": "Medical Coder / Health Information Manager",
+      "domain": "Medicine",
+      "profile": {
+        "h": 48,
+        "o": 78,
+        "s": 60,
+        "m": 74,
+        "d": 66
+      },
+      "degree": {
+        "typical": "Any life-science degree + CPC",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "CPC (AAPC) or CCS certification — a very well-travelled route for B.Sc and nursing graduates",
+        "pivotFrom": "B.Sc, B.Pharm, BPT, B.Sc Nursing, any life science"
+      }
+    },
+    {
+      "id": "c205-hospital-administrator",
+      "name": "Hospital Administrator",
+      "domain": "Medicine",
+      "profile": {
+        "h": 60,
+        "o": 74,
+        "s": 68,
+        "m": 70,
+        "d": 70
+      },
+      "degree": {
+        "typical": "Any degree + MHA / MBA Healthcare",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "MHA or MBA Hospital Management — open to ANY graduate, not only MBBS holders",
+        "pivotFrom": "ANY degree; MBBS, BDS, nursing and B.Com are all common"
+      }
+    },
+    {
+      "id": "c206-medical-device-sales-specialist",
+      "name": "Medical Device Sales Specialist",
+      "domain": "Medicine",
+      "profile": {
+        "h": 62,
+        "o": 70,
+        "s": 64,
+        "m": 70,
+        "d": 66
+      },
+      "degree": {
+        "typical": "B.Sc/B.Pharm or any degree",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Pharma or device field-sales entry; a science background is preferred but not mandatory",
+        "pivotFrom": "B.Sc, B.Pharm, BPT, ANY degree"
+      }
+    },
+    {
+      "id": "c207-genetic-counsellor",
+      "name": "Genetic Counsellor",
+      "domain": "Medicine",
+      "profile": {
+        "h": 62,
+        "o": 74,
+        "s": 76,
+        "m": 76,
+        "d": 72
+      },
+      "degree": {
+        "typical": "B.Sc Genetics/Bio → M.Sc Genetic Counselling",
+        "agnostic": "Partly",
+        "gate": "bridge",
+        "altEntryRoute": "M.Sc Genetic Counselling (Kamineni, Manipal) — open to life-science and psychology graduates",
+        "pivotFrom": "B.Sc Biology/Biotech/Genetics, Psychology, nursing"
+      }
+    },
+    {
+      "id": "c208-speech-language-therapist",
+      "name": "Speech & Language Therapist",
+      "domain": "Medicine",
+      "profile": {
+        "h": 66,
+        "o": 72,
+        "s": 78,
+        "m": 76,
+        "d": 70
+      },
+      "degree": {
+        "typical": "B.ASLP (RCI-approved)",
+        "agnostic": "No",
+        "gate": "locked",
+        "altEntryRoute": "None — B.ASLP is required for RCI registration; M.ASLP for specialisation",
+        "pivotFrom": "Class 12 PCB → B.ASLP only"
+      }
+    },
+    {
+      "id": "c209-optometrist",
+      "name": "Optometrist",
+      "domain": "Medicine",
+      "profile": {
+        "h": 55,
+        "o": 74,
+        "s": 66,
+        "m": 72,
+        "d": 68
+      },
+      "degree": {
+        "typical": "B.Optom / B.Sc Optometry",
+        "agnostic": "No",
+        "gate": "locked",
+        "altEntryRoute": "Diploma in Optometry (2 yr) for technician-level roles; B.Optom for independent practice",
+        "pivotFrom": "Class 12 PCB only"
+      }
+    },
+    {
+      "id": "c210-nursing-professional",
+      "name": "Nursing Professional",
+      "domain": "Medicine",
+      "profile": {
+        "h": 66,
+        "o": 76,
+        "s": 80,
+        "m": 70,
+        "d": 70
+      },
+      "degree": {
+        "typical": "B.Sc Nursing / GNM",
+        "agnostic": "No",
+        "gate": "locked",
+        "altEntryRoute": "GNM diploma (3.5 yr) is the shorter route; Post-Basic B.Sc Nursing upgrades GNM holders",
+        "pivotFrom": "Class 12 PCB → B.Sc Nursing or GNM"
+      }
+    },
+    {
+      "id": "c211-radiology-imaging-technologist",
+      "name": "Radiology / Imaging Technologist",
+      "domain": "Medicine",
+      "profile": {
+        "h": 50,
+        "o": 76,
+        "s": 64,
+        "m": 72,
+        "d": 66
+      },
+      "degree": {
+        "typical": "B.Sc Radiology & Imaging Technology",
+        "agnostic": "Partly",
+        "gate": "bridge",
+        "altEntryRoute": "Diploma in Radiography (2 yr) for technician entry, then lateral upgrade to B.Sc",
+        "pivotFrom": "Class 12 PCB, B.Sc allied health sciences"
+      }
+    },
+    {
+      "id": "c212-public-health-programme-officer",
+      "name": "Public Health Programme Officer",
+      "domain": "Social",
+      "profile": {
+        "h": 62,
+        "o": 72,
+        "s": 80,
+        "m": 74,
+        "d": 70
+      },
+      "degree": {
+        "typical": "Any degree + MPH",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "MPH is open to ANY graduate at IIPH, TISS and most schools of public health",
+        "pivotFrom": "ANY degree — MBBS, B.Sc, Sociology and Economics all feed it"
+      }
+    },
+    {
+      "id": "c213-corporate-social-responsibility-manager",
+      "name": "Corporate Social Responsibility Manager",
+      "domain": "Social",
+      "profile": {
+        "h": 64,
+        "o": 72,
+        "s": 80,
+        "m": 72,
+        "d": 70
+      },
+      "degree": {
+        "typical": "Any degree + MSW / MA Development",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "MSW or MA Development Studies; also a pivot from NGO work or corporate communications",
+        "pivotFrom": "ANY degree"
+      }
+    },
+    {
+      "id": "c214-fundraising-grants-manager",
+      "name": "Fundraising / Grants Manager",
+      "domain": "Social",
+      "profile": {
+        "h": 64,
+        "o": 72,
+        "s": 78,
+        "m": 72,
+        "d": 70
+      },
+      "degree": {
+        "typical": "Any bachelor's degree",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "A grant-writing portfolio; pivot from programme or communications roles",
+        "pivotFrom": "ANY degree"
+      }
+    },
+    {
+      "id": "c215-impact-evaluation-specialist",
+      "name": "Impact Evaluation Specialist",
+      "domain": "Social",
+      "profile": {
+        "h": 50,
+        "o": 76,
+        "s": 78,
+        "m": 80,
+        "d": 72
+      },
+      "degree": {
+        "typical": "Any degree + M&E or economics training",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "MA Development Economics or M&E certification; strong statistics is the real requirement",
+        "pivotFrom": "Economics, Statistics, Sociology, ANY degree"
+      }
+    },
+    {
+      "id": "c216-sign-language-interpreter",
+      "name": "Sign Language Interpreter",
+      "domain": "Social",
+      "profile": {
+        "h": 62,
+        "o": 72,
+        "s": 80,
+        "m": 80,
+        "d": 68
+      },
+      "degree": {
+        "typical": "Any degree + ISL certification",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Diploma in Indian Sign Language Interpretation (RCI / ISLRTC)",
+        "pivotFrom": "ANY degree"
+      }
+    },
+    {
+      "id": "c217-political-consultant-campaign-manager",
+      "name": "Political Consultant / Campaign Manager",
+      "domain": "Government",
+      "profile": {
+        "h": 66,
+        "o": 68,
+        "s": 72,
+        "m": 74,
+        "d": 70
+      },
+      "degree": {
+        "typical": "Any bachelor's degree",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Entry through a campaign consultancy; a political science background is optional",
+        "pivotFrom": "ANY degree"
+      }
+    },
+    {
+      "id": "c218-paralegal-legal-operations",
+      "name": "Paralegal / Legal Operations",
+      "domain": "Law",
+      "profile": {
+        "h": 50,
+        "o": 76,
+        "s": 64,
+        "m": 72,
+        "d": 66
+      },
+      "degree": {
+        "typical": "Any degree + paralegal diploma",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Paralegal diploma or LLB; law-firm operations teams actively hire non-lawyers",
+        "pivotFrom": "ANY degree"
+      }
+    },
+    {
+      "id": "c219-health-safety-ehs-officer",
+      "name": "Health & Safety (EHS) Officer",
+      "domain": "Emerging",
+      "profile": {
+        "h": 52,
+        "o": 78,
+        "s": 70,
+        "m": 68,
+        "d": 70
+      },
+      "degree": {
+        "typical": "Any degree + Diploma in Industrial Safety",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "State-recognised Diploma in Industrial Safety, or NEBOSH IGC certification",
+        "pivotFrom": "BE, B.Sc, ANY degree"
+      }
+    },
+    {
+      "id": "c220-instructional-designer",
+      "name": "Instructional Designer",
+      "domain": "Education",
+      "profile": {
+        "h": 58,
+        "o": 72,
+        "s": 74,
+        "m": 78,
+        "d": 70
+      },
+      "degree": {
+        "typical": "Any degree + ID certification",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "ATD or instructional design certification; a common pivot from teaching or content",
+        "pivotFrom": "Education, Psychology, ANY degree"
+      }
+    },
+    {
+      "id": "c221-career-counsellor",
+      "name": "Career Counsellor",
+      "domain": "Education",
+      "profile": {
+        "h": 66,
+        "o": 72,
+        "s": 80,
+        "m": 74,
+        "d": 74
+      },
+      "degree": {
+        "typical": "Any degree + counselling certification",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Career counselling certification (ICCC, NCDA); a natural pivot from teaching or HR",
+        "pivotFrom": "Psychology, Education, HR, ANY degree"
+      }
+    },
+    {
+      "id": "c222-test-prep-educator",
+      "name": "Test Prep Educator",
+      "domain": "Education",
+      "profile": {
+        "h": 62,
+        "o": 70,
+        "s": 74,
+        "m": 80,
+        "d": 68
+      },
+      "degree": {
+        "typical": "Any degree + subject mastery",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "The demo lecture is the entry test; your own exam score is the credential",
+        "pivotFrom": "ANY degree — engineering and medical graduates dominate this field"
+      }
+    },
+    {
+      "id": "c223-academic-content-developer",
+      "name": "Academic Content Developer",
+      "domain": "Education",
+      "profile": {
+        "h": 52,
+        "o": 74,
+        "s": 72,
+        "m": 80,
+        "d": 68
+      },
+      "degree": {
+        "typical": "Any degree with subject mastery",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "A subject test and sample content; EdTech companies hire from every stream",
+        "pivotFrom": "ANY degree"
+      }
+    },
+    {
+      "id": "c224-school-administrator-principal",
+      "name": "School Administrator / Principal",
+      "domain": "Education",
+      "profile": {
+        "h": 64,
+        "o": 76,
+        "s": 74,
+        "m": 72,
+        "d": 74
+      },
+      "degree": {
+        "typical": "Any degree + B.Ed + teaching experience",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "B.Ed after ANY degree, then classroom experience leading into administration; M.Ed for senior posts",
+        "pivotFrom": "ANY degree → B.Ed"
+      }
+    },
+    {
+      "id": "c225-study-abroad-consultant",
+      "name": "Study Abroad Consultant",
+      "domain": "Education",
+      "profile": {
+        "h": 64,
+        "o": 70,
+        "s": 70,
+        "m": 70,
+        "d": 68
+      },
+      "degree": {
+        "typical": "Any bachelor's degree",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Agency training; IDP or British Council certification is optional",
+        "pivotFrom": "ANY degree"
+      }
+    },
+    {
+      "id": "c226-librarian-information-scientist",
+      "name": "Librarian / Information Scientist",
+      "domain": "Education",
+      "profile": {
+        "h": 48,
+        "o": 74,
+        "s": 68,
+        "m": 74,
+        "d": 66
+      },
+      "degree": {
+        "typical": "Any degree + B.Lib.I.Sc",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "B.Lib.I.Sc (1 yr) is open to ANY graduate; UGC-NET LIS for academic posts",
+        "pivotFrom": "ANY degree"
+      }
+    },
+    {
+      "id": "c227-linguist-language-specialist",
+      "name": "Linguist / Language Specialist",
+      "domain": "Education",
+      "profile": {
+        "h": 48,
+        "o": 74,
+        "s": 74,
+        "m": 84,
+        "d": 68
+      },
+      "degree": {
+        "typical": "BA/MA Linguistics or a language",
+        "agnostic": "Partly",
+        "gate": "bridge",
+        "altEntryRoute": "MA Linguistics is open to any graduate at most universities; proficiency certification for industry roles",
+        "pivotFrom": "ANY degree with real language ability"
+      }
+    },
+    {
+      "id": "c228-museum-curator-archivist",
+      "name": "Museum Curator / Archivist",
+      "domain": "Creative",
+      "profile": {
+        "h": 52,
+        "o": 74,
+        "s": 76,
+        "m": 76,
+        "d": 70
+      },
+      "degree": {
+        "typical": "Any degree + MA Museology / History",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "MA Museology (National Museum Institute, MSU Baroda) is open to any graduate",
+        "pivotFrom": "History, Fine Arts, Anthropology, ANY degree"
+      }
+    },
+    {
+      "id": "c229-commercial-pilot",
+      "name": "Commercial Pilot",
+      "domain": "Aviation",
+      "profile": {
+        "h": 58,
+        "o": 78,
+        "s": 74,
+        "m": 74,
+        "d": 72
+      },
+      "degree": {
+        "typical": "Class 12 PCM + DGCA CPL",
+        "agnostic": "Partly",
+        "gate": "bridge",
+        "altEntryRoute": "DGCA CPL needs no degree at all, but Class 12 with Physics and Maths is mandatory (NIOS route available)",
+        "pivotFrom": "ANY degree, provided Class 12 had Physics and Maths"
+      }
+    },
+    {
+      "id": "c230-cabin-crew-aviation-service",
+      "name": "Cabin Crew / Aviation Service",
+      "domain": "Aviation",
+      "profile": {
+        "h": 66,
+        "o": 70,
+        "s": 66,
+        "m": 62,
+        "d": 60
+      },
+      "degree": {
+        "typical": "Class 12 or any degree",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Airline training academy after selection — no degree requirement",
+        "pivotFrom": "ANY degree, or Class 12"
+      }
+    },
+    {
+      "id": "c231-air-traffic-controller",
+      "name": "Air Traffic Controller",
+      "domain": "Aviation",
+      "profile": {
+        "h": 50,
+        "o": 80,
+        "s": 70,
+        "m": 78,
+        "d": 72
+      },
+      "degree": {
+        "typical": "B.Sc PCM or B.E./B.Tech + AAI exam",
+        "agnostic": "Partly",
+        "gate": "bridge",
+        "altEntryRoute": "AAI Junior Executive (ATC) exam — requires B.Sc with Physics and Maths, or any engineering degree",
+        "pivotFrom": "B.Sc PCM, BE/B.Tech any branch"
+      }
+    },
+    {
+      "id": "c232-merchant-navy-officer",
+      "name": "Merchant Navy Officer",
+      "domain": "Maritime",
+      "profile": {
+        "h": 55,
+        "o": 78,
+        "s": 68,
+        "m": 72,
+        "d": 70
+      },
+      "degree": {
+        "typical": "B.Sc Nautical Science / DNS / Marine Engg",
+        "agnostic": "Partly",
+        "gate": "bridge",
+        "altEntryRoute": "DNS (1 yr) after Class 12 PCM; GME (1 yr) is a graduate route specifically for BE Mechanical holders",
+        "pivotFrom": "Class 12 PCM; BE Mechanical via the GME route"
+      }
+    },
+    {
+      "id": "c233-drone-pilot-geospatial-surveyor",
+      "name": "Drone Pilot / Geospatial Surveyor",
+      "domain": "Emerging",
+      "profile": {
+        "h": 55,
+        "o": 74,
+        "s": 70,
+        "m": 74,
+        "d": 66
+      },
+      "degree": {
+        "typical": "Any degree + DGCA Remote Pilot Certificate",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "DGCA RPC requires only Class 10 — no degree of any kind is needed",
+        "pivotFrom": "ANY degree, or none"
+      }
+    },
+    {
+      "id": "c234-culinary-entrepreneur-cloud-kitchen-owner",
+      "name": "Culinary Entrepreneur / Cloud Kitchen Owner",
+      "domain": "Hospitality",
+      "profile": {
+        "h": 62,
+        "o": 68,
+        "s": 74,
+        "m": 68,
+        "d": 66
+      },
+      "degree": {
+        "typical": "No degree required",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "FSSAI licence plus cooking skill; a culinary diploma is optional",
+        "pivotFrom": "ANY degree, or none"
+      }
+    },
+    {
+      "id": "c235-baker-p-tissier",
+      "name": "Baker / Pâtissier",
+      "domain": "Hospitality",
+      "profile": {
+        "h": 55,
+        "o": 68,
+        "s": 76,
+        "m": 74,
+        "d": 64
+      },
+      "degree": {
+        "typical": "No degree required",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Bakery diploma (IHM, APCA) or a kitchen apprenticeship",
+        "pivotFrom": "ANY degree, or none"
+      }
+    },
+    {
+      "id": "c236-sommelier-beverage-specialist",
+      "name": "Sommelier / Beverage Specialist",
+      "domain": "Hospitality",
+      "profile": {
+        "h": 58,
+        "o": 70,
+        "s": 74,
+        "m": 74,
+        "d": 66
+      },
+      "degree": {
+        "typical": "No degree required",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "WSET Level 1–4 certification",
+        "pivotFrom": "ANY degree, or none"
+      }
+    },
+    {
+      "id": "c237-makeup-artist-cosmetologist",
+      "name": "Makeup Artist / Cosmetologist",
+      "domain": "Creative",
+      "profile": {
+        "h": 60,
+        "o": 64,
+        "s": 78,
+        "m": 74,
+        "d": 62
+      },
+      "degree": {
+        "typical": "No degree required",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Academy certification (Lakmé, VLCC, Pearl) plus a portfolio",
+        "pivotFrom": "ANY degree, or none"
+      }
+    },
+    {
+      "id": "c238-salon-spa-entrepreneur",
+      "name": "Salon & Spa Entrepreneur",
+      "domain": "Wellness",
+      "profile": {
+        "h": 62,
+        "o": 68,
+        "s": 72,
+        "m": 64,
+        "d": 64
+      },
+      "degree": {
+        "typical": "No degree required",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Beauty therapy certification plus a trade licence",
+        "pivotFrom": "ANY degree, or none"
+      }
+    },
+    {
+      "id": "c239-tattoo-artist",
+      "name": "Tattoo Artist",
+      "domain": "Creative",
+      "profile": {
+        "h": 55,
+        "o": 62,
+        "s": 80,
+        "m": 78,
+        "d": 60
+      },
+      "degree": {
+        "typical": "No degree required",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Apprenticeship under a licensed artist; entirely portfolio-led",
+        "pivotFrom": "ANY degree, or none"
+      }
+    },
+    {
+      "id": "c240-d2c-brand-founder",
+      "name": "D2C Brand Founder",
+      "domain": "Emerging",
+      "profile": {
+        "h": 62,
+        "o": 70,
+        "s": 76,
+        "m": 72,
+        "d": 68
+      },
+      "degree": {
+        "typical": "No degree required",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Build a product and sell online — there is no formal route",
+        "pivotFrom": "ANY degree, or none"
+      }
+    },
+    {
+      "id": "c241-professional-esports-player",
+      "name": "Professional Esports Player",
+      "domain": "Sports",
+      "profile": {
+        "h": 55,
+        "o": 60,
+        "s": 82,
+        "m": 78,
+        "d": 58
+      },
+      "degree": {
+        "typical": "No degree required",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Ranked-ladder performance leading to team tryouts",
+        "pivotFrom": "ANY degree, or none"
+      }
+    },
+    {
+      "id": "c242-sports-analytics-specialist",
+      "name": "Sports Analytics Specialist",
+      "domain": "Sports",
+      "profile": {
+        "h": 48,
+        "o": 74,
+        "s": 74,
+        "m": 80,
+        "d": 68
+      },
+      "degree": {
+        "typical": "Any degree + statistics & coding",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Python/R plus a public analysis portfolio; there is no formal route into this field",
+        "pivotFrom": "Statistics, Engineering, Economics, ANY degree"
+      }
+    },
+    {
+      "id": "c243-talent-manager-artist-manager",
+      "name": "Talent Manager / Artist Manager",
+      "domain": "Creative",
+      "profile": {
+        "h": 64,
+        "o": 68,
+        "s": 72,
+        "m": 68,
+        "d": 66
+      },
+      "degree": {
+        "typical": "Any bachelor's degree",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Agency assistant route; relationship-led with no formal gate",
+        "pivotFrom": "ANY degree"
+      }
+    },
+    {
+      "id": "c244-casting-director",
+      "name": "Casting Director",
+      "domain": "Creative",
+      "profile": {
+        "h": 62,
+        "o": 68,
+        "s": 74,
+        "m": 74,
+        "d": 66
+      },
+      "degree": {
+        "typical": "Any bachelor's degree",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Casting assistant apprenticeship",
+        "pivotFrom": "ANY degree"
+      }
+    },
+    {
+      "id": "c245-sound-engineer",
+      "name": "Sound Engineer",
+      "domain": "Creative",
+      "profile": {
+        "h": 52,
+        "o": 68,
+        "s": 76,
+        "m": 80,
+        "d": 64
+      },
+      "degree": {
+        "typical": "Any degree + audio diploma",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "SAE or audio-engineering diploma; studio assistant route",
+        "pivotFrom": "ANY degree, or none"
+      }
+    },
+    {
+      "id": "c246-cinematographer",
+      "name": "Cinematographer",
+      "domain": "Creative",
+      "profile": {
+        "h": 55,
+        "o": 66,
+        "s": 78,
+        "m": 80,
+        "d": 64
+      },
+      "degree": {
+        "typical": "BA Film or any degree",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "FTII/SRFTI cinematography (open to any graduate); camera-assistant apprenticeship",
+        "pivotFrom": "ANY degree"
+      }
+    },
+    {
+      "id": "c247-film-editor",
+      "name": "Film Editor",
+      "domain": "Creative",
+      "profile": {
+        "h": 50,
+        "o": 70,
+        "s": 76,
+        "m": 80,
+        "d": 64
+      },
+      "degree": {
+        "typical": "Any degree + editing skills",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Software skill plus a showreel; assistant-editor route",
+        "pivotFrom": "ANY degree, or none"
+      }
+    },
+    {
+      "id": "c248-production-designer-art-director",
+      "name": "Production Designer / Art Director",
+      "domain": "Creative",
+      "profile": {
+        "h": 58,
+        "o": 68,
+        "s": 76,
+        "m": 80,
+        "d": 66
+      },
+      "degree": {
+        "typical": "B.Des / BFA / B.Arch",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "Art-department assistant route; architecture and fine-arts graduates are common here",
+        "pivotFrom": "B.Arch, Fine Arts, Design, ANY degree"
+      }
+    },
+    {
+      "id": "c249-ev-battery-technology-specialist",
+      "name": "EV / Battery Technology Specialist",
+      "domain": "Emerging",
+      "profile": {
+        "h": 50,
+        "o": 76,
+        "s": 72,
+        "m": 78,
+        "d": 70
+      },
+      "degree": {
+        "typical": "B.Tech Mechanical/Electrical/Chemical",
+        "agnostic": "Partly",
+        "gate": "bridge",
+        "altEntryRoute": "M.Tech or a certification in EV technology; a common pivot from automotive or electronics",
+        "pivotFrom": "BE Mech/Elec/ECE/Chemical, M.Sc Chemistry"
+      }
+    },
+    {
+      "id": "c250-semiconductor-process-engineer",
+      "name": "Semiconductor Process Engineer",
+      "domain": "Emerging",
+      "profile": {
+        "h": 48,
+        "o": 80,
+        "s": 70,
+        "m": 80,
+        "d": 70
+      },
+      "degree": {
+        "typical": "B.Tech ECE/Electrical/Materials",
+        "agnostic": "Partly",
+        "gate": "bridge",
+        "altEntryRoute": "M.Tech VLSI or Microelectronics via GATE; India Semiconductor Mission training programmes",
+        "pivotFrom": "BE ECE/EEE/Materials/Chemical, M.Sc Physics"
+      }
+    },
+    {
+      "id": "c251-ai-ethics-policy-analyst",
+      "name": "AI Ethics & Policy Analyst",
+      "domain": "Emerging",
+      "profile": {
+        "h": 55,
+        "o": 74,
+        "s": 80,
+        "m": 78,
+        "d": 72
+      },
+      "degree": {
+        "typical": "Any degree + policy and tech literacy",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "MA Public Policy or a law degree combined with AI literacy; think-tank research route",
+        "pivotFrom": "Law, Philosophy, Engineering, Policy, ANY degree"
+      }
+    },
+    {
+      "id": "c252-agritech-business-manager",
+      "name": "Agritech Business Manager",
+      "domain": "Emerging",
+      "profile": {
+        "h": 58,
+        "o": 72,
+        "s": 74,
+        "m": 70,
+        "d": 68
+      },
+      "degree": {
+        "typical": "B.Sc Agriculture or any degree + MBA Agribusiness",
+        "agnostic": "Yes",
+        "gate": "open",
+        "altEntryRoute": "MBA Agribusiness (IIM-A FABM, IARI, NIAM) is open to ANY graduate",
+        "pivotFrom": "B.Sc Agriculture, BE, B.Com, ANY degree"
       }
     }
   ]

@@ -81,7 +81,13 @@ export async function narrateRecommendation(
   degree: Degree,
   profile: Profile,
   paths: CareerPath[],
-  psych?: { scores: PsychScores; matches: CareerMatch[]; motivationNote: string | null },
+  psych?: {
+    scores: PsychScores;
+    matches: CareerMatch[];
+    motivationNote: string | null;
+    /** Careers open to them regardless of their degree, best-scoring first. */
+    pivots?: CareerMatch[];
+  },
   brief?: string,
 ): Promise<string | null> {
   const top = paths[0];
@@ -95,8 +101,17 @@ export async function narrateRecommendation(
       (psych.motivationNote ? ` Motivation caveat you must mention in one honest line: "${psych.motivationNote}"` : '')
     : '';
 
+  // Most students arrive assuming their degree has already decided their life.
+  // These names are the counter-evidence, and they are computed — FAB is only
+  // allowed to repeat them, never to invent a route into one.
+  const pivotLine = psych?.pivots?.length
+    ? `\nCareers that fit them and are open to ANY graduate, so their degree is not a barrier: ` +
+      `${psych.pivots.slice(0, 3).map((m) => `${m.name} (${m.degree.altEntryRoute})`).join('; ')}. ` +
+      `Mention one of these in a single line as a door that is genuinely open to them, and name the route exactly as given. Do not invent qualifications.`
+    : '';
+
   const prompt = `You are FAB, a warm Indian friend who understands careers. A student named ${name} studying ${degree.name} just finished a long, honest conversation with you. A deterministic engine (not you) ranked their best-fit path as "${top.fieldName}" (${top.matchScore}% match), runner-up "${paths[1]?.fieldName ?? 'none'}".
-What we learned about them: ${profile.reflections.slice(0, 6).join('; ') || 'clear, decisive answers'}. Profile type: ${profile.topType}.${psychLine}${memoryBlock(brief)}
+What we learned about them: ${profile.reflections.slice(0, 6).join('; ') || 'clear, decisive answers'}. Profile type: ${profile.topType}.${psychLine}${pivotLine}${memoryBlock(brief)}
 Write FAB's recommendation message: warm, specific, confident, under 12 lines, no em dashes, no bullet lists, never call it an assessment or survey or quiz. Name the field, connect it to 2-3 specific things they actually told you, mention the runner-up in one honest line, and end by telling them their full ranked paths and 90-day roadmap are ready in their Best Fit Paths tab.`;
   return generate(prompt);
 }

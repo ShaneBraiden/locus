@@ -27,13 +27,11 @@ import {
   Cloud,
   CloudOff,
   LogOut,
-  PanelLeftClose,
-  PanelLeftOpen,
   X
 } from "lucide-react";
 
 import { Logo } from "./components/Logo";
-import { Button, Segmented } from "./ui";
+import { Button, Segmented, Wash } from "./ui";
 import AuthPage from "./components/auth/AuthPage";
 import { AuthUser, useAuth } from "./auth/AuthContext";
 import {
@@ -157,24 +155,45 @@ function Workspace({ user }: { user: AuthUser }) {
 
   // Navigation Tabs: 'home' | 'fab' | 'experiments' | 'paths' | 'journey'
   const [activeTab, setActiveTab] = useState<"home" | "fab" | "experiments" | "paths" | "journey">("home");
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => typeof window !== "undefined" ? window.innerWidth < 1024 : false);
+  // Navigation lives in a floating pill across the top rather than a left
+  // rail, so there is no collapsed/expanded state any more — only the mobile
+  // dropdown and the account popover.
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isAccountOpen, setIsAccountOpen] = useState(false);
+  const accountRef = useRef<HTMLDivElement | null>(null);
 
-  // The mobile drawer previously had no keyboard escape and let the page
-  // behind it scroll while open.
+  // Escape closes either overlay. The mobile dropdown also locks body scroll,
+  // which the old drawer never did.
+  useEffect(() => {
+    if (!isMobileMenuOpen && !isAccountOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      setIsMobileMenuOpen(false);
+      setIsAccountOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [isMobileMenuOpen, isAccountOpen]);
+
   useEffect(() => {
     if (!isMobileMenuOpen) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setIsMobileMenuOpen(false);
-    };
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    window.addEventListener("keydown", onKey);
     return () => {
       document.body.style.overflow = previousOverflow;
-      window.removeEventListener("keydown", onKey);
     };
   }, [isMobileMenuOpen]);
+
+  // Click-outside for the account popover. Pointerdown rather than click so
+  // the menu closes before whatever was clicked underneath reacts.
+  useEffect(() => {
+    if (!isAccountOpen) return;
+    const onPointerDown = (e: PointerEvent) => {
+      if (!accountRef.current?.contains(e.target as Node)) setIsAccountOpen(false);
+    };
+    window.addEventListener("pointerdown", onPointerDown);
+    return () => window.removeEventListener("pointerdown", onPointerDown);
+  }, [isAccountOpen]);
 
   // Sub-tabs inside Career Paths to allow rich drill-down views
   const [pathsSubTab, setPathsSubTab] = useState<"list" | "detail" | "universities" | "roadmap">("list");
@@ -970,254 +989,256 @@ function Workspace({ user }: { user: AuthUser }) {
     setIsMobileMenuOpen(false);
   };
 
-  const railed = isSidebarCollapsed && !isMobileMenuOpen;
+  /** Navigation pill button. Same treatment on desktop and inside the mobile
+   *  dropdown, so the two can never drift apart visually. */
+  const NavPill = ({
+    id,
+    label,
+    icon: Icon,
+    block,
+  }: {
+    id: (typeof NAV_ITEMS)[number]["id"];
+    label: string;
+    icon: React.ComponentType<{ className?: string }>;
+    block?: boolean;
+  }) => {
+    const active = activeTab === id;
+    return (
+      <button
+        key={id}
+        id={`nav-${id}`}
+        onClick={() => go(id)}
+        aria-current={active ? "page" : undefined}
+        className={`group inline-flex shrink-0 items-center gap-2 rounded-full text-sm font-bold transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+          block ? "w-full px-4 py-3" : "px-4 py-2.5"
+        } ${
+          active
+            ? "bg-moss-500 text-white shadow-soft"
+            : "text-ink-600 hover:bg-moss-500/10 hover:text-moss-700"
+        }`}
+      >
+        <Icon
+          className={`h-4 w-4 shrink-0 transition-transform duration-300 ${
+            active ? "" : "group-hover:scale-110"
+          }`}
+        />
+        <span className="truncate">{label}</span>
+      </button>
+    );
+  };
+
+  const syncState = isGuest
+    ? { Icon: CloudOff, text: "Saved on this device", tone: "text-ink-500" }
+    : isSyncing
+      ? { Icon: Loader2, text: "Syncing…", tone: "text-clay-700" }
+      : { Icon: Cloud, text: "Synced to your account", tone: "text-good-700" };
 
   return (
-    <div className="flex h-[100dvh] flex-col overflow-hidden bg-ink-50 font-sans text-ink-900">
+    // The shell is a fixed-height column with the nav floating over it. Top
+    // padding on this element — not on <main> — reserves the nav's space, so
+    // every view underneath keeps its own scroll and overflow behaviour
+    // untouched.
+    <div className="relative flex h-[100dvh] flex-col overflow-hidden bg-ink-50 pt-[4.75rem] font-sans text-ink-900 sm:pt-[5.5rem]">
 
-      {/* Mobile top bar — now on every tab. It used to render only on Home,
-          which left the other four tabs with no way to reach the menu. */}
-      <header className="flex h-14 shrink-0 items-center justify-between gap-2 border-b border-ink-100 bg-white px-3 md:hidden">
-        <div className="flex min-w-0 items-center gap-2.5">
-          <Logo className="h-8 w-8 rounded-lg" />
-          <div className="min-w-0 leading-none">
-            <span className="block truncate font-display text-lg font-bold tracking-tight text-ink-900">
-              northr
+      {/* Ambient wash behind the whole app. Fixed and enormous, so the page
+          reads as paper laid over a colour field rather than as a flat fill. */}
+      <Wash
+        shape={1}
+        tone="sand"
+        className="fixed -right-40 -top-40 h-[42rem] w-[42rem] opacity-40"
+      />
+
+      {/* ====================================================================
+          FLOATING NAVIGATION
+          A frosted pill that hovers over the content rather than a bar bolted
+          to the top of it. `pointer-events-none` on the wrapper with
+          `pointer-events-auto` on the pill lets the gap either side of it
+          stay clickable — otherwise the invisible full-width strip would eat
+          clicks meant for the view underneath.
+          ================================================================= */}
+      <header className="pointer-events-none absolute inset-x-0 top-0 z-50 px-3 pt-3 sm:px-6 sm:pt-4">
+        <nav
+          aria-label="Primary"
+          className="glass pointer-events-auto mx-auto flex w-full max-w-6xl items-center gap-2 rounded-full border border-ink-200/60 p-2 shadow-float sm:gap-3 sm:p-2.5"
+        >
+          {/* Brand */}
+          <button
+            onClick={() => go("home")}
+            aria-label="Northr home"
+            className="flex min-w-0 shrink-0 items-center gap-2.5 rounded-full pr-1 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105"
+          >
+            <Logo className="h-10 w-10 shrink-0 rounded-full" />
+            <span className="hidden min-w-0 text-left lg:block">
+              <span className="flex items-center gap-1.5">
+                <span className="truncate font-display text-lg font-bold leading-none text-ink-900">
+                  northr
+                </span>
+                <span className="shrink-0 rounded-full bg-moss-500/10 px-2 py-0.5 text-micro font-extrabold uppercase tracking-[0.14em] text-moss-700">
+                  Pro
+                </span>
+              </span>
             </span>
-          </div>
-        </div>
-        <div className="flex shrink-0 items-center gap-1">
-          <button
-            onClick={resetSession}
-            disabled={isProcessing}
-            title="Start fresh"
-            aria-label="Start fresh"
-            className="flex h-10 w-10 items-center justify-center rounded-lg text-ink-400 transition-colors hover:bg-ink-100 hover:text-ink-900 disabled:opacity-40"
-          >
-            <RefreshCw className={`h-4.5 w-4.5 ${isProcessing ? "animate-spin" : ""}`} />
           </button>
-          <button
-            onClick={() => setIsMobileMenuOpen(true)}
-            aria-label="Open menu"
-            aria-expanded={isMobileMenuOpen}
-            className="flex h-10 w-10 items-center justify-center rounded-lg text-ink-500 transition-colors hover:bg-ink-100 hover:text-ink-900"
-          >
-            <Menu className="h-5 w-5" />
-          </button>
-        </div>
-      </header>
 
-      {/* Error Warnings */}
-      <AnimatePresence>
-        {errorMessage && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="shrink-0 overflow-hidden"
-          >
-            <div
+          {/* Desktop tabs. Centred in the remaining space so the pill reads as
+              symmetrical even though the two end clusters differ in width. */}
+          <div className="hidden flex-1 items-center justify-center gap-1 md:flex">
+            {NAV_ITEMS.map((item) => (
+              <NavPill key={item.id} {...item} />
+            ))}
+          </div>
+
+          {/* Right cluster */}
+          <div className="ml-auto flex shrink-0 items-center gap-1 md:ml-0">
+            <button
+              onClick={resetSession}
+              disabled={isProcessing}
+              title="Start fresh"
+              aria-label="Start fresh"
+              className="flex h-10 w-10 items-center justify-center rounded-full text-ink-500 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105 hover:bg-moss-500/10 hover:text-moss-700 active:scale-95 disabled:opacity-40"
+            >
+              <RefreshCw className={`h-4 w-4 ${isProcessing ? "animate-spin" : ""}`} />
+            </button>
+
+            {/* Account popover */}
+            <div className="relative" ref={accountRef}>
+              <button
+                onClick={() => setIsAccountOpen((v) => !v)}
+                aria-haspopup="menu"
+                aria-expanded={isAccountOpen}
+                aria-label={`Account: ${displayName}`}
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-ink-900 text-xs font-extrabold uppercase text-moss-200 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105 active:scale-95"
+              >
+                {displayName.charAt(0)}
+              </button>
+
+              <AnimatePresence>
+                {isAccountOpen && (
+                  <motion.div
+                    role="menu"
+                    initial={{ opacity: 0, y: -8, scale: 0.96 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -8, scale: 0.96 }}
+                    transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                    className="glass absolute right-0 top-[calc(100%+0.75rem)] w-64 origin-top-right rounded-[2rem] border border-ink-200/60 p-4 shadow-e5"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-ink-900 text-sm font-extrabold uppercase text-moss-200">
+                        {displayName.charAt(0)}
+                      </span>
+                      <span className="min-w-0">
+                        <span className="block truncate text-sm font-bold leading-tight text-ink-900">
+                          {displayName}
+                        </span>
+                        <span className="mt-0.5 block truncate text-tiny text-ink-500">
+                          {user.email || "Guest session"}
+                        </span>
+                      </span>
+                    </div>
+
+                    <div
+                      className={`mt-4 flex items-center gap-1.5 text-micro font-extrabold uppercase tracking-[0.14em] ${syncState.tone}`}
+                    >
+                      <syncState.Icon
+                        className={`h-3 w-3 shrink-0 ${isSyncing && !isGuest ? "animate-spin" : ""}`}
+                      />
+                      <span className="truncate">{syncState.text}</span>
+                    </div>
+
+                    <Button
+                      className="mt-4"
+                      variant="ghost"
+                      size="sm"
+                      block
+                      onClick={() => {
+                        setIsAccountOpen(false);
+                        handleSignOut();
+                      }}
+                    >
+                      <LogOut className="h-3.5 w-3.5" />
+                      <span>Sign out</span>
+                    </Button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Mobile menu toggle */}
+            <button
+              onClick={() => setIsMobileMenuOpen((v) => !v)}
+              aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={isMobileMenuOpen}
+              className="flex h-10 w-10 items-center justify-center rounded-full text-ink-600 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105 hover:bg-moss-500/10 hover:text-moss-700 active:scale-95 md:hidden"
+            >
+              {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+          </div>
+        </nav>
+
+        {/* Mobile dropdown. A rounded panel that drops out of the pill rather
+            than a slide-in drawer — it belongs to the nav, so it should look
+            like it grew from it. */}
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+              className="glass pointer-events-auto mx-auto mt-2 w-full max-w-6xl space-y-1 rounded-[2rem] border border-ink-200/60 p-3 shadow-e5 md:hidden"
+            >
+              {NAV_ITEMS.map((item) => (
+                <NavPill key={item.id} {...item} block />
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Errors ride with the nav rather than pushing the layout down, so
+            nothing below them jumps when one appears. */}
+        <AnimatePresence>
+          {errorMessage && (
+            <motion.div
+              initial={{ opacity: 0, y: -12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
               role="alert"
-              className="flex items-center justify-center gap-3 border-b border-bad-100 bg-bad-50 px-4 py-2.5 text-xs font-semibold text-bad-700"
+              className="pointer-events-auto mx-auto mt-2 flex w-full max-w-6xl items-center justify-center gap-3 rounded-full border border-bad-300/60 bg-bad-50 px-5 py-2.5 text-xs font-bold text-bad-700 shadow-soft"
             >
               <span className="text-center text-pretty">{errorMessage}</span>
               <button
                 onClick={() => setErrorMessage(null)}
-                className="shrink-0 rounded-md px-2 py-1 text-micro font-bold uppercase tracking-wider text-bad-700 transition-colors hover:bg-bad-100"
+                className="shrink-0 rounded-full px-3 py-1 text-micro font-extrabold uppercase tracking-[0.14em] text-bad-700 transition-colors hover:bg-bad-100"
               >
                 Dismiss
               </button>
-            </div>
-          </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </header>
+
+      {/* Scrim behind the mobile dropdown. */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.28 }}
+            className="fixed inset-0 z-40 bg-ink-900/30 backdrop-blur-sm md:hidden"
+            onClick={() => setIsMobileMenuOpen(false)}
+            aria-hidden
+          />
         )}
       </AnimatePresence>
 
       {/* Main split-screen layout */}
       <div className="flex flex-1 overflow-hidden">
 
-        {/* SIDEBAR: LEFT COLUMN NAVIGATION */}
-        <>
-          {/* Mobile scrim */}
-          {isMobileMenuOpen && (
-            <div
-              className="fixed inset-0 z-40 bg-ink-950/50 backdrop-blur-sm md:hidden"
-              onClick={() => setIsMobileMenuOpen(false)}
-              aria-hidden
-            />
-          )}
-
-          {/* The old sidebar was `fixed … h-screen` even on desktop, so it
-              ignored the error banner and mobile bar above it and spilled past
-              the viewport. It is now a normal flex child on desktop (h-full)
-              and only goes fixed for the mobile drawer. */}
-          <nav
-            aria-label="Primary"
-            className={`fixed inset-y-0 left-0 z-50 flex h-full w-64 shrink-0 flex-col border-r border-ink-100 bg-white transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] md:relative md:inset-auto md:translate-x-0 md:transition-[width] ${
-              railed ? "md:w-rail" : "md:w-sidebar"
-            } ${isMobileMenuOpen ? "translate-x-0 shadow-e5" : "-translate-x-full"}`}
-          >
-
-            {/* Brand header */}
-            <div
-              className={`flex h-16 shrink-0 items-center gap-2 border-b border-ink-100 px-3 ${
-                railed ? "justify-center" : "justify-between"
-              }`}
-            >
-              <button
-                onClick={() => railed && setIsSidebarCollapsed(false)}
-                aria-label={railed ? "Expand sidebar" : "Northr"}
-                tabIndex={railed ? 0 : -1}
-                className={`flex min-w-0 items-center gap-2.5 rounded-lg ${
-                  railed ? "hover:opacity-80" : "cursor-default"
-                }`}
-              >
-                <Logo className="h-9 w-9 shrink-0 rounded-lg" />
-                {!railed && (
-                  <span className="min-w-0 text-left">
-                    <span className="flex items-center gap-1.5">
-                      <span className="truncate font-display text-lg font-bold tracking-tight text-ink-900">
-                        northr
-                      </span>
-                      <span className="shrink-0 rounded-full border border-gold-200 bg-gold-50 px-1.5 py-0.5 font-mono text-micro font-bold uppercase text-gold-700">
-                        Pro
-                      </span>
-                    </span>
-                    <span className="eyebrow mt-0.5 block truncate">Your Career OS</span>
-                  </span>
-                )}
-              </button>
-
-              {!railed && (
-                <button
-                  onClick={() => setIsSidebarCollapsed(true)}
-                  className="hidden h-9 w-9 shrink-0 items-center justify-center rounded-lg text-ink-400 transition-colors hover:bg-ink-100 hover:text-ink-900 md:flex"
-                  title="Collapse sidebar"
-                  aria-label="Collapse sidebar"
-                >
-                  <PanelLeftClose className="h-4.5 w-4.5" />
-                </button>
-              )}
-
-              <button
-                onClick={() => setIsMobileMenuOpen(false)}
-                aria-label="Close menu"
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-ink-400 transition-colors hover:bg-ink-100 hover:text-ink-900 md:hidden"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-
-            {/* Five identical buttons used to be copy-pasted here, 18 lines
-                each. One map over NAV_ITEMS now. */}
-            <div className={`scroll-slim flex-1 space-y-1 overflow-y-auto py-4 ${railed ? "px-2" : "px-3"}`}>
-              {NAV_ITEMS.map(({ id, label, icon: Icon }) => {
-                const active = activeTab === id;
-                return (
-                  <button
-                    key={id}
-                    id={`sidebar-${id}`}
-                    onClick={() => go(id)}
-                    title={railed ? label : undefined}
-                    aria-current={active ? "page" : undefined}
-                    className={`group relative flex w-full items-center rounded-lg py-2.5 text-sm font-semibold transition-colors duration-150 ${
-                      railed ? "justify-center px-0" : "gap-3 px-3"
-                    } ${
-                      active
-                        ? "bg-ink-900 text-white shadow-e2"
-                        : "text-ink-500 hover:bg-ink-50 hover:text-ink-900"
-                    }`}
-                  >
-                    {active && (
-                      <span className="absolute left-0 top-1/2 h-5 w-0.5 -translate-y-1/2 rounded-r-full bg-gold-400" />
-                    )}
-                    <Icon className={`h-4.5 w-4.5 shrink-0 ${active ? "text-gold-300" : ""}`} />
-                    {!railed && <span className="truncate">{label}</span>}
-                  </button>
-                );
-              })}
-
-              {railed && (
-                <button
-                  onClick={() => setIsSidebarCollapsed(false)}
-                  title="Expand sidebar"
-                  aria-label="Expand sidebar"
-                  className="mt-2 hidden h-10 w-full items-center justify-center rounded-lg text-ink-400 transition-colors hover:bg-ink-50 hover:text-ink-900 md:flex"
-                >
-                  <PanelLeftOpen className="h-4.5 w-4.5" />
-                </button>
-              )}
-            </div>
-            {/* Account, sync status, reset */}
-            <div className="mt-auto flex shrink-0 flex-col gap-3 border-t border-ink-100 bg-ink-25 p-3">
-              <div className={`flex items-center gap-2 ${railed ? "justify-center" : ""}`}>
-                <span
-                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-ink-900 text-xs font-bold uppercase text-gold-300"
-                  title={railed ? displayName : undefined}
-                >
-                  {displayName.charAt(0)}
-                </span>
-                {!railed && (
-                  <>
-                    <span className="min-w-0 flex-1">
-                      <span className="block truncate text-xs font-bold leading-tight text-ink-900">
-                        {displayName}
-                      </span>
-                      <span className="mt-0.5 block truncate font-mono text-micro text-ink-500">
-                        {user.email || "Guest session"}
-                      </span>
-                    </span>
-                    <button
-                      onClick={handleSignOut}
-                      title="Sign out"
-                      aria-label="Sign out"
-                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-ink-400 transition-colors hover:bg-bad-50 hover:text-bad-700"
-                    >
-                      <LogOut className="h-4 w-4" />
-                    </button>
-                  </>
-                )}
-              </div>
-
-              {!railed && (
-                <>
-                  <div className="flex items-center gap-1.5 font-mono text-micro font-bold uppercase tracking-wider text-ink-400">
-                    {isGuest ? (
-                      <>
-                        <CloudOff className="h-3 w-3 shrink-0" />
-                        <span className="truncate">Saved on this device</span>
-                      </>
-                    ) : isSyncing ? (
-                      <>
-                        <Loader2 className="h-3 w-3 shrink-0 animate-spin" />
-                        <span className="truncate">Syncing…</span>
-                      </>
-                    ) : (
-                      <>
-                        <Cloud className="h-3 w-3 shrink-0 text-good-500" />
-                        <span className="truncate">Synced to your account</span>
-                      </>
-                    )}
-                  </div>
-
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    block
-                    onClick={resetSession}
-                    disabled={isProcessing}
-                  >
-                    <RefreshCw className={`h-3.5 w-3.5 ${isProcessing ? "animate-spin" : ""}`} />
-                    <span>Start Fresh</span>
-                  </Button>
-                </>
-              )}
-            </div>
-          </nav>
-        </>
         {/* MAIN WORKSPACE AREA */}
         <main
-          className={`flex min-w-0 flex-1 flex-col bg-ink-50 ${
+          className={`relative flex min-w-0 flex-1 flex-col ${
             activeTab === "fab" ? "h-full overflow-hidden" : "scroll-slim overflow-y-auto"
           }`}
         >
@@ -1227,7 +1248,7 @@ function Workspace({ user }: { user: AuthUser }) {
               real back affordance and a horizontally scrolling segmented
               control. */}
           {activeTab === "paths" && pathsSubTab !== "list" && (
-            <div className="sticky top-0 z-20 flex shrink-0 flex-wrap items-center gap-3 border-b border-ink-100 bg-white/85 px-4 py-2.5 backdrop-blur-md sm:px-6">
+            <div className="glass sticky top-0 z-20 flex shrink-0 flex-wrap items-center gap-3 border-b border-ink-200/50 px-4 py-3 sm:px-6">
               <Button size="sm" variant="ghost" onClick={() => setPathsSubTab("list")}>
                 <ChevronRight className="h-3.5 w-3.5 rotate-180" />
                 <span>Hypotheses</span>
@@ -1491,15 +1512,15 @@ function Workspace({ user }: { user: AuthUser }) {
               onClick={() => go(id)}
               aria-current={active ? "page" : undefined}
               className={`flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-lg py-1.5 transition-colors ${
-                active ? "text-ink-900" : "text-ink-400 active:bg-ink-50"
+                active ? "text-ink-900" : "text-ink-500 active:bg-ink-50"
               }`}
             >
               <span
                 className={`flex h-7 w-full max-w-12 items-center justify-center rounded-full transition-colors ${
-                  active ? "bg-gold-100" : ""
+                  active ? "bg-moss-100" : ""
                 }`}
               >
-                <Icon className={`h-4.5 w-4.5 ${active ? "text-gold-700" : ""}`} />
+                <Icon className={`h-4.5 w-4.5 ${active ? "text-moss-700" : ""}`} />
               </span>
               <span className="w-full truncate text-center text-micro font-bold tracking-normal">
                 {short}
@@ -1517,7 +1538,7 @@ function Workspace({ user }: { user: AuthUser }) {
 function BootSplash() {
   return (
     <div className="flex h-[100dvh] w-full flex-col items-center justify-center gap-5 bg-ink-950">
-      <Logo className="h-14 w-14 rounded-2xl" />
+      <Logo className="h-14 w-14 rounded-full" />
       <div className="flex items-center gap-2 font-mono text-micro font-bold uppercase tracking-wider text-white/40">
         <Loader2 className="h-3.5 w-3.5 animate-spin" />
         <span>Restoring your session</span>

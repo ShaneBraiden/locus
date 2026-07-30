@@ -591,7 +591,7 @@ export default function ExperimentsView({
                         Home tab. The shell now shows it on every tab, so this
                         was a second, duplicate hamburger. */}
                     <div className="space-y-0.5 sm:space-y-1">
-                      <span className="block text-micro font-mono font-extrabold uppercase tracking-wider text-violet-600">Active Laboratory</span>
+                      <span className="block text-micro font-mono font-extrabold uppercase tracking-wider text-clay-600">Active Laboratory</span>
                       <h2 className="text-xl sm:text-2xl font-extrabold text-ink-900 tracking-tight">Experiments Hub</h2>
                     </div>
                   </div>
@@ -605,18 +605,18 @@ export default function ExperimentsView({
                         setSelectedFile(null);
                         setSelectedPreset(null);
                       }}
-                      className="flex items-center space-x-1 sm:space-x-1.5 bg-violet-50 hover:bg-violet-100 border border-violet-200 rounded-xl px-2.5 py-1.5 sm:px-3 sm:py-2 text-violet-700 shadow-e1 font-mono font-extrabold text-micro sm:text-xs transition-all cursor-pointer"
+                      className="flex items-center space-x-1 sm:space-x-1.5 bg-clay-50 hover:bg-clay-100 border border-clay-200 rounded-xl px-2.5 py-1.5 sm:px-3 sm:py-2 text-clay-700 shadow-e1 font-mono font-extrabold text-micro sm:text-xs transition-all cursor-pointer"
                     >
                       <Plus className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                       <span>DECODE CERTIFICATE</span>
                     </button>
 
                     <div className="flex items-center gap-2 shrink-0">
-                      <div className="flex items-center space-x-1 bg-gold-50 border border-gold-100 rounded-xl px-2 py-1 sm:px-3 sm:py-1.5 text-gold-700 shadow-e1 font-mono text-micro sm:text-xs">
-                        <Flame className="h-3 w-3 fill-gold-500 text-gold-500 animate-pulse" />
+                      <div className="flex items-center space-x-1 bg-moss-50 border border-moss-100 rounded-xl px-2 py-1 sm:px-3 sm:py-1.5 text-moss-700 shadow-e1 font-mono text-micro sm:text-xs">
+                        <Flame className="h-3 w-3 fill-moss-500 text-moss-500 animate-pulse" />
                         <span className="font-extrabold">{streak}D</span>
                       </div>
-                      <div className="flex items-center space-x-1 bg-violet-50 border border-violet-100 rounded-xl px-2 py-1 sm:px-3 sm:py-1.5 text-violet-600 shadow-e1 font-mono text-micro sm:text-xs">
+                      <div className="flex items-center space-x-1 bg-clay-50 border border-clay-100 rounded-xl px-2 py-1 sm:px-3 sm:py-1.5 text-clay-600 shadow-e1 font-mono text-micro sm:text-xs">
                         <Sparkles className="h-3 w-3 text-info-500 animate-pulse" />
                         <span className="font-extrabold">{xp}XP</span>
                       </div>
@@ -658,16 +658,16 @@ export default function ExperimentsView({
                        className="space-y-4 sm:space-y-6"
                      >
                        {/* Pilot AI Pick banner (Personalized Counselor tone) */}
-                       <div className="p-3.5 sm:p-5 bg-gradient-to-r from-violet-50 to-violet-50 border border-violet-100 rounded-2xl sm:rounded-3xl flex items-start gap-3 sm:space-x-4 shadow-e1 relative overflow-hidden group">
-                         <div className="absolute top-0 right-0 h-32 w-32 bg-violet-200/20 rounded-full blur-2xl pointer-events-none group-hover:scale-110 transition-transform duration-700" />
-                         <div className="h-9 w-9 sm:h-10 sm:w-10 bg-violet-100 rounded-xl sm:rounded-2xl flex items-center justify-center text-violet-600 shrink-0 shadow-e2">
+                       <div className="p-3.5 sm:p-5 bg-gradient-to-r from-clay-50 to-clay-50 border border-clay-100 rounded-2xl sm:rounded-3xl flex items-start gap-3 sm:space-x-4 shadow-e1 relative overflow-hidden group">
+                         <div className="absolute top-0 right-0 h-32 w-32 bg-clay-200/20 rounded-full blur-2xl pointer-events-none group-hover:scale-110 transition-transform duration-700" />
+                         <div className="h-9 w-9 sm:h-10 sm:w-10 bg-clay-100 rounded-xl sm:rounded-2xl flex items-center justify-center text-clay-600 shrink-0 shadow-e2">
                            <Sparkles className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
                          </div>
                          <div>
                            <span className="block text-xs sm:text-sm font-extrabold text-ink-950">Pilot Personalized Recommendation</span>
                            <span className="block text-micro sm:text-xs text-ink-600 font-semibold leading-relaxed mt-0.5 sm:mt-1">
                              {studentDegree ? (
-                               <>Engineered dynamically for your <strong className="text-violet-900 font-bold">{studentDegree}</strong> track and current academic workload. Let's strengthen concrete proof of your skills today.</>
+                               <>Engineered dynamically for your <strong className="text-clay-900 font-bold">{studentDegree}</strong> track and current academic workload. Let's strengthen concrete proof of your skills today.</>
                              ) : (
                                <>Engineered around your current academic workload. Tell FAB what you're studying to sharpen these picks further.</>
                              )}
@@ -678,8 +678,8 @@ export default function ExperimentsView({
                        {/* Today's Picks */}
                        <div className="space-y-3 sm:space-y-4">
                          <div className="flex justify-between items-center">
-                           <span className="text-micro font-mono font-extrabold uppercase text-ink-400 tracking-widest">Curated Challenges</span>
-                           <span className="text-xs font-extrabold text-violet-700 hover:underline cursor-pointer">View all ({todayPicks.length})</span>
+                           <span className="text-micro font-mono font-extrabold uppercase text-ink-500 tracking-widest">Curated Challenges</span>
+                           <span className="text-xs font-extrabold text-clay-700 hover:underline cursor-pointer">View all ({todayPicks.length})</span>
                          </div>
  
                          <div className="flex flex-col space-y-3 sm:space-y-4">
@@ -691,7 +691,7 @@ export default function ExperimentsView({
                                >
                                  <div className="flex items-start gap-3 sm:gap-4 min-w-0 flex-1">
                                    {/* Animated Skeleton Avatar */}
-                                   <div className="h-10 w-10 sm:h-14 sm:w-14 rounded-full bg-ink-200/50 animate-pulse shrink-0 border-2 border-violet-100/10 shadow-e1 self-center" />
+                                   <div className="h-10 w-10 sm:h-14 sm:w-14 rounded-full bg-ink-200/50 animate-pulse shrink-0 border-2 border-clay-100/10 shadow-e1 self-center" />
                                    
                                    <div className="min-w-0 flex-1 space-y-2">
                                      {/* Animated Skeleton Title */}
@@ -699,7 +699,7 @@ export default function ExperimentsView({
                                      {/* Animated Skeleton Description */}
                                      <div className="h-3 sm:h-3.5 bg-ink-100/70 animate-pulse rounded-md w-11/12 sm:w-5/6" />
                                      {/* Animated Skeleton Suggestion Bubble */}
-                                     <div className="h-8 bg-violet-50/10 border border-violet-100/5 animate-pulse rounded-xl sm:rounded-2xl w-full" />
+                                     <div className="h-8 bg-clay-50/10 border border-clay-100/5 animate-pulse rounded-xl sm:rounded-2xl w-full" />
                                    </div>
                                  </div>
                                  
@@ -717,30 +717,30 @@ export default function ExperimentsView({
                                      if (pick.expData) setSelectedExp(pick.expData);
                                      setCurrentScreen(2);
                                    }}
-                                   className="p-3 sm:p-5 bg-white border border-ink-100 rounded-2xl sm:rounded-[32px] hover:border-violet-300 hover:shadow-[0_8px_24px_rgba(76,29,149,0.06)] transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 group"
+                                   className="p-3 sm:p-5 bg-white border border-ink-100 rounded-2xl sm:rounded-[32px] hover:border-clay-300 hover:shadow-[0_8px_24px_rgba(76,29,149,0.06)] transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 group"
                                  >
                                    <div className="flex items-start gap-3 sm:gap-4 min-w-0 flex-1">
                                      <img 
                                        src={expImage} 
                                        alt={pick.title} 
-                                       className="h-10 w-10 sm:h-14 sm:w-14 rounded-full object-cover shrink-0 border-2 border-violet-100/50 shadow-e1 self-center"
+                                       className="h-10 w-10 sm:h-14 sm:w-14 rounded-full object-cover shrink-0 border-2 border-clay-100/50 shadow-e1 self-center"
                                        referrerPolicy="no-referrer"
                                      />
                                      <div className="min-w-0 flex-1 space-y-1">
-                                       <span className="block text-sm sm:text-base font-extrabold text-ink-900 leading-snug group-hover:text-violet-700 transition-colors break-words whitespace-normal">
+                                       <span className="block text-sm sm:text-base font-extrabold text-ink-900 leading-snug group-hover:text-clay-700 transition-colors break-words whitespace-normal">
                                          {pick.title}
                                        </span>
                                        <span className="block text-xs text-ink-600 font-semibold leading-relaxed break-words whitespace-normal">
                                          {pick.desc}
                                        </span>
-                                       <p className="text-micro text-ink-500 font-medium leading-relaxed mt-1 flex items-start bg-violet-50/50 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-xl sm:rounded-2xl border border-violet-100/30">
-                                         <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1.5 text-violet-600 shrink-0 mt-0.5" />
+                                       <p className="text-micro text-ink-500 font-medium leading-relaxed mt-1 flex items-start bg-clay-50/50 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-xl sm:rounded-2xl border border-clay-100/30">
+                                         <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1.5 text-clay-600 shrink-0 mt-0.5" />
                                          <span><strong>Pilot Suggestion:</strong> {pick.whyPilotSuggests}</span>
                                        </p>
                                      </div>
                                    </div>
                                    <span className="text-micro sm:text-xs font-mono text-ink-500 font-extrabold shrink-0 sm:ml-3 flex items-center bg-ink-50 border border-ink-100/80 px-2.5 py-1 sm:py-1.5 rounded-full self-start sm:self-center">
-                                    <Clock className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1 text-violet-700" />
+                                    <Clock className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1 text-clay-700" />
                                     {pick.duration}
                                    </span>
                                  </div>
@@ -764,11 +764,11 @@ export default function ExperimentsView({
                     >
                       <div className="p-3.5 sm:p-6 bg-white border border-ink-100 rounded-2xl sm:rounded-3xl flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6 shadow-e1">
                         <div className="flex items-start sm:items-center space-x-3 sm:space-x-4">
-                          <div className="h-9 w-9 sm:h-12 sm:w-12 bg-gold-50 border border-gold-100 rounded-xl sm:rounded-2xl flex items-center justify-center text-gold-700 shrink-0">
-                            <BookOpen className="h-4.5 w-4.5 sm:h-5 sm:w-5 text-gold-600" />
+                          <div className="h-9 w-9 sm:h-12 sm:w-12 bg-moss-50 border border-moss-100 rounded-xl sm:rounded-2xl flex items-center justify-center text-moss-700 shrink-0">
+                            <BookOpen className="h-4.5 w-4.5 sm:h-5 sm:w-5 text-moss-600" />
                           </div>
                           <div>
-                            <span className="block text-micro font-mono font-extrabold uppercase text-gold-600">IN PROGRESS LAB</span>
+                            <span className="block text-micro font-mono font-extrabold uppercase text-moss-600">IN PROGRESS LAB</span>
                             <span className="block text-xs sm:text-base font-extrabold text-ink-900 mt-0.5">Understand Phase I Clinical Trials</span>
                             <span className="block text-tiny text-ink-500 font-semibold mt-0.5">Strengthening research clinical structure and trial protocols.</span>
                           </div>
@@ -777,17 +777,17 @@ export default function ExperimentsView({
                         <div className="flex-1 md:max-w-xs space-y-1.5 sm:space-y-2 w-full">
                           <div className="flex justify-between text-micro sm:text-xs font-mono font-extrabold text-ink-500">
                             <span>40% Completed</span>
-                            <span className="text-violet-700">Step 2 of 5</span>
+                            <span className="text-clay-700">Step 2 of 5</span>
                           </div>
                           <div className="h-1.5 sm:h-2 w-full bg-ink-100 rounded-full overflow-hidden">
-                            <div className="h-full bg-gradient-to-r from-violet-700 to-info-500 rounded-full w-[40%]" />
+                            <div className="h-full bg-gradient-to-r from-clay-700 to-info-500 rounded-full w-[40%]" />
                           </div>
                           <button 
                             onClick={() => {
                               // Direct continuation trigger
                               setCurrentScreen(3);
                             }}
-                            className="mt-1.5 w-full py-1.5 sm:py-2 bg-violet-700 text-white hover:bg-violet-900 text-micro sm:text-tiny font-mono font-extrabold uppercase tracking-wider rounded-xl transition-all cursor-pointer text-center"
+                            className="mt-1.5 w-full py-1.5 sm:py-2 bg-clay-700 text-white hover:bg-clay-900 text-micro sm:text-tiny font-mono font-extrabold uppercase tracking-wider rounded-xl transition-all cursor-pointer text-center"
                           >
                             Resume Experiment Steps
                           </button>
@@ -808,7 +808,7 @@ export default function ExperimentsView({
                     >
                       {completedExperienceIds.length === 0 ? (
                         <div className="p-6 sm:p-10 text-center bg-ink-25 border border-dashed border-ink-200 rounded-2xl sm:rounded-3xl space-y-3">
-                          <div className="h-10 w-10 sm:h-12 sm:w-12 bg-ink-100 rounded-full flex items-center justify-center text-ink-400 mx-auto">
+                          <div className="h-10 w-10 sm:h-12 sm:w-12 bg-ink-100 rounded-full flex items-center justify-center text-ink-500 mx-auto">
                             <Award className="h-5 w-5 sm:h-6 sm:w-6" />
                           </div>
                           <h4 className="text-xs sm:text-sm font-extrabold text-ink-800">No laboratory credentials registered yet</h4>
@@ -839,7 +839,7 @@ export default function ExperimentsView({
                                   <div className="space-y-1 flex-1 min-w-0 pr-4">
                                     <div className="flex items-center space-x-2">
                                       <span className="text-micro sm:text-micro font-mono font-extrabold text-good-700 bg-good-50 border border-good-100 px-1.5 py-0.5 rounded-md uppercase">Verified Proof</span>
-                                      <span className="text-micro font-mono font-bold text-ink-400">ID: {id}</span>
+                                      <span className="text-micro font-mono font-bold text-ink-500">ID: {id}</span>
                                     </div>
                                     <h5 className="text-xs sm:text-sm font-extrabold text-ink-900 truncate">{title}</h5>
                                     <div className="flex flex-wrap gap-1 pt-1">
@@ -850,8 +850,8 @@ export default function ExperimentsView({
                                   </div>
                                   
                                   <div className="text-right shrink-0">
-                                    <span className="block text-micro sm:text-micro text-ink-400 font-mono font-bold uppercase">Subject Matrix</span>
-                                    <span className="block text-xs font-extrabold text-violet-700 font-mono mt-0.5">{subject}</span>
+                                    <span className="block text-micro sm:text-micro text-ink-500 font-mono font-bold uppercase">Subject Matrix</span>
+                                    <span className="block text-xs font-extrabold text-clay-700 font-mono mt-0.5">{subject}</span>
                                   </div>
                                 </div>
                               );
@@ -882,7 +882,7 @@ export default function ExperimentsView({
                   onClick={() => setCurrentScreen(1)}
                   className="px-3.5 py-1.5 sm:px-4 sm:py-2 border border-ink-200 rounded-xl hover:bg-ink-50 text-ink-600 text-tiny sm:text-xs font-bold transition-all cursor-pointer flex items-center space-x-1.5 bg-white"
                 >
-                  <ArrowLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-violet-600" />
+                  <ArrowLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-clay-600" />
                   <span>Back to Hub</span>
                 </button>
                 <div className="flex space-x-2">
@@ -893,7 +893,7 @@ export default function ExperimentsView({
                     onClick={() => setIsSaved(!isSaved)}
                     className="h-8 w-8 sm:h-9 sm:w-9 rounded-xl border border-ink-200 hover:bg-ink-50 flex items-center justify-center text-ink-500 transition-all bg-white"
                   >
-                    <Bookmark className={`h-3.5 w-3.5 sm:h-4 sm:w-4 ${isSaved ? "fill-violet-600 text-violet-600 border-violet-600" : ""}`} />
+                    <Bookmark className={`h-3.5 w-3.5 sm:h-4 sm:w-4 ${isSaved ? "fill-clay-600 text-clay-600 border-clay-600" : ""}`} />
                   </button>
                 </div>
               </div>
@@ -910,7 +910,7 @@ export default function ExperimentsView({
                       className="h-full w-full object-cover"
                       referrerPolicy="no-referrer"
                     />
-                    <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-md border border-ink-100 rounded-full p-2 sm:p-2.5 text-violet-700 shadow-e2">
+                    <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-md border border-ink-100 rounded-full p-2 sm:p-2.5 text-clay-700 shadow-e2">
                       {selectedExp?.subject === "Biomedical Sciences" ? (
                         <Dna className="h-4 sm:h-5 w-4 sm:w-5 animate-pulse" />
                       ) : selectedExp?.subject === "Psychology" ? (
@@ -922,7 +922,7 @@ export default function ExperimentsView({
                   </div>
 
                   <div className="space-y-1.5 sm:space-y-2 w-full">
-                    <span className="inline-block text-micro sm:text-micro font-mono font-extrabold uppercase bg-violet-100 text-violet-700 border border-violet-200 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full">
+                    <span className="inline-block text-micro sm:text-micro font-mono font-extrabold uppercase bg-clay-100 text-clay-700 border border-clay-200 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full">
                       PILOT SUGGESTED CHALLENGE
                     </span>
                     <h3 className="text-lg sm:text-xl md:text-2xl font-extrabold text-ink-900 tracking-tight leading-snug break-words whitespace-normal">
@@ -930,7 +930,7 @@ export default function ExperimentsView({
                     </h3>
                     <div className="flex items-center justify-center md:justify-start space-x-3 text-micro sm:text-tiny font-mono font-extrabold text-ink-500">
                       <span className="flex items-center">
-                        <Clock className="h-3.5 w-3.5 mr-1 text-violet-600" /> 
+                        <Clock className="h-3.5 w-3.5 mr-1 text-clay-600" /> 
                         {(() => {
                           const rawTime = selectedExp?.estimatedTime || "15 minutes";
                           let shortTime = "2 min";
@@ -944,15 +944,15 @@ export default function ExperimentsView({
                           return shortTime;
                         })()}
                       </span>
-                      <span className="flex items-center"><Compass className="h-3.5 w-3.5 mr-1 text-violet-600" /> {selectedExp?.careerPathway || "Communication"}</span>
+                      <span className="flex items-center"><Compass className="h-3.5 w-3.5 mr-1 text-clay-600" /> {selectedExp?.careerPathway || "Communication"}</span>
                     </div>
                   </div>
 
                   <div className="space-y-1.5 sm:space-y-2 pt-1 w-full">
-                    <span className="block text-micro sm:text-micro font-mono font-extrabold uppercase text-ink-400 tracking-wider">Skills Strengthened</span>
+                    <span className="block text-micro sm:text-micro font-mono font-extrabold uppercase text-ink-500 tracking-wider">Skills Strengthened</span>
                     <div className="flex flex-wrap gap-1 sm:gap-1.5 justify-center md:justify-start">
                       {(selectedExp?.primarySkills || ["Communication", "Simplicity", "Science Clarity"]).slice(0, 3).map(tag => (
-                        <span key={tag} className="text-micro sm:text-xs font-mono font-bold uppercase bg-violet-50 text-violet-700 border border-violet-100 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-xl">
+                        <span key={tag} className="text-micro sm:text-xs font-mono font-bold uppercase bg-clay-50 text-clay-700 border border-clay-100 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-xl">
                           {tag}
                         </span>
                       ))}
@@ -995,7 +995,7 @@ export default function ExperimentsView({
                   setInProgressStep(1);
                   setCurrentScreen(3);
                 }}
-                className="w-full bg-violet-700 hover:bg-violet-900 text-white py-3 sm:py-4 rounded-xl sm:rounded-2xl text-tiny sm:text-xs font-extrabold uppercase tracking-widest transition-all cursor-pointer shadow-e3 text-center block mt-4"
+                className="w-full bg-clay-700 hover:bg-clay-900 text-white py-3 sm:py-4 rounded-xl sm:rounded-2xl text-tiny sm:text-xs font-extrabold uppercase tracking-widest transition-all cursor-pointer shadow-e3 text-center block mt-4"
               >
                 Start Experiment Workspace
               </button>
@@ -1015,8 +1015,8 @@ export default function ExperimentsView({
               {/* Unified Workspace Header */}
               <div className="flex justify-between items-center border-b border-ink-100 pb-3 sm:pb-4">
                 <div className="space-y-1">
-                  <span className="inline-flex items-center space-x-1.5 text-micro font-mono font-extrabold uppercase text-violet-700 bg-violet-50 px-2.5 py-0.5 rounded-md border border-violet-100">
-                    <Activity className="h-3 w-3 animate-pulse text-violet-600" />
+                  <span className="inline-flex items-center space-x-1.5 text-micro font-mono font-extrabold uppercase text-clay-700 bg-clay-50 px-2.5 py-0.5 rounded-md border border-clay-100">
+                    <Activity className="h-3 w-3 animate-pulse text-clay-600" />
                     <span>MISSION PHASES • STEP {inProgressStep} OF 8</span>
                   </span>
                   <h4 className="text-base sm:text-lg md:text-xl font-extrabold text-ink-900 tracking-tight mt-1">
@@ -1044,8 +1044,8 @@ export default function ExperimentsView({
 
               {/* Core Dynamic Stepper Tracker (Segmented Progress Bar) */}
               <div className="space-y-2">
-                <div className="flex justify-between items-center text-micro font-mono font-extrabold text-ink-400">
-                  <span className="uppercase tracking-widest text-violet-700">Workspace Progression</span>
+                <div className="flex justify-between items-center text-micro font-mono font-extrabold text-ink-500">
+                  <span className="uppercase tracking-widest text-clay-700">Workspace Progression</span>
                   <span>{Math.round(((inProgressStep) / 8) * 100)}% Complete</span>
                 </div>
                 {/* Eight fixed columns left each segment ~28px wide on a
@@ -1069,9 +1069,9 @@ export default function ExperimentsView({
                         }}
                         className={`h-1.5 min-w-0 flex-1 rounded-full transition-all duration-300 sm:h-2 ${
                           isActive
-                            ? "bg-violet-600 ring-2 ring-violet-200"
+                            ? "bg-clay-600 ring-2 ring-clay-200"
                             : isDone
-                              ? "bg-gradient-to-r from-violet-500 to-violet-600"
+                              ? "bg-gradient-to-r from-clay-500 to-clay-600"
                               : "bg-ink-100 hover:bg-ink-200"
                         }`}
                         title={`Go to Step ${stepNum}`}
@@ -1094,8 +1094,8 @@ export default function ExperimentsView({
                       exit={{ opacity: 0, x: -10 }}
                       className="space-y-4"
                     >
-                      <div className="p-3 bg-violet-50/50 border border-violet-100 rounded-2xl">
-                        <p className="text-xs text-violet-900 font-semibold leading-relaxed">
+                      <div className="p-3 bg-clay-50/50 border border-clay-100 rounded-2xl">
+                        <p className="text-xs text-clay-900 font-semibold leading-relaxed">
                           🧑‍🏫 <strong>Pilot Guideline:</strong> Before you dive into action, build solid mental foundations. Review the core items and click to complete them once understood.
                         </p>
                       </div>
@@ -1103,7 +1103,7 @@ export default function ExperimentsView({
                       <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-start">
                         {/* Interactive check items */}
                         <div className="md:col-span-7 space-y-2">
-                          <span className="block text-micro font-mono font-extrabold uppercase text-ink-400 tracking-wider">Required Core Guidelines</span>
+                          <span className="block text-micro font-mono font-extrabold uppercase text-ink-500 tracking-wider">Required Core Guidelines</span>
                           {(selectedExp?.microtasks || [
                             "Identify the central hypothesis of this study or experiment.",
                             "Understand the target audience, demographic, or physiological variable.",
@@ -1117,18 +1117,18 @@ export default function ExperimentsView({
                                 onClick={() => setCompletedSubtasks(prev => ({ ...prev, [idx]: !prev[idx] }))}
                                 className={`flex items-start space-x-3.5 p-3.5 rounded-2xl border transition-all cursor-pointer ${
                                   isChecked 
-                                    ? "bg-ink-25/80 border-violet-50 text-ink-400" 
-                                    : "bg-white border-ink-200/80 hover:border-violet-300 hover:shadow-e1"
+                                    ? "bg-ink-25/80 border-clay-50 text-ink-500" 
+                                    : "bg-white border-ink-200/80 hover:border-clay-300 hover:shadow-e1"
                                 }`}
                               >
                                 <div className="pt-0.5 shrink-0">
                                   <div className={`h-4.5 w-4.5 rounded-full border flex items-center justify-center transition-all ${
-                                    isChecked ? "bg-violet-600 border-transparent text-white" : "border-ink-300 bg-white"
+                                    isChecked ? "bg-clay-600 border-transparent text-white" : "border-ink-300 bg-white"
                                   }`}>
                                     {isChecked && <Check className="h-3 w-3 stroke-[3]" />}
                                   </div>
                                 </div>
-                                <span className={`text-xs sm:text-sm font-bold flex-1 ${isChecked ? "line-through text-ink-400 font-semibold" : "text-ink-900"}`}>
+                                <span className={`text-xs sm:text-sm font-bold flex-1 ${isChecked ? "line-through text-ink-500 font-semibold" : "text-ink-900"}`}>
                                   {item}
                                 </span>
                               </div>
@@ -1140,23 +1140,23 @@ export default function ExperimentsView({
                         <div className="md:col-span-5 space-y-3 bg-ink-25 p-4 rounded-2xl border border-ink-100">
                           <span className="block text-micro font-mono font-extrabold text-ink-700 uppercase tracking-wider">Suggested Reading Deck</span>
                           <div className="space-y-2">
-                            <div className="flex items-center justify-between p-3 bg-white border border-ink-200 rounded-xl hover:border-violet-300 cursor-pointer transition-colors shadow-e1">
+                            <div className="flex items-center justify-between p-3 bg-white border border-ink-200 rounded-xl hover:border-clay-300 cursor-pointer transition-colors shadow-e1">
                               <div className="flex items-center space-x-2 min-w-0">
-                                <FileText className="h-4 w-4 text-violet-600 shrink-0" />
+                                <FileText className="h-4 w-4 text-clay-600 shrink-0" />
                                 <span className="text-tiny text-ink-800 font-semibold truncate">
                                   {selectedExp?.resources || "Simple research paper or guideline"}
                                 </span>
                               </div>
-                              <ExternalLink className="h-3 w-3 text-ink-400 shrink-0" />
+                              <ExternalLink className="h-3 w-3 text-ink-500 shrink-0" />
                             </div>
-                            <div className="flex items-center justify-between p-3 bg-white border border-ink-200 rounded-xl hover:border-violet-300 cursor-pointer transition-colors shadow-e1">
+                            <div className="flex items-center justify-between p-3 bg-white border border-ink-200 rounded-xl hover:border-clay-300 cursor-pointer transition-colors shadow-e1">
                               <div className="flex items-center space-x-2 min-w-0">
-                                <Users className="h-4 w-4 text-violet-600 shrink-0" />
+                                <Users className="h-4 w-4 text-clay-600 shrink-0" />
                                 <span className="text-tiny text-ink-800 font-semibold truncate">
                                   Subject Overview Lecture References
                                 </span>
                               </div>
-                              <ExternalLink className="h-3 w-3 text-ink-400 shrink-0" />
+                              <ExternalLink className="h-3 w-3 text-ink-500 shrink-0" />
                             </div>
                           </div>
                         </div>
@@ -1173,22 +1173,22 @@ export default function ExperimentsView({
                       exit={{ opacity: 0, x: -10 }}
                       className="space-y-4"
                     >
-                      <div className="p-4 bg-gold-50/40 border border-gold-200 rounded-2xl flex items-start space-x-3">
+                      <div className="p-4 bg-moss-50/40 border border-moss-200 rounded-2xl flex items-start space-x-3">
                         <span className="text-xl shrink-0">🛠️</span>
                         <div>
-                          <h5 className="text-xs sm:text-sm font-extrabold text-gold-950">Setup & Environmental Preparation</h5>
-                          <p className="text-tiny sm:text-xs text-gold-900 font-semibold mt-0.5 leading-relaxed">
+                          <h5 className="text-xs sm:text-sm font-extrabold text-moss-950">Setup & Environmental Preparation</h5>
+                          <p className="text-tiny sm:text-xs text-moss-900 font-semibold mt-0.5 leading-relaxed">
                             A great researcher prepares their tools before logging data. Set up your notebook, close distracting background browser tabs, and gather clinical study materials.
                           </p>
                         </div>
                       </div>
 
                       <div className="bg-white border border-ink-100 rounded-2xl p-4 space-y-3">
-                        <span className="block text-micro font-mono font-extrabold text-ink-400 uppercase tracking-widest">Active Workspace Preparation Checks</span>
+                        <span className="block text-micro font-mono font-extrabold text-ink-500 uppercase tracking-widest">Active Workspace Preparation Checks</span>
                         
                         <div className="flex items-center justify-between p-3 bg-ink-50/50 border border-ink-100 rounded-xl">
                           <div className="flex items-center space-x-2.5">
-                            <Sliders className="h-4 w-4 text-violet-700" />
+                            <Sliders className="h-4 w-4 text-clay-700" />
                             <span className="text-xs font-bold text-ink-800">Review Clinical/Experiment Subject Blueprint</span>
                           </div>
                           <span className="text-micro font-mono text-good-500 bg-good-50 px-2 py-0.5 rounded font-extrabold uppercase">READY</span>
@@ -1196,7 +1196,7 @@ export default function ExperimentsView({
 
                         <div className="flex items-center justify-between p-3 bg-ink-50/50 border border-ink-100 rounded-xl">
                           <div className="flex items-center space-x-2.5">
-                            <BookOpen className="h-4 w-4 text-violet-700" />
+                            <BookOpen className="h-4 w-4 text-clay-700" />
                             <span className="text-xs font-bold text-ink-800">Academic references & vocabulary logs locked</span>
                           </div>
                           <span className="text-micro font-mono text-good-500 bg-good-50 px-2 py-0.5 rounded font-extrabold uppercase">LOCKED ON DECK</span>
@@ -1215,7 +1215,7 @@ export default function ExperimentsView({
                       className="space-y-4"
                     >
                       <div className="space-y-1">
-                        <span className="block text-micro font-mono font-extrabold text-violet-600 uppercase tracking-wider">Tactile Logging Phase</span>
+                        <span className="block text-micro font-mono font-extrabold text-clay-600 uppercase tracking-wider">Tactile Logging Phase</span>
                         <h5 className="text-sm font-extrabold text-ink-900">Observe & Identify 3 Key Bottlenecks / Challenges</h5>
                         <p className="text-tiny sm:text-xs text-ink-500 font-semibold leading-relaxed">
                           What real-world issues, friction points, or core clinical bottlenecks did you observe? Be descriptive and clear.
@@ -1223,8 +1223,8 @@ export default function ExperimentsView({
                       </div>
 
                       <div className="space-y-3">
-                        <div className="p-3 bg-white border border-ink-200 rounded-xl space-y-1.5 focus-within:border-violet-300 transition-colors">
-                          <span className="block text-micro font-mono font-extrabold text-ink-400">PROBLEM/OBSERVATION 1</span>
+                        <div className="p-3 bg-white border border-ink-200 rounded-xl space-y-1.5 focus-within:border-clay-300 transition-colors">
+                          <span className="block text-micro font-mono font-extrabold text-ink-500">PROBLEM/OBSERVATION 1</span>
                           <input 
                             type="text"
                             value={problem1}
@@ -1234,8 +1234,8 @@ export default function ExperimentsView({
                           />
                         </div>
 
-                        <div className="p-3 bg-white border border-ink-200 rounded-xl space-y-1.5 focus-within:border-violet-300 transition-colors">
-                          <span className="block text-micro font-mono font-extrabold text-ink-400">PROBLEM/OBSERVATION 2</span>
+                        <div className="p-3 bg-white border border-ink-200 rounded-xl space-y-1.5 focus-within:border-clay-300 transition-colors">
+                          <span className="block text-micro font-mono font-extrabold text-ink-500">PROBLEM/OBSERVATION 2</span>
                           <input 
                             type="text"
                             value={problem2}
@@ -1245,8 +1245,8 @@ export default function ExperimentsView({
                           />
                         </div>
 
-                        <div className="p-3 bg-white border border-ink-200 rounded-xl space-y-1.5 focus-within:border-violet-300 transition-colors">
-                          <span className="block text-micro font-mono font-extrabold text-ink-400">PROBLEM/OBSERVATION 3</span>
+                        <div className="p-3 bg-white border border-ink-200 rounded-xl space-y-1.5 focus-within:border-clay-300 transition-colors">
+                          <span className="block text-micro font-mono font-extrabold text-ink-500">PROBLEM/OBSERVATION 3</span>
                           <input 
                             type="text"
                             value={problem3}
@@ -1269,7 +1269,7 @@ export default function ExperimentsView({
                       className="space-y-4"
                     >
                       <div className="space-y-1">
-                        <span className="block text-micro font-mono font-extrabold text-violet-600 uppercase tracking-wider">Strategic Response Phase</span>
+                        <span className="block text-micro font-mono font-extrabold text-clay-600 uppercase tracking-wider">Strategic Response Phase</span>
                         <h5 className="text-sm font-extrabold text-ink-900">Propose 3 Strategic Initiatives / Creative Solutions</h5>
                         <p className="text-tiny sm:text-xs text-ink-500 font-semibold leading-relaxed">
                           For each problem logged previously, propose a concrete, practical, and highly creative strategy.
@@ -1278,7 +1278,7 @@ export default function ExperimentsView({
 
                       <div className="space-y-3">
                         <div className="p-3 bg-ink-25 border border-ink-200 rounded-xl space-y-1">
-                          <span className="block text-micro font-mono font-extrabold text-ink-400">LINKED TO PROBLEM 1: "{problem1 || "Problem 1"}"</span>
+                          <span className="block text-micro font-mono font-extrabold text-ink-500">LINKED TO PROBLEM 1: "{problem1 || "Problem 1"}"</span>
                           <input 
                             type="text"
                             value={initiative1}
@@ -1289,7 +1289,7 @@ export default function ExperimentsView({
                         </div>
 
                         <div className="p-3 bg-ink-25 border border-ink-200 rounded-xl space-y-1">
-                          <span className="block text-micro font-mono font-extrabold text-ink-400">LINKED TO PROBLEM 2: "{problem2 || "Problem 2"}"</span>
+                          <span className="block text-micro font-mono font-extrabold text-ink-500">LINKED TO PROBLEM 2: "{problem2 || "Problem 2"}"</span>
                           <input 
                             type="text"
                             value={initiative2}
@@ -1300,7 +1300,7 @@ export default function ExperimentsView({
                         </div>
 
                         <div className="p-3 bg-ink-25 border border-ink-200 rounded-xl space-y-1">
-                          <span className="block text-micro font-mono font-extrabold text-ink-400">LINKED TO PROBLEM 3: "{problem3 || "Problem 3"}"</span>
+                          <span className="block text-micro font-mono font-extrabold text-ink-500">LINKED TO PROBLEM 3: "{problem3 || "Problem 3"}"</span>
                           <input 
                             type="text"
                             value={initiative3}
@@ -1322,8 +1322,8 @@ export default function ExperimentsView({
                       exit={{ opacity: 0, x: -10 }}
                       className="space-y-4"
                     >
-                      <div className="p-4 bg-violet-50/50 border border-violet-100 rounded-2xl flex items-center space-x-3">
-                        <Compass className="h-6 w-6 text-violet-700 shrink-0" />
+                      <div className="p-4 bg-clay-50/50 border border-clay-100 rounded-2xl flex items-center space-x-3">
+                        <Compass className="h-6 w-6 text-clay-700 shrink-0" />
                         <div>
                           <h5 className="text-xs sm:text-sm font-extrabold text-ink-900">Conduct Observational Trial Run</h5>
                           <p className="text-tiny sm:text-xs text-ink-600 font-semibold mt-0.5 leading-relaxed">
@@ -1333,15 +1333,15 @@ export default function ExperimentsView({
                       </div>
 
                       <div className="bg-white border border-ink-100 rounded-2xl p-4 space-y-3">
-                        <span className="block text-micro font-mono font-extrabold text-ink-400 uppercase tracking-widest">Interactive Practice Completion Checklist</span>
+                        <span className="block text-micro font-mono font-extrabold text-ink-500 uppercase tracking-widest">Interactive Practice Completion Checklist</span>
                         
                         <label className="flex items-center space-x-3 p-3 bg-ink-50/50 rounded-xl cursor-pointer hover:bg-ink-50 transition-colors">
-                          <input type="checkbox" className="h-4 w-4 rounded text-violet-600 focus:ring-violet-500 border-ink-300" />
+                          <input type="checkbox" className="h-4 w-4 rounded text-clay-600 focus:ring-clay-500 border-ink-300" />
                           <span className="text-xs font-bold text-ink-800">I have actively tested simplifying clinical or system protocols in conversation or writing.</span>
                         </label>
 
                         <label className="flex items-center space-x-3 p-3 bg-ink-50/50 rounded-xl cursor-pointer hover:bg-ink-50 transition-colors">
-                          <input type="checkbox" className="h-4 w-4 rounded text-violet-600 focus:ring-violet-500 border-ink-300" />
+                          <input type="checkbox" className="h-4 w-4 rounded text-clay-600 focus:ring-clay-500 border-ink-300" />
                           <span className="text-xs font-bold text-ink-800">I compared layperson outcomes vs traditional text density.</span>
                         </label>
                       </div>
@@ -1370,8 +1370,8 @@ export default function ExperimentsView({
                                 onClick={() => setActiveEmoji(idx)}
                                 className={`p-2.5 rounded-2xl border flex flex-col items-center justify-center transition-all cursor-pointer ${
                                   isActive 
-                                    ? "border-violet-500 bg-violet-50/50 scale-[1.03] shadow-e1" 
-                                    : "border-ink-200 bg-white hover:border-violet-200"
+                                    ? "border-clay-500 bg-clay-50/50 scale-[1.03] shadow-e1" 
+                                    : "border-ink-200 bg-white hover:border-clay-200"
                                 }`}
                               >
                                 <span className="text-xl sm:text-2xl">{item.emoji}</span>
@@ -1391,7 +1391,7 @@ export default function ExperimentsView({
                             onChange={e => setHardestText(e.target.value)}
                             placeholder="Type challenging points..."
                             rows={2}
-                            className="w-full bg-white border border-ink-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-ink-800 outline-none resize-none focus:border-violet-400 transition-colors"
+                            className="w-full bg-white border border-ink-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-ink-800 outline-none resize-none focus:border-clay-400 transition-colors"
                           />
                         </div>
 
@@ -1404,7 +1404,7 @@ export default function ExperimentsView({
                             onChange={e => setSurprisedText(e.target.value)}
                             placeholder="Type details..."
                             rows={2}
-                            className="w-full bg-white border border-ink-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-ink-800 outline-none resize-none focus:border-violet-400 transition-colors"
+                            className="w-full bg-white border border-ink-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-ink-800 outline-none resize-none focus:border-clay-400 transition-colors"
                           />
                         </div>
 
@@ -1419,7 +1419,7 @@ export default function ExperimentsView({
                                 onClick={() => setTryAgainChoice(option)}
                                 className={`flex-1 py-2 rounded-xl text-xs font-extrabold border cursor-pointer transition-all ${
                                   tryAgainChoice === option 
-                                    ? "bg-violet-700 border-transparent text-white shadow-e1" 
+                                    ? "bg-clay-700 border-transparent text-white shadow-e1" 
                                     : "bg-white border-ink-200 text-ink-600 hover:bg-ink-50"
                                 }`}
                               >
@@ -1444,11 +1444,11 @@ export default function ExperimentsView({
                       {isSyncing ? (
                         <div className="flex flex-col items-center justify-center py-12 space-y-4">
                           <div className="relative h-12 w-12 flex items-center justify-center">
-                            <div className="absolute inset-0 rounded-full border-4 border-violet-100 border-t-violet-700 animate-spin" />
-                            <Sparkles className="h-5 w-5 text-violet-700 animate-pulse" />
+                            <div className="absolute inset-0 rounded-full border-4 border-clay-100 border-t-clay-700 animate-spin" />
+                            <Sparkles className="h-5 w-5 text-clay-700 animate-pulse" />
                           </div>
                           <div className="text-center space-y-1 animate-pulse">
-                            <span className="text-xs font-mono font-extrabold text-violet-700 block uppercase">SECURE COGNITIVE SHAKEHAND</span>
+                            <span className="text-xs font-mono font-extrabold text-clay-700 block uppercase">SECURE COGNITIVE SHAKEHAND</span>
                             <p className="text-micro text-ink-500 font-bold">Verifying physical logs and mapping credential registry...</p>
                           </div>
                         </div>
@@ -1466,10 +1466,10 @@ export default function ExperimentsView({
 
                           {/* Summary Deck */}
                           <div className="border border-ink-100 rounded-2xl p-4 bg-ink-25 space-y-3 text-xs">
-                            <span className="block text-micro font-mono font-extrabold text-ink-400 uppercase tracking-wider">HARVESTED INSIGHT BLUEPRINT</span>
+                            <span className="block text-micro font-mono font-extrabold text-ink-500 uppercase tracking-wider">HARVESTED INSIGHT BLUEPRINT</span>
                             
                             <div className="space-y-1">
-                              <span className="block text-micro font-mono font-extrabold text-violet-700">STUDENT HARVESTS:</span>
+                              <span className="block text-micro font-mono font-extrabold text-clay-700">STUDENT HARVESTS:</span>
                               <p className="text-ink-800 font-bold leading-relaxed">{problem1 || "Simplified medical vocabulary communication logs."}</p>
                             </div>
 
@@ -1500,13 +1500,13 @@ export default function ExperimentsView({
                       {/* Award Graphic */}
                       <div className="relative h-16 w-16 sm:h-20 sm:w-20 flex items-center justify-center">
                         <div className="absolute inset-0 bg-info-100 rounded-full animate-ping" style={{ animationDuration: "3s" }} />
-                        <div className="h-12 w-12 sm:h-16 sm:w-16 bg-violet-700 rounded-full flex items-center justify-center text-white relative shadow-e4">
+                        <div className="h-12 w-12 sm:h-16 sm:w-16 bg-clay-700 rounded-full flex items-center justify-center text-white relative shadow-e4">
                           <Award className="h-6 w-6 sm:h-8 sm:w-8 relative z-10 animate-bounce" />
                         </div>
                       </div>
 
                       <div className="space-y-1">
-                        <span className="text-micro font-mono font-extrabold text-violet-700 bg-violet-50 border border-violet-200 px-2.5 py-0.5 rounded-full uppercase tracking-wider">Validated Proof Point Signed</span>
+                        <span className="text-micro font-mono font-extrabold text-clay-700 bg-clay-50 border border-clay-200 px-2.5 py-0.5 rounded-full uppercase tracking-wider">Validated Proof Point Signed</span>
                         <h3 className="text-lg sm:text-xl font-extrabold text-ink-950 tracking-tight leading-snug">
                           Mission Success & Registered!
                         </h3>
@@ -1515,14 +1515,14 @@ export default function ExperimentsView({
                         </p>
                       </div>
 
-                      <div className="inline-flex items-center space-x-1.5 px-3 py-1 bg-violet-50 border border-violet-100 text-violet-600 font-extrabold text-micro sm:text-xs rounded-full font-mono shadow-e1">
+                      <div className="inline-flex items-center space-x-1.5 px-3 py-1 bg-clay-50 border border-clay-100 text-clay-600 font-extrabold text-micro sm:text-xs rounded-full font-mono shadow-e1">
                         <Sparkles className="h-3.5 w-3.5 animate-pulse" />
                         <span>+50 XP REGISTERED & STREAK MAINTAINED</span>
                       </div>
 
                       <div className="p-3 bg-ink-50/50 border border-ink-100 rounded-2xl w-full">
-                        <span className="block text-micro font-mono text-ink-400 font-bold uppercase tracking-wider">SECURE CERTIFICATE HASH SHA-256</span>
-                        <span className="block text-micro font-mono text-violet-700 font-extrabold mt-0.5 truncate select-all">SHA256_LAB_PRO_902X73F0_VALID</span>
+                        <span className="block text-micro font-mono text-ink-500 font-bold uppercase tracking-wider">SECURE CERTIFICATE HASH SHA-256</span>
+                        <span className="block text-micro font-mono text-clay-700 font-extrabold mt-0.5 truncate select-all">SHA256_LAB_PRO_902X73F0_VALID</span>
                       </div>
                     </motion.div>
                   )}
@@ -1559,7 +1559,7 @@ export default function ExperimentsView({
                     onClick={() => {
                       setInProgressStep(prev => prev + 1);
                     }}
-                    className="flex-1 bg-violet-700 hover:bg-violet-900 text-white text-xs font-extrabold py-3 rounded-xl sm:rounded-2xl uppercase tracking-wider transition-all cursor-pointer text-center shadow-e2"
+                    className="flex-1 bg-clay-700 hover:bg-clay-900 text-white text-xs font-extrabold py-3 rounded-xl sm:rounded-2xl uppercase tracking-wider transition-all cursor-pointer text-center shadow-e2"
                   >
                     Next Phase
                   </button>
@@ -1575,7 +1575,7 @@ export default function ExperimentsView({
                       }, 2000);
                     }}
                     disabled={activeEmoji === null}
-                    className="flex-1 bg-violet-700 hover:bg-violet-900 text-white text-xs font-extrabold py-3 rounded-xl sm:rounded-2xl uppercase tracking-wider transition-all cursor-pointer text-center shadow-e2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex-1 bg-clay-700 hover:bg-clay-900 text-white text-xs font-extrabold py-3 rounded-xl sm:rounded-2xl uppercase tracking-wider transition-all cursor-pointer text-center shadow-e2 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Submit & Verify
                   </button>
@@ -1628,7 +1628,7 @@ export default function ExperimentsView({
                       }
                       setInProgressStep(8);
                     }}
-                    className="flex-1 bg-violet-700 hover:bg-violet-900 text-white text-xs font-extrabold py-3 rounded-xl sm:rounded-2xl uppercase tracking-wider transition-all cursor-pointer text-center shadow-e2"
+                    className="flex-1 bg-clay-700 hover:bg-clay-900 text-white text-xs font-extrabold py-3 rounded-xl sm:rounded-2xl uppercase tracking-wider transition-all cursor-pointer text-center shadow-e2"
                   >
                     Accept Verified Proof
                   </button>
@@ -1640,7 +1640,7 @@ export default function ExperimentsView({
                       setCurrentScreen(1);
                       setInProgressStep(1);
                     }}
-                    className="flex-1 bg-violet-700 hover:bg-violet-900 text-white text-xs font-extrabold py-3 rounded-xl sm:rounded-2xl uppercase tracking-wider transition-all cursor-pointer text-center shadow-e2"
+                    className="flex-1 bg-clay-700 hover:bg-clay-900 text-white text-xs font-extrabold py-3 rounded-xl sm:rounded-2xl uppercase tracking-wider transition-all cursor-pointer text-center shadow-e2"
                   >
                     Return to Hub Dashboard
                   </button>
@@ -1677,28 +1677,28 @@ export default function ExperimentsView({
                 
                 {/* Left block: brain icon & matching */}
                 <div className="md:col-span-5 flex flex-col items-center md:items-start text-center md:text-left space-y-3.5">
-                  <div className="h-16 w-16 sm:h-20 sm:w-20 bg-violet-50 rounded-2xl flex items-center justify-center border border-violet-100 shadow-e2">
-                    <Brain className="h-8 w-8 sm:h-10 sm:w-10 text-violet-600 animate-pulse" />
+                  <div className="h-16 w-16 sm:h-20 sm:w-20 bg-clay-50 rounded-2xl flex items-center justify-center border border-clay-100 shadow-e2">
+                    <Brain className="h-8 w-8 sm:h-10 sm:w-10 text-clay-600 animate-pulse" />
                   </div>
 
                   <div className="space-y-1.5 w-full">
-                    <span className="inline-block text-micro sm:text-micro font-extrabold uppercase bg-violet-100 text-violet-700 border border-violet-200 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full font-mono">
+                    <span className="inline-block text-micro sm:text-micro font-extrabold uppercase bg-clay-100 text-clay-700 border border-clay-200 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full font-mono">
                       High Match
                     </span>
                     <h4 className="text-lg sm:text-xl md:text-2xl font-extrabold text-ink-900 tracking-tight leading-snug">
                       Observe a Neuro Lecture Pattern
                     </h4>
                     <div className="flex items-center justify-center md:justify-start space-x-3 text-tiny font-mono font-bold text-ink-500">
-                      <span className="flex items-center"><Clock className="h-3.5 w-3.5 mr-1 text-violet-600" /> 15 min</span>
-                      <span className="flex items-center"><Compass className="h-3.5 w-3.5 mr-1 text-violet-600" /> Observation</span>
+                      <span className="flex items-center"><Clock className="h-3.5 w-3.5 mr-1 text-clay-600" /> 15 min</span>
+                      <span className="flex items-center"><Compass className="h-3.5 w-3.5 mr-1 text-clay-600" /> Observation</span>
                     </div>
                   </div>
 
                   <div className="space-y-1 pt-1 w-full">
-                    <span className="block text-micro sm:text-micro font-extrabold uppercase text-ink-400 tracking-wider font-mono font-bold">Skills you'll build</span>
+                    <span className="block text-micro sm:text-micro font-extrabold uppercase text-ink-500 tracking-wider font-mono font-bold">Skills you'll build</span>
                     <div className="flex flex-wrap gap-1 sm:gap-1.5 justify-center md:justify-start">
                       {["Attention", "Pattern Recognition", "Curiosity"].map(tag => (
-                        <span key={tag} className="text-micro sm:text-xs font-mono font-bold uppercase bg-violet-50 text-violet-700 border border-violet-100 px-2 py-0.5 sm:px-3 sm:py-1 rounded-lg">
+                        <span key={tag} className="text-micro sm:text-xs font-mono font-bold uppercase bg-clay-50 text-clay-700 border border-clay-100 px-2 py-0.5 sm:px-3 sm:py-1 rounded-lg">
                           {tag}
                         </span>
                       ))}
@@ -1717,7 +1717,7 @@ export default function ExperimentsView({
                       <span>33% Completed</span>
                     </div>
                     <div className="h-1.5 sm:h-2 w-full bg-ink-100 rounded-full overflow-hidden">
-                      <div className="h-full bg-violet-700 rounded-full w-[33%]" />
+                      <div className="h-full bg-clay-700 rounded-full w-[33%]" />
                     </div>
                   </div>
 
@@ -1737,7 +1737,7 @@ export default function ExperimentsView({
               <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3 pt-3 sm:pt-4 border-t border-ink-100 mt-4">
                 <button
                   onClick={() => setCurrentScreen(3)}
-                  className="flex-1 bg-violet-700 hover:bg-violet-900 text-white py-3 rounded-xl sm:rounded-2xl text-xs font-extrabold uppercase tracking-widest transition-all cursor-pointer text-center block shadow-e1"
+                  className="flex-1 bg-clay-700 hover:bg-clay-900 text-white py-3 rounded-xl sm:rounded-2xl text-xs font-extrabold uppercase tracking-widest transition-all cursor-pointer text-center block shadow-e1"
                 >
                   Continue Experiment
                 </button>
@@ -1763,7 +1763,7 @@ export default function ExperimentsView({
                 setSelectedFile(null);
                 setSelectedPreset(null);
               }}
-              className="h-12 w-12 sm:h-14 sm:w-14 bg-violet-700 text-white hover:bg-violet-900 rounded-full shadow-e4 flex items-center justify-center cursor-pointer transition-all hover:scale-110 active:scale-95 group focus:outline-none"
+              className="h-12 w-12 sm:h-14 sm:w-14 bg-clay-700 text-white hover:bg-clay-900 rounded-full shadow-e4 flex items-center justify-center cursor-pointer transition-all hover:scale-110 active:scale-95 group focus:outline-none"
               title="Convert Certificate"
             >
               <Plus className="h-5 w-5 sm:h-6 sm:w-6 stroke-[3]" />
@@ -1795,7 +1795,7 @@ export default function ExperimentsView({
               {/* Modal Header */}
               <div className="p-6 border-b border-ink-100 flex items-center justify-between bg-ink-50/50">
                 <div className="flex items-center space-x-3">
-                  <div className="h-10 w-10 bg-violet-100 rounded-2xl flex items-center justify-center text-violet-700">
+                  <div className="h-10 w-10 bg-clay-100 rounded-2xl flex items-center justify-center text-clay-700">
                     <Award className="h-5 w-5" />
                   </div>
                   <div>
@@ -1832,8 +1832,8 @@ export default function ExperimentsView({
                       onDrop={handleDrop}
                       className={`relative border-2 border-dashed rounded-2xl p-8 text-center flex flex-col items-center justify-center transition-all cursor-pointer ${
                         dragActive 
-                          ? "border-violet-500 bg-violet-50/40 scale-[0.99]" 
-                          : "border-ink-200 bg-ink-50/50 hover:border-violet-300 hover:bg-violet-50/10"
+                          ? "border-clay-500 bg-clay-50/40 scale-[0.99]" 
+                          : "border-ink-200 bg-ink-50/50 hover:border-clay-300 hover:bg-clay-50/10"
                       }`}
                     >
                       <input
@@ -1842,8 +1842,8 @@ export default function ExperimentsView({
                         onChange={handleFileChange}
                         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                       />
-                      <div className="h-14 w-14 bg-white border border-ink-100 rounded-full flex items-center justify-center text-ink-400 group-hover:text-violet-600 shadow-e1 mb-3">
-                        <Upload className="h-6 w-6 text-violet-600 animate-bounce" />
+                      <div className="h-14 w-14 bg-white border border-ink-100 rounded-full flex items-center justify-center text-ink-500 group-hover:text-clay-600 shadow-e1 mb-3">
+                        <Upload className="h-6 w-6 text-clay-600 animate-bounce" />
                       </div>
                       <span className="text-sm font-extrabold text-ink-800">
                         Drag and drop your certificate file here
@@ -1851,7 +1851,7 @@ export default function ExperimentsView({
                       <span className="text-xs text-ink-500 font-semibold mt-1">
                         Supports PDF, PNG, or JPEG up to 10MB
                       </span>
-                      <button className="mt-4 px-4 py-2 bg-violet-50 hover:bg-violet-100 text-violet-700 text-xs font-extrabold rounded-xl border border-violet-100 transition-colors">
+                      <button className="mt-4 px-4 py-2 bg-clay-50 hover:bg-clay-100 text-clay-700 text-xs font-extrabold rounded-xl border border-clay-100 transition-colors">
                         Browse files
                       </button>
                     </div>
@@ -1859,7 +1859,7 @@ export default function ExperimentsView({
                     {/* Verified Presets Section */}
                     <div className="space-y-3">
                       <div className="flex items-center space-x-2">
-                        <Zap className="h-4 w-4 text-violet-600 fill-gold-600" />
+                        <Zap className="h-4 w-4 text-clay-600 fill-moss-600" />
                         <span className="text-xs font-extrabold uppercase text-ink-800 tracking-wider">Don't have a file handy? Try a verified preset:</span>
                       </div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -1867,14 +1867,14 @@ export default function ExperimentsView({
                           <div
                             key={preset.id}
                             onClick={() => startParsing(preset)}
-                            className="p-4 bg-white border border-ink-200 rounded-xl hover:border-violet-300 hover:shadow-e1 transition-all cursor-pointer flex items-center justify-between group"
+                            className="p-4 bg-white border border-ink-200 rounded-xl hover:border-clay-300 hover:shadow-e1 transition-all cursor-pointer flex items-center justify-between group"
                           >
                             <div className="flex items-center space-x-3">
-                              <div className="h-10 w-10 bg-violet-50 rounded-xl flex items-center justify-center text-violet-700 shrink-0 font-bold text-sm group-hover:bg-violet-100 transition-colors">
+                              <div className="h-10 w-10 bg-clay-50 rounded-xl flex items-center justify-center text-clay-700 shrink-0 font-bold text-sm group-hover:bg-clay-100 transition-colors">
                                 🎓
                               </div>
                               <div className="text-left">
-                                <span className="block text-sm font-extrabold text-ink-900 leading-snug group-hover:text-violet-700 transition-colors">
+                                <span className="block text-sm font-extrabold text-ink-900 leading-snug group-hover:text-clay-700 transition-colors">
                                   {preset.title}
                                 </span>
                                 <span className="block text-micro text-ink-500 font-bold uppercase mt-0.5 font-mono">
@@ -1882,7 +1882,7 @@ export default function ExperimentsView({
                                 </span>
                               </div>
                             </div>
-                            <ChevronRight className="h-4 w-4 text-ink-400 group-hover:translate-x-1 transition-transform" />
+                            <ChevronRight className="h-4 w-4 text-ink-500 group-hover:translate-x-1 transition-transform" />
                           </div>
                         ))}
                       </div>
@@ -1894,8 +1894,8 @@ export default function ExperimentsView({
                 {certStep === 2 && (
                   <div className="space-y-6 py-8 flex flex-col items-center">
                     <div className="relative h-20 w-20 flex items-center justify-center">
-                      <div className="absolute inset-0 rounded-full border-4 border-violet-100 border-t-violet-700 animate-spin" />
-                      <Cpu className="h-8 w-8 text-violet-700 animate-pulse" />
+                      <div className="absolute inset-0 rounded-full border-4 border-clay-100 border-t-clay-700 animate-spin" />
+                      <Cpu className="h-8 w-8 text-clay-700 animate-pulse" />
                     </div>
 
                     <div className="text-center space-y-1.5 w-full max-w-md">
@@ -1906,7 +1906,7 @@ export default function ExperimentsView({
                       </div>
                       <div className="h-2.5 w-full bg-ink-100 rounded-full overflow-hidden border border-ink-200/50 shadow-inner">
                         <div 
-                          className="h-full bg-gradient-to-r from-info-500 to-violet-600 rounded-full transition-all duration-100" 
+                          className="h-full bg-gradient-to-r from-info-500 to-clay-600 rounded-full transition-all duration-100" 
                           style={{ width: `${parsingProgress}%` }}
                         />
                       </div>
@@ -1921,7 +1921,7 @@ export default function ExperimentsView({
                       <div className="space-y-1.5 h-44 overflow-y-auto text-tiny text-ink-300 leading-normal scroll-slim">
                         {parsingLog.map((log, i) => (
                           <div key={i} className="flex items-start space-x-1">
-                            <span className="text-violet-400 shrink-0 select-none">❯</span>
+                            <span className="text-clay-400 shrink-0 select-none">❯</span>
                             <span className="font-semibold">{log}</span>
                           </div>
                         ))}
@@ -1935,22 +1935,22 @@ export default function ExperimentsView({
                   <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
                     
                     {/* Left: Certificate Digital Replica */}
-                    <div className="md:col-span-5 bg-gradient-to-br from-violet-50 to-info-50/50 p-6 rounded-2xl border border-violet-100/80 shadow-e1 flex flex-col justify-between min-h-[340px] text-center relative overflow-hidden">
-                      <div className="absolute top-0 right-0 h-24 w-24 bg-violet-200/20 rounded-full blur-xl pointer-events-none" />
+                    <div className="md:col-span-5 bg-gradient-to-br from-clay-50 to-info-50/50 p-6 rounded-2xl border border-clay-100/80 shadow-e1 flex flex-col justify-between min-h-[340px] text-center relative overflow-hidden">
+                      <div className="absolute top-0 right-0 h-24 w-24 bg-clay-200/20 rounded-full blur-xl pointer-events-none" />
                       
                       <div className="flex justify-between items-start">
                         <span className="text-2xl">🎓</span>
-                        <span className="text-micro font-mono font-bold uppercase bg-white/80 border border-violet-200 px-2 py-0.5 rounded-md text-violet-700">
+                        <span className="text-micro font-mono font-bold uppercase bg-white/80 border border-clay-200 px-2 py-0.5 rounded-md text-clay-700">
                           Verified SHA256
                         </span>
                       </div>
 
                       <div className="space-y-3 py-6 relative z-10">
-                        <span className="block text-micro font-extrabold uppercase text-violet-700 font-mono tracking-widest">Certificate of Achievement</span>
+                        <span className="block text-micro font-extrabold uppercase text-clay-700 font-mono tracking-widest">Certificate of Achievement</span>
                         <h4 className="text-xl font-extrabold text-ink-950 leading-tight">
                           {selectedPreset.title}
                         </h4>
-                        <div className="h-[1px] w-12 bg-violet-200 mx-auto" />
+                        <div className="h-[1px] w-12 bg-clay-200 mx-auto" />
                         <span className="block text-tiny text-ink-500 font-bold">
                           Successfully verified for:
                         </span>
@@ -1959,7 +1959,7 @@ export default function ExperimentsView({
                         </span>
                       </div>
 
-                      <div className="flex items-center justify-between border-t border-violet-100/50 pt-4 mt-auto">
+                      <div className="flex items-center justify-between border-t border-clay-100/50 pt-4 mt-auto">
                         <div className="text-left text-micro font-bold text-ink-500 font-mono">
                           <span className="block">ISSUER:</span>
                           <span className="block text-ink-900 uppercase font-bold">{selectedPreset.issuer}</span>
@@ -1974,7 +1974,7 @@ export default function ExperimentsView({
                     {/* Right: Mapped signals and Claim Button */}
                     <div className="md:col-span-7 space-y-5 text-left">
                       <div className="space-y-1">
-                        <span className="inline-block text-micro font-extrabold uppercase bg-violet-100 text-violet-700 border border-violet-200 px-2.5 py-1 rounded-full font-mono">
+                        <span className="inline-block text-micro font-extrabold uppercase bg-clay-100 text-clay-700 border border-clay-200 px-2.5 py-1 rounded-full font-mono">
                           Decoding Complete
                         </span>
                         <h4 className="text-xl font-extrabold text-ink-900 tracking-tight">Verify Mapped Skills</h4>
@@ -1993,21 +1993,21 @@ export default function ExperimentsView({
                               onClick={() => setSelectedSkillsToConvert(prev => ({ ...prev, [skill]: !prev[skill] }))}
                               className={`flex items-center justify-between p-3 rounded-xl border transition-all cursor-pointer ${
                                 isChecked 
-                                  ? "bg-violet-50/20 border-violet-200 text-ink-900" 
-                                  : "bg-white border-ink-200 text-ink-400 hover:border-violet-200"
+                                  ? "bg-clay-50/20 border-clay-200 text-ink-900" 
+                                  : "bg-white border-ink-200 text-ink-500 hover:border-clay-200"
                               }`}
                             >
                               <div className="flex items-center space-x-3">
                                 <div className={`h-5 w-5 rounded-md border flex items-center justify-center transition-all ${
                                   isChecked 
-                                    ? "bg-violet-700 border-transparent text-white" 
+                                    ? "bg-clay-700 border-transparent text-white" 
                                     : "border-ink-300 bg-white"
                                 }`}>
                                   {isChecked && <Check className="h-3.5 w-3.5 stroke-[3]" />}
                                 </div>
                                 <span className="text-xs font-bold">{skill}</span>
                               </div>
-                              <span className="text-micro font-mono font-bold text-violet-700 bg-violet-50 px-2 py-0.5 rounded-full uppercase border border-violet-100">
+                              <span className="text-micro font-mono font-bold text-clay-700 bg-clay-50 px-2 py-0.5 rounded-full uppercase border border-clay-100">
                                 Verified Point
                               </span>
                             </div>
@@ -2032,7 +2032,7 @@ export default function ExperimentsView({
                       <button
                         onClick={handleClaimCertificateProof}
                         disabled={isConverting || Object.values(selectedSkillsToConvert).filter(Boolean).length === 0}
-                        className="w-full bg-violet-700 hover:bg-violet-900 text-white py-4 rounded-xl text-xs font-extrabold uppercase tracking-widest transition-all cursor-pointer shadow-e3 text-center block disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full bg-clay-700 hover:bg-clay-900 text-white py-4 rounded-xl text-xs font-extrabold uppercase tracking-widest transition-all cursor-pointer shadow-e3 text-center block disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         {isConverting ? (
                           <span className="flex items-center justify-center space-x-2">
@@ -2071,8 +2071,8 @@ export default function ExperimentsView({
 
                     {/* Stat Badges */}
                     <div className="flex items-center justify-center space-x-3 w-full">
-                      <div className="flex-1 bg-violet-50 border border-violet-200 text-violet-700 font-extrabold text-xs rounded-xl p-3 shadow-e1 font-mono">
-                        <span className="block text-micro text-violet-400 font-bold uppercase">REWARD CLAIMED</span>
+                      <div className="flex-1 bg-clay-50 border border-clay-200 text-clay-700 font-extrabold text-xs rounded-xl p-3 shadow-e1 font-mono">
+                        <span className="block text-micro text-clay-400 font-bold uppercase">REWARD CLAIMED</span>
                         <span className="block text-sm mt-0.5">+25 XP UNLOCKED</span>
                       </div>
                       <div className="flex-1 bg-good-50 border border-good-100 text-good-700 font-extrabold text-xs rounded-xl p-3 shadow-e1 font-mono">
@@ -2090,7 +2090,7 @@ export default function ExperimentsView({
                             onNavigateToTab("journey");
                           }
                         }}
-                        className="w-full bg-violet-700 hover:bg-violet-900 text-white py-3.5 rounded-xl text-xs font-extrabold uppercase tracking-widest transition-all cursor-pointer shadow-e3 text-center block"
+                        className="w-full bg-clay-700 hover:bg-clay-900 text-white py-3.5 rounded-xl text-xs font-extrabold uppercase tracking-widest transition-all cursor-pointer shadow-e3 text-center block"
                       >
                         View in Journey
                       </button>

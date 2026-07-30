@@ -14,7 +14,7 @@ import {
   Clock,
   BookOpen
 } from "lucide-react";
-import { CareerPath, PsychReadout } from "../../types";
+import { CareerPath, PivotReadout, PsychReadout } from "../../types";
 import { getCareerIntelligence } from "../../lib/careerIntelligence";
 import { Button } from "../../ui";
 
@@ -28,6 +28,193 @@ const THEORY_META: { key: keyof PsychReadout["scores"]["pct"]; label: string; bl
   { key: "m", label: "Cognitive style", blurb: "The way you naturally process and solve things" },
   { key: "d", label: "Decision readiness", blurb: "How ready you are to actually commit to a direction" },
 ];
+
+// The four degree tracks, in the order a student should read them: what your
+// degree already gives you, what one qualification would give you, what is open
+// to you no matter what you studied, and — last, and collapsed — what genuinely
+// is not. Colours are deliberately distinct so the sections cannot be conflated.
+const TRACK_META: {
+  key: keyof Omit<PivotReadout, "degree">;
+  title: string;
+  blurb: string;
+  chip: string;
+  label: string;
+  showRoute: boolean;
+}[] = [
+  {
+    key: "aligned",
+    title: "Built on your degree",
+    blurb: "These use the qualification you already hold. No restart required.",
+    chip: "border-good-300 bg-good-50 text-good-900",
+    label: "text-good-700",
+    showRoute: false,
+  },
+  {
+    key: "bridge",
+    title: "One bridge away",
+    blurb: "Reachable, but one qualification stands between you and the role.",
+    chip: "border-info-300 bg-info-50 text-info-900",
+    label: "text-info-700",
+    showRoute: true,
+  },
+  {
+    key: "pivot",
+    title: "Open to you regardless of your degree",
+    blurb: "No degree gate at all. What you studied does not decide these.",
+    chip: "border-clay-300 bg-clay-50 text-clay-900",
+    label: "text-clay-700",
+    showRoute: true,
+  },
+  {
+    key: "locked",
+    title: "Would need a different degree",
+    blurb: "You scored well on these, but the qualification really is the gate. Shown so you know rather than wonder.",
+    chip: "border-ink-200 bg-ink-50 text-ink-600",
+    label: "text-ink-500",
+    showRoute: false,
+  },
+];
+
+/**
+ * The degree-pivot read. Splits the same scored careers by what the student's
+ * own bachelor's degree opens, because a fit score alone will happily tell a
+ * nursing student they would make a fine architect — true, and useless.
+ *
+ * Every number and route string here is computed server-side from the workbook;
+ * this component only arranges them.
+ */
+function DegreePivotPanel({ pivots }: { pivots: PivotReadout }) {
+  const [showLocked, setShowLocked] = useState(false);
+  const degree = pivots.degree;
+  if (!degree) return null;
+
+  // "Built on your degree" is kept even when empty. The 252-career table holds
+  // broad archetypes, so a specialised degree — BMLT, perfusion technology —
+  // can have no archetype that maps to it while still having plenty of
+  // direct-line roles. Dropping the section would read as a bug; showing the
+  // researched roles instead is the honest version.
+  const sections = TRACK_META
+    .map((meta) => ({ meta, matches: pivots[meta.key] ?? [] }))
+    .filter(({ meta, matches }) => matches.length > 0 || meta.key === "aligned");
+
+  return (
+    <div className="mt-6 border-t border-ink-100 pt-6">
+      <div className="mb-5">
+        <h3 className="flex items-center gap-2 text-base font-extrabold tracking-tight text-ink-900">
+          <ArrowRightLeft className="h-4 w-4 text-clay-600" />
+          Beyond your degree
+        </h3>
+        <p className="mt-1 max-w-2xl text-xs font-medium leading-relaxed text-ink-600">
+          Your {degree.degreeName} decides fewer things than you have probably been told.
+          Here is the same list again, sorted by whether the qualification is actually in your way.
+        </p>
+      </div>
+
+      <div className="space-y-5">
+        {sections.map(({ meta, matches }) => {
+          const collapsible = meta.key === "locked";
+          if (collapsible && !showLocked) {
+            return (
+              <button
+                key={meta.key}
+                type="button"
+                onClick={() => setShowLocked(true)}
+                className="flex w-full items-center justify-between rounded-xl border border-ink-100 bg-ink-25 px-3.5 py-2.5 text-left transition-colors hover:bg-ink-50"
+              >
+                <span className="text-xs font-bold text-ink-600">
+                  {matches.length} strong match{matches.length === 1 ? "" : "es"} would need a different degree
+                </span>
+                <ChevronRight className="h-4 w-4 shrink-0 text-ink-500" />
+              </button>
+            );
+          }
+          return (
+            <div key={meta.key}>
+              <div className={`font-mono text-micro font-bold uppercase tracking-wider ${meta.label} mb-1`}>
+                {meta.title}
+              </div>
+              <p className="mb-2.5 text-tiny font-medium leading-snug text-ink-500">{meta.blurb}</p>
+
+              {/* No scored archetype maps to this degree — show its actual
+                  direct-line roles rather than an empty section. */}
+              {meta.key === "aligned" && matches.length === 0 && (
+                <div className="rounded-xl border border-good-300 bg-good-50 px-3 py-2">
+                  <p className="text-tiny font-medium leading-snug text-good-900">
+                    {degree.direct.length > 0 ? (
+                      <>
+                        <span className="font-bold">Your degree's own roles: </span>
+                        {degree.direct.join(" · ")}
+                      </>
+                    ) : (
+                      "Your degree's direct roles are listed as concrete paths below."
+                    )}
+                  </p>
+                </div>
+              )}
+
+              <div className="space-y-1.5">
+                {matches.map((m) => (
+                  <div
+                    key={m.careerId}
+                    className={`rounded-xl border px-3 py-2 ${meta.chip}`}
+                  >
+                    <div className="flex items-baseline justify-between gap-3">
+                      <span className="text-xs font-bold">{m.name}</span>
+                      <span className="font-mono text-micro font-bold tabular-nums opacity-70">
+                        {m.fitScore}
+                      </span>
+                    </div>
+                    {meta.showRoute && m.degree?.altEntryRoute && (
+                      <p className="mt-1 text-tiny font-medium leading-snug opacity-80">
+                        {m.degree.altEntryRoute}
+                      </p>
+                    )}
+                    {meta.key === "locked" && m.degree?.typical && (
+                      <p className="mt-1 text-tiny font-medium leading-snug opacity-80">
+                        Requires: {m.degree.typical}
+                      </p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* The researched map for this specific degree, independent of fit score. */}
+      <div className="mt-6 rounded-xl border border-ink-100 bg-ink-25 px-3.5 py-3">
+        <div className="font-mono text-micro font-bold uppercase tracking-wider text-ink-600">
+          Your degree at a glance
+        </div>
+        <dl className="mt-2 grid grid-cols-1 gap-x-6 gap-y-2 sm:grid-cols-3">
+          {[
+            { label: "Direct-line roles", value: degree.direct.length },
+            { label: "Short-bridge pivots", value: degree.adjacent.length },
+            { label: "Open to any degree", value: degree.fullPivots.length },
+          ].map(({ label, value }) => (
+            <div key={label}>
+              <dt className="text-tiny font-medium text-ink-500">{label}</dt>
+              <dd className="text-sm font-extrabold tabular-nums text-ink-900">{value}</dd>
+            </div>
+          ))}
+        </dl>
+        {degree.bridgeQualification && (
+          <p className="mt-2.5 text-tiny font-medium leading-relaxed text-ink-600">
+            <span className="font-bold text-ink-900">Bridges that unlock these: </span>
+            {degree.bridgeQualification}
+          </p>
+        )}
+        {degree.timeToPivot && (
+          <p className="mt-1 flex items-center gap-1.5 text-tiny font-semibold text-ink-600">
+            <Clock className="h-3 w-3 shrink-0" />
+            Typical time to pivot: {degree.timeToPivot}
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
 
 interface BestFitPathsViewProps {
   paths: CareerPath[];
@@ -73,7 +260,7 @@ export default function BestFitPathsView({
   const renderEmptyState = () => (
     <div className="flex flex-col items-center justify-center py-20 text-center space-y-6 animate-in fade-in duration-500">
       <div className="relative flex items-center justify-center">
-        <div className="absolute inset-0 rounded-full bg-violet-100/50 blur-xl w-32 h-32 animate-pulse" />
+        <div className="absolute inset-0 rounded-full bg-clay-100/50 blur-xl w-32 h-32 animate-pulse" />
         <svg 
           className="h-20 w-20 text-ink-600 relative z-10" 
           fill="none" 
@@ -93,22 +280,18 @@ export default function BestFitPathsView({
       </div>
       <button 
         onClick={() => setActiveTab?.("chat")}
-        className="px-6 py-3.5 bg-violet-700 hover:bg-violet-900 text-white rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer shadow-e3 uppercase tracking-wider font-sans"
+        className="px-6 py-3.5 bg-clay-700 hover:bg-clay-900 text-white rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer shadow-e3 uppercase tracking-wider font-sans"
       >
         Continue with FAB
       </button>
     </div>
   );
 
-  const getAiRiskColor = (risk: string) => {
-    switch (risk) {
-      case "Very Low Risk": return "text-good-300 border-good-300/30 bg-good-300/10";
-      case "Low Risk": return "text-good-300 border-good-300/30 bg-good-300/10";
-      case "Moderate Risk": return "text-violet-400 border-violet-400/30 bg-violet-400/10";
-      case "High Risk": return "text-bad-300 border-bad-300/30 bg-bad-300/10";
-      default: return "text-ink-300 border-ink-400/30 bg-ink-400/10";
-    }
-  };
+  // `getAiRiskColor` used to live here — a dark-background variant of the risk
+  // chip that nothing rendered. Its 300-weight text on a 10% tint measured
+  // under 2:1 on the light page, so it was one accidental reference away from
+  // being an accessibility bug. The live version is `getAiRiskColorLight`
+  // further down, which uses the 700-on-50 pairs.
 
   return (
     <div className="p-3.5 sm:p-6 md:p-8 bg-ink-50 text-ink-900 rounded-3xl min-h-[550px] relative border border-ink-100 shadow-e2">
@@ -157,7 +340,7 @@ export default function BestFitPathsView({
               </div>
               <div className="text-2xl font-extrabold tabular-nums text-ink-900 leading-tight">
                 {psychometrics.scores.adjustedCcfs}
-                <span className="text-sm font-bold text-ink-400">/100</span>
+                <span className="text-sm font-bold text-ink-500">/100</span>
               </div>
             </div>
           </div>
@@ -171,7 +354,7 @@ export default function BestFitPathsView({
                 <div key={key}>
                   <div className="flex items-baseline justify-between gap-3 mb-1">
                     <span className="text-xs font-bold text-ink-900">{label}</span>
-                    <span className={`font-mono text-tiny font-bold tabular-nums ${low ? "text-gold-600" : "text-ink-600"}`}>
+                    <span className={`font-mono text-tiny font-bold tabular-nums ${low ? "text-moss-600" : "text-ink-600"}`}>
                       {value}%
                     </span>
                   </div>
@@ -180,10 +363,10 @@ export default function BestFitPathsView({
                       initial={{ width: 0 }}
                       animate={{ width: `${Math.max(0, Math.min(100, value))}%` }}
                       transition={{ duration: 0.6, ease: "easeOut" }}
-                      className={`h-full rounded-full ${low ? "bg-gold-500" : "bg-gradient-to-r from-gold-600 to-gold-400"}`}
+                      className={`h-full rounded-full ${low ? "bg-moss-500" : "bg-gradient-to-r from-moss-600 to-moss-400"}`}
                     />
                   </div>
-                  <p className="mt-1 text-tiny font-medium text-ink-400 leading-snug">{blurb}</p>
+                  <p className="mt-1 text-tiny font-medium text-ink-500 leading-snug">{blurb}</p>
                 </div>
               );
             })}
@@ -191,9 +374,9 @@ export default function BestFitPathsView({
 
           {/* Motivation-quality caveat, shown rather than buried */}
           {psychometrics.motivationNote && (
-            <div className="mb-6 flex items-start gap-2.5 rounded-xl border border-gold-200 bg-gold-50 px-3.5 py-3">
-              <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-gold-600" />
-              <p className="text-xs font-semibold leading-relaxed text-gold-900">
+            <div className="mb-6 flex items-start gap-2.5 rounded-xl border border-moss-200 bg-moss-50 px-3.5 py-3">
+              <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-moss-600" />
+              <p className="text-xs font-semibold leading-relaxed text-moss-900">
                 {psychometrics.motivationNote}
               </p>
             </div>
@@ -232,7 +415,7 @@ export default function BestFitPathsView({
 
               {psychometrics.secondaryMatches.length > 0 && (
                 <div className="opacity-70">
-                  <div className="font-mono text-micro font-bold uppercase tracking-wider text-gold-700 mb-2">
+                  <div className="font-mono text-micro font-bold uppercase tracking-wider text-moss-700 mb-2">
                     Worth considering
                   </div>
                   <div className="flex flex-wrap gap-2">
@@ -240,7 +423,7 @@ export default function BestFitPathsView({
                       <span
                         key={m.careerId}
                         title={m.domain}
-                        className="inline-flex items-center gap-1.5 rounded-lg border border-gold-200 bg-gold-50 px-2.5 py-1.5 text-xs font-semibold text-gold-800"
+                        className="inline-flex items-center gap-1.5 rounded-lg border border-moss-200 bg-moss-50 px-2.5 py-1.5 text-xs font-semibold text-moss-800"
                       >
                         {m.name}
                         <span className="font-mono text-micro font-bold opacity-70 tabular-nums">{m.fitScore}</span>
@@ -250,11 +433,18 @@ export default function BestFitPathsView({
                 </div>
               )}
 
-              <p className="text-tiny font-medium text-ink-400 leading-relaxed">
+              <p className="text-tiny font-medium text-ink-500 leading-relaxed">
                 These are broad archetypes across every field. The paths below are the specific,
                 concrete routes open to you from your degree.
               </p>
             </div>
+          )}
+
+          {/* DEGREE PIVOT LAYER — the four tracks. Only rendered once the
+              server knows which degree the student holds; without that, the
+              tiered lists above are the honest view. */}
+          {psychometrics.pivots?.degree && (
+            <DegreePivotPanel pivots={psychometrics.pivots} />
           )}
         </motion.div>
       )}
@@ -290,7 +480,7 @@ export default function BestFitPathsView({
                   
                   <div className="absolute top-3 left-3">
                     <div className="inline-flex items-center gap-1 bg-white/90 backdrop-blur-sm text-ink-900 text-micro font-bold tracking-wider px-2.5 py-1 rounded-md shadow-e2">
-                      <Sparkles className="h-3 w-3 text-violet-500" />
+                      <Sparkles className="h-3 w-3 text-clay-500" />
                       {path.matchScore}% MATCH
                     </div>
                   </div>
@@ -312,7 +502,7 @@ export default function BestFitPathsView({
                   {/* 4 Quick Metrics in a row */}
                   <div className="scroll-slim mb-4 flex items-center gap-1.5 overflow-x-auto pb-1 whitespace-nowrap">
                     <div className="flex items-center gap-1 shrink-0 bg-ink-50 border border-ink-100 shadow-e2 px-2 py-1 rounded text-micro text-ink-600">
-                      <TrendingUp className="h-3 w-3 text-violet-600" />
+                      <TrendingUp className="h-3 w-3 text-clay-600" />
                       <span className="font-semibold truncate">{intel.futureDemand}</span>
                     </div>
                     <div className="flex items-center gap-1 shrink-0 bg-ink-50 border border-ink-100 shadow-e2 px-2 py-1 rounded text-micro text-ink-600">
@@ -324,7 +514,7 @@ export default function BestFitPathsView({
                       <span className="font-semibold truncate">{intel.yearsToEnter}</span>
                     </div>
                     <div className="flex items-center gap-1 shrink-0 bg-ink-50 border border-ink-100 shadow-e2 px-2 py-1 rounded text-micro text-ink-600">
-                      <ShieldAlert className="h-3 w-3 text-violet-600" />
+                      <ShieldAlert className="h-3 w-3 text-clay-600" />
                       <span className="font-semibold truncate">{intel.aiRisk}</span>
                     </div>
                   </div>
@@ -378,7 +568,7 @@ export default function BestFitPathsView({
           >
             <div className="bg-ink-900 text-white rounded-2xl shadow-e5 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-white/10">
               <div className="flex flex-col">
-                <span className="text-micro font-mono tracking-wider font-extrabold uppercase text-violet-400">
+                <span className="text-micro font-mono tracking-wider font-extrabold uppercase text-clay-400">
                   Comparison Tray
                 </span>
                 <span className="text-xs font-medium mt-1 text-ink-300">
@@ -388,7 +578,7 @@ export default function BestFitPathsView({
               <div className="flex items-center space-x-3 self-end sm:self-auto">
                 <button
                   onClick={clearCompare}
-                  className="text-ink-400 hover:text-white text-xs font-bold uppercase tracking-wider px-3 py-2 cursor-pointer transition-colors"
+                  className="text-ink-500 hover:text-white text-xs font-bold uppercase tracking-wider px-3 py-2 cursor-pointer transition-colors"
                 >
                   Clear All
                 </button>
@@ -444,12 +634,12 @@ export default function BestFitPathsView({
                       ))}
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-violet-200/60">
+                  <tbody className="divide-y divide-clay-200/60">
                     <tr className="hover:bg-ink-50/50 transition-colors">
                       <td className="py-4 px-4 text-xs font-bold text-ink-600 sticky left-0 bg-white z-10 shadow-[1px_0_0_0_E0D7FF]">Career Match %</td>
                       {compareList.map((p) => (
                         <td key={p.id} className="py-4 px-5">
-                          <span className="text-lg font-extrabold text-violet-600">{p.matchScore}%</span>
+                          <span className="text-lg font-extrabold text-clay-600">{p.matchScore}%</span>
                         </td>
                       ))}
                     </tr>
@@ -488,7 +678,7 @@ export default function BestFitPathsView({
                           switch (risk) {
                             case "Very Low Risk": return "text-good-700 bg-good-50 border-good-100";
                             case "Low Risk": return "text-good-700 bg-good-50 border-good-300/60";
-                            case "Moderate Risk": return "text-violet-700 bg-violet-50 border-violet-200";
+                            case "Moderate Risk": return "text-clay-700 bg-clay-50 border-clay-200";
                             case "High Risk": return "text-bad-700 bg-bad-50 border-bad-100";
                             default: return "text-ink-700 bg-ink-50 border-ink-200";
                           }

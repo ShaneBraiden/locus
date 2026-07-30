@@ -4,7 +4,8 @@ import {
 } from './bridge.js';
 import { buildCareerPaths, reflectionText } from './engine.js';
 import {
-  dominantConstructs, matchCareers, motivationNote, scoreAnswers,
+  dominantConstructs, matchCareers, motivationNote, pivotForDegree,
+  scoreAnswers, splitByTrack,
 } from './psychometrics.js';
 import {
   CONFIDENCE_FLOOR, fallbackQuestion, interviewTurn, sanitizeReply,
@@ -243,12 +244,19 @@ function readout(s: AssessmentState, paths: CareerPath[]): PsychReadout {
     .filter((m) => pathNames.some((n) => n.includes(m.name.toLowerCase()) || m.name.toLowerCase().includes(n)))
     .map((m) => m.name);
 
+  // The degree-pivot cut. Resolves to null before the student has told us their
+  // degree, in which case the client shows one plain list — classifying tracks
+  // against a degree we are guessing at would be worse than not classifying.
+  const pivot = pivotForDegree(s.degreeId);
+  const tracks = splitByTrack(all, pivot);
+
   return {
     scores,
     topMatches: all.filter((m) => m.status === 'best_fit').slice(0, 6),
     secondaryMatches: all.filter((m) => m.status === 'consider').slice(0, 8),
     motivationNote: motivationNote(scores),
     convergentCareers: convergent,
+    pivots: { degree: pivot, ...tracks },
   };
 }
 
@@ -528,6 +536,7 @@ async function finish(
 
     let narrative = await narrateRecommendation(name, degree, profile, paths, {
       scores: psych.scores, matches: psych.topMatches, motivationNote: psych.motivationNote,
+      pivots: psych.pivots.pivot,
     }, ctx.brief);
 
     if (narrative) {

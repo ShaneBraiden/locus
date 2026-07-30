@@ -206,7 +206,7 @@ export default function ChatContainer({
       <header className="shrink-0 border-b border-ink-100 bg-white/90 backdrop-blur-md">
         <div className="mx-auto flex w-full max-w-3xl items-center justify-between gap-2 px-4 py-2.5 sm:px-6">
           <div className="flex min-w-0 items-center gap-2.5">
-            <span className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-ink-900 font-display text-sm font-bold text-gold-300">
+            <span className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-ink-900 font-display text-sm font-bold text-moss-300">
               F
               <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-white bg-good-500" />
             </span>
@@ -286,7 +286,7 @@ export default function ChatContainer({
                 <Progress
                   value={(progress.answered / progress.total) * 100}
                   size="sm"
-                  tone="gold"
+                  tone="moss"
                   label="Conversation progress"
                 />
               </div>
@@ -329,7 +329,7 @@ export default function ChatContainer({
                 {/* FAB avatar — a spacer keeps grouped bubbles aligned. */}
                 {!isUser &&
                   (startsGroup ? (
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-ink-900 font-display text-sm font-bold text-gold-300">
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-ink-900 font-display text-sm font-bold text-moss-300">
                       F
                     </span>
                   ) : (
@@ -345,7 +345,7 @@ export default function ChatContainer({
                     >
                       <span className="eyebrow">{isUser ? "You" : "FAB"}</span>
                       {isUser && message.channel === "voice" && (
-                        <Mic className="h-3 w-3 text-gold-600" aria-label="Spoken" />
+                        <Mic className="h-3 w-3 text-moss-600" aria-label="Spoken" />
                       )}
                     </div>
                   )}
@@ -376,7 +376,7 @@ export default function ChatContainer({
                     <button
                       onClick={() => voice.onSpeakMessage(message)}
                       title={voice.speakingMessageId === message.id ? "Stop" : "Read this out loud"}
-                      className="inline-flex items-center gap-1.5 rounded-md px-1.5 py-1 text-micro font-bold uppercase tracking-wider text-ink-400 transition-colors hover:bg-ink-100 hover:text-gold-700"
+                      className="inline-flex items-center gap-1.5 rounded-md px-1.5 py-1 text-micro font-bold uppercase tracking-wider text-ink-500 transition-colors hover:bg-ink-100 hover:text-moss-700"
                     >
                       {voice.speakingMessageId === message.id ? (
                         <>
@@ -407,9 +407,9 @@ export default function ChatContainer({
                           whileTap={{ scale: 0.985 }}
                           onClick={() => handleOptionClick(option)}
                           disabled={isProcessing}
-                          className="group flex w-full items-center gap-3 rounded-xl border border-ink-200 bg-white px-3.5 py-3 text-left text-sm font-semibold leading-snug text-ink-900 shadow-e1 transition-[border-color,background-color,box-shadow] duration-150 hover:border-gold-400 hover:bg-gold-50 hover:shadow-e2 disabled:opacity-50"
+                          className="group flex w-full items-center gap-3 rounded-xl border border-ink-200 bg-white px-3.5 py-3 text-left text-sm font-semibold leading-snug text-ink-900 shadow-e1 transition-[border-color,background-color,box-shadow] duration-150 hover:border-moss-400 hover:bg-moss-50 hover:shadow-e2 disabled:opacity-50"
                         >
-                          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-ink-200 bg-ink-50 font-mono text-tiny font-bold text-ink-500 transition-colors duration-150 group-hover:border-gold-500 group-hover:bg-gold-500 group-hover:text-white">
+                          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-ink-200 bg-ink-50 font-mono text-tiny font-bold text-ink-500 transition-colors duration-150 group-hover:border-moss-500 group-hover:bg-moss-500 group-hover:text-white">
                             {String.fromCharCode(65 + idx)}
                           </span>
                           <span className="min-w-0 flex-1 break-words">{option}</span>
@@ -440,10 +440,10 @@ export default function ChatContainer({
               <div className="min-w-0 flex-1 space-y-1">
                 <div className="flex items-center justify-end gap-1.5">
                   <span className="eyebrow">You</span>
-                  <Mic className="h-3 w-3 text-gold-600" />
+                  <Mic className="h-3 w-3 text-moss-600" />
                 </div>
                 <div className="flex items-center gap-2 rounded-2xl rounded-br-md border border-ink-200 bg-ink-50 px-4 py-3">
-                  <Loader2 className="h-3.5 w-3.5 shrink-0 animate-spin text-gold-600" />
+                  <Loader2 className="h-3.5 w-3.5 shrink-0 animate-spin text-moss-600" />
                   <span className="text-sm font-medium text-ink-600">
                     Working out what you said…
                   </span>
@@ -457,7 +457,7 @@ export default function ChatContainer({
         {isProcessing && (
           <div className="flex justify-start">
             <div className="flex max-w-[80%] items-start gap-2.5">
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-ink-900 font-display text-sm font-bold text-gold-300">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-ink-900 font-display text-sm font-bold text-moss-300">
                 F
               </span>
               <div className="space-y-1">
@@ -509,8 +509,8 @@ export default function ChatContainer({
             onSubmit={handleSubmit}
             className={`flex items-center gap-2 rounded-2xl border bg-white p-1.5 shadow-e2 transition-[border-color,box-shadow] ${
               isRecording
-                ? "border-gold-400 shadow-glow-gold"
-                : "border-ink-200 focus-within:border-gold-400 focus-within:shadow-glow-gold"
+                ? "border-moss-400 shadow-glow-moss"
+                : "border-ink-200 focus-within:border-moss-400 focus-within:shadow-glow-moss"
             }`}
           >
             {canRecord && (
@@ -524,8 +524,8 @@ export default function ChatContainer({
                 aria-pressed={isRecording}
                 className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-colors disabled:opacity-40 ${
                   isRecording
-                    ? "bg-gold-500 text-white"
-                    : "text-ink-500 hover:bg-ink-100 hover:text-gold-700"
+                    ? "bg-moss-500 text-white"
+                    : "text-ink-500 hover:bg-ink-100 hover:text-moss-700"
                 }`}
               >
                 {isRecording ? <Square className="h-4 w-4 fill-current" /> : <Mic className="h-4.5 w-4.5" />}
@@ -535,8 +535,8 @@ export default function ChatContainer({
             {isRecording ? (
               <div className="flex min-w-0 flex-1 items-center gap-2.5 px-1">
                 <span className="relative flex h-2.5 w-2.5 shrink-0">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-gold-500 opacity-75" />
-                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-gold-500" />
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-moss-500 opacity-75" />
+                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-moss-500" />
                 </span>
                 <span className="min-w-0 flex-1 truncate text-sm font-semibold text-ink-900">
                   Listening…
@@ -550,7 +550,7 @@ export default function ChatContainer({
                   onClick={() => void finishRecording(false)}
                   title="Discard this recording"
                   aria-label="Discard recording"
-                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-ink-400 transition-colors hover:bg-ink-100 hover:text-bad-700"
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-ink-500 transition-colors hover:bg-ink-100 hover:text-bad-700"
                 >
                   <X className="h-4 w-4" />
                 </button>
@@ -574,13 +574,13 @@ export default function ChatContainer({
               type="submit"
               disabled={isProcessing || isRecording || !inputText.trim()}
               aria-label="Send message"
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-ink-900 text-white transition-colors hover:bg-ink-800 disabled:bg-ink-100 disabled:text-ink-400"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-ink-900 text-white transition-colors hover:bg-ink-800 disabled:bg-ink-100 disabled:text-ink-500"
             >
               {isProcessing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
             </button>
           </form>
 
-          <p className="mt-2 text-center text-tiny text-ink-400">
+          <p className="mt-2 text-center text-tiny text-ink-500">
             {canRecord
               ? "Type it or tap the mic and say it. FAB remembers either way."
               : "Talk to FAB like you'd talk to your smartest, warmest friend."}

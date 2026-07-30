@@ -191,6 +191,31 @@ export interface PsychScores {
   total: number;
 }
 
+/**
+ * Whether a bachelor's degree is the gate on a career, straight from column P
+ * of the workbook's Career Match Engine sheet.
+ *
+ * `open`   — no degree requirement worth speaking of (195 of 252 careers)
+ * `bridge` — reachable, but one extra qualification stands in the way
+ * `locked` — the degree genuinely is the gate (MBBS, B.Arch, BPT and 18 others)
+ */
+export type DegreeGate = 'open' | 'bridge' | 'locked';
+
+/** How a career relates to the degree *this* student actually holds. */
+export type CareerTrack = 'aligned' | 'bridge' | 'pivot' | 'locked';
+
+export interface CareerDegreeInfo {
+  /** The conventional undergraduate path. */
+  typical: string;
+  /** 'Yes' | 'Partly' | 'No' — the sheet's own wording, kept for display. */
+  agnostic: string;
+  gate: DegreeGate;
+  /** How to get in without the typical degree. Never empty. */
+  altEntryRoute: string;
+  /** Which bachelor's degrees commonly feed this career. */
+  pivotFrom: string;
+}
+
 export interface CareerMatch {
   careerId: string;
   name: string;
@@ -198,6 +223,25 @@ export interface CareerMatch {
   fitScore: number;
   status: 'best_fit' | 'consider' | 'mismatch';
   rank: number;
+  degree: CareerDegreeInfo;
+  /**
+   * Set once we know the student's degree. Absent when we do not — the UI then
+   * falls back to showing one undifferentiated list rather than guessing.
+   */
+  track?: CareerTrack;
+}
+
+/** One row of docs/degree-pivots.json. */
+export interface DegreePivot {
+  id: string;
+  degreeName: string;
+  /** Joins onto career-topology.json. Null for the wider-landscape rows. */
+  topologyDegreeId: string | null;
+  direct: string[];
+  adjacent: string[];
+  fullPivots: string[];
+  bridgeQualification: string;
+  timeToPivot: string;
 }
 
 /**
@@ -253,6 +297,27 @@ export interface UserContext {
   lastSeen: string;
 }
 
+/**
+ * The degree-pivot read: the same matches, re-cut by what the student's own
+ * bachelor's degree does and does not open.
+ *
+ * This exists because a fit score alone can tell a nursing student they would
+ * make an excellent architect, which is true and useless. Splitting by track
+ * keeps the honest answer and adds the reachable one.
+ */
+export interface PivotReadout {
+  /** Resolved from the student's degreeId, null when we do not know it yet. */
+  degree: DegreePivot | null;
+  /** Built on the degree they already have. */
+  aligned: CareerMatch[];
+  /** One qualification away; each carries its own `altEntryRoute`. */
+  bridge: CareerMatch[];
+  /** Open regardless of degree. Never fewer than 3 while any career qualifies. */
+  pivot: CareerMatch[];
+  /** Honest dead ends. Collapsed in the UI, never silently dropped. */
+  locked: CareerMatch[];
+}
+
 /** What the client needs to render the psychometric read. */
 export interface PsychReadout {
   scores: PsychScores;
@@ -261,4 +326,5 @@ export interface PsychReadout {
   motivationNote: string | null;
   /** Careers the topology engine also surfaced — the strongest signal we have. */
   convergentCareers: string[];
+  pivots: PivotReadout;
 }

@@ -15,7 +15,9 @@ import { geminiEnabled } from './gemini.js';
 import {
   clearContext, contextBrief, loadContext, publicContext, saveContext, updateContext,
 } from './memory.js';
-import { careers as careerProfiles, items as psychItems } from './psychometrics.js';
+import {
+  careers as careerProfiles, degreePivots, items as psychItems, pivotForDegree,
+} from './psychometrics.js';
 import { QUESTIONS } from './questions.js';
 import {
   DEFAULT_LANGUAGE, VOICE_LANGUAGES, isEnglish, normalizeLanguage, sarvamEnabled,
@@ -88,6 +90,7 @@ app.get('/healthz', (_req, res) => {
     interviewItems: interviewItemCount(),
     psychometricItems: psychItems().length,
     careerProfiles: careerProfiles().length,
+    degreePivots: degreePivots().length,
     gemini: geminiEnabled() ? 'enabled' : 'fallback',
     sarvam: sarvamEnabled() ? 'enabled' : 'disabled',
     liveStt: liveEnabled() ? 'enabled' : 'disabled',
@@ -417,6 +420,22 @@ app.get('/api/careers/degrees/:id', ah(requireAuth), apiLimiter, (req, res) => {
   res.json(d);
 });
 
+// --- Degree pivot map: what a degree opens beyond what it was designed for ---
+// Static reference data, so it is served whole and cached by the client. The
+// per-degree route is the one the UI actually calls.
+app.get('/api/careers/pivots', ah(requireAuth), apiLimiter, (_req, res) => {
+  res.json(degreePivots());
+});
+
+app.get('/api/careers/pivots/:degreeId', ah(requireAuth), apiLimiter, (req, res) => {
+  const pivot = pivotForDegree(req.params.degreeId);
+  if (!pivot) {
+    res.status(404).json({ error: 'No pivot map for that degree (see /api/careers/degrees)' });
+    return;
+  }
+  res.json(pivot);
+});
+
 // --- Quiz bank (for clients that want to render the quiz directly) ---
 app.get('/api/quiz/questions', ah(requireAuth), apiLimiter, (_req, res) => {
   res.json(QUESTIONS.map((q) => ({ id: q.id, text: q.text, options: q.options.map((o) => o.label) })));
@@ -485,10 +504,11 @@ async function start() {
   loadDegrees();
   interviewItemCount();
   careerProfiles();
+  degreePivots();
   app.listen(PORT, () => {
     console.log(`Northr server listening on http://localhost:${PORT}`);
     console.log(`Storage: ${getRepos().backend}`);
-    console.log(`Interview: ${interviewItemCount()} items, ${careerProfiles().length} career profiles`);
+    console.log(`Interview: ${interviewItemCount()} items, ${careerProfiles().length} career profiles, ${degreePivots().length} degree pivot rows`);
     console.log(`Gemini: ${process.env.GEMINI_API_KEY ? 'enabled (' + (process.env.GEMINI_MODEL || 'gemini-3.5-flash') + ')' : 'disabled — conversation falls back to multiple choice'}`);
     console.log(`Sarvam: ${sarvamEnabled() ? `enabled (${VOICE_LANGUAGES.length} languages, speaker ${process.env.SARVAM_SPEAKER || 'anushka'})` : 'disabled — voice chat is hidden, typing unaffected'}`);
   });

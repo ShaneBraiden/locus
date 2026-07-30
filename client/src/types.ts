@@ -147,6 +147,24 @@ export interface PsychScores {
   total: number;
 }
 
+/**
+ * Whether a bachelor's degree is the gate on a career.
+ * 'open' — no real degree requirement · 'bridge' — one qualification away ·
+ * 'locked' — the degree genuinely is the gate.
+ */
+export type DegreeGate = 'open' | 'bridge' | 'locked';
+
+/** How a career relates to the degree this student actually holds. */
+export type CareerTrack = 'aligned' | 'bridge' | 'pivot' | 'locked';
+
+export interface CareerDegreeInfo {
+  typical: string;
+  agnostic: string;
+  gate: DegreeGate;
+  altEntryRoute: string;
+  pivotFrom: string;
+}
+
 export interface CareerMatch {
   careerId: string;
   name: string;
@@ -154,6 +172,30 @@ export interface CareerMatch {
   fitScore: number;
   status: 'best_fit' | 'consider' | 'mismatch';
   rank: number;
+  degree: CareerDegreeInfo;
+  /** Absent until the server knows the student's degree. */
+  track?: CareerTrack;
+}
+
+/** One row of the degree → career pivot map. */
+export interface DegreePivot {
+  id: string;
+  degreeName: string;
+  topologyDegreeId: string | null;
+  direct: string[];
+  adjacent: string[];
+  fullPivots: string[];
+  bridgeQualification: string;
+  timeToPivot: string;
+}
+
+/** The same matches, re-cut by what this student's degree opens. */
+export interface PivotReadout {
+  degree: DegreePivot | null;
+  aligned: CareerMatch[];
+  bridge: CareerMatch[];
+  pivot: CareerMatch[];
+  locked: CareerMatch[];
 }
 
 export interface PsychReadout {
@@ -162,6 +204,7 @@ export interface PsychReadout {
   secondaryMatches: CareerMatch[];
   motivationNote: string | null;
   convergentCareers: string[];
+  pivots: PivotReadout;
 }
 
 /**

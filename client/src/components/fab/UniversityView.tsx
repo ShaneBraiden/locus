@@ -73,7 +73,7 @@ export default function UniversityView({ path, signals, constraints, onBack, onC
           </p>
           <button 
             onClick={onBack}
-            className="px-6 py-3 bg-violet-600 hover:bg-violet-700 text-white rounded-xl font-bold transition-colors w-full"
+            className="px-6 py-3 bg-clay-600 hover:bg-clay-700 text-white rounded-xl font-bold transition-colors w-full"
           >
             Return to Career Paths
           </button>
@@ -103,7 +103,7 @@ export default function UniversityView({ path, signals, constraints, onBack, onC
         <select 
           value={filterCountry}
           onChange={e => setFilterCountry(e.target.value)}
-          className="bg-ink-50 border border-ink-200 text-ink-700 text-xs sm:text-sm font-semibold rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 focus:outline-none focus:ring-2 focus:ring-violet-500/20 w-full md:w-auto"
+          className="bg-ink-50 border border-ink-200 text-ink-700 text-xs sm:text-sm font-semibold rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 focus:outline-none focus:ring-2 focus:ring-clay-500/20 w-full md:w-auto"
         >
           <option value="All">All Countries</option>
           {uniqueCountries.map(c => <option key={c} value={c}>{c}</option>)}
@@ -112,7 +112,7 @@ export default function UniversityView({ path, signals, constraints, onBack, onC
         <select 
           value={filterBudget}
           onChange={e => setFilterBudget(e.target.value)}
-          className="bg-ink-50 border border-ink-200 text-ink-700 text-xs sm:text-sm font-semibold rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 focus:outline-none focus:ring-2 focus:ring-violet-500/20 w-full md:w-auto"
+          className="bg-ink-50 border border-ink-200 text-ink-700 text-xs sm:text-sm font-semibold rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 focus:outline-none focus:ring-2 focus:ring-clay-500/20 w-full md:w-auto"
         >
           <option value="All">All Budgets</option>
           <option value="Low">Low Tuition / Funded</option>
@@ -122,7 +122,7 @@ export default function UniversityView({ path, signals, constraints, onBack, onC
         <select 
           value={filterDegree}
           onChange={e => setFilterDegree(e.target.value)}
-          className="bg-ink-50 border border-ink-200 text-ink-700 text-xs sm:text-sm font-semibold rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 focus:outline-none focus:ring-2 focus:ring-violet-500/20 w-full md:w-auto"
+          className="bg-ink-50 border border-ink-200 text-ink-700 text-xs sm:text-sm font-semibold rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 focus:outline-none focus:ring-2 focus:ring-clay-500/20 w-full md:w-auto"
         >
           <option value="All">All Degrees</option>
           {uniqueDegrees.map(d => <option key={d} value={d}>{d}</option>)}
@@ -131,7 +131,7 @@ export default function UniversityView({ path, signals, constraints, onBack, onC
         <select 
           value={filterIntake}
           onChange={e => setFilterIntake(e.target.value)}
-          className="bg-ink-50 border border-ink-200 text-ink-700 text-xs sm:text-sm font-semibold rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 focus:outline-none focus:ring-2 focus:ring-violet-500/20 w-full md:w-auto"
+          className="bg-ink-50 border border-ink-200 text-ink-700 text-xs sm:text-sm font-semibold rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 focus:outline-none focus:ring-2 focus:ring-clay-500/20 w-full md:w-auto"
         >
           <option value="All">All Intakes</option>
           {uniqueIntakes.map(i => <option key={i} value={i}>{i}</option>)}
@@ -140,7 +140,7 @@ export default function UniversityView({ path, signals, constraints, onBack, onC
         <select 
           value={filterScholarship}
           onChange={e => setFilterScholarship(e.target.value)}
-          className="bg-ink-50 border border-ink-200 text-ink-700 text-xs sm:text-sm font-semibold rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 focus:outline-none focus:ring-2 focus:ring-violet-500/20 w-full md:w-auto"
+          className="bg-ink-50 border border-ink-200 text-ink-700 text-xs sm:text-sm font-semibold rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 focus:outline-none focus:ring-2 focus:ring-clay-500/20 w-full md:w-auto"
         >
           <option value="All">Any Scholarship</option>
           <option value="Yes">Scholarships Available</option>
@@ -150,7 +150,7 @@ export default function UniversityView({ path, signals, constraints, onBack, onC
           {compareList.length > 0 && (
             <button
               onClick={() => setShowCompare(true)}
-              className="px-3.5 py-2 bg-violet-100 text-violet-700 hover:bg-violet-200 rounded-xl text-xs sm:text-sm font-bold transition-colors flex items-center space-x-1.5"
+              className="px-3.5 py-2 bg-clay-100 text-clay-700 hover:bg-clay-200 rounded-xl text-xs sm:text-sm font-bold transition-colors flex items-center space-x-1.5"
             >
               <span>Compare ({compareList.length})</span>
             </button>
@@ -185,7 +185,7 @@ export default function UniversityView({ path, signals, constraints, onBack, onC
           <p className="text-ink-500 mb-6">Try adjusting your filters or checking your career path.</p>
           <button 
             onClick={onBack}
-            className="px-6 py-3 bg-violet-600 text-white rounded-xl font-bold hover:bg-violet-700 transition-colors"
+            className="px-6 py-3 bg-clay-600 text-white rounded-xl font-bold hover:bg-clay-700 transition-colors"
           >
             Return to Career Paths
           </button>
@@ -210,7 +210,7 @@ export default function UniversityView({ path, signals, constraints, onBack, onC
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                   {/* Purple Gradient Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-r from-violet-900/90 via-violet-900/40 to-transparent"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-r from-clay-900/90 via-clay-900/40 to-transparent"></div>
                   
                   {/* Overlay Content */}
                   <div className="absolute bottom-0 left-0 p-6 lg:p-8 w-full">
@@ -234,22 +234,22 @@ export default function UniversityView({ path, signals, constraints, onBack, onC
                   {/* Top Row: Meta stats */}
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 pb-6 border-b border-ink-100">
                     <div>
-                      <p className="text-micro uppercase tracking-wider font-bold text-ink-400 mb-1">QS Rank</p>
+                      <p className="text-micro uppercase tracking-wider font-bold text-ink-500 mb-1">QS Rank</p>
                       <p className="text-base sm:text-xl font-extrabold text-ink-900">#{match.university.qsRanking}</p>
                     </div>
                     <div>
-                      <p className="text-micro uppercase tracking-wider font-bold text-ink-400 mb-1">Employability</p>
+                      <p className="text-micro uppercase tracking-wider font-bold text-ink-500 mb-1">Employability</p>
                       <p className="text-base sm:text-xl font-extrabold text-good-500">{match.programme.graduateEmployability}%</p>
                     </div>
                     <div>
-                      <p className="text-micro uppercase tracking-wider font-bold text-ink-400 mb-1">Difficulty</p>
+                      <p className="text-micro uppercase tracking-wider font-bold text-ink-500 mb-1">Difficulty</p>
                       <p className="text-xs sm:text-sm font-bold text-ink-900 mt-1">{match.programme.admissionDifficulty}</p>
                     </div>
                     <div>
-                      <p className="text-micro uppercase tracking-wider font-bold text-ink-400 mb-1">Match Score</p>
+                      <p className="text-micro uppercase tracking-wider font-bold text-ink-500 mb-1">Match Score</p>
                       <div className="flex items-center space-x-1 mt-1">
-                        <Sparkles className="h-3.5 w-3.5 text-violet-500" />
-                        <span className="text-xs sm:text-sm font-bold text-violet-600">{match.matchScore}%</span>
+                        <Sparkles className="h-3.5 w-3.5 text-clay-500" />
+                        <span className="text-xs sm:text-sm font-bold text-clay-600">{match.matchScore}%</span>
                       </div>
                     </div>
                   </div>
@@ -260,11 +260,11 @@ export default function UniversityView({ path, signals, constraints, onBack, onC
                       {match.programme.title}
                     </h3>
                     <div className="flex flex-wrap items-center gap-2.5 text-xs sm:text-sm font-medium text-ink-600">
-                      <span className="flex items-center"><DollarSign className="h-3.5 w-3.5 mr-0.5 text-ink-400"/> {match.programme.currency} {match.programme.tuitionFee.toLocaleString()}/yr (Tuition)</span>
-                      <span className="flex items-center"><DollarSign className="h-3.5 w-3.5 mr-0.5 text-ink-400"/> {match.programme.currency} {match.programme.livingCost.toLocaleString()}/yr (Living)</span>
-                      <span className="flex items-center"><Clock className="h-3.5 w-3.5 mr-0.5 text-ink-400"/> {match.programme.durationMonths} Mos</span>
+                      <span className="flex items-center"><DollarSign className="h-3.5 w-3.5 mr-0.5 text-ink-500"/> {match.programme.currency} {match.programme.tuitionFee.toLocaleString()}/yr (Tuition)</span>
+                      <span className="flex items-center"><DollarSign className="h-3.5 w-3.5 mr-0.5 text-ink-500"/> {match.programme.currency} {match.programme.livingCost.toLocaleString()}/yr (Living)</span>
+                      <span className="flex items-center"><Clock className="h-3.5 w-3.5 mr-0.5 text-ink-500"/> {match.programme.durationMonths} Mos</span>
                       {match.programme.scholarshipsAvailable && (
-                        <span className="flex items-center text-violet-700 bg-violet-50 px-2 py-0.5 rounded-md text-tiny font-bold border border-violet-200">
+                        <span className="flex items-center text-clay-700 bg-clay-50 px-2 py-0.5 rounded-md text-tiny font-bold border border-clay-200">
                           <Award className="h-3 w-3 mr-0.5"/> Scholarships
                         </span>
                       )}
@@ -274,7 +274,7 @@ export default function UniversityView({ path, signals, constraints, onBack, onC
                   {/* Personalized Explanation */}
                   <div className="bg-ink-50 border border-ink-100 rounded-2xl p-3.5 sm:p-4 mb-6">
                     <p className="text-xs sm:text-sm text-ink-700 leading-relaxed font-medium">
-                      <span className="font-bold text-violet-700 mr-2">Why this fits you:</span>
+                      <span className="font-bold text-clay-700 mr-2">Why this fits you:</span>
                       {match.personalizedExplanation}
                     </p>
                   </div>
@@ -288,7 +288,7 @@ export default function UniversityView({ path, signals, constraints, onBack, onC
                       onClick={() => toggleCompare(match)}
                       className={`flex-1 py-2.5 sm:py-3 rounded-xl font-bold text-xs sm:text-sm transition-colors border text-center ${
                         isCompared 
-                          ? 'bg-violet-50 text-violet-700 border-violet-200' 
+                          ? 'bg-clay-50 text-clay-700 border-clay-200' 
                           : 'bg-white text-ink-700 border-ink-200 hover:bg-ink-50'
                       }`}
                     >
@@ -298,7 +298,7 @@ export default function UniversityView({ path, signals, constraints, onBack, onC
                         'Compare'
                       )}
                     </button>
-                    <button className="p-2.5 sm:p-3 text-ink-400 hover:text-ink-900 bg-white border border-ink-200 rounded-xl hover:bg-ink-50 transition-colors shrink-0">
+                    <button className="p-2.5 sm:p-3 text-ink-500 hover:text-ink-900 bg-white border border-ink-200 rounded-xl hover:bg-ink-50 transition-colors shrink-0">
                       <Bookmark className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
                     </button>
                   </div>
@@ -344,21 +344,21 @@ export default function UniversityView({ path, signals, constraints, onBack, onC
                   fix is to let it scroll sideways with a visible affordance
                   rather than silently clipping inside `overflow-auto`. */}
               <div className="scroll-slim flex-1 overflow-auto p-4 sm:p-6">
-                <p className="mb-3 text-tiny text-ink-400 sm:hidden">Scroll sideways to compare →</p>
+                <p className="mb-3 text-tiny text-ink-500 sm:hidden">Scroll sideways to compare →</p>
                 <div className="grid min-w-[800px] grid-cols-4 gap-6">
                   {/* Labels Column */}
                   <div className="space-y-6 pt-48">
-                    <div className="text-sm font-bold text-ink-400 uppercase tracking-wider py-4 border-b border-ink-100">QS Rank</div>
-                    <div className="text-sm font-bold text-ink-400 uppercase tracking-wider py-4 border-b border-ink-100">Programme</div>
-                    <div className="text-sm font-bold text-ink-400 uppercase tracking-wider py-4 border-b border-ink-100">Tuition Fee</div>
-                    <div className="text-sm font-bold text-ink-400 uppercase tracking-wider py-4 border-b border-ink-100">Living Cost</div>
-                    <div className="text-sm font-bold text-ink-400 uppercase tracking-wider py-4 border-b border-ink-100">Scholarships</div>
-                    <div className="text-sm font-bold text-ink-400 uppercase tracking-wider py-4 border-b border-ink-100">Admission Difficulty</div>
-                    <div className="text-sm font-bold text-ink-400 uppercase tracking-wider py-4 border-b border-ink-100">Employability</div>
-                    <div className="text-sm font-bold text-ink-400 uppercase tracking-wider py-4 border-b border-ink-100">Research Strength</div>
-                    <div className="text-sm font-bold text-ink-400 uppercase tracking-wider py-4 border-b border-ink-100">Campus Size</div>
-                    <div className="text-sm font-bold text-ink-400 uppercase tracking-wider py-4 border-b border-ink-100">Intl. Diversity</div>
-                    <div className="text-sm font-bold text-ink-400 uppercase tracking-wider py-4">Industry Connections</div>
+                    <div className="text-sm font-bold text-ink-500 uppercase tracking-wider py-4 border-b border-ink-100">QS Rank</div>
+                    <div className="text-sm font-bold text-ink-500 uppercase tracking-wider py-4 border-b border-ink-100">Programme</div>
+                    <div className="text-sm font-bold text-ink-500 uppercase tracking-wider py-4 border-b border-ink-100">Tuition Fee</div>
+                    <div className="text-sm font-bold text-ink-500 uppercase tracking-wider py-4 border-b border-ink-100">Living Cost</div>
+                    <div className="text-sm font-bold text-ink-500 uppercase tracking-wider py-4 border-b border-ink-100">Scholarships</div>
+                    <div className="text-sm font-bold text-ink-500 uppercase tracking-wider py-4 border-b border-ink-100">Admission Difficulty</div>
+                    <div className="text-sm font-bold text-ink-500 uppercase tracking-wider py-4 border-b border-ink-100">Employability</div>
+                    <div className="text-sm font-bold text-ink-500 uppercase tracking-wider py-4 border-b border-ink-100">Research Strength</div>
+                    <div className="text-sm font-bold text-ink-500 uppercase tracking-wider py-4 border-b border-ink-100">Campus Size</div>
+                    <div className="text-sm font-bold text-ink-500 uppercase tracking-wider py-4 border-b border-ink-100">Intl. Diversity</div>
+                    <div className="text-sm font-bold text-ink-500 uppercase tracking-wider py-4">Industry Connections</div>
                   </div>
 
                   {/* University Columns */}
@@ -390,9 +390,9 @@ export default function UniversityView({ path, signals, constraints, onBack, onC
                   {Array.from({ length: 3 - compareList.length }).map((_, i) => (
                     <div key={`empty-${i}`} className="border-2 border-dashed border-ink-200 rounded-3xl flex flex-col items-center justify-center p-6 bg-ink-50/50">
                       <div className="h-12 w-12 rounded-full bg-ink-200 flex items-center justify-center mb-4">
-                        <span className="text-ink-400 font-bold">+</span>
+                        <span className="text-ink-500 font-bold">+</span>
                       </div>
-                      <p className="text-sm font-bold text-ink-400 text-center">Add another university to compare</p>
+                      <p className="text-sm font-bold text-ink-500 text-center">Add another university to compare</p>
                     </div>
                   ))}
                 </div>

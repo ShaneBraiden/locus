@@ -49,7 +49,7 @@ export default function CareerDetailView({
   const reqUni = ["medicine", "engineering", "law", "research", "architecture", "psychology", "business", "data science", "bioinformatics", "computational biology", "clinical data", "healthcare consulting", "strategy consulting", "hospital administration", "medical affairs", "regulatory", "computer science"].some(r => path.fieldName.toLowerCase().includes(r));
 
   return (
-    <div className="bg-ink-50 min-h-screen pb-24 text-ink-900 selection:bg-violet-200">
+    <div className="bg-ink-50 min-h-screen pb-24 text-ink-900 selection:bg-clay-200">
       
       {/* HERO SECTION */}
       <div className="relative h-[50vh] sm:h-[70vh] min-h-[380px] sm:min-h-[500px] w-full overflow-hidden">
@@ -75,7 +75,7 @@ export default function CareerDetailView({
 
         {/* Hero Content */}
         <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-12 z-20 max-w-5xl mx-auto flex flex-col items-start">
-          <div className="inline-flex items-center gap-1.5 bg-violet-400 text-ink-900 px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-micro sm:text-xs font-extrabold uppercase tracking-widest mb-3 sm:mb-4 shadow-e4">
+          <div className="inline-flex items-center gap-1.5 bg-clay-400 text-ink-900 px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-micro sm:text-xs font-extrabold uppercase tracking-widest mb-3 sm:mb-4 shadow-e4">
             <Sparkles className="h-3.5 sm:h-4 w-3.5 sm:w-4" />
             {path.matchScore}% MATCH
           </div>
@@ -112,7 +112,7 @@ export default function CareerDetailView({
                 onClick={() => onToggleCompare(path)}
                 className={`w-full sm:w-auto px-6 py-3 sm:px-8 sm:py-4 rounded-xl text-xs sm:text-sm font-extrabold uppercase tracking-wider border shadow-e4 backdrop-blur-md transition-transform hover:scale-105 flex items-center justify-center gap-2 ${
                   isSelected 
-                    ? "bg-violet-400/20 border-violet-400/50 text-violet-300" 
+                    ? "bg-clay-400/20 border-clay-400/50 text-clay-300" 
                     : "bg-white/10 border-white/20 text-white hover:bg-white/20"
                 }`}
               >
@@ -130,15 +130,15 @@ export default function CareerDetailView({
         <section>
           <div className="mb-6 sm:mb-8">
             <h2 className="text-xl sm:text-2xl font-extrabold text-ink-900 uppercase tracking-tight flex items-center gap-3">
-              <Sparkles className="h-5 sm:h-6 w-5 sm:w-6 text-violet-500" />
+              <Sparkles className="h-5 sm:h-6 w-5 sm:w-6 text-clay-500" />
               Why This Is For You
             </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {path.whyThisMatchesYou.map((reason, i) => (
               <div key={i} className="bg-white border border-ink-100 rounded-2xl p-5 sm:p-6 shadow-e2 flex items-start gap-4">
-                <div className="mt-1 flex-shrink-0 w-8 h-8 rounded-full bg-violet-50 flex items-center justify-center border border-violet-100">
-                  <Target className="h-4 w-4 text-violet-600" />
+                <div className="mt-1 flex-shrink-0 w-8 h-8 rounded-full bg-clay-50 flex items-center justify-center border border-clay-100">
+                  <Target className="h-4 w-4 text-clay-600" />
                 </div>
                 <p className="text-xs sm:text-sm font-medium text-ink-600 leading-relaxed">
                   {reason}
@@ -169,8 +169,8 @@ export default function CareerDetailView({
             ].map((stat, i) => (
               <div key={i} className="bg-white border border-ink-100 rounded-2xl p-3.5 sm:p-5 shadow-e2">
                 <div className="flex items-center gap-1.5 mb-1.5">
-                  <stat.icon className="h-3.5 w-3.5 text-ink-400" />
-                  <span className="text-micro sm:text-micro font-bold uppercase tracking-widest text-ink-400 truncate">{stat.label}</span>
+                  <stat.icon className="h-3.5 w-3.5 text-ink-500" />
+                  <span className="text-micro sm:text-micro font-bold uppercase tracking-widest text-ink-500 truncate">{stat.label}</span>
                 </div>
                 <p className="text-xs sm:text-sm md:text-base font-bold text-ink-900 leading-snug">{stat.value}</p>
               </div>
@@ -182,12 +182,12 @@ export default function CareerDetailView({
         <section>
           <div className="mb-6 sm:mb-8">
             <h2 className="text-xl sm:text-2xl font-extrabold text-ink-900 uppercase tracking-tight flex items-center gap-3">
-              <Sun className="h-5 sm:h-6 w-5 sm:w-6 text-violet-500" />
+              <Sun className="h-5 sm:h-6 w-5 sm:w-6 text-clay-500" />
               A Day In The Life
             </h2>
           </div>
           <div className="bg-white border border-ink-100 rounded-3xl p-5 sm:p-8 shadow-e2 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-24 h-24 sm:w-32 sm:h-32 bg-violet-50 rounded-bl-full -mr-8 -mt-8 sm:-mr-10 sm:-mt-10 opacity-50" />
+            <div className="absolute top-0 right-0 w-24 h-24 sm:w-32 sm:h-32 bg-clay-50 rounded-bl-full -mr-8 -mt-8 sm:-mr-10 sm:-mt-10 opacity-50" />
             <p className="text-sm sm:text-lg text-ink-600 leading-relaxed sm:leading-loose relative z-10 font-medium">
               {detail.dayInTheLife}
             </p>
@@ -198,7 +198,7 @@ export default function CareerDetailView({
         <section>
           <div className="mb-6 sm:mb-8">
             <h2 className="text-xl sm:text-2xl font-extrabold text-ink-900 uppercase tracking-tight flex items-center gap-3">
-              <Rocket className="h-5 sm:h-6 w-5 sm:w-6 text-violet-500" />
+              <Rocket className="h-5 sm:h-6 w-5 sm:w-6 text-clay-500" />
               Career Roadmap
             </h2>
           </div>
@@ -220,10 +220,10 @@ export default function CareerDetailView({
               )}
               {detail.timeline.map((stage, i) => (
                 <div key={i} className="relative pl-6 sm:pl-8">
-                  <div className="absolute -left-[5px] sm:-left-[9px] top-1 h-3 w-3 sm:h-4 sm:w-4 rounded-full bg-violet-100 border-2 border-violet-500" />
+                  <div className="absolute -left-[5px] sm:-left-[9px] top-1 h-3 w-3 sm:h-4 sm:w-4 rounded-full bg-clay-100 border-2 border-clay-500" />
                   <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-4 mb-1.5 sm:mb-2">
                     <h3 className="text-base sm:text-lg font-bold text-ink-900">{stage.title}</h3>
-                    <span className="self-start text-micro sm:text-xs font-bold uppercase tracking-wider text-violet-600 bg-violet-50 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md">
+                    <span className="self-start text-micro sm:text-xs font-bold uppercase tracking-wider text-clay-600 bg-clay-50 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md">
                       {stage.exp}
                     </span>
                   </div>
@@ -233,10 +233,10 @@ export default function CareerDetailView({
                 </div>
               ))}
               <div className="relative pl-6 sm:pl-8">
-                <div className="absolute -left-[5px] sm:-left-[9px] top-1 h-3 w-3 sm:h-4 sm:w-4 rounded-full bg-violet-100 border-2 border-violet-500" />
+                <div className="absolute -left-[5px] sm:-left-[9px] top-1 h-3 w-3 sm:h-4 sm:w-4 rounded-full bg-clay-100 border-2 border-clay-500" />
                 <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-4 mb-1.5 sm:mb-2">
                   <h3 className="text-base sm:text-lg font-bold text-ink-900">Specialization</h3>
-                  <span className="self-start text-micro sm:text-xs font-bold uppercase tracking-wider text-violet-600 bg-violet-50 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md">
+                  <span className="self-start text-micro sm:text-xs font-bold uppercase tracking-wider text-clay-600 bg-clay-50 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md">
                     10+ Years
                   </span>
                 </div>
@@ -258,7 +258,7 @@ export default function CareerDetailView({
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 sm:gap-6">
             <div className="bg-white border border-ink-100 rounded-3xl p-5 sm:p-6 shadow-e2">
-              <h3 className="text-micro sm:text-xs font-bold uppercase tracking-widest text-ink-400 mb-4 sm:mb-6">Technical Skills</h3>
+              <h3 className="text-micro sm:text-xs font-bold uppercase tracking-widest text-ink-500 mb-4 sm:mb-6">Technical Skills</h3>
               <div className="space-y-4">
                 {detail.skills.technical.map((s, i) => (
                   <div key={i}>
@@ -274,7 +274,7 @@ export default function CareerDetailView({
             </div>
             
             <div className="bg-white border border-ink-100 rounded-3xl p-5 sm:p-6 shadow-e2">
-              <h3 className="text-micro sm:text-xs font-bold uppercase tracking-widest text-ink-400 mb-4 sm:mb-6">Soft Skills</h3>
+              <h3 className="text-micro sm:text-xs font-bold uppercase tracking-widest text-ink-500 mb-4 sm:mb-6">Soft Skills</h3>
               <div className="space-y-4">
                 {detail.skills.soft.map((s, i) => (
                   <div key={i}>
@@ -290,7 +290,7 @@ export default function CareerDetailView({
             </div>
 
             <div className="bg-white border border-ink-100 rounded-3xl p-5 sm:p-6 shadow-e2">
-              <h3 className="text-micro sm:text-xs font-bold uppercase tracking-widest text-ink-400 mb-4 sm:mb-6">Emerging Skills</h3>
+              <h3 className="text-micro sm:text-xs font-bold uppercase tracking-widest text-ink-500 mb-4 sm:mb-6">Emerging Skills</h3>
               <div className="space-y-4">
                 {detail.skills.emerging.map((s, i) => (
                   <div key={i}>
@@ -298,7 +298,7 @@ export default function CareerDetailView({
                       <span>{s.name}</span>
                     </div>
                     <div className="h-1.5 w-full bg-ink-100 rounded-full overflow-hidden">
-                      <div className="h-full bg-violet-500 rounded-full" style={{ width: `${s.level}%` }} />
+                      <div className="h-full bg-clay-500 rounded-full" style={{ width: `${s.level}%` }} />
                     </div>
                   </div>
                 ))}
@@ -306,7 +306,7 @@ export default function CareerDetailView({
             </div>
 
             <div className="bg-white border border-ink-100 rounded-3xl p-5 sm:p-6 shadow-e2 lg:col-span-3">
-              <h3 className="text-micro sm:text-xs font-bold uppercase tracking-widest text-ink-400 mb-4">Transferable Skills</h3>
+              <h3 className="text-micro sm:text-xs font-bold uppercase tracking-widest text-ink-500 mb-4">Transferable Skills</h3>
               <div className="flex flex-wrap gap-2 sm:gap-3">
                 {detail.thriveTraits.map((t, i) => (
                   <span key={i} className="px-3 py-1.5 sm:px-4 sm:py-2 bg-ink-50 border border-ink-200 text-ink-700 rounded-xl text-xs sm:text-sm font-bold shadow-e2">
@@ -328,7 +328,7 @@ export default function CareerDetailView({
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6">
             <div className="bg-white border border-ink-100 rounded-3xl p-5 sm:p-6 shadow-e2">
-              <h3 className="text-micro sm:text-xs font-bold uppercase tracking-widest text-ink-400 mb-3">Top Industries</h3>
+              <h3 className="text-micro sm:text-xs font-bold uppercase tracking-widest text-ink-500 mb-3">Top Industries</h3>
               <ul className="space-y-2 sm:space-y-3">
                 {detail.globalOpportunities.industries.map((ind, i) => (
                   <li key={i} className="flex items-start gap-2 text-xs sm:text-sm font-medium text-ink-900">
@@ -338,7 +338,7 @@ export default function CareerDetailView({
               </ul>
             </div>
             <div className="bg-white border border-ink-100 rounded-3xl p-5 sm:p-6 shadow-e2">
-              <h3 className="text-micro sm:text-xs font-bold uppercase tracking-widest text-ink-400 mb-3">Top Recruiters</h3>
+              <h3 className="text-micro sm:text-xs font-bold uppercase tracking-widest text-ink-500 mb-3">Top Recruiters</h3>
               <ul className="space-y-2 sm:space-y-3">
                 {detail.globalOpportunities.employers.map((emp, i) => (
                   <li key={i} className="flex items-start gap-2 text-xs sm:text-sm font-medium text-ink-900">
@@ -348,7 +348,7 @@ export default function CareerDetailView({
               </ul>
             </div>
             <div className="bg-white border border-ink-100 rounded-3xl p-5 sm:p-6 shadow-e2">
-              <h3 className="text-micro sm:text-xs font-bold uppercase tracking-widest text-ink-400 mb-3">Top Countries</h3>
+              <h3 className="text-micro sm:text-xs font-bold uppercase tracking-widest text-ink-500 mb-3">Top Countries</h3>
               <ul className="space-y-2 sm:space-y-3">
                 {detail.globalOpportunities.countries.map((country, i) => (
                   <li key={i} className="flex items-start gap-2 text-xs sm:text-sm font-medium text-ink-900">
@@ -370,7 +370,7 @@ export default function CareerDetailView({
           </div>
           <div className="bg-white border border-ink-100 rounded-3xl p-5 sm:p-8 shadow-e2 grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-10">
             <div>
-              <h3 className="text-micro sm:text-xs font-bold uppercase tracking-widest text-ink-400 mb-3 sm:mb-4">Recommended Degrees</h3>
+              <h3 className="text-micro sm:text-xs font-bold uppercase tracking-widest text-ink-500 mb-3 sm:mb-4">Recommended Degrees</h3>
               <ul className="space-y-2 sm:space-y-3">
                 {detail.education.degrees.map((d, i) => (
                   <li key={i} className="flex items-start gap-3">
@@ -382,7 +382,7 @@ export default function CareerDetailView({
                 ))}
               </ul>
               
-              <h3 className="text-micro sm:text-xs font-bold uppercase tracking-widest text-ink-400 mb-3 sm:mb-4 mt-6 sm:mt-8">Masters & Specializations</h3>
+              <h3 className="text-micro sm:text-xs font-bold uppercase tracking-widest text-ink-500 mb-3 sm:mb-4 mt-6 sm:mt-8">Masters & Specializations</h3>
               <ul className="space-y-2 sm:space-y-3">
                 {detail.education.masters.map((m, i) => (
                   <li key={i} className="flex items-start gap-3">
@@ -396,7 +396,7 @@ export default function CareerDetailView({
             </div>
             
             <div>
-              <h3 className="text-micro sm:text-xs font-bold uppercase tracking-widest text-ink-400 mb-3 sm:mb-4">Professional Certifications</h3>
+              <h3 className="text-micro sm:text-xs font-bold uppercase tracking-widest text-ink-500 mb-3 sm:mb-4">Professional Certifications</h3>
               <ul className="space-y-2 sm:space-y-3">
                 {detail.education.certifications.map((c, i) => (
                   <li key={i} className="flex items-start gap-3">
@@ -408,7 +408,7 @@ export default function CareerDetailView({
                 ))}
               </ul>
 
-              <h3 className="text-micro sm:text-xs font-bold uppercase tracking-widest text-ink-400 mb-3 sm:mb-4 mt-6 sm:mt-8">Alternative Routes</h3>
+              <h3 className="text-micro sm:text-xs font-bold uppercase tracking-widest text-ink-500 mb-3 sm:mb-4 mt-6 sm:mt-8">Alternative Routes</h3>
               <ul className="space-y-2 sm:space-y-3">
                 {[...detail.education.alternative, ...detail.education.bridgePrograms].map((alt, i) => (
                   <li key={i} className="flex items-start gap-3">
@@ -433,31 +433,31 @@ export default function CareerDetailView({
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             <div className="bg-white border border-ink-100 rounded-3xl p-5 sm:p-6 shadow-e2">
-              <h3 className="text-micro sm:text-xs font-bold uppercase tracking-widest text-ink-400 mb-2">5-Year Outlook</h3>
+              <h3 className="text-micro sm:text-xs font-bold uppercase tracking-widest text-ink-500 mb-2">5-Year Outlook</h3>
               <p className="text-xs sm:text-sm font-bold text-ink-900 leading-relaxed">
                 {detail.futureDemandSubtitle}
               </p>
             </div>
             <div className="bg-white border border-ink-100 rounded-3xl p-5 sm:p-6 shadow-e2">
-              <h3 className="text-micro sm:text-xs font-bold uppercase tracking-widest text-ink-400 mb-2">10-Year Outlook</h3>
+              <h3 className="text-micro sm:text-xs font-bold uppercase tracking-widest text-ink-500 mb-2">10-Year Outlook</h3>
               <p className="text-xs sm:text-sm font-bold text-ink-900 leading-relaxed">
                 Continued {detail.futureDemand.toLowerCase()} demand as global integration and market sophistication deepens across {detail.globalOpportunities.growthRegions}.
               </p>
             </div>
             <div className="bg-white border border-ink-100 rounded-3xl p-5 sm:p-6 shadow-e2">
-              <h3 className="text-micro sm:text-xs font-bold uppercase tracking-widest text-ink-400 mb-2">AI Impact</h3>
+              <h3 className="text-micro sm:text-xs font-bold uppercase tracking-widest text-ink-500 mb-2">AI Impact</h3>
               <p className="text-xs sm:text-sm font-bold text-ink-900 leading-relaxed">
                 {detail.aiSafetySubtitle}
               </p>
             </div>
             <div className="bg-white border border-ink-100 rounded-3xl p-5 sm:p-6 shadow-e2 sm:col-span-2 lg:col-span-1">
-              <h3 className="text-micro sm:text-xs font-bold uppercase tracking-widest text-ink-400 mb-2">Emerging Opportunities</h3>
+              <h3 className="text-micro sm:text-xs font-bold uppercase tracking-widest text-ink-500 mb-2">Emerging Opportunities</h3>
               <p className="text-xs sm:text-sm font-bold text-ink-900 leading-relaxed">
                 Specializations in {detail.skills.emerging.map(s => s.name).join(", ")} will command premium compensation.
               </p>
             </div>
             <div className="bg-white border border-ink-100 rounded-3xl p-5 sm:p-6 shadow-e2 sm:col-span-2 lg:col-span-2">
-              <h3 className="text-micro sm:text-xs font-bold uppercase tracking-widest text-ink-400 mb-2">Career Risks</h3>
+              <h3 className="text-micro sm:text-xs font-bold uppercase tracking-widest text-ink-500 mb-2">Career Risks</h3>
               <p className="text-xs sm:text-sm font-bold text-ink-900 leading-relaxed">
                 {detail.struggleWarning}
               </p>
@@ -546,7 +546,7 @@ export default function CareerDetailView({
             <div className="w-full sm:w-auto shrink-0">
               <button
                 onClick={onContinue}
-                className="w-full sm:w-auto px-6 py-3.5 sm:px-8 sm:py-4 bg-violet-700 hover:bg-violet-900 text-white rounded-xl text-xs sm:text-sm font-extrabold uppercase tracking-wider shadow-e5 transition-transform hover:scale-105 flex items-center justify-center gap-2"
+                className="w-full sm:w-auto px-6 py-3.5 sm:px-8 sm:py-4 bg-clay-700 hover:bg-clay-900 text-white rounded-xl text-xs sm:text-sm font-extrabold uppercase tracking-wider shadow-e5 transition-transform hover:scale-105 flex items-center justify-center gap-2"
               >
                 {reqUni ? (
                   <>

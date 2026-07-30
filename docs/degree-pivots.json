@@ -1,0 +1,1705 @@
+{
+  "version": 1,
+  "source": "locus_psychometric_engine.xlsx, parsed 2026-07-30",
+  "tracks": {
+    "aligned": "the student's own degree is listed in the career's pivotFrom",
+    "bridge": "reachable with one extra qualification (gate = bridge)",
+    "pivot": "open to any graduate (gate = open)",
+    "locked": "the degree really is the gate (gate = locked)"
+  },
+  "degrees": [
+    {
+      "id": "b-sc-nursing",
+      "degreeName": "B.Sc. Nursing",
+      "topologyDegreeId": "b-sc-nursing",
+      "direct": [
+        "Staff Nurse",
+        "ICU/OT/NICU specialist",
+        "Nursing Officer (AIIMS, ESIC, Railways)",
+        "Nurse Practitioner (M.Sc)",
+        "Nursing Faculty"
+      ],
+      "adjacent": [
+        "Clinical Research Associate",
+        "Pharmacovigilance Associate",
+        "Medical Coder (CPC)",
+        "Medical Writer",
+        "Infection Control Nurse",
+        "Nursing Informatics",
+        "Public Health Nurse",
+        "Genetic Counsellor (M.Sc)",
+        "Lactation Consultant"
+      ],
+      "fullPivots": [
+        "IAS/IPS (UPSC CSE)",
+        "State PSC Officer",
+        "Bank PO (IBPS/SBI)",
+        "Hospital Administrator (MHA/MBA)",
+        "Public Health Programme Officer (MPH)",
+        "Medical Device Sales",
+        "Health-tech product & operations",
+        "HR Business Partner (MBA-HR)",
+        "Data Analyst",
+        "Corporate Lawyer (3-yr LLB)",
+        "Test Prep Educator",
+        "Entrepreneur"
+      ],
+      "bridgeQualification": "M.Sc Nursing · NCAHP registration to practise · PG Dip Clinical Research (55%) · CPC coding (AAPC) · MPH / MHA · UPSC CSE · IBPS PO · CAT → MBA",
+      "timeToPivot": "6 months – 2 years"
+    },
+    {
+      "id": "bachelor-of-pharmacy-b-pharm",
+      "degreeName": "Bachelor of Pharmacy (B.Pharm)",
+      "topologyDegreeId": "bachelor-of-pharmacy-b-pharm",
+      "direct": [
+        "Registered Pharmacist",
+        "Production & QA/QC",
+        "Regulatory Affairs",
+        "Drug Inspector (state exam)",
+        "M.Pharm (GPAT)",
+        "Community/hospital pharmacy"
+      ],
+      "adjacent": [
+        "Clinical Research Associate",
+        "Pharmacovigilance Associate",
+        "Medical Writer",
+        "Medical Coder (CPC)",
+        "Medical Affairs",
+        "Nutritionist (M.Sc)",
+        "Formulation Scientist",
+        "Pharma Product Manager"
+      ],
+      "fullPivots": [
+        "IAS/IPS (UPSC CSE)",
+        "State PSC Officer",
+        "Bank PO (IBPS/SBI)",
+        "Hospital Administrator (MHA/MBA)",
+        "Public Health Programme Officer (MPH)",
+        "Medical Device Sales",
+        "Health-tech product & operations",
+        "HR Business Partner (MBA-HR)",
+        "Data Analyst",
+        "Corporate Lawyer (3-yr LLB)",
+        "Test Prep Educator",
+        "Entrepreneur",
+        "CA/CS/CMA (Direct Entry)",
+        "Digital Marketing"
+      ],
+      "bridgeQualification": "GPAT → M.Pharm · NCAHP registration to practise · PG Dip Clinical Research (55%) · CPC coding (AAPC) · MPH / MHA · UPSC CSE · IBPS PO · CAT → MBA",
+      "timeToPivot": "6 months – 2 years"
+    },
+    {
+      "id": "b-sc-agriculture",
+      "degreeName": "B.Sc. Agriculture",
+      "topologyDegreeId": "b-sc-agriculture",
+      "direct": [
+        "Agricultural Scientist (ICAR)",
+        "Agriculture Extension Officer",
+        "Farm & Estate Manager",
+        "Agri-input technical roles",
+        "M.Sc (ICAR AIEEA-PG)"
+      ],
+      "adjacent": [
+        "Agritech Business Manager",
+        "Food Technologist",
+        "Environmental / Sustainability Analyst",
+        "Seed & Crop R&D",
+        "Rural Development Officer",
+        "Agri Credit Officer",
+        "Precision-agriculture & drone survey roles"
+      ],
+      "fullPivots": [
+        "IAS/IPS & Indian Forest Service (UPSC)",
+        "Bank PO and IBPS Agriculture Field Officer",
+        "MBA Agribusiness",
+        "Data Analyst",
+        "HR",
+        "Corporate Lawyer (3-yr LLB)",
+        "Entrepreneur",
+        "Content & agri-journalism"
+      ],
+      "bridgeQualification": "ICAR AIEEA-PG · UPSC CSE / IFoS · IBPS SO (Agri) · MBA (IIM-A FABM, NIAM, IARI) · DGCA Remote Pilot Certificate",
+      "timeToPivot": "1–2 years"
+    },
+    {
+      "id": "b-sc-biotechnology",
+      "degreeName": "B.Sc. Biotechnology",
+      "topologyDegreeId": "b-sc-biotechnology",
+      "direct": [
+        "Research Associate",
+        "Biotech QC/QA",
+        "M.Sc Biotech → PhD",
+        "Bioprocess technician",
+        "Academic research"
+      ],
+      "adjacent": [
+        "Clinical Research Associate",
+        "Pharmacovigilance Associate",
+        "Bioinformatics Analyst",
+        "Genetic Counsellor",
+        "Medical Writer",
+        "Biotech Entrepreneur",
+        "Regulatory Affairs",
+        "Forensic Scientist (M.Sc)"
+      ],
+      "fullPivots": [
+        "IAS/IPS (UPSC CSE)",
+        "State PSC Officer",
+        "Bank PO (IBPS/SBI)",
+        "Hospital Administrator (MHA/MBA)",
+        "Public Health Programme Officer (MPH)",
+        "Medical Device Sales",
+        "Health-tech product & operations",
+        "HR Business Partner (MBA-HR)",
+        "Data Analyst",
+        "Corporate Lawyer (3-yr LLB)",
+        "Test Prep Educator",
+        "Entrepreneur",
+        "CA/CS/CMA (Direct Entry)",
+        "Digital Marketing",
+        "Journalism"
+      ],
+      "bridgeQualification": "GAT-B / CUET-PG / CSIR-NET · NCAHP registration to practise · PG Dip Clinical Research (55%) · CPC coding (AAPC) · MPH / MHA · UPSC CSE · IBPS PO · CAT → MBA",
+      "timeToPivot": "6 months – 3 years"
+    },
+    {
+      "id": "b-sc-microbiology",
+      "degreeName": "B.Sc. Microbiology",
+      "topologyDegreeId": "b-sc-microbiology",
+      "direct": [
+        "Microbiologist",
+        "Clinical & food microbiology labs",
+        "Sterility and QC roles",
+        "M.Sc → PhD",
+        "Academic research"
+      ],
+      "adjacent": [
+        "Clinical Research Associate",
+        "Pharmacovigilance Associate",
+        "Epidemiologist (MPH)",
+        "Food Safety & Quality Analyst",
+        "Medical Coder (CPC)",
+        "Regulatory Affairs",
+        "Environmental Microbiology",
+        "Forensic Scientist (M.Sc)"
+      ],
+      "fullPivots": [
+        "IAS/IPS (UPSC CSE)",
+        "State PSC Officer",
+        "Bank PO (IBPS/SBI)",
+        "Hospital Administrator (MHA/MBA)",
+        "Public Health Programme Officer (MPH)",
+        "Medical Device Sales",
+        "Health-tech product & operations",
+        "HR Business Partner (MBA-HR)",
+        "Data Analyst",
+        "Corporate Lawyer (3-yr LLB)",
+        "Test Prep Educator",
+        "Entrepreneur",
+        "CA/CS/CMA (Direct Entry)",
+        "Technical Writer"
+      ],
+      "bridgeQualification": "CUET-PG / CSIR-NET · FSSAI food-safety certification · NCAHP registration to practise · PG Dip Clinical Research (55%) · CPC coding (AAPC) · MPH / MHA · UPSC CSE · IBPS PO · CAT → MBA",
+      "timeToPivot": "6 months – 3 years"
+    },
+    {
+      "id": "b-sc-medical-laboratory-technology-bmlt",
+      "degreeName": "B.Sc. Medical Laboratory Technology (BMLT)",
+      "topologyDegreeId": "b-sc-medical-laboratory-technology-bmlt",
+      "direct": [
+        "Medical Lab Technologist",
+        "Clinical Lab Supervisor",
+        "Blood-bank technologist",
+        "Phlebotomy lead",
+        "Histopathology/cytology technologist",
+        "MMLT or M.Sc → lab management"
+      ],
+      "adjacent": [
+        "Clinical Research Associate",
+        "Pharmacovigilance Associate",
+        "Medical Coder (CPC)",
+        "Lab QA & NABL auditor",
+        "Diagnostics product specialist",
+        "Lab equipment application specialist",
+        "Forensic lab roles",
+        "Veterinary diagnostics",
+        "Own diagnostic lab (with licences)"
+      ],
+      "fullPivots": [
+        "IAS/IPS (UPSC CSE)",
+        "State PSC Officer",
+        "Bank PO (IBPS/SBI)",
+        "Hospital Administrator (MHA/MBA)",
+        "Public Health Programme Officer (MPH)",
+        "Medical Device Sales",
+        "Health-tech product & operations",
+        "HR Business Partner (MBA-HR)",
+        "Data Analyst",
+        "Corporate Lawyer (3-yr LLB)",
+        "Test Prep Educator",
+        "Entrepreneur",
+        "Diagnostics sales & marketing",
+        "Diagnostic-chain operations"
+      ],
+      "bridgeQualification": "MMLT / M.Sc MLT · NCAHP registration · NABL / QA certification · CPC coding · MHA · UPSC CSE · IBPS PO",
+      "timeToPivot": "6 months – 2 years"
+    },
+    {
+      "id": "b-tech-biotechnology",
+      "degreeName": "B.Tech. Biotechnology",
+      "topologyDegreeId": "b-tech-biotechnology",
+      "direct": [
+        "Bioprocess Engineer",
+        "Biomanufacturing & scale-up",
+        "Biotech R&D",
+        "M.Tech/M.S → PhD",
+        "Bioreactor and downstream roles"
+      ],
+      "adjacent": [
+        "Bioinformatics",
+        "Clinical Research Associate",
+        "Regulatory Affairs",
+        "Biotech Entrepreneur (BIRAC BIG)",
+        "Data Scientist",
+        "Process Validation",
+        "Medical Device / diagnostics engineering"
+      ],
+      "fullPivots": [
+        "IAS/IPS (UPSC)",
+        "Management Consultant (MBA)",
+        "Software Developer",
+        "Data Analyst",
+        "Product Manager",
+        "Investment Banking",
+        "HR Business Partner",
+        "Technical Writer",
+        "Bank PO"
+      ],
+      "bridgeQualification": "GATE-BT · CAT/GMAT → MBA · coding portfolio · BIRAC BIG grant · UPSC CSE",
+      "timeToPivot": "0–2 years"
+    },
+    {
+      "id": "b-sc-food-technology-science",
+      "degreeName": "B.Sc. Food Technology / Science",
+      "topologyDegreeId": "b-sc-food-technology-science",
+      "direct": [
+        "Food Technologist",
+        "Product Development",
+        "Food QA/QC",
+        "FSSAI compliance",
+        "M.Sc/M.Tech Food Tech",
+        "Processing plant roles"
+      ],
+      "adjacent": [
+        "Food Safety Auditor (FSSAI/HACCP)",
+        "Nutritionist (M.Sc)",
+        "Agritech & FMCG product roles",
+        "Supply Chain & Procurement",
+        "Category Manager (FMCG/e-commerce)",
+        "Sensory & consumer research",
+        "Cloud kitchen or D2C food brand"
+      ],
+      "fullPivots": [
+        "IAS/IPS (UPSC)",
+        "Bank PO",
+        "MBA (FMCG marketing, operations)",
+        "Data Analyst",
+        "HR",
+        "Digital Marketing",
+        "Entrepreneur"
+      ],
+      "bridgeQualification": "FSSAI / HACCP / ISO 22000 auditor certification · M.Sc/M.Tech · CAT → MBA · UPSC CSE",
+      "timeToPivot": "6 months – 2 years"
+    },
+    {
+      "id": "bachelor-of-physiotherapy-bpt",
+      "degreeName": "Bachelor of Physiotherapy (BPT)",
+      "topologyDegreeId": "bachelor-of-physiotherapy-bpt",
+      "direct": [
+        "Physiotherapist (state council registration)",
+        "MPT specialisation",
+        "Hospital & clinic practice",
+        "Own clinic"
+      ],
+      "adjacent": [
+        "Sports Physiotherapist (MPT Sports)",
+        "Sports Scientist",
+        "Strength & Conditioning Coach",
+        "Ergonomics Consultant",
+        "Rehabilitation Manager",
+        "Clinical Research Associate",
+        "Medical Coder (CPC)",
+        "Medical Writer",
+        "Fitness Trainer / Nutrition Coach",
+        "Geriatric & home-care services"
+      ],
+      "fullPivots": [
+        "IAS/IPS (UPSC CSE)",
+        "State PSC Officer",
+        "Bank PO (IBPS/SBI)",
+        "Hospital Administrator (MHA/MBA)",
+        "Public Health Programme Officer (MPH)",
+        "Medical Device Sales",
+        "Health-tech product & operations",
+        "HR Business Partner (MBA-HR)",
+        "Data Analyst",
+        "Corporate Lawyer (3-yr LLB)",
+        "Test Prep Educator",
+        "Entrepreneur"
+      ],
+      "bridgeQualification": "MPT · NSCA-CSCS · NCAHP registration to practise · PG Dip Clinical Research (55%) · CPC coding (AAPC) · MPH / MHA · UPSC CSE · IBPS PO · CAT → MBA",
+      "timeToPivot": "6 months – 2 years"
+    },
+    {
+      "id": "b-sc-biochemistry",
+      "degreeName": "B.Sc. Biochemistry",
+      "topologyDegreeId": "b-sc-biochemistry",
+      "direct": [
+        "Biochemist",
+        "Clinical biochemistry lab",
+        "M.Sc → PhD",
+        "Academic research",
+        "Analytical & QC labs"
+      ],
+      "adjacent": [
+        "Clinical Research Associate",
+        "Pharmacovigilance Associate",
+        "Bioinformatics",
+        "Medical Writer",
+        "Medical Coder (CPC)",
+        "Nutritionist (M.Sc)",
+        "Forensic Scientist (M.Sc)",
+        "Regulatory Affairs",
+        "Diagnostics product specialist"
+      ],
+      "fullPivots": [
+        "IAS/IPS (UPSC CSE)",
+        "State PSC Officer",
+        "Bank PO (IBPS/SBI)",
+        "Hospital Administrator (MHA/MBA)",
+        "Public Health Programme Officer (MPH)",
+        "Medical Device Sales",
+        "Health-tech product & operations",
+        "HR Business Partner (MBA-HR)",
+        "Data Analyst",
+        "Corporate Lawyer (3-yr LLB)",
+        "Test Prep Educator",
+        "Entrepreneur",
+        "CA/CS/CMA (Direct Entry)",
+        "Data Analyst",
+        "Technical Writer"
+      ],
+      "bridgeQualification": "CUET-PG / CSIR-NET · NCAHP registration to practise · PG Dip Clinical Research (55%) · CPC coding (AAPC) · MPH / MHA · UPSC CSE · IBPS PO · CAT → MBA",
+      "timeToPivot": "6 months – 3 years"
+    },
+    {
+      "id": "b-sc-nutrition-dietetics",
+      "degreeName": "B.Sc. Nutrition & Dietetics",
+      "topologyDegreeId": "b-sc-nutrition-and-dietetics",
+      "direct": [
+        "Clinical Dietitian",
+        "Registered Dietitian (M.Sc + IDA RD exam)",
+        "Hospital dietetics",
+        "Community nutrition"
+      ],
+      "adjacent": [
+        "Sports Nutritionist",
+        "Fitness & Wellness Coach",
+        "Public Health Nutrition (MPH)",
+        "Food Product Development",
+        "Corporate wellness programmes",
+        "Nutrition content creator",
+        "Clinical Research Associate",
+        "Diabetes educator"
+      ],
+      "fullPivots": [
+        "IAS/IPS (UPSC CSE)",
+        "State PSC Officer",
+        "Bank PO (IBPS/SBI)",
+        "Hospital Administrator (MHA/MBA)",
+        "Public Health Programme Officer (MPH)",
+        "Medical Device Sales",
+        "Health-tech product & operations",
+        "HR Business Partner (MBA-HR)",
+        "Data Analyst",
+        "Corporate Lawyer (3-yr LLB)",
+        "Test Prep Educator",
+        "Entrepreneur",
+        "Brand & marketing roles in FMCG/wellness",
+        "Digital Marketing",
+        "Entrepreneur"
+      ],
+      "bridgeQualification": "M.Sc + IDA Registered Dietitian exam · ACE/NASM nutrition certification · MPH · NCAHP registration to practise · PG Dip Clinical Research (55%) · CPC coding (AAPC) · MPH / MHA · UPSC CSE · IBPS PO · CAT → MBA",
+      "timeToPivot": "1–2 years"
+    },
+    {
+      "id": "b-sc-medical-imaging-technology",
+      "degreeName": "B.Sc. Medical Imaging Technology",
+      "topologyDegreeId": "b-sc-medical-imaging-technology",
+      "direct": [
+        "Radiographer / Imaging Technologist",
+        "CT & MRI Technologist",
+        "Interventional radiology tech",
+        "M.Sc Medical Imaging",
+        "Radiology department supervisor"
+      ],
+      "adjacent": [
+        "Radiology AI annotation & validation",
+        "Imaging equipment application specialist",
+        "PACS / imaging informatics",
+        "Clinical Research Associate",
+        "Medical Coder (CPC)",
+        "Radiation Safety Officer (AERB)",
+        "Teleradiology operations",
+        "Nuclear medicine or radiotherapy technology (M.Sc)"
+      ],
+      "fullPivots": [
+        "IAS/IPS (UPSC CSE)",
+        "State PSC Officer",
+        "Bank PO (IBPS/SBI)",
+        "Hospital Administrator (MHA/MBA)",
+        "Public Health Programme Officer (MPH)",
+        "Medical Device Sales",
+        "Health-tech product & operations",
+        "HR Business Partner (MBA-HR)",
+        "Data Analyst",
+        "Corporate Lawyer (3-yr LLB)",
+        "Test Prep Educator",
+        "Entrepreneur",
+        "Medical imaging equipment sales",
+        "Diagnostic-chain operations"
+      ],
+      "bridgeQualification": "M.Sc Medical Imaging · NCAHP registration · AERB RSO certification · CPC coding · MHA · UPSC CSE · IBPS PO",
+      "timeToPivot": "6 months – 2 years"
+    },
+    {
+      "id": "b-tech-biomedical-engineering",
+      "degreeName": "B.Tech. Biomedical Engineering",
+      "topologyDegreeId": "b-tech-biomedical-engineering",
+      "direct": [
+        "Biomedical Engineer",
+        "Medical device design & R&D",
+        "Hospital equipment management",
+        "M.Tech/M.S → PhD",
+        "Clinical engineering"
+      ],
+      "adjacent": [
+        "Medical Device Regulatory Affairs (CDSCO/CE/FDA)",
+        "Health-tech product management",
+        "Medical device QA",
+        "Robotics & prosthetics engineering",
+        "Clinical Research Associate",
+        "Medical imaging systems",
+        "Health Tech Founder",
+        "Data Scientist"
+      ],
+      "fullPivots": [
+        "IAS/IPS (UPSC)",
+        "Management Consultant (MBA)",
+        "Software Developer",
+        "Data Analyst",
+        "Product Manager",
+        "Investment Banking",
+        "HR Business Partner",
+        "Technical Writer",
+        "Bank PO"
+      ],
+      "bridgeQualification": "GATE-BM · CAT/GMAT → MBA · regulatory affairs certification · coding portfolio · UPSC CSE",
+      "timeToPivot": "0–2 years"
+    },
+    {
+      "id": "b-sc-genetics",
+      "degreeName": "B.Sc. Genetics",
+      "topologyDegreeId": "b-sc-genetics",
+      "direct": [
+        "Geneticist",
+        "Cytogenetics & molecular diagnostics lab",
+        "M.Sc → PhD",
+        "Academic research"
+      ],
+      "adjacent": [
+        "Genetic Counsellor (M.Sc Genetic Counselling)",
+        "Bioinformatics Analyst",
+        "Clinical Research Associate",
+        "Pharmacogenomics",
+        "Prenatal & oncology diagnostics",
+        "Medical Writer",
+        "Forensic DNA analyst"
+      ],
+      "fullPivots": [
+        "IAS/IPS (UPSC CSE)",
+        "State PSC Officer",
+        "Bank PO (IBPS/SBI)",
+        "Hospital Administrator (MHA/MBA)",
+        "Public Health Programme Officer (MPH)",
+        "Medical Device Sales",
+        "Health-tech product & operations",
+        "HR Business Partner (MBA-HR)",
+        "Data Analyst",
+        "Corporate Lawyer (3-yr LLB)",
+        "Test Prep Educator",
+        "Entrepreneur",
+        "Data Analyst",
+        "Technical Writer",
+        "Science journalism"
+      ],
+      "bridgeQualification": "M.Sc Genetic Counselling (Kamineni, Manipal) · CUET-PG / CSIR-NET · NCAHP registration to practise · PG Dip Clinical Research (55%) · CPC coding (AAPC) · MPH / MHA · UPSC CSE · IBPS PO · CAT → MBA",
+      "timeToPivot": "1–3 years"
+    },
+    {
+      "id": "bachelor-of-optometry-b-optom",
+      "degreeName": "Bachelor of Optometry (B.Optom)",
+      "topologyDegreeId": "bachelor-of-optometry-b-optom",
+      "direct": [
+        "Optometrist",
+        "Contact lens & low-vision specialist",
+        "Hospital optometry",
+        "M.Optom",
+        "Own optical practice"
+      ],
+      "adjacent": [
+        "Vision Therapy & Orthoptics",
+        "Ophthalmic equipment application specialist",
+        "Clinical Research (ophthalmic trials)",
+        "Optical retail management",
+        "Medical Coder (CPC)",
+        "Community eye-health programmes",
+        "Optical product & lens R&D"
+      ],
+      "fullPivots": [
+        "IAS/IPS (UPSC CSE)",
+        "State PSC Officer",
+        "Bank PO (IBPS/SBI)",
+        "Hospital Administrator (MHA/MBA)",
+        "Public Health Programme Officer (MPH)",
+        "Medical Device Sales",
+        "Health-tech product & operations",
+        "HR Business Partner (MBA-HR)",
+        "Data Analyst",
+        "Corporate Lawyer (3-yr LLB)",
+        "Test Prep Educator",
+        "Entrepreneur",
+        "Optical retail chain entrepreneurship",
+        "Medical device sales"
+      ],
+      "bridgeQualification": "M.Optom · NCAHP registration · PG Dip Clinical Research · CPC coding · MHA · MPH · UPSC CSE · IBPS PO",
+      "timeToPivot": "6 months – 2 years"
+    },
+    {
+      "id": "b-sc-bioinformatics",
+      "degreeName": "B.Sc. Bioinformatics",
+      "topologyDegreeId": "b-sc-bioinformatics",
+      "direct": [
+        "Bioinformatics Analyst",
+        "Genomics data analysis",
+        "M.Sc/M.Tech → PhD",
+        "Computational biology research"
+      ],
+      "adjacent": [
+        "Data Scientist",
+        "Data Engineer",
+        "Computational genomics",
+        "Pharmacogenomics",
+        "Biostatistician",
+        "Clinical Data Management",
+        "AI/ML in drug discovery",
+        "Health-tech data roles"
+      ],
+      "fullPivots": [
+        "IAS/IPS (UPSC)",
+        "Bank PO",
+        "Software Developer",
+        "Business Intelligence Analyst",
+        "Product Manager",
+        "Management Consultant",
+        "Technical Writer",
+        "HR Analytics"
+      ],
+      "bridgeQualification": "CUET-PG / GATE-BT · Python/SQL portfolio · SAS or CDM certification · CAT → MBA · UPSC CSE",
+      "timeToPivot": "0–2 years"
+    },
+    {
+      "id": "b-sc-biomedical-sciences",
+      "degreeName": "B.Sc. Biomedical Sciences",
+      "topologyDegreeId": "b-sc-biomedical-sciences",
+      "direct": [
+        "Biomedical Scientist",
+        "Research Associate",
+        "Diagnostic & pathology labs",
+        "M.Sc → PhD",
+        "Academic research"
+      ],
+      "adjacent": [
+        "Clinical Research Associate",
+        "Pharmacovigilance Associate",
+        "Medical Coder (CPC)",
+        "Medical Writer",
+        "Epidemiologist (MPH)",
+        "Regulatory Affairs",
+        "Bioinformatics",
+        "Medical Affairs",
+        "Genetic Counsellor"
+      ],
+      "fullPivots": [
+        "IAS/IPS (UPSC CSE)",
+        "State PSC Officer",
+        "Bank PO (IBPS/SBI)",
+        "Hospital Administrator (MHA/MBA)",
+        "Public Health Programme Officer (MPH)",
+        "Medical Device Sales",
+        "Health-tech product & operations",
+        "HR Business Partner (MBA-HR)",
+        "Data Analyst",
+        "Corporate Lawyer (3-yr LLB)",
+        "Test Prep Educator",
+        "Entrepreneur",
+        "CA/CS/CMA (Direct Entry)",
+        "Data Analyst",
+        "Science journalism"
+      ],
+      "bridgeQualification": "CUET-PG / CSIR-NET · NCAHP registration to practise · PG Dip Clinical Research (55%) · CPC coding (AAPC) · MPH / MHA · UPSC CSE · IBPS PO · CAT → MBA",
+      "timeToPivot": "6 months – 3 years"
+    },
+    {
+      "id": "b-sc-operation-theatre-anaesthesia-technology-b-aott",
+      "degreeName": "B.Sc. Operation Theatre & Anaesthesia Technology (B.AOTT)",
+      "topologyDegreeId": "b-sc-operation-theatre-and-anaesthesia-technology-b-aott",
+      "direct": [
+        "OT Technologist",
+        "Anaesthesia Technologist",
+        "OT in-charge & sterile services lead",
+        "M.Sc OT/Anaesthesia Technology"
+      ],
+      "adjacent": [
+        "Surgical device application specialist",
+        "CSSD & infection control manager",
+        "Clinical Research Associate",
+        "Medical Coder (CPC)",
+        "Perfusion or critical-care technology (M.Sc)",
+        "Robotic surgery support technologist",
+        "OT equipment technical training roles"
+      ],
+      "fullPivots": [
+        "IAS/IPS (UPSC CSE)",
+        "State PSC Officer",
+        "Bank PO (IBPS/SBI)",
+        "Hospital Administrator (MHA/MBA)",
+        "Public Health Programme Officer (MPH)",
+        "Medical Device Sales",
+        "Health-tech product & operations",
+        "HR Business Partner (MBA-HR)",
+        "Data Analyst",
+        "Corporate Lawyer (3-yr LLB)",
+        "Test Prep Educator",
+        "Entrepreneur",
+        "Surgical device and implant sales",
+        "Hospital operations"
+      ],
+      "bridgeQualification": "M.Sc OT & Anaesthesia Technology · NCAHP registration · CPC coding · MHA · UPSC CSE · IBPS PO",
+      "timeToPivot": "6 months – 2 years"
+    },
+    {
+      "id": "bachelor-of-audiology-speech-language-pathology-baslp",
+      "degreeName": "Bachelor of Audiology & Speech-Language Pathology (BASLP)",
+      "topologyDegreeId": "bachelor-of-audiology-and-speech-language-pathology-baslp",
+      "direct": [
+        "Audiologist",
+        "Speech-Language Pathologist (RCI registration)",
+        "Hospital & school practice",
+        "M.ASLP",
+        "Own clinic"
+      ],
+      "adjacent": [
+        "Cochlear implant & hearing aid audiologist",
+        "Industrial & occupational audiology",
+        "Special Educator",
+        "Early-intervention specialist",
+        "Teletherapy practice",
+        "Clinical Research (ENT/audiology trials)",
+        "Hearing device product specialist",
+        "Accent & voice coach"
+      ],
+      "fullPivots": [
+        "IAS/IPS (UPSC CSE)",
+        "State PSC Officer",
+        "Bank PO (IBPS/SBI)",
+        "Hospital Administrator (MHA/MBA)",
+        "Public Health Programme Officer (MPH)",
+        "Medical Device Sales",
+        "Health-tech product & operations",
+        "HR Business Partner (MBA-HR)",
+        "Data Analyst",
+        "Corporate Lawyer (3-yr LLB)",
+        "Test Prep Educator",
+        "Entrepreneur",
+        "Sign Language Interpreter (ISL diploma)",
+        "EdTech content for speech therapy",
+        "Career Counsellor"
+      ],
+      "bridgeQualification": "M.ASLP · RCI registration · RCI B.Ed Special Education · PG Dip Clinical Research · MHA · UPSC CSE · IBPS PO",
+      "timeToPivot": "6 months – 2 years"
+    },
+    {
+      "id": "b-sc-cardiac-care-technology-b-sc-perfusion-technology",
+      "degreeName": "B.Sc. Cardiac Care Technology & B.Sc. Perfusion Technology",
+      "topologyDegreeId": "bsc-cardiac-care-and-perfusion-technology",
+      "direct": [
+        "Perfusionist",
+        "Cardiac Care Technologist",
+        "Cath-lab technologist",
+        "ECMO specialist",
+        "M.Sc Perfusion / Cardiovascular Technology"
+      ],
+      "adjacent": [
+        "Cardiac device & implant application specialist (pacemakers, stents, ECMO)",
+        "Cath-lab operations lead",
+        "Clinical Research Associate (cardiology trials)",
+        "Medical Coder (CPC)",
+        "Respiratory or critical-care technology (M.Sc)",
+        "Cardiac rehabilitation coordinator",
+        "Clinical applications trainer"
+      ],
+      "fullPivots": [
+        "IAS/IPS (UPSC CSE)",
+        "State PSC Officer",
+        "Bank PO (IBPS/SBI)",
+        "Hospital Administrator (MHA/MBA)",
+        "Public Health Programme Officer (MPH)",
+        "Medical Device Sales",
+        "Health-tech product & operations",
+        "HR Business Partner (MBA-HR)",
+        "Data Analyst",
+        "Corporate Lawyer (3-yr LLB)",
+        "Test Prep Educator",
+        "Entrepreneur",
+        "Cardiac device sales",
+        "Hospital operations"
+      ],
+      "bridgeQualification": "M.Sc Perfusion / Cardiovascular Technology · NCAHP registration · CPC coding · MHA · UPSC CSE · IBPS PO",
+      "timeToPivot": "6 months – 2 years"
+    },
+    {
+      "id": "b-sc-respiratory-therapy-b-rt",
+      "degreeName": "B.Sc. Respiratory Therapy (B.RT)",
+      "topologyDegreeId": "b-sc-respiratory-therapy-b-rt",
+      "direct": [
+        "Respiratory Therapist",
+        "ICU ventilator management",
+        "Pulmonary function lab",
+        "Sleep lab technologist",
+        "M.Sc Respiratory Therapy"
+      ],
+      "adjacent": [
+        "Ventilator & respiratory device application specialist",
+        "Sleep medicine technologist (RPSGT)",
+        "Pulmonary rehabilitation coordinator",
+        "Home-care respiratory services",
+        "Clinical Research Associate",
+        "Medical Coder (CPC)",
+        "Critical-care or perfusion technology (M.Sc)",
+        "Neonatal respiratory care"
+      ],
+      "fullPivots": [
+        "IAS/IPS (UPSC CSE)",
+        "State PSC Officer",
+        "Bank PO (IBPS/SBI)",
+        "Hospital Administrator (MHA/MBA)",
+        "Public Health Programme Officer (MPH)",
+        "Medical Device Sales",
+        "Health-tech product & operations",
+        "HR Business Partner (MBA-HR)",
+        "Data Analyst",
+        "Corporate Lawyer (3-yr LLB)",
+        "Test Prep Educator",
+        "Entrepreneur",
+        "Respiratory device sales",
+        "Hospital operations"
+      ],
+      "bridgeQualification": "M.Sc Respiratory Therapy · NCAHP registration · RPSGT · CPC coding · MHA · UPSC CSE · IBPS PO",
+      "timeToPivot": "6 months – 2 years"
+    },
+    {
+      "id": "bachelor-of-occupational-therapy-bot",
+      "degreeName": "Bachelor of Occupational Therapy (BOT)",
+      "topologyDegreeId": "bachelor-of-occupational-therapy-bot",
+      "direct": [
+        "Occupational Therapist (AIOTA registration)",
+        "MOT specialisation",
+        "Paediatric, neuro and hand therapy",
+        "Own practice"
+      ],
+      "adjacent": [
+        "Paediatric & sensory integration therapist",
+        "Hand therapy & splinting specialist",
+        "Ergonomics Consultant",
+        "Assistive technology & rehab engineering liaison",
+        "Special Educator",
+        "Vocational rehabilitation counsellor",
+        "Mental health occupational therapy",
+        "Clinical Research Associate",
+        "Medical Coder (CPC)"
+      ],
+      "fullPivots": [
+        "IAS/IPS (UPSC CSE)",
+        "State PSC Officer",
+        "Bank PO (IBPS/SBI)",
+        "Hospital Administrator (MHA/MBA)",
+        "Public Health Programme Officer (MPH)",
+        "Medical Device Sales",
+        "Health-tech product & operations",
+        "HR Business Partner (MBA-HR)",
+        "Data Analyst",
+        "Corporate Lawyer (3-yr LLB)",
+        "Test Prep Educator",
+        "Entrepreneur",
+        "Career Counsellor",
+        "Corporate wellness & ergonomics consulting"
+      ],
+      "bridgeQualification": "MOT · AIOTA registration · RCI B.Ed Special Education · PG Dip Clinical Research · MHA · UPSC CSE · IBPS PO",
+      "timeToPivot": "6 months – 2 years"
+    },
+    {
+      "id": "b-sc-physician-assistant-physician-associate",
+      "degreeName": "B.Sc. Physician Assistant / Physician Associate",
+      "topologyDegreeId": "b-sc-physician-assistant-physician-associate-b-sc-pa",
+      "direct": [
+        "Physician Assistant",
+        "Surgical & ICU assistant",
+        "Speciality clinic PA",
+        "M.Sc PA",
+        "Hospital clinical support lead"
+      ],
+      "adjacent": [
+        "Clinical Research Associate & Coordinator",
+        "Emergency & trauma care coordination",
+        "Medical Coder (CPC)",
+        "Medical Writer",
+        "Clinical documentation improvement specialist",
+        "Medical Affairs",
+        "Transplant coordinator",
+        "Health-tech clinical operations"
+      ],
+      "fullPivots": [
+        "IAS/IPS (UPSC CSE)",
+        "State PSC Officer",
+        "Bank PO (IBPS/SBI)",
+        "Hospital Administrator (MHA/MBA)",
+        "Public Health Programme Officer (MPH)",
+        "Medical Device Sales",
+        "Health-tech product & operations",
+        "HR Business Partner (MBA-HR)",
+        "Data Analyst",
+        "Corporate Lawyer (3-yr LLB)",
+        "Test Prep Educator",
+        "Entrepreneur",
+        "Clinical product management",
+        "Medical education content"
+      ],
+      "bridgeQualification": "M.Sc Physician Assistant · NCAHP registration · PG Dip Clinical Research · CPC coding · MHA · MPH · UPSC CSE",
+      "timeToPivot": "6 months – 2 years"
+    },
+    {
+      "id": "b-sc-emergency-medical-technology-trauma-care",
+      "degreeName": "B.Sc. Emergency Medical Technology / Trauma Care",
+      "topologyDegreeId": "b-sc-emergency-medical-technology-trauma-care-technology",
+      "direct": [
+        "Emergency Medical Technologist",
+        "Paramedic",
+        "Trauma & casualty coordinator",
+        "Ambulance services lead",
+        "M.Sc EMT"
+      ],
+      "adjacent": [
+        "Disaster management & emergency preparedness officer",
+        "Industrial & event medical services",
+        "Air & aviation medical transport",
+        "Emergency services training faculty",
+        "Clinical Research Associate",
+        "Medical Coder (CPC)",
+        "Health & Safety (EHS) Officer",
+        "Emergency device application specialist"
+      ],
+      "fullPivots": [
+        "IAS/IPS (UPSC CSE)",
+        "State PSC Officer",
+        "Bank PO (IBPS/SBI)",
+        "Hospital Administrator (MHA/MBA)",
+        "Public Health Programme Officer (MPH)",
+        "Medical Device Sales",
+        "Health-tech product & operations",
+        "HR Business Partner (MBA-HR)",
+        "Data Analyst",
+        "Corporate Lawyer (3-yr LLB)",
+        "Test Prep Educator",
+        "Entrepreneur",
+        "NDRF/defence medical support entries",
+        "Fire & safety services",
+        "Entrepreneur (ambulance services)"
+      ],
+      "bridgeQualification": "M.Sc EMT / Disaster Management · NCAHP registration · NEBOSH or Diploma in Industrial Safety · ACLS/PALS · MHA · UPSC CSE · IBPS PO",
+      "timeToPivot": "6 months – 2 years"
+    },
+    {
+      "id": "b-sc-neuro-electrophysiology-neurodiagnostic-technology",
+      "degreeName": "B.Sc. Neuro-Electrophysiology / Neurodiagnostic Technology",
+      "topologyDegreeId": "b-sc-neuro-electrophysiology-neurodiagnostic-technology",
+      "direct": [
+        "Neurophysiology Technologist",
+        "EEG / EMG / NCS technologist",
+        "Intraoperative neuromonitoring",
+        "Sleep lab",
+        "M.Sc Neurophysiology"
+      ],
+      "adjacent": [
+        "Intraoperative neuromonitoring specialist (IONM)",
+        "Epilepsy monitoring unit lead",
+        "Sleep medicine technologist (RPSGT)",
+        "Neuro device application specialist (DBS, EEG systems)",
+        "Clinical Research Associate (neurology trials)",
+        "Medical Coder (CPC)",
+        "Neuro-signal data & AI annotation roles"
+      ],
+      "fullPivots": [
+        "IAS/IPS (UPSC CSE)",
+        "State PSC Officer",
+        "Bank PO (IBPS/SBI)",
+        "Hospital Administrator (MHA/MBA)",
+        "Public Health Programme Officer (MPH)",
+        "Medical Device Sales",
+        "Health-tech product & operations",
+        "HR Business Partner (MBA-HR)",
+        "Data Analyst",
+        "Corporate Lawyer (3-yr LLB)",
+        "Test Prep Educator",
+        "Entrepreneur",
+        "Neuro device sales",
+        "Hospital operations"
+      ],
+      "bridgeQualification": "M.Sc Neurophysiology · NCAHP registration · RPSGT / CNIM · CPC coding · MHA · UPSC CSE · IBPS PO",
+      "timeToPivot": "6 months – 2 years"
+    },
+    {
+      "id": "b-sc-nuclear-medicine-technology",
+      "degreeName": "B.Sc. Nuclear Medicine Technology",
+      "topologyDegreeId": "b-sc-nuclear-medicine-technology",
+      "direct": [
+        "Nuclear Medicine Technologist",
+        "PET-CT & SPECT technologist",
+        "Radiopharmacy QC",
+        "M.Sc Nuclear Medicine Technology",
+        "Theranostics department roles"
+      ],
+      "adjacent": [
+        "Radiation Safety Officer (AERB)",
+        "Radiopharmaceutical production & QC",
+        "Radiotherapy or medical imaging technology (M.Sc)",
+        "Molecular imaging research",
+        "Clinical Research Associate (oncology & theranostics trials)",
+        "Nuclear imaging equipment application specialist",
+        "Medical Coder (CPC)"
+      ],
+      "fullPivots": [
+        "IAS/IPS (UPSC CSE)",
+        "State PSC Officer",
+        "Bank PO (IBPS/SBI)",
+        "Hospital Administrator (MHA/MBA)",
+        "Public Health Programme Officer (MPH)",
+        "Medical Device Sales",
+        "Health-tech product & operations",
+        "HR Business Partner (MBA-HR)",
+        "Data Analyst",
+        "Corporate Lawyer (3-yr LLB)",
+        "Test Prep Educator",
+        "Entrepreneur",
+        "Imaging & radiopharma sales",
+        "Diagnostic-chain operations"
+      ],
+      "bridgeQualification": "M.Sc Nuclear Medicine Technology · NCAHP registration · AERB RSO certification · CPC coding · MHA · UPSC CSE · IBPS PO",
+      "timeToPivot": "6 months – 2 years"
+    },
+    {
+      "id": "any-bachelor-s-degree-universal-doors",
+      "degreeName": "ANY bachelor's degree (universal doors)",
+      "topologyDegreeId": null,
+      "direct": [],
+      "adjacent": [],
+      "fullPivots": [
+        "IAS/IPS/IFS (UPSC CSE)",
+        "State PSC Officer",
+        "Bank PO (IBPS/SBI)",
+        "Lawyer (3-yr LLB)",
+        "CA / CS / CMA (Direct Entry)",
+        "Actuary (IAI)",
+        "School Teacher (B.Ed)",
+        "Social Worker (MSW)",
+        "HR Manager (MBA-HR)",
+        "Product Manager",
+        "Data Analyst",
+        "Digital Marketing",
+        "UX Designer",
+        "Journalist",
+        "Military Officer (CDS/AFCAT)",
+        "Entrepreneur"
+      ],
+      "bridgeQualification": "UPSC CSE · IBPS PO · 3-yr LLB · ICAI/ICSI/ICMAI Direct Entry · CAT/XAT/TISSNET · B.Ed + CTET · portfolio or certification",
+      "timeToPivot": "0–3 years depending on route"
+    },
+    {
+      "id": "b-tech-b-e-any-branch",
+      "degreeName": "B.Tech / B.E. — any branch",
+      "topologyDegreeId": null,
+      "direct": [
+        "Core-branch engineering",
+        "Design & R&D",
+        "PSU technical entry (GATE)",
+        "M.Tech / MS"
+      ],
+      "adjacent": [
+        "Software Developer",
+        "Data Scientist",
+        "Data Analyst",
+        "Product Manager",
+        "Technical Program Manager",
+        "QA Engineer",
+        "Cybersecurity",
+        "Cloud & DevOps",
+        "Solutions Engineer",
+        "Technical Writer",
+        "Patent Analyst"
+      ],
+      "fullPivots": [
+        "IAS/IPS (UPSC)",
+        "Management Consultant (MBA)",
+        "Investment Banker",
+        "HR Business Partner",
+        "Corporate Lawyer (3-yr LLB)",
+        "Test Prep Educator",
+        "Journalist",
+        "UX Designer",
+        "CA",
+        "Actuary",
+        "Bank PO"
+      ],
+      "bridgeQualification": "GATE · CAT/GMAT → MBA · UPSC CSE · certifications (AWS, ISTQB, CFA) · 3-yr LLB",
+      "timeToPivot": "0–2 years"
+    },
+    {
+      "id": "b-tech-cse-it-bca-b-sc-cs",
+      "degreeName": "B.Tech CSE / IT · BCA · B.Sc CS",
+      "topologyDegreeId": null,
+      "direct": [
+        "Software Developer",
+        "Data Engineer",
+        "AI/ML Engineer",
+        "Cybersecurity",
+        "Cloud Architect",
+        "DevOps",
+        "Game Developer"
+      ],
+      "adjacent": [
+        "Product Manager",
+        "Technical Program Manager",
+        "Solutions Engineer",
+        "Data Scientist",
+        "Blockchain Developer",
+        "Ethical Hacker",
+        "AI Solutions Engineer",
+        "Digital Product Designer",
+        "Salesforce Administrator"
+      ],
+      "fullPivots": [
+        "Management Consultant",
+        "Investment Banking (quant)",
+        "HR Analytics",
+        "Technical Recruiter",
+        "EdTech Founder",
+        "UPSC CSE",
+        "Bank PO",
+        "Technical Writer"
+      ],
+      "bridgeQualification": "MCA (NIMCET) · cloud & security certifications · CAT → MBA · UPSC CSE",
+      "timeToPivot": "0–2 years"
+    },
+    {
+      "id": "mbbs",
+      "degreeName": "MBBS",
+      "topologyDegreeId": null,
+      "direct": [
+        "Physician",
+        "Surgeon (NEET-PG)",
+        "Psychiatrist",
+        "Speciality consultant",
+        "Public-sector medical officer"
+      ],
+      "adjacent": [
+        "Epidemiologist (MPH)",
+        "Hospital Administrator (MHA)",
+        "Clinical Research",
+        "Medical Writer",
+        "Pharmacovigilance",
+        "Health Tech Founder",
+        "Medical Affairs",
+        "Medical Coder (CPC)"
+      ],
+      "fullPivots": [
+        "IAS/IPS (UPSC CSE)",
+        "Management Consultant (healthcare practice)",
+        "Health policy analyst",
+        "Medical journalism",
+        "Test-prep faculty",
+        "Bank PO"
+      ],
+      "bridgeQualification": "NEET-PG · MPH · MHA/MBA · UPSC CSE · medical writing certification",
+      "timeToPivot": "1–3 years"
+    },
+    {
+      "id": "bds-dental",
+      "degreeName": "BDS (Dental)",
+      "topologyDegreeId": null,
+      "direct": [
+        "Dental Surgeon",
+        "MDS specialisation",
+        "Clinic practice"
+      ],
+      "adjacent": [
+        "Medical Coder (CPC)",
+        "Clinical Research Associate",
+        "Pharmacovigilance",
+        "Medical Writer",
+        "Hospital Administrator",
+        "Public Health (MPH)",
+        "Dental product specialist"
+      ],
+      "fullPivots": [
+        "IAS/IPS (UPSC)",
+        "Bank PO",
+        "Medical device sales",
+        "Health-tech product roles",
+        "MBA (any function)"
+      ],
+      "bridgeQualification": "NEET-MDS · CPC coding · MPH · MHA · UPSC CSE",
+      "timeToPivot": "6 months – 2 years"
+    },
+    {
+      "id": "b-sc-physics-chemistry-maths",
+      "degreeName": "B.Sc — Physics / Chemistry / Maths",
+      "topologyDegreeId": null,
+      "direct": [
+        "Research (M.Sc → PhD)",
+        "Teaching",
+        "Lab & QC roles",
+        "ISRO/DRDO/BARC scientific entry"
+      ],
+      "adjacent": [
+        "Data Scientist",
+        "Data Analyst",
+        "Actuary",
+        "Quantitative Analyst",
+        "Nanotechnology",
+        "Astronomer (JEST)",
+        "Air Traffic Controller (PCM)",
+        "Semiconductor process roles"
+      ],
+      "fullPivots": [
+        "IAS/IPS (UPSC)",
+        "Bank PO",
+        "CA / CS / CMA",
+        "Management Consultant",
+        "Investment Banking",
+        "Test Prep Educator",
+        "Software Developer"
+      ],
+      "bridgeQualification": "JAM / JEST / GATE · IAI ACET · CAT → MBA · UPSC CSE · coding portfolio",
+      "timeToPivot": "6 months – 3 years"
+    },
+    {
+      "id": "b-sc-statistics-mathematics-ba-economics",
+      "degreeName": "B.Sc Statistics / Mathematics · BA Economics",
+      "topologyDegreeId": null,
+      "direct": [
+        "Statistician",
+        "Economist",
+        "Research Associate",
+        "M.Sc/MA → PhD"
+      ],
+      "adjacent": [
+        "Data Scientist",
+        "Data Analyst",
+        "Actuary",
+        "Risk Analyst",
+        "Equity Research",
+        "Market Research",
+        "Impact Evaluation",
+        "HR Analytics",
+        "Sports Analytics"
+      ],
+      "fullPivots": [
+        "IAS/IPS (UPSC)",
+        "Management Consultant",
+        "Investment Banker",
+        "CA",
+        "Policy Analyst",
+        "Product Manager",
+        "Bank PO"
+      ],
+      "bridgeQualification": "IAI ACET · CFA / FRM · CAT/GMAT → MBA · MA Public Policy · UPSC CSE",
+      "timeToPivot": "0–2 years"
+    },
+    {
+      "id": "b-com",
+      "degreeName": "B.Com",
+      "topologyDegreeId": null,
+      "direct": [
+        "Accountant",
+        "Audit Associate",
+        "Taxation",
+        "Banking operations"
+      ],
+      "adjacent": [
+        "CA / CS / CMA",
+        "Financial Analyst (FP&A)",
+        "Internal Auditor",
+        "Credit Analyst",
+        "Compliance Officer",
+        "Treasury Analyst",
+        "Payroll Specialist",
+        "Compensation & Benefits"
+      ],
+      "fullPivots": [
+        "IAS/IPS (UPSC)",
+        "Bank PO",
+        "Data Analyst",
+        "HR Business Partner",
+        "Digital Marketing",
+        "Product Manager",
+        "Corporate Lawyer (3-yr LLB)",
+        "Actuary"
+      ],
+      "bridgeQualification": "ICAI/ICSI/ICMAI Direct Entry · CFA / FRM / CIA · CAT → MBA · UPSC CSE · 3-yr LLB",
+      "timeToPivot": "0–4 years (CA is the long one)"
+    },
+    {
+      "id": "bba-bms-bbm",
+      "degreeName": "BBA / BMS / BBM",
+      "topologyDegreeId": null,
+      "direct": [
+        "Business Executive",
+        "Operations",
+        "Sales",
+        "Marketing coordinator"
+      ],
+      "adjacent": [
+        "HR Business Partner",
+        "Operations Manager",
+        "Supply Chain",
+        "Category Manager",
+        "Business Analyst",
+        "Marketing Manager",
+        "Revenue Operations",
+        "Customer Success"
+      ],
+      "fullPivots": [
+        "IAS/IPS (UPSC)",
+        "Bank PO",
+        "CA / CS / CMA",
+        "Data Analyst",
+        "Corporate Lawyer (3-yr LLB)",
+        "Product Manager",
+        "Entrepreneur"
+      ],
+      "bridgeQualification": "CAT/XAT/GMAT → MBA · ICAI Direct Entry · UPSC CSE · Six Sigma / PMP",
+      "timeToPivot": "0–2 years"
+    },
+    {
+      "id": "ba-psychology",
+      "degreeName": "BA Psychology",
+      "topologyDegreeId": null,
+      "direct": [
+        "Counsellor (MA)",
+        "Clinical Psychologist (RCI M.Phil)",
+        "Research Assistant"
+      ],
+      "adjacent": [
+        "HR Business Partner",
+        "Organisational Development",
+        "Career Counsellor",
+        "UX Researcher",
+        "Special Educator",
+        "Life Coach",
+        "Market Research",
+        "Genetic Counsellor",
+        "D&I Manager"
+      ],
+      "fullPivots": [
+        "IAS/IPS (UPSC)",
+        "Bank PO",
+        "Content Strategist",
+        "Corporate Trainer",
+        "Marketing & brand strategy",
+        "Corporate Lawyer (3-yr LLB)"
+      ],
+      "bridgeQualification": "MA Psychology · RCI M.Phil · TISSNET / CAT → MBA-HR · UX portfolio · UPSC CSE",
+      "timeToPivot": "1–3 years"
+    },
+    {
+      "id": "ba-english-literature-languages",
+      "degreeName": "BA English / Literature / Languages",
+      "topologyDegreeId": null,
+      "direct": [
+        "Teaching (B.Ed / NET)",
+        "Editing",
+        "Publishing",
+        "Translation"
+      ],
+      "adjacent": [
+        "Content Strategist",
+        "Copywriter",
+        "Technical Writer",
+        "UX Writer",
+        "Localisation Specialist",
+        "Journalist",
+        "Screenwriter",
+        "Instructional Designer",
+        "Corporate Communications"
+      ],
+      "fullPivots": [
+        "IAS/IPS (UPSC)",
+        "Bank PO",
+        "HR roles",
+        "Digital Marketing",
+        "Product Marketing",
+        "Corporate Lawyer (3-yr LLB)",
+        "CA (Direct Entry)"
+      ],
+      "bridgeQualification": "Portfolio · IIMC/ACJ PG Diploma · UGC-NET · CAT → MBA · UPSC CSE · 3-yr LLB",
+      "timeToPivot": "0–2 years"
+    },
+    {
+      "id": "ba-political-science-sociology-history",
+      "degreeName": "BA Political Science / Sociology / History",
+      "topologyDegreeId": null,
+      "direct": [
+        "Teaching (NET/PhD)",
+        "Research Associate",
+        "Archival & museum work"
+      ],
+      "adjacent": [
+        "Policy Analyst",
+        "NGO Programme Manager",
+        "CSR Manager",
+        "Impact Evaluation",
+        "Political Consultant",
+        "Museum Curator",
+        "Public Health Programme Officer"
+      ],
+      "fullPivots": [
+        "IAS/IPS/IFS (UPSC — this stream is over-represented)",
+        "State PSC",
+        "Bank PO",
+        "HR",
+        "Journalism",
+        "Corporate Lawyer (3-yr LLB)",
+        "Content Strategy"
+      ],
+      "bridgeQualification": "UPSC CSE · MA Public Policy / MSW · UGC-NET · 3-yr LLB · CAT → MBA",
+      "timeToPivot": "1–3 years"
+    },
+    {
+      "id": "ba-b-sc-journalism-mass-communication",
+      "degreeName": "BA / B.Sc Journalism & Mass Communication",
+      "topologyDegreeId": null,
+      "direct": [
+        "Reporter",
+        "Editor",
+        "Broadcast producer",
+        "PR executive"
+      ],
+      "adjacent": [
+        "Content Strategist",
+        "Corporate Communications",
+        "Social Media Manager",
+        "Podcast Producer",
+        "Documentary Filmmaker",
+        "Community Manager",
+        "Sports Broadcaster"
+      ],
+      "fullPivots": [
+        "IAS/IPS (UPSC)",
+        "Bank PO",
+        "Brand Strategy",
+        "Digital Marketing",
+        "HR",
+        "Product Marketing",
+        "Political Consultant"
+      ],
+      "bridgeQualification": "Portfolio of clips · IIMC/ACJ · MICA PGDM · UPSC CSE",
+      "timeToPivot": "0–2 years"
+    },
+    {
+      "id": "b-des-bfa-design-fine-arts",
+      "degreeName": "B.Des / BFA (Design & Fine Arts)",
+      "topologyDegreeId": null,
+      "direct": [
+        "Graphic Designer",
+        "Product Designer",
+        "Animator",
+        "Illustrator",
+        "Fashion & Textile Designer"
+      ],
+      "adjacent": [
+        "UX/UI Designer",
+        "Digital Product Designer",
+        "Art Director",
+        "Production Designer",
+        "Game Designer",
+        "Brand Strategist",
+        "Motion & VFX"
+      ],
+      "fullPivots": [
+        "Product Manager",
+        "Marketing Manager",
+        "Entrepreneur",
+        "Instructional Designer",
+        "Content Strategy",
+        "UPSC CSE"
+      ],
+      "bridgeQualification": "Portfolio · M.Des via CEED · UX certification · CAT → MBA",
+      "timeToPivot": "0–18 months"
+    },
+    {
+      "id": "b-arch",
+      "degreeName": "B.Arch",
+      "topologyDegreeId": null,
+      "direct": [
+        "Architect (CoA registration)",
+        "Interior Design",
+        "Project Architect"
+      ],
+      "adjacent": [
+        "Urban Planner (M.Plan)",
+        "Industrial Designer (M.Des)",
+        "Production Designer",
+        "BIM & construction tech",
+        "Real Estate Consultant",
+        "Landscape Design"
+      ],
+      "fullPivots": [
+        "IAS/IPS (UPSC)",
+        "Product Manager",
+        "UX Designer",
+        "Management Consultant (infra)",
+        "Entrepreneur",
+        "Bank PO"
+      ],
+      "bridgeQualification": "GATE-AR → M.Plan/M.Arch · CEED → M.Des · UPSC CSE · CAT → MBA",
+      "timeToPivot": "1–2 years"
+    },
+    {
+      "id": "bhm-hotel-management",
+      "degreeName": "BHM (Hotel Management)",
+      "topologyDegreeId": null,
+      "direct": [
+        "Hotel Operations",
+        "F&B Manager",
+        "Chef",
+        "Front Office",
+        "Cruise & airline hospitality"
+      ],
+      "adjacent": [
+        "Event Manager",
+        "Travel & Tourism Manager",
+        "Culinary Entrepreneur",
+        "Sommelier",
+        "Customer Success",
+        "Facility Management"
+      ],
+      "fullPivots": [
+        "IAS/IPS (UPSC)",
+        "Bank PO",
+        "HR Manager",
+        "Sales & BD",
+        "Marketing",
+        "Entrepreneur"
+      ],
+      "bridgeQualification": "MBA Hospitality · WSET · CAT → MBA · UPSC CSE",
+      "timeToPivot": "0–2 years"
+    },
+    {
+      "id": "llb-ba-llb",
+      "degreeName": "LLB / BA-LLB",
+      "topologyDegreeId": null,
+      "direct": [
+        "Advocate",
+        "Corporate Lawyer",
+        "Judiciary (PCS-J)",
+        "Legal Counsel"
+      ],
+      "adjacent": [
+        "Compliance Officer",
+        "Legal Operations",
+        "Company Secretary",
+        "Contract Manager",
+        "Policy Analyst",
+        "AI Ethics & Policy",
+        "Employee Relations / IR"
+      ],
+      "fullPivots": [
+        "IAS/IPS (UPSC)",
+        "Bank PO",
+        "Management Consultant",
+        "Investment Banking (legal)",
+        "Journalism",
+        "Entrepreneur"
+      ],
+      "bridgeQualification": "AIBE · PCS-J · ICSI · NISM/IIBF compliance certifications · UPSC CSE",
+      "timeToPivot": "0–2 years"
+    },
+    {
+      "id": "bped-b-sc-sports-science",
+      "degreeName": "BPEd / B.Sc Sports Science",
+      "topologyDegreeId": null,
+      "direct": [
+        "PE Teacher",
+        "Sports Coach (NIS)",
+        "Athlete support staff"
+      ],
+      "adjacent": [
+        "Sports Scientist",
+        "Strength & Conditioning Coach",
+        "Fitness Trainer",
+        "Sports Manager/Agent",
+        "Sports Analytics",
+        "Sports Broadcaster"
+      ],
+      "fullPivots": [
+        "UPSC CSE",
+        "Bank PO",
+        "Corporate Trainer",
+        "Event Manager",
+        "HR (L&D)",
+        "Entrepreneur"
+      ],
+      "bridgeQualification": "NIS Patiala Diploma · NSCA-CSCS · M.Sc Sports Science · MBA Sports Management",
+      "timeToPivot": "6 months – 2 years"
+    },
+    {
+      "id": "bsw-msw-social-work",
+      "degreeName": "BSW / MSW (Social Work)",
+      "topologyDegreeId": null,
+      "direct": [
+        "Social Worker",
+        "Community Development Officer",
+        "Counsellor",
+        "Field Programme Officer"
+      ],
+      "adjacent": [
+        "NGO Programme Manager",
+        "CSR Manager",
+        "Fundraising & Grants",
+        "Impact Evaluation",
+        "Public Health Programme Officer",
+        "D&I Manager",
+        "Employee Relations"
+      ],
+      "fullPivots": [
+        "IAS/IPS (UPSC)",
+        "HR Business Partner",
+        "Bank PO",
+        "Policy Analyst",
+        "Corporate Trainer",
+        "Journalism"
+      ],
+      "bridgeQualification": "TISSNET → MA HRM/Development · MPH · UPSC CSE · DEI certification",
+      "timeToPivot": "0–2 years"
+    },
+    {
+      "id": "b-ed-teaching-background",
+      "degreeName": "B.Ed / teaching background",
+      "topologyDegreeId": null,
+      "direct": [
+        "School Teacher",
+        "Subject Head",
+        "Special Educator",
+        "Principal (with experience)"
+      ],
+      "adjacent": [
+        "Instructional Designer",
+        "Academic Content Developer",
+        "EdTech product roles",
+        "Test Prep Educator",
+        "Career Counsellor",
+        "Corporate Trainer",
+        "L&D Manager"
+      ],
+      "fullPivots": [
+        "UPSC CSE",
+        "State PSC",
+        "Bank PO",
+        "HR Business Partner",
+        "Content Strategy",
+        "EdTech entrepreneur"
+      ],
+      "bridgeQualification": "CTET/TET · M.Ed · instructional design certification · counselling certification · UPSC CSE",
+      "timeToPivot": "0–18 months"
+    },
+    {
+      "id": "b-voc-diploma-polytechnic",
+      "degreeName": "B.Voc / Diploma / Polytechnic",
+      "topologyDegreeId": null,
+      "direct": [
+        "Technician",
+        "Supervisor",
+        "Skilled trade roles"
+      ],
+      "adjacent": [
+        "Lateral entry to B.Tech (2nd year)",
+        "CNC & automation",
+        "Drone Pilot",
+        "IT Support",
+        "Field Service Engineer",
+        "Quality Inspector"
+      ],
+      "fullPivots": [
+        "Sales",
+        "Retail Manager",
+        "Entrepreneur",
+        "Real Estate Consultant",
+        "Fitness Trainer",
+        "Content Creator",
+        "Bank clerical (after graduation)"
+      ],
+      "bridgeQualification": "B.Tech lateral entry · DGCA Remote Pilot Certificate · CompTIA · trade certifications · open-university degree",
+      "timeToPivot": "1–3 years"
+    },
+    {
+      "id": "no-degree-class-12-only",
+      "degreeName": "No degree / Class 12 only",
+      "topologyDegreeId": null,
+      "direct": [],
+      "adjacent": [
+        "CA/CS/CMA Foundation",
+        "NDA (Defence)",
+        "DGCA CPL (with PCM)",
+        "Merchant Navy DNS",
+        "Fitness Trainer",
+        "Drone Pilot",
+        "Chef (IHM diploma)",
+        "Cabin Crew"
+      ],
+      "fullPivots": [
+        "Content Creator",
+        "Entrepreneur",
+        "Real Estate Consultant",
+        "Sales",
+        "Makeup Artist",
+        "Tattoo Artist",
+        "Musician",
+        "Athlete",
+        "Esports Player",
+        "D2C Brand Founder"
+      ],
+      "bridgeQualification": "ICAI/ICSI/ICMAI Foundation · NDA · DGCA CPL/RPC · certification-based trades · open-university graduation for exam eligibility",
+      "timeToPivot": "0–4 years"
+    }
+  ]
+}

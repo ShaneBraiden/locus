@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../../auth/AuthContext";
 import { Logo } from "../Logo";
-import { Button, cx, inputClass } from "../../ui";
+import { Button, Wash, cx, inputClass } from "../../ui";
 
 type Mode = "login" | "register";
 
@@ -57,7 +57,7 @@ function Field({
         {label}
       </label>
       <div className="relative">
-        <Icon className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-400" />
+        <Icon className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-500" />
         <input
           id={id}
           name={id}
@@ -102,7 +102,7 @@ function PasswordToggle({
       onClick={onToggle}
       tabIndex={-1}
       aria-label={visible ? "Hide password" : "Show password"}
-      className="rounded-md p-2 text-ink-400 transition-colors hover:bg-ink-100 hover:text-ink-700 cursor-pointer"
+      className="rounded-full p-2 text-ink-500 transition-colors hover:bg-ink-100 hover:text-ink-700 cursor-pointer"
     >
       {visible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
     </button>
@@ -201,25 +201,32 @@ export default function AuthPage() {
     // first impression at all.
     <div className="grid min-h-[100dvh] w-full font-sans text-ink-900 lg:grid-cols-[1.1fr_1fr]">
 
-      {/* Brand panel — desktop only. */}
-      <aside className="relative hidden flex-col justify-between overflow-hidden bg-ink-950 p-12 lg:flex">
-        {/* Ambient gold wash, echoing the logo's gradient. */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -left-32 -top-32 h-[36rem] w-[36rem] rounded-full opacity-25 blur-3xl"
-          style={{ background: "radial-gradient(circle, #D3A86C 0%, transparent 65%)" }}
+      {/* Brand panel — desktop only. Deep loam rather than near-black: the
+          panel should read as forest floor, not as a void. */}
+      <aside className="relative hidden flex-col justify-between overflow-hidden bg-ink-900 p-12 lg:flex">
+        {/*
+          Two ambient washes. Moss drifts slowly at top-left, clay sits still
+          at bottom-right — one moving element per screen is enough to feel
+          alive, and the second would start competing. Both are blurred past
+          recognition so what registers is warmth, not a shape.
+        */}
+        <Wash
+          shape={0}
+          tone="moss"
+          animate
+          className="-left-32 -top-32 h-[36rem] w-[36rem] opacity-30"
         />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -bottom-40 -right-24 h-[30rem] w-[30rem] rounded-full opacity-15 blur-3xl"
-          style={{ background: "radial-gradient(circle, #7B50E8 0%, transparent 65%)" }}
+        <Wash
+          shape={2}
+          tone="clay"
+          className="-bottom-40 -right-24 h-[30rem] w-[30rem] opacity-25"
         />
 
         <div className="relative flex items-center gap-3">
-          <Logo className="h-11 w-11 rounded-xl" />
+          <Logo className="h-11 w-11 rounded-full" />
           <div>
             <div className="font-display text-xl font-bold tracking-tight text-white">northr</div>
-            <div className="font-mono text-micro font-bold uppercase tracking-widest text-white/40">
+            <div className="font-sans text-micro font-extrabold uppercase tracking-[0.14em] text-white/40">
               Your Career OS
             </div>
           </div>
@@ -228,7 +235,7 @@ export default function AuthPage() {
         <div className="relative max-w-md">
           <h2 className="font-display text-4xl font-bold leading-[1.05] tracking-tight text-white text-balance">
             From clinical chaos to{" "}
-            <span className="text-gradient-gold">actual clarity.</span>
+            <span className="text-gradient-moss">actual clarity.</span>
           </h2>
           <p className="mt-5 text-base leading-relaxed text-white/60 text-pretty">
             FAB just talks to you. Underneath, every answer maps onto a 25-item
@@ -244,10 +251,10 @@ export default function AuthPage() {
             ["11", "languages"],
           ].map(([n, label]) => (
             <div key={label}>
-              <dt data-numeric className="font-display text-2xl font-bold text-gold-300">
+              <dt data-numeric className="font-display text-2xl font-bold text-moss-300">
                 {n}
               </dt>
-              <dd className="mt-1 font-mono text-micro font-bold uppercase tracking-widest text-white/40">
+              <dd className="mt-1 font-sans text-micro font-extrabold uppercase tracking-[0.14em] text-white/40">
                 {label}
               </dd>
             </div>
@@ -256,11 +263,20 @@ export default function AuthPage() {
       </aside>
 
       {/* Form panel */}
-      <main className="flex items-center justify-center bg-white px-4 py-10 sm:px-8">
-        <div className="w-full max-w-sm">
+      <main className="relative flex items-center justify-center overflow-hidden bg-ink-50 px-4 py-10 sm:px-8">
+        {/* A single sand wash bled off the bottom-left corner. Barely there —
+            enough that the form sits on a field rather than on a flat fill,
+            never enough to fight the inputs for attention. */}
+        <Wash
+          shape={4}
+          tone="sand"
+          className="-bottom-48 -left-32 h-[28rem] w-[28rem] opacity-40"
+        />
+
+        <div className="relative w-full max-w-sm">
           {/* Compact brand lockup, mobile only. */}
           <div className="mb-8 flex items-center gap-2.5 lg:hidden">
-            <Logo className="h-10 w-10 rounded-xl" />
+            <Logo className="h-10 w-10 rounded-full" />
             <span className="font-display text-xl font-bold tracking-tight">northr</span>
           </div>
 
@@ -278,7 +294,7 @@ export default function AuthPage() {
           <div
             role="tablist"
             aria-label="Authentication mode"
-            className="mb-6 grid grid-cols-2 gap-1 rounded-xl border border-ink-100 bg-ink-50 p-1"
+            className="mb-6 grid grid-cols-2 gap-1 rounded-full border border-ink-200/60 bg-ink-100/70 p-1.5"
           >
             {(["login", "register"] as Mode[]).map((m) => (
               <button
@@ -287,9 +303,9 @@ export default function AuthPage() {
                 type="button"
                 aria-selected={mode === m}
                 onClick={() => switchMode(m)}
-                className={`rounded-lg px-3 py-2 text-sm font-semibold transition-colors ${
+                className={`rounded-full px-3 py-2 text-sm font-bold transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                   mode === m
-                    ? "bg-white text-ink-900 shadow-e2"
+                    ? "bg-ink-25 text-ink-900 shadow-soft"
                     : "text-ink-500 hover:text-ink-800"
                 }`}
               >
@@ -404,7 +420,7 @@ export default function AuthPage() {
           <Button variant="outline" size="lg" block onClick={loginAsGuest} disabled={isSubmitting}>
             Continue as guest
           </Button>
-          <p className="mt-2 text-center text-tiny text-ink-400">
+          <p className="mt-2 text-center text-tiny text-ink-500">
             Guest progress is saved on this device only.
           </p>
 
@@ -413,7 +429,7 @@ export default function AuthPage() {
             <button
               type="button"
               onClick={() => switchMode(isRegister ? "login" : "register")}
-              className="font-semibold text-ink-900 underline decoration-gold-400 decoration-2 underline-offset-4 transition-colors hover:text-gold-700"
+              className="font-semibold text-ink-900 underline decoration-moss-400 decoration-2 underline-offset-4 transition-colors hover:text-moss-700"
             >
               {isRegister ? "Sign in" : "Register"}
             </button>

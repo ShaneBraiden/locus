@@ -1,7 +1,11 @@
 #!/usr/bin/env node
-// Parses locus_psychometric_engine.xlsx into two committed JSON datasets:
+// Parses locus_psychometric_engine.xlsx into three committed JSON datasets:
 //   docs/psychometric-items.json   — 25 scenario items, every option pre-scored
-//   docs/career-profiles.json      — 127 careers with success profiles
+//   docs/career-profiles.json      — 252 careers with success profiles, plus the
+//                                    degree gate: is this reachable without the
+//                                    "expected" bachelor's, and how
+//   docs/degree-pivots.json        — degree → career pivot map; the first rows
+//                                    are keyed to career-topology.json ids
 //
 // Same contract as parse-topology.mjs: run it by hand, commit the output, and
 // let the server read JSON at boot. Deliberately dependency-free — an .xlsx is
@@ -9,7 +13,7 @@
 //
 //   node docs/parse-psychometrics.mjs
 
-import { readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { inflateRawSync } from 'node:zlib';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -106,12 +110,18 @@ function sheetRows(xml, strings) {
 function sheetPaths(files) {
   const wb = files.get('xl/workbook.xml').toString('utf8');
   const rels = files.get('xl/_rels/workbook.xml.rels').toString('utf8');
+  // Attribute order is not guaranteed — Excel writes Id before Target, openpyxl
+  // writes Target before Id. Match the element, then pull each attribute out
+  // separately so either producer round-trips.
   const target = new Map();
-  for (const [, id, tgt] of rels.matchAll(/<Relationship\b[^>]*Id="([^"]+)"[^>]*Target="([^"]+)"/g)) {
+  for (const [, attrs] of rels.matchAll(/<Relationship\b([^>]*)\/?>/g)) {
+    const id = /\bId="([^"]+)"/.exec(attrs)?.[1];
+    const tgt = /\bTarget="([^"]+)"/.exec(attrs)?.[1];
+    if (!id || !tgt) continue;
     target.set(id, tgt.replace(/^\/?xl\//, '').replace(/^\//, ''));
   }
   const out = new Map();
-  for (const [, attrs] of wb.matchAll(/<sheet\b([^>]*)\/>/g)) {
+  for (const [, attrs] of wb.matchAll(/<sheet\b([^>]*?)\/?>/g)) {
     const name = decode(/\bname="([^"]+)"/.exec(attrs)?.[1] ?? '');
     const rid = /\br:id="([^"]+)"/.exec(attrs)?.[1];
     if (name && rid && target.has(rid)) out.set(name, `xl/${target.get(rid)}`);
@@ -293,6 +303,13 @@ for (const { cells } of need('Q&A Engine')) {
 
 // --- Sheet 3: Career Match Engine --------------------------------------
 // A=#  B=name  C=domain  D..H=H,O,S,M,D success profile
+// O=typical degree  P=degree-agnostic  Q=alt entry route  R=pivot-from
+//
+// `gate` is derived from column P and is what the server's track classifier
+// keys off: open = no degree requirement worth speaking of, bridge = reachable
+// with one extra qualification, locked = the degree really is the gate.
+const GATE = { Yes: 'open', Partly: 'bridge', No: 'locked' };
+
 const careers = [];
 const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
@@ -301,18 +318,82 @@ for (const { cells } of need('Career Match Engine')) {
   if (!name || name === 'Career Path' || !cells.C) continue;
   const profile = { h: num(cells.D), o: num(cells.E), s: num(cells.F), m: num(cells.G), d: num(cells.H) };
   if (Object.values(profile).some((v) => !Number.isFinite(v))) continue;
+
+  const agnostic = (cells.P ?? '').trim();
+  if (!GATE[agnostic]) {
+    throw new Error(`career "${name}": column P must be Yes/Partly/No, got "${agnostic}"`);
+  }
   careers.push({
     id: `c${careers.length + 1}-${slug(name)}`,
     name: name.trim(),
     domain: cells.C.trim(),
     profile,
+    degree: {
+      typical: (cells.O ?? '').trim(),
+      agnostic,
+      gate: GATE[agnostic],
+      altEntryRoute: (cells.Q ?? '').trim(),
+      pivotFrom: (cells.R ?? '').trim(),
+    },
+  });
+}
+
+// --- Sheet 4: Degree Pivot Map -----------------------------------------
+// A=degree  B=topology id  C=direct  D=adjacent  E=full pivots  F=bridge  G=time
+//
+// The three career columns are "·"-separated prose in the sheet because a human
+// maintains them there. Split into arrays so the client can render chips.
+const splitList = (s) => (!s || s.trim() === '—' ? [] :
+  s.split('·').map((x) => x.trim()).filter(Boolean));
+
+const degreePivots = [];
+for (const { cells } of need('Degree Pivot Map')) {
+  const degree = cells.A;
+  if (!degree || degree === "Your Bachelor's Degree" || degree.startsWith('LOCUS')) continue;
+  if (!cells.F) continue; // title/blurb rows carry no bridge column
+  degreePivots.push({
+    id: slug(degree),
+    degreeName: degree.trim(),
+    // Null rather than '' so a failed join is obvious instead of silently empty.
+    topologyDegreeId: (cells.B ?? '').trim() || null,
+    direct: splitList(cells.C),
+    adjacent: splitList(cells.D),
+    fullPivots: splitList(cells.E),
+    bridgeQualification: (cells.F ?? '').trim(),
+    timeToPivot: (cells.G ?? '').trim(),
   });
 }
 
 // --- Validate ----------------------------------------------------------
 const problems = [];
 if (items.length !== 25) problems.push(`expected 25 items, got ${items.length}`);
-if (careers.length !== 127) problems.push(`expected 127 careers, got ${careers.length}`);
+if (careers.length !== 252) problems.push(`expected 252 careers, got ${careers.length}`);
+if (degreePivots.length < 26) problems.push(`expected at least 26 degree pivot rows, got ${degreePivots.length}`);
+
+// Every topology degree must have a pivot row, or a student with that degree
+// gets an empty "beyond your degree" panel — the one thing this layer exists
+// to prevent. Checked here rather than at runtime so it fails at build time.
+const topologyFile = join(DOCS, 'career-topology.json');
+if (existsSync(topologyFile)) {
+  const topology = JSON.parse(readFileSync(topologyFile, 'utf-8'));
+  const mapped = new Set(degreePivots.map((p) => p.topologyDegreeId).filter(Boolean));
+  for (const d of topology.degrees ?? []) {
+    if (!mapped.has(d.id)) problems.push(`topology degree "${d.id}" has no row in Degree Pivot Map`);
+  }
+  for (const id of mapped) {
+    if (!(topology.degrees ?? []).some((d) => d.id === id)) {
+      problems.push(`Degree Pivot Map references unknown topology degree "${id}"`);
+    }
+  }
+}
+
+// A career whose gate is "open" but that names no alternative route is a
+// promise with no instructions attached.
+for (const c of careers) {
+  if (!c.degree.typical) problems.push(`${c.id} has no typical degree`);
+  if (!c.degree.altEntryRoute) problems.push(`${c.id} has no alt entry route`);
+  if (!c.degree.pivotFrom) problems.push(`${c.id} has no pivot-from list`);
+}
 
 let optionCount = 0;
 for (const it of items) {
@@ -369,12 +450,32 @@ writeFileSync(
     // career but never subtracted. Replicated verbatim in psychometrics.ts.
     fitWeights: { h: 0.25, o: 0.2, s: 0.25, m: 0.2 },
     thresholds: { bestFit: 72, consider: 52 },
+    // Column P of the sheet, counted so a regression in the degree layer is
+    // visible in a diff rather than only in the UI.
+    gates: careers.reduce((acc, c) => ({ ...acc, [c.degree.gate]: (acc[c.degree.gate] ?? 0) + 1 }), {}),
     careers,
+  }, null, 2)}\n`,
+);
+
+writeFileSync(
+  join(DOCS, 'degree-pivots.json'),
+  `${JSON.stringify({
+    version: 1,
+    source: `locus_psychometric_engine.xlsx, parsed ${stamp}`,
+    tracks: {
+      aligned: "the student's own degree is listed in the career's pivotFrom",
+      bridge: 'reachable with one extra qualification (gate = bridge)',
+      pivot: 'open to any graduate (gate = open)',
+      locked: 'the degree really is the gate (gate = locked)',
+    },
+    degrees: degreePivots,
   }, null, 2)}\n`,
 );
 
 console.log(`psychometric-items.json  ${items.length} items, ${optionCount} options`);
 console.log(`career-profiles.json     ${careers.length} careers`);
+console.log(`degree-pivots.json       ${degreePivots.length} degrees `
+  + `(${degreePivots.filter((p) => p.topologyDegreeId).length} joined to the topology)`);
 if (residue.size) {
   console.log(`\nunmapped construct fragments (${residue.size}) — review before shipping:`);
   for (const r of [...residue].sort()) console.log('  -', r);

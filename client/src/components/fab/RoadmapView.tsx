@@ -344,15 +344,15 @@ export default function RoadmapView({ roadmap, onBack }: RoadmapViewProps) {
   // Infer Readiness Classification (Step 1)
   // Exploration -> Preparation -> Application -> Finalization
   let readinessStage: "Exploration" | "Preparation" | "Application" | "Finalization" = "Exploration";
-  let stageColor = "text-clay-600 bg-clay-50 border-clay-200";
-  let stageDot = "bg-clay-500";
+  let stageColor = "text-moss-700 bg-moss-50 border-moss-200";
+  let stageDot = "bg-moss-500";
   let stageBefore = "None";
   let stageAfter = "Preparation";
 
   if (computedConfidence >= 90) {
     readinessStage = "Finalization";
-    stageColor = "text-clay-700 bg-clay-50 border-clay-200";
-    stageDot = "bg-clay-500";
+    stageColor = "text-moss-700 bg-moss-50 border-moss-200";
+    stageDot = "bg-moss-500";
     stageBefore = "Application";
     stageAfter = "Arrival / Placement";
   } else if (computedConfidence >= 75) {
@@ -363,8 +363,8 @@ export default function RoadmapView({ roadmap, onBack }: RoadmapViewProps) {
     stageAfter = "Finalization";
   } else if (computedConfidence >= 60) {
     readinessStage = "Preparation";
-    stageColor = "text-clay-700 bg-clay-50 border-clay-200";
-    stageDot = "bg-clay-500";
+    stageColor = "text-moss-700 bg-moss-50 border-moss-200";
+    stageDot = "bg-moss-500";
     stageBefore = "Exploration";
     stageAfter = "Application";
   }
@@ -389,7 +389,7 @@ export default function RoadmapView({ roadmap, onBack }: RoadmapViewProps) {
           impact: "Critical",
           actionSnippetLabel: "View Case Baseline Guide",
           actionSnippetContent: (
-            <div className="text-xs bg-clay-50 p-4 rounded-xl border border-ink-100 shadow-e2 space-y-2 font-mono">
+            <div className="text-xs bg-moss-50 p-4 rounded-xl border border-ink-200 shadow-e2 space-y-2 font-mono">
               <p className="font-bold text-ink-900">🚀 Core Consulting Framework (Structure First):</p>
               <p className="text-ink-600">1. <strong>Profits Formulation:</strong> Profit = (Price × Volume) - (Fixed Costs + Variable Costs)</p>
               <p className="text-ink-600">2. <strong>Market Entry:</strong> Market Size → Competitors → Regulatory Hurdles → Logistics → Financial Feasibility</p>
@@ -418,10 +418,10 @@ export default function RoadmapView({ roadmap, onBack }: RoadmapViewProps) {
           impact: "Critical",
           actionSnippetLabel: "Analyze Resume Bullet Template",
           actionSnippetContent: (
-            <div className="text-xs bg-clay-50 p-4 rounded-xl border border-ink-100 shadow-e2 space-y-2 font-mono">
+            <div className="text-xs bg-moss-50 p-4 rounded-xl border border-ink-200 shadow-e2 space-y-2 font-mono">
               <p className="font-bold text-ink-900">⭐ STAR Resume Template:</p>
               <p className="text-bad-700 italic">❌ Weak: \"Worked in a clinical project analyzing patient data.\"</p>
-              <p className="text-clay-700 font-bold">✔️ Strong: \"Engineered a clinical throughput model for 500+ patients, reducing laboratory bottleneck delays by 22% and saving $14,000 in monthly hospital operations cost.\"</p>
+              <p className="text-moss-700 font-bold">✔️ Strong: \"Engineered a clinical throughput model for 500+ patients, reducing laboratory bottleneck delays by 22% and saving $14,000 in monthly hospital operations cost.\"</p>
             </div>
           )
         },
@@ -477,7 +477,7 @@ export default function RoadmapView({ roadmap, onBack }: RoadmapViewProps) {
           impact: "Critical",
           actionSnippetLabel: "Run Python Sequence Audit Code",
           actionSnippetContent: (
-            <div className="text-xs bg-clay-50 p-4 rounded-xl border border-ink-100 shadow-e2 space-y-2 font-mono">
+            <div className="text-xs bg-moss-50 p-4 rounded-xl border border-ink-200 shadow-e2 space-y-2 font-mono">
               <p className="font-bold text-ink-900">🐍 Simple RNA Transcript Count:</p>
               <pre className="scroll-slim overflow-x-auto rounded-lg bg-ink-900 p-2.5 text-micro text-moss-300">
 {`def gc_content(seq):
@@ -508,7 +508,7 @@ print(f"GC content: {gc_content('ATGCGATCG'):.1f}%")`}
           impact: "Critical",
           actionSnippetLabel: "View Pipeline Structure Outline",
           actionSnippetContent: (
-            <div className="text-xs bg-clay-50 p-4 rounded-xl border border-ink-100 shadow-e2 space-y-2 font-mono">
+            <div className="text-xs bg-moss-50 p-4 rounded-xl border border-ink-200 shadow-e2 space-y-2 font-mono">
               <p className="font-bold text-ink-900">🧬 Required Repository Layout:</p>
               <p className="text-ink-600">📂 <strong>/pipeline:</strong> contains raw FastQC shell scripts</p>
               <p className="text-ink-600">📂 <strong>/docker:</strong> holds container configuration for scalable AWS cluster execution</p>
@@ -568,7 +568,7 @@ print(f"GC content: {gc_content('ATGCGATCG'):.1f}%")`}
           impact: "Critical",
           actionSnippetLabel: "View Basic R Epidemic Formula",
           actionSnippetContent: (
-            <div className="text-xs bg-clay-50 p-4 rounded-xl border border-ink-100 shadow-e2 space-y-2 font-mono">
+            <div className="text-xs bg-moss-50 p-4 rounded-xl border border-ink-200 shadow-e2 space-y-2 font-mono">
               <p className="font-bold text-ink-900">📊 Odds Ratio (OR) Calculation in Epidemiology:</p>
               <p className="text-ink-600">OR = (Exposed Cases / Unexposed Cases) / (Exposed Controls / Unexposed Controls)</p>
               <p className="text-ink-600">An OR &gt; 1 indicates strong exposure-disease correlation.</p>
@@ -645,7 +645,7 @@ print(f"GC content: {gc_content('ATGCGATCG'):.1f}%")`}
           impact: "Critical",
           actionSnippetLabel: "View Regulation Audit Checklist",
           actionSnippetContent: (
-            <div className="text-xs bg-clay-50 p-4 rounded-xl border border-ink-100 shadow-e2 space-y-2 font-mono">
+            <div className="text-xs bg-moss-50 p-4 rounded-xl border border-ink-200 shadow-e2 space-y-2 font-mono">
               <p className="font-bold text-ink-900">📋 Quality and Biosafety Core Areas:</p>
               <p className="text-ink-600">1. <strong>GLP (Good Laboratory Practice):</strong> Traceability, equipment calibration, documentation audits.</p>
               <p className="text-ink-600">2. <strong>CTD Structure:</strong> Module 1 (Admin) &rarr; Module 2 (Summaries) &rarr; Module 3 (Quality/CMC).</p>
@@ -791,38 +791,38 @@ ADAPTIVE READINESS PROGRESSION:
           <button
             id="back-to-career-details-btn"
             onClick={onBack}
-            className="inline-flex items-center space-x-2 text-xs font-bold uppercase tracking-wider text-ink-600 hover:text-ink-900 transition-colors cursor-pointer bg-white hover:bg-ink-50 px-4 py-2.5 rounded-xl border border-ink-100 shadow-e2"
+            className="inline-flex items-center space-x-2 text-xs font-bold uppercase tracking-wider text-ink-600 hover:text-ink-900 transition-colors cursor-pointer bg-white hover:bg-ink-50 px-4 py-2.5 rounded-xl border border-ink-200 shadow-e2"
           >
             <ArrowLeft className="h-4 w-4" />
             <span>Back to Career Profile</span>
           </button>
         )}
-        <div className="flex items-center space-x-2 bg-clay-50 px-3.5 py-1.5 rounded-xl border border-ink-100 shadow-e2">
-          <Activity className="h-4 w-4 text-clay-600" />
-          <span className="text-xs font-mono font-extrabold text-clay-600 uppercase tracking-wider">
+        <div className="flex items-center space-x-2 bg-moss-50 px-3.5 py-1.5 rounded-xl border border-ink-200 shadow-e2">
+          <Activity className="h-4 w-4 text-moss-700" />
+          <span className="text-xs font-mono font-bold text-moss-700 uppercase tracking-wider">
             Execution Intelligence Active
           </span>
         </div>
       </div>
 
       {/* Premium Master Layout Card */}
-      <div className="bg-white border border-ink-100 rounded-3xl shadow-e5 overflow-hidden mb-8">
+      <div className="bg-white border border-ink-200 rounded-3xl overflow-hidden mb-8">
         {/* SaaS-Style Dashboard Header */}
-        <div className="bg-clay-50 p-6 sm:p-8 border-b border-ink-100 flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="bg-moss-50 p-6 sm:p-8 border-b border-ink-200 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2">
-            <span className="bg-moss-600 text-white text-micro font-mono tracking-widest font-extrabold px-2.5 py-1 rounded uppercase">
+            <span className="bg-moss-600 text-white text-micro font-mono tracking-widest font-bold px-2.5 py-1 rounded uppercase">
               Module 3: Decision Lab
             </span>
-            <h2 className="text-2xl sm:text-3xl font-display font-extrabold tracking-tight text-ink-900">
+            <h2 className="text-2xl sm:text-3xl font-display font-bold tracking-tight text-ink-900">
               Personalized Readiness Intelligence
             </h2>
             <p className="text-xs sm:text-sm text-ink-600 font-semibold leading-relaxed">
-              Target Career: <strong className="text-clay-600">{roadmap.fieldName}</strong>
+              Target Career: <strong className="text-moss-700">{roadmap.fieldName}</strong>
             </p>
           </div>
 
           {/* Tab Selection */}
-          <div className="flex items-center w-full sm:w-auto bg-ink-0 p-1 rounded-xl border border-ink-100 shadow-e2 shadow-inner">
+          <div className="flex items-center w-full sm:w-auto bg-ink-0 p-1 rounded-xl border border-ink-200 shadow-e2 shadow-inner">
             <button
               id="switch-to-system-tab"
               onClick={() => setActiveTab("system")}
@@ -857,10 +857,10 @@ ADAPTIVE READINESS PROGRESSION:
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
               
               {/* Classification Card */}
-              <div className="lg:col-span-5 bg-white border border-ink-100 rounded-2xl p-6 shadow-e1 flex flex-col justify-between">
+              <div className="lg:col-span-5 bg-white border border-ink-200 rounded-2xl p-6 shadow-e1 flex flex-col justify-between">
                 <div>
-                  <div className="flex items-center space-x-2 text-micro font-mono uppercase tracking-widest text-ink-600 font-extrabold mb-4">
-                    <Activity className="h-4.5 w-4.5 text-clay-600" />
+                  <div className="flex items-center space-x-2 text-micro font-mono uppercase tracking-widest text-ink-600 font-bold mb-4">
+                    <Activity className="h-4.5 w-4.5 text-moss-700" />
                     <span>Inferred Readiness Stage</span>
                   </div>
                   
@@ -875,12 +875,12 @@ ADAPTIVE READINESS PROGRESSION:
                 </div>
 
                 {/* STEP 7: PROGRESSION LOGIC */}
-                <div className="bg-clay-50 p-4 rounded-xl border border-ink-100 shadow-e2 space-y-2">
-                  <span className="text-micro font-mono uppercase tracking-widest text-ink-500 font-extrabold block">Readiness Progression Timeline</span>
+                <div className="bg-moss-50 p-4 rounded-xl border border-ink-200 shadow-e2 space-y-2">
+                  <span className="text-micro font-mono uppercase tracking-widest text-ink-500 font-bold block">Readiness Progression Timeline</span>
                   <div className="flex items-center justify-between text-xs text-ink-700 font-bold font-mono">
                     <span className="line-through text-ink-500">{stageBefore}</span>
-                    <ArrowRight className="h-3 w-3 text-clay-600" />
-                    <span className="text-clay-600 underline">{readinessStage}</span>
+                    <ArrowRight className="h-3 w-3 text-moss-700" />
+                    <span className="text-moss-700 underline">{readinessStage}</span>
                     <ArrowRight className="h-3 w-3 text-ink-500" />
                     <span className="text-ink-500">{stageAfter}</span>
                   </div>
@@ -888,31 +888,31 @@ ADAPTIVE READINESS PROGRESSION:
               </div>
 
               {/* Confidence Score Card */}
-              <div className="lg:col-span-7 bg-white border border-ink-100 rounded-2xl p-6 shadow-e1 flex flex-col justify-between">
+              <div className="lg:col-span-7 bg-white border border-ink-200 rounded-2xl p-6 shadow-e1 flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center space-x-2 text-micro font-mono uppercase tracking-widest text-ink-600 font-extrabold">
-                      <Sliders className="h-4.5 w-4.5 text-clay-600" />
+                    <div className="flex items-center space-x-2 text-micro font-mono uppercase tracking-widest text-ink-600 font-bold">
+                      <Sliders className="h-4.5 w-4.5 text-moss-700" />
                       <span>Decision Confidence Metric</span>
                     </div>
-                    <span className="text-micro font-mono bg-clay-50 text-clay-800 border border-clay-200 font-bold px-2 py-0.5 rounded">
+                    <span className="text-micro font-mono bg-moss-50 text-moss-800 border border-moss-200 font-bold px-2 py-0.5 rounded">
                       Real-Time Calculation
                     </span>
                   </div>
 
                   <div className="flex items-baseline space-x-3 mb-4">
-                    <span className="text-4xl sm:text-5xl font-display font-extrabold text-ink-900 tracking-tight">
+                    <span className="text-4xl sm:text-5xl font-display font-bold text-ink-900 tracking-tight">
                       {computedConfidence}%
                     </span>
-                    <span className="text-xs font-mono font-bold text-clay-900">
+                    <span className="text-xs font-mono font-bold text-moss-900">
                       {computedConfidence >= 80 ? "🎯 Highly Aligned" : "💡 Building Momentum"}
                     </span>
                   </div>
 
                   {/* Confidence Bar */}
-                  <div className="w-full bg-ink-100 h-2.5 rounded-full overflow-hidden mb-6 border border-ink-200/40">
+                  <div className="w-full bg-ink-100 h-2.5 rounded-md overflow-hidden mb-6 border border-ink-200/40">
                     <div 
-                      className="bg-clay-600 h-full rounded-full transition-all duration-500"
+                      className="bg-moss-600 h-full rounded-md transition-all duration-500"
                       style={{ width: `${computedConfidence}%` }}
                     />
                   </div>
@@ -921,19 +921,19 @@ ADAPTIVE READINESS PROGRESSION:
                 {/* Why confidence is not higher */}
                 {confidenceBlockers.length > 0 ? (
                   <div className="space-y-2">
-                    <span className="text-micro font-mono uppercase tracking-widest text-ink-500 font-extrabold block">Why confidence is not yet 100%</span>
+                    <span className="text-micro font-mono uppercase tracking-widest text-ink-500 font-bold block">Why confidence is not yet 100%</span>
                     <ul className="space-y-1.5">
                       {confidenceBlockers.map((blocker, idx) => (
                         <li key={idx} className="flex items-start text-xs text-ink-900 font-bold">
-                          <XCircle className="h-3.5 w-3.5 text-clay-600 shrink-0 mr-2 mt-0.5" />
+                          <XCircle className="h-3.5 w-3.5 text-moss-700 shrink-0 mr-2 mt-0.5" />
                           <span>{blocker} remains unresolved</span>
                         </li>
                       ))}
                     </ul>
                   </div>
                 ) : (
-                  <div className="flex items-center space-x-2 text-xs text-clay-800 font-bold bg-clay-50 border border-clay-100 p-3 rounded-xl">
-                    <CheckCircle2 className="h-4.5 w-4.5 text-clay-600" />
+                  <div className="flex items-center space-x-2 text-xs text-moss-800 font-bold bg-moss-50 border border-moss-100 p-3 rounded-xl">
+                    <CheckCircle2 className="h-4.5 w-4.5 text-moss-700" />
                     <span>All major structural readiness gaps resolved! Ready for final execution templates.</span>
                   </div>
                 )}
@@ -943,7 +943,7 @@ ADAPTIVE READINESS PROGRESSION:
             {/* STEP 5: NEXT BEST ACTION ENGINE (CORE OUTPUT) */}
             <motion.div 
               id="next-best-action-card" 
-              className="bg-moss-600 text-white rounded-2xl p-6 sm:p-8 relative overflow-hidden shadow-e3"
+              className="bg-moss-600 text-white rounded-2xl p-6 sm:p-8 relative overflow-hidden"
               whileHover={{ scale: 1.01 }}
               transition={{ duration: 0.2 }}
             >
@@ -952,12 +952,12 @@ ADAPTIVE READINESS PROGRESSION:
               </div>
 
               <div className="flex items-center space-x-2 text-micro font-mono uppercase tracking-widest text-white/80 font-bold mb-4">
-                <Sparkles className="h-4.5 w-4.5 text-clay-300" />
+                <Sparkles className="h-4.5 w-4.5 text-moss-300" />
                 <span>Your Next Best Action</span>
               </div>
 
               <div className="space-y-3 max-w-3xl">
-                <h3 className="text-xl sm:text-2xl font-display font-extrabold tracking-tight">
+                <h3 className="text-xl sm:text-2xl font-display font-bold tracking-tight">
                   👉 "{nextBestAction.title}"
                 </h3>
                 <p className="text-xs sm:text-sm text-white/95 leading-relaxed font-semibold italic">
@@ -977,7 +977,7 @@ ADAPTIVE READINESS PROGRESSION:
                       setActiveTab("interactive_prep");
                       setExpandedTask(nextBestAction.taskRefId || null);
                     }}
-                    className="bg-white hover:bg-clay-50 text-clay-600 text-xs font-extrabold uppercase tracking-wider px-5 py-3 rounded-xl shadow-e2 transition-all cursor-pointer flex items-center gap-1.5"
+                    className="bg-white hover:bg-moss-50 text-moss-700 text-xs font-bold uppercase tracking-wider px-5 py-3 rounded-xl shadow-e2 transition-all cursor-pointer flex items-center gap-1.5"
                   >
                     <span>Activate Interactive Drill</span>
                     <ArrowRight className="h-3.5 w-3.5" />
@@ -988,7 +988,7 @@ ADAPTIVE READINESS PROGRESSION:
                     onClick={() => {
                       alert(`Initiated preparation file draft for: ${nextBestAction.title}`);
                     }}
-                    className="bg-white hover:bg-clay-50 text-clay-600 text-xs font-extrabold uppercase tracking-wider px-5 py-3 rounded-xl shadow-e2 transition-all cursor-pointer"
+                    className="bg-white hover:bg-moss-50 text-moss-700 text-xs font-bold uppercase tracking-wider px-5 py-3 rounded-xl shadow-e2 transition-all cursor-pointer"
                   >
                     Generate Study File
                   </button>
@@ -1011,14 +1011,14 @@ ADAPTIVE READINESS PROGRESSION:
 
             {/* STEP 3: READINESS GAP DIAGNOSTIC (GAP ANALYSIS) */}
             <div id="gap-analysis-section" className="space-y-4">
-              <div className="flex items-center justify-between border-b border-ink-100 pb-3">
+              <div className="flex items-center justify-between border-b border-ink-200 pb-3">
                 <div className="flex items-center space-x-2.5">
-                  <ShieldAlert className="h-5 w-5 text-clay-600" />
-                  <h3 className="text-base sm:text-lg font-display font-extrabold text-ink-900">
+                  <ShieldAlert className="h-5 w-5 text-moss-700" />
+                  <h3 className="text-base sm:text-lg font-display font-bold text-ink-900">
                     Readiness Gap Analysis &amp; Diagnostic
                   </h3>
                 </div>
-                <span className="text-micro font-mono text-ink-500 font-extrabold uppercase">
+                <span className="text-micro font-mono text-ink-500 font-bold uppercase">
                   Verify or Unblock Gaps
                 </span>
               </div>
@@ -1035,13 +1035,13 @@ ADAPTIVE READINESS PROGRESSION:
                       key={gap.id}
                       className={`p-4 rounded-2xl border transition-all duration-300 flex flex-col justify-between ${
                         isCleared 
-                          ? "bg-clay-50/40 border-clay-200 shadow-inner" 
-                          : "bg-white border-ink-100/80 hover:border-clay-200 hover:bg-clay-50/10 shadow-e1"
+                          ? "bg-moss-50/40 border-moss-200 shadow-inner" 
+                          : "bg-white border-ink-200/80 hover:border-moss-200 hover:bg-moss-50/10 shadow-e1"
                       }`}
                     >
                       {/* Top match score pill */}
                       <div className="space-y-2">
-                        <span className="text-micro font-mono font-bold bg-clay-500 text-ink-950 px-2.5 py-1 rounded-full uppercase">
+                        <span className="text-micro font-mono font-bold bg-moss-500 text-ink-950 px-2.5 py-1 rounded-xs uppercase">
                           {gap.category} Gap
                         </span>
                         
@@ -1060,15 +1060,15 @@ ADAPTIVE READINESS PROGRESSION:
                             onClick={() => toggleGap(gap.id)}
                             className={`py-1.5 px-3 rounded-lg border text-micro font-mono font-bold transition-colors cursor-pointer ${
                               isCleared 
-                                ? "bg-clay-100 text-clay-800 border-clay-300 hover:bg-clay-200" 
-                                : "bg-ink-50 text-ink-600 border-ink-100 hover:bg-ink-100"
+                                ? "bg-moss-100 text-moss-800 border-moss-300 hover:bg-moss-200" 
+                                : "bg-ink-50 text-ink-600 border-ink-200 hover:bg-ink-100"
                             }`}
                           >
                             {isCleared ? "✓ Resolved" : "Unresolved"}
                           </button>
                         </div>
-                        <span className="text-micro font-semibold text-clay-700 flex items-center gap-1.5 leading-tight">
-                          <AlertCircle className="h-3.5 w-3.5 text-clay-600 shrink-0" />
+                        <span className="text-micro font-semibold text-moss-700 flex items-center gap-1.5 leading-tight">
+                          <AlertCircle className="h-3.5 w-3.5 text-moss-700 shrink-0" />
                           <span>{gap.unresolvedWarning}</span>
                         </span>
                         <span className="text-micro font-mono text-ink-500 font-medium">
@@ -1083,8 +1083,8 @@ ADAPTIVE READINESS PROGRESSION:
 
             {/* STEP 4: ADAPTIVE EXECUTION LEVELS */}
             <div id="execution-levels-section" className="space-y-6">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-ink-100 pb-4">
-                <h3 className="font-display font-extrabold text-lg text-ink-900">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-ink-200 pb-4">
+                <h3 className="font-display font-bold text-lg text-ink-900">
                   Adaptive Execution Framework
                 </h3>
                 
@@ -1095,7 +1095,7 @@ ADAPTIVE READINESS PROGRESSION:
                       key={lvl}
                       id={`level-tab-${lvl}`}
                       onClick={() => setActiveLevel(lvl)}
-                      className={`px-3 py-1.5 rounded-lg text-micro font-extrabold uppercase tracking-wider transition-all cursor-pointer ${
+                      className={`px-3 py-1.5 rounded-lg text-micro font-bold uppercase tracking-wider transition-all cursor-pointer ${
                         activeLevel === lvl 
                           ? "bg-moss-600 text-white shadow-e1" 
                           : "text-ink-500 hover:text-ink-800"
@@ -1108,9 +1108,9 @@ ADAPTIVE READINESS PROGRESSION:
               </div>
 
               {/* Goal & Description of Active Level */}
-              <div className="bg-clay-50 p-4 rounded-2xl border border-ink-100 shadow-e2 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="bg-moss-50 p-4 rounded-2xl border border-ink-200 shadow-e2 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                  <span className="text-micro font-mono uppercase tracking-widest text-clay-900 font-extrabold">
+                  <span className="text-micro font-mono uppercase tracking-widest text-moss-900 font-bold">
                     {activeLevel === 1 && "LEVEL 1 — FOUNDATION READINESS"}
                     {activeLevel === 2 && "LEVEL 2 — PROFILE BUILDING READINESS"}
                     {activeLevel === 3 && "LEVEL 3 — APPLICATION READINESS"}
@@ -1138,14 +1138,14 @@ ADAPTIVE READINESS PROGRESSION:
                   return (
                     <div 
                       key={task.id}
-                      className="bg-white border border-ink-100 rounded-2xl overflow-hidden transition-all duration-300 shadow-e1"
+                      className="bg-white border border-ink-200 rounded-2xl overflow-hidden transition-all duration-300 shadow-e1"
                     >
                       <div 
                         onClick={() => handleTaskClick(task.id)}
                         className="p-4 flex items-center justify-between gap-4 cursor-pointer hover:bg-ink-50/40"
                       >
                         <div className="flex items-start gap-3">
-                          <div className="h-6 w-6 rounded-full bg-clay-50 border border-clay-200 flex items-center justify-center shrink-0 text-micro font-mono font-extrabold text-clay-600 mt-0.5">
+                          <div className="h-6 w-6 rounded-md bg-moss-50 border border-moss-200 flex items-center justify-center shrink-0 text-micro font-mono font-bold text-moss-700 mt-0.5">
                             {task.level}
                           </div>
                           <div>
@@ -1159,9 +1159,9 @@ ADAPTIVE READINESS PROGRESSION:
                         </div>
 
                         <div className="flex items-center gap-2 shrink-0">
-                          <span className={`text-micro font-mono uppercase tracking-wider font-extrabold px-2 py-1 rounded ${
-                            task.difficulty === "Easy" ? "bg-clay-50 text-clay-700" :
-                            task.difficulty === "Medium" ? "bg-clay-50 text-clay-700" :
+                          <span className={`text-micro font-mono uppercase tracking-wider font-bold px-2 py-1 rounded ${
+                            task.difficulty === "Easy" ? "bg-moss-50 text-moss-700" :
+                            task.difficulty === "Medium" ? "bg-moss-50 text-moss-700" :
                             "bg-bad-50 text-bad-700"
                           }`}>
                             {task.difficulty}
@@ -1174,7 +1174,7 @@ ADAPTIVE READINESS PROGRESSION:
 
                       {/* Expanded Task details (Step 6 Task Design) */}
                       {isExpanded && (
-                        <div className="px-11 pb-4 pt-1 border-t border-ink-100/60 space-y-3 bg-clay-50/20">
+                        <div className="px-11 pb-4 pt-1 border-t border-ink-200/60 space-y-3 bg-moss-50/20">
                           <div className="grid grid-cols-2 gap-4 text-xs">
                             <div>
                               <span className="text-micro font-mono uppercase text-ink-500 font-bold block">Expected Impact</span>
@@ -1188,7 +1188,7 @@ ADAPTIVE READINESS PROGRESSION:
 
                           {task.actionSnippetContent && (
                             <div className="pt-2">
-                              <span className="text-micro font-mono uppercase text-clay-600 font-extrabold block mb-1.5">Interactive Framework Preview</span>
+                              <span className="text-micro font-mono uppercase text-moss-700 font-bold block mb-1.5">Interactive Framework Preview</span>
                               {task.actionSnippetContent}
                             </div>
                           )}
@@ -1201,8 +1201,8 @@ ADAPTIVE READINESS PROGRESSION:
             </div>
 
             {/* STEP 11: IS THIS STILL A GOOD FIT? (REFLECTIVE DIAGNOSTIC) */}
-            <div className="bg-clay-50 border border-ink-100 rounded-2xl p-6 sm:p-8 space-y-4">
-              <div className="flex items-center space-x-2 text-micro font-mono uppercase tracking-widest text-clay-600 font-bold">
+            <div className="bg-moss-50 border border-ink-200 rounded-2xl p-6 sm:p-8 space-y-4">
+              <div className="flex items-center space-x-2 text-micro font-mono uppercase tracking-widest text-moss-700 font-bold">
                 <HelpCircle className="h-4.5 w-4.5" />
                 <span>Is this career path still a good fit?</span>
               </div>
@@ -1227,7 +1227,7 @@ ADAPTIVE READINESS PROGRESSION:
                       setFeedbackSaved(true);
                       setTimeout(() => setFeedbackSaved(false), 2000);
                     }}
-                    className="bg-white hover:bg-ink-50 border border-ink-100 shadow-e2 hover:border-moss-600 px-3 py-2 rounded-xl text-xs font-bold transition-all text-ink-900 cursor-pointer text-center"
+                    className="bg-white hover:bg-ink-50 border border-ink-200 shadow-e2 hover:border-moss-600 px-3 py-2 rounded-xl text-xs font-bold transition-all text-ink-900 cursor-pointer text-center"
                   >
                     {opt.level}
                   </button>
@@ -1235,8 +1235,8 @@ ADAPTIVE READINESS PROGRESSION:
               </div>
 
               {feedbackSaved && (
-                <div className="text-xs text-clay-800 font-bold flex items-center gap-1">
-                  <CheckCircle2 className="h-4 w-4 text-clay-600" />
+                <div className="text-xs text-moss-800 font-bold flex items-center gap-1">
+                  <CheckCircle2 className="h-4 w-4 text-moss-700" />
                   <span>Feedback stored securely. This will influence future career suggestions dynamically!</span>
                 </div>
               )}
@@ -1249,11 +1249,11 @@ ADAPTIVE READINESS PROGRESSION:
         {activeTab === "interactive_prep" && (
           <div className="p-6 sm:p-8 space-y-8">
             <div className="space-y-2">
-              <div className="flex items-center space-x-2 text-micro font-mono uppercase tracking-widest text-clay-600 font-extrabold">
+              <div className="flex items-center space-x-2 text-micro font-mono uppercase tracking-widest text-moss-700 font-bold">
                 <Sparkles className="h-4.5 w-4.5" />
                 <span>Interactive Drills &amp; Micro-Diagnostic Modules</span>
               </div>
-              <h3 className="text-base sm:text-lg font-display font-extrabold text-ink-900">
+              <h3 className="text-base sm:text-lg font-display font-bold text-ink-900">
                 Build Proof-of-Work Competence
               </h3>
               <p className="text-xs sm:text-sm text-ink-600 font-semibold leading-relaxed">
@@ -1264,8 +1264,8 @@ ADAPTIVE READINESS PROGRESSION:
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
               
               {/* Question Drill Panel */}
-              <div className="lg:col-span-7 bg-white border border-ink-100 rounded-2xl p-6 shadow-e1 space-y-6">
-                <h4 className="text-xs font-mono uppercase text-clay-600 tracking-wider font-extrabold border-b border-ink-100 pb-2.5">
+              <div className="lg:col-span-7 bg-white border border-ink-200 rounded-2xl p-6 shadow-e1 space-y-6">
+                <h4 className="text-xs font-mono uppercase text-moss-700 tracking-wider font-bold border-b border-ink-200 pb-2.5">
                   Analytical Competency Drill
                 </h4>
 
@@ -1276,14 +1276,14 @@ ADAPTIVE READINESS PROGRESSION:
                       <button 
                         id="consulting-drill-opt-1"
                         onClick={() => setActionOutput("correct_cons")}
-                        className="w-full text-left p-3 rounded-xl border border-ink-100 shadow-e2 hover:border-moss-600 hover:bg-ink-50 font-bold transition-all cursor-pointer"
+                        className="w-full text-left p-3 rounded-xl border border-ink-200 shadow-e2 hover:border-moss-600 hover:bg-ink-50 font-bold transition-all cursor-pointer"
                       >
                         A. Check price vs volume trends across both elective surgeries and emergency outpatient clinics. (Isolates MECE variables)
                       </button>
                       <button 
                         id="consulting-drill-opt-2"
                         onClick={() => setActionOutput("wrong_cons")}
-                        className="w-full text-left p-3 rounded-xl border border-ink-100 shadow-e2 hover:border-moss-600 hover:bg-ink-50 font-bold transition-all cursor-pointer"
+                        className="w-full text-left p-3 rounded-xl border border-ink-200 shadow-e2 hover:border-moss-600 hover:bg-ink-50 font-bold transition-all cursor-pointer"
                       >
                         B. Advise them to fire 10% of diagnostic staff immediately to save direct operational expenditures.
                       </button>
@@ -1298,14 +1298,14 @@ ADAPTIVE READINESS PROGRESSION:
                       <button 
                         id="bioinformatics-drill-opt-1"
                         onClick={() => setActionOutput("correct_bio")}
-                        className="w-full text-left p-3 rounded-xl border border-ink-100 shadow-e2 hover:border-moss-600 hover:bg-ink-50 font-bold transition-all cursor-pointer"
+                        className="w-full text-left p-3 rounded-xl border border-ink-200 shadow-e2 hover:border-moss-600 hover:bg-ink-50 font-bold transition-all cursor-pointer"
                       >
                         A. Stream datasets using Samtools block compression and deploy parallel workers bounded by Nextflow memory caps.
                       </button>
                       <button 
                         id="bioinformatics-drill-opt-2"
                         onClick={() => setActionOutput("wrong_bio")}
-                        className="w-full text-left p-3 rounded-xl border border-ink-100 shadow-e2 hover:border-moss-600 hover:bg-ink-50 font-bold transition-all cursor-pointer"
+                        className="w-full text-left p-3 rounded-xl border border-ink-200 shadow-e2 hover:border-moss-600 hover:bg-ink-50 font-bold transition-all cursor-pointer"
                       >
                         B. Load all FASTQ files completely into a single local pandas dataframe arrays.
                       </button>
@@ -1320,14 +1320,14 @@ ADAPTIVE READINESS PROGRESSION:
                       <button 
                         id="default-drill-opt-1"
                         onClick={() => setActionOutput("correct_default")}
-                        className="w-full text-left p-3 rounded-xl border border-ink-100 shadow-e2 hover:border-moss-600 hover:bg-ink-50 font-bold transition-all cursor-pointer"
+                        className="w-full text-left p-3 rounded-xl border border-ink-200 shadow-e2 hover:border-moss-600 hover:bg-ink-50 font-bold transition-all cursor-pointer"
                       >
                         A. Cross-reference stable physical laboratory assays and audit batch-record sanitization logs.
                       </button>
                       <button 
                         id="default-drill-opt-2"
                         onClick={() => setActionOutput("wrong_default")}
-                        className="w-full text-left p-3 rounded-xl border border-ink-100 shadow-e2 hover:border-moss-600 hover:bg-ink-50 font-bold transition-all cursor-pointer"
+                        className="w-full text-left p-3 rounded-xl border border-ink-200 shadow-e2 hover:border-moss-600 hover:bg-ink-50 font-bold transition-all cursor-pointer"
                       >
                         B. Guess baseline metrics based on previously published marketing literature.
                       </button>
@@ -1339,7 +1339,7 @@ ADAPTIVE READINESS PROGRESSION:
                 {actionOutput && (
                   <div className={`p-4 rounded-xl border text-xs leading-relaxed ${
                     actionOutput.startsWith("correct") 
-                      ? "bg-clay-50 border-clay-200 text-clay-800" 
+                      ? "bg-moss-50 border-moss-200 text-moss-800" 
                       : "bg-bad-50 border-bad-100 text-bad-700"
                   }`}>
                     {actionOutput === "correct_cons" && "🎉 Correct! Testing Price vs Volume trends is Mutually Exclusive & Collectively Exhaustive (MECE), preventing premature solution bias."}
@@ -1353,8 +1353,8 @@ ADAPTIVE READINESS PROGRESSION:
               </div>
 
               {/* Sidebar: Interview Quick Prep */}
-              <div className="lg:col-span-5 bg-clay-50 rounded-2xl p-6 border border-ink-100 shadow-e2 space-y-4">
-                <span className="text-micro font-mono uppercase text-clay-900 font-extrabold block">
+              <div className="lg:col-span-5 bg-moss-50 rounded-2xl p-6 border border-ink-200 shadow-e2 space-y-4">
+                <span className="text-micro font-mono uppercase text-moss-900 font-bold block">
                   Quick Interview Prep Tip
                 </span>
 
@@ -1376,7 +1376,7 @@ ADAPTIVE READINESS PROGRESSION:
         )}
 
         {/* Footer / Actions (Section 12 Next Actions) */}
-        <div className="border-t border-ink-100 bg-clay-50 p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+        <div className="border-t border-ink-200 bg-moss-50 p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6">
           <p className="text-xs text-ink-600 text-center sm:text-left font-semibold">
             Progress is stored locally. This framework guarantees <strong>Readiness Progression</strong> over simple calendar deadlines.
           </p>
@@ -1385,7 +1385,7 @@ ADAPTIVE READINESS PROGRESSION:
               <button
                 id="back-to-profiles-bottom-btn"
                 onClick={onBack}
-                className="w-full sm:w-auto text-center px-5 py-3 rounded-xl border border-ink-100 shadow-e2 hover:bg-ink-50 text-xs font-bold uppercase tracking-wider text-ink-600 transition-colors cursor-pointer bg-white"
+                className="w-full sm:w-auto text-center px-5 py-3 rounded-xl border border-ink-200 shadow-e2 hover:bg-ink-50 text-xs font-bold uppercase tracking-wider text-ink-600 transition-colors cursor-pointer bg-white"
               >
                 Back to Top Recommendations
               </button>
@@ -1393,7 +1393,7 @@ ADAPTIVE READINESS PROGRESSION:
             <button
               id="download-execution-report-btn"
               onClick={handleDownloadReport}
-              className="w-full sm:w-auto text-center px-5.5 py-3.5 rounded-xl bg-moss-600 hover:bg-moss-700 text-white text-xs font-extrabold uppercase tracking-widest shadow-e3 transition-colors cursor-pointer flex items-center justify-center gap-1.5"
+              className="w-full sm:w-auto text-center px-5.5 py-3.5 rounded-xl bg-moss-600 hover:bg-moss-700 text-white text-xs font-bold uppercase tracking-widest transition-colors cursor-pointer flex items-center justify-center gap-1.5"
             >
               <FileText className="h-4.5 w-4.5" />
               <span>Download Intelligence Report</span>

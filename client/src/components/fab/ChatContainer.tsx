@@ -203,7 +203,7 @@ export default function ChatContainer({
       {/* Chat header. Everything used to sit in one row that overflowed on a
           phone the moment the voice controls appeared; the counter now lives
           with the progress bar and the controls collapse to icons. */}
-      <header className="shrink-0 border-b border-ink-100 bg-white/90 backdrop-blur-md">
+      <header className="shrink-0 border-b border-ink-200 bg-white">
         <div className="mx-auto flex w-full max-w-3xl items-center justify-between gap-2 px-4 py-2.5 sm:px-6">
           <div className="flex min-w-0 items-center gap-2.5">
             <span className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-ink-900 font-display text-sm font-bold text-moss-300">
@@ -356,7 +356,7 @@ export default function ChatContainer({
                     className={`relative rounded-2xl px-4 py-3 text-base ${
                       isUser
                         ? "rounded-br-md bg-ink-900 text-white"
-                        : "rounded-bl-md border border-ink-100 bg-ink-50 text-ink-900"
+                        : "rounded-bl-md border border-ink-200 bg-ink-50 text-ink-900"
                     }`}
                   >
                     <p className="whitespace-pre-wrap break-words">{message.text}</p>
@@ -463,7 +463,7 @@ export default function ChatContainer({
               <div className="space-y-1">
                 <div className="eyebrow">FAB is thinking</div>
                 <div
-                  className="flex items-center gap-1.5 rounded-2xl rounded-bl-md border border-ink-100 bg-ink-50 px-4 py-3.5"
+                  className="flex items-center gap-1.5 rounded-2xl rounded-bl-md border border-ink-200 bg-ink-50 px-4 py-3.5"
                   role="status"
                   aria-label="FAB is composing a reply"
                 >
@@ -485,7 +485,7 @@ export default function ChatContainer({
       </div>
 
       {/* Input bar: type it or say it, same conversation either way */}
-      <div className="shrink-0 border-t border-ink-100 bg-white px-4 pb-4 pt-3 sm:px-6">
+      <div className="shrink-0 border-t border-ink-200 bg-white px-4 pb-4 pt-3 sm:px-6">
         <div className="mx-auto w-full max-w-3xl">
           {voiceError && (
             <div className="mb-2 flex items-start gap-2 rounded-lg border border-warn-300/60 bg-warn-50 px-3 py-2">

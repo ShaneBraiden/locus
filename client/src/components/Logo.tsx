@@ -3,42 +3,42 @@ import React from 'react';
 /**
  * The Northr mark: an N with a four-point star at its shoulder.
  *
- * Colour note — the tile is deep loam rather than the near-black it used to
- * be, and the mark sweeps pale mist → moss → clay rather than running the old
- * gold gradient. Loam keeps the mark bright without the hard black rectangle
- * punching a hole in a page made of paper.
+ * Colour note — the tile is graphite and the mark sweeps white → accent blue.
+ * The previous mark ran pale mist → moss → clay, which put three of the old
+ * palette's colours into a 24px square and left the logo as the last warm
+ * object on an otherwise cool page.
  *
- * Rounding is left to the caller so the logo can be a circle in the nav and a
- * softer squircle at hero size; every call site uses `rounded-full`.
+ * Rounding is left to the caller. Call sites use `rounded-xs` in the rail and
+ * `rounded-md` at hero size; nothing uses `rounded-full` any more.
  */
 export const Logo = ({ className = "w-8 h-8", style }: { className?: string, style?: React.CSSProperties }) => (
   <div
     className={`relative flex items-center justify-center overflow-hidden shrink-0 ${className}`}
-    style={{ backgroundColor: '#2C2C24', ...style }}
+    style={{ backgroundColor: '#14181C', ...style }}
   >
     <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="absolute inset-0 w-full h-full">
       <defs>
         <linearGradient id="moss" x1="10%" y1="0%" x2="90%" y2="100%">
-          <stop offset="0%" stopColor="#F1F4EF" />
-          <stop offset="28%" stopColor="#C3D0BA" />
-          <stop offset="58%" stopColor="#7C9070" />
-          <stop offset="100%" stopColor="#C18C5D" />
+          <stop offset="0%" stopColor="#FFFFFF" />
+          <stop offset="28%" stopColor="#B6CFEA" />
+          <stop offset="58%" stopColor="#4C86C4" />
+          <stop offset="100%" stopColor="#2563A8" />
         </linearGradient>
 
         <linearGradient id="starGlowH" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#C18C5D" stopOpacity="0" />
-          <stop offset="40%" stopColor="#F1F4EF" stopOpacity="1" />
+          <stop offset="0%" stopColor="#2563A8" stopOpacity="0" />
+          <stop offset="40%" stopColor="#FFFFFF" stopOpacity="1" />
           <stop offset="50%" stopColor="#ffffff" stopOpacity="1" />
-          <stop offset="60%" stopColor="#F1F4EF" stopOpacity="1" />
-          <stop offset="100%" stopColor="#C18C5D" stopOpacity="0" />
+          <stop offset="60%" stopColor="#FFFFFF" stopOpacity="1" />
+          <stop offset="100%" stopColor="#2563A8" stopOpacity="0" />
         </linearGradient>
 
         <linearGradient id="starGlowV" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="#C18C5D" stopOpacity="0" />
-          <stop offset="40%" stopColor="#F1F4EF" stopOpacity="1" />
+          <stop offset="0%" stopColor="#2563A8" stopOpacity="0" />
+          <stop offset="40%" stopColor="#FFFFFF" stopOpacity="1" />
           <stop offset="50%" stopColor="#ffffff" stopOpacity="1" />
-          <stop offset="60%" stopColor="#F1F4EF" stopOpacity="1" />
-          <stop offset="100%" stopColor="#C18C5D" stopOpacity="0" />
+          <stop offset="60%" stopColor="#FFFFFF" stopOpacity="1" />
+          <stop offset="100%" stopColor="#2563A8" stopOpacity="0" />
         </linearGradient>
 
         <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">

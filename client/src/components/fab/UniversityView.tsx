@@ -67,13 +67,13 @@ export default function UniversityView({ path, signals, constraints, onBack, onC
       <div className="w-full max-w-7xl mx-auto flex items-center justify-center min-h-[60vh]">
         <div className="text-center bg-white border border-ink-200 rounded-3xl p-12 shadow-e2 max-w-md">
           <GraduationCap className="h-16 w-16 text-ink-300 mx-auto mb-6" />
-          <h3 className="text-xl font-display font-extrabold text-ink-900 mb-3">No Career Selected</h3>
+          <h3 className="text-xl font-display font-bold text-ink-900 mb-3">No Career Selected</h3>
           <p className="text-ink-500 font-medium mb-8">
             Choose a career path to unlock personalised university recommendations.
           </p>
           <button 
             onClick={onBack}
-            className="px-6 py-3 bg-clay-600 hover:bg-clay-700 text-white rounded-xl font-bold transition-colors w-full"
+            className="px-6 py-3 bg-moss-600 hover:bg-moss-600 text-white rounded-xl font-bold transition-colors w-full"
           >
             Return to Career Paths
           </button>
@@ -90,7 +90,7 @@ export default function UniversityView({ path, signals, constraints, onBack, onC
     <div className="w-full max-w-7xl mx-auto pb-24">
       {/* Header */}
       <div className="mb-10 space-y-3">
-        <h1 className="text-3xl font-display font-extrabold text-ink-900 tracking-tight">
+        <h1 className="text-3xl font-display font-bold text-ink-900 tracking-tight">
           University Intelligence
         </h1>
         <p className="text-ink-500 font-medium text-lg max-w-3xl">
@@ -103,7 +103,7 @@ export default function UniversityView({ path, signals, constraints, onBack, onC
         <select 
           value={filterCountry}
           onChange={e => setFilterCountry(e.target.value)}
-          className="bg-ink-50 border border-ink-200 text-ink-700 text-xs sm:text-sm font-semibold rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 focus:outline-none focus:ring-2 focus:ring-clay-500/20 w-full md:w-auto"
+          className="bg-ink-50 border border-ink-200 text-ink-700 text-xs sm:text-sm font-semibold rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 focus:outline-none focus:ring-2 focus:ring-moss-500/20 w-full md:w-auto"
         >
           <option value="All">All Countries</option>
           {uniqueCountries.map(c => <option key={c} value={c}>{c}</option>)}
@@ -112,7 +112,7 @@ export default function UniversityView({ path, signals, constraints, onBack, onC
         <select 
           value={filterBudget}
           onChange={e => setFilterBudget(e.target.value)}
-          className="bg-ink-50 border border-ink-200 text-ink-700 text-xs sm:text-sm font-semibold rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 focus:outline-none focus:ring-2 focus:ring-clay-500/20 w-full md:w-auto"
+          className="bg-ink-50 border border-ink-200 text-ink-700 text-xs sm:text-sm font-semibold rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 focus:outline-none focus:ring-2 focus:ring-moss-500/20 w-full md:w-auto"
         >
           <option value="All">All Budgets</option>
           <option value="Low">Low Tuition / Funded</option>
@@ -122,7 +122,7 @@ export default function UniversityView({ path, signals, constraints, onBack, onC
         <select 
           value={filterDegree}
           onChange={e => setFilterDegree(e.target.value)}
-          className="bg-ink-50 border border-ink-200 text-ink-700 text-xs sm:text-sm font-semibold rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 focus:outline-none focus:ring-2 focus:ring-clay-500/20 w-full md:w-auto"
+          className="bg-ink-50 border border-ink-200 text-ink-700 text-xs sm:text-sm font-semibold rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 focus:outline-none focus:ring-2 focus:ring-moss-500/20 w-full md:w-auto"
         >
           <option value="All">All Degrees</option>
           {uniqueDegrees.map(d => <option key={d} value={d}>{d}</option>)}
@@ -131,7 +131,7 @@ export default function UniversityView({ path, signals, constraints, onBack, onC
         <select 
           value={filterIntake}
           onChange={e => setFilterIntake(e.target.value)}
-          className="bg-ink-50 border border-ink-200 text-ink-700 text-xs sm:text-sm font-semibold rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 focus:outline-none focus:ring-2 focus:ring-clay-500/20 w-full md:w-auto"
+          className="bg-ink-50 border border-ink-200 text-ink-700 text-xs sm:text-sm font-semibold rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 focus:outline-none focus:ring-2 focus:ring-moss-500/20 w-full md:w-auto"
         >
           <option value="All">All Intakes</option>
           {uniqueIntakes.map(i => <option key={i} value={i}>{i}</option>)}
@@ -140,7 +140,7 @@ export default function UniversityView({ path, signals, constraints, onBack, onC
         <select 
           value={filterScholarship}
           onChange={e => setFilterScholarship(e.target.value)}
-          className="bg-ink-50 border border-ink-200 text-ink-700 text-xs sm:text-sm font-semibold rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 focus:outline-none focus:ring-2 focus:ring-clay-500/20 w-full md:w-auto"
+          className="bg-ink-50 border border-ink-200 text-ink-700 text-xs sm:text-sm font-semibold rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 focus:outline-none focus:ring-2 focus:ring-moss-500/20 w-full md:w-auto"
         >
           <option value="All">Any Scholarship</option>
           <option value="Yes">Scholarships Available</option>
@@ -150,7 +150,7 @@ export default function UniversityView({ path, signals, constraints, onBack, onC
           {compareList.length > 0 && (
             <button
               onClick={() => setShowCompare(true)}
-              className="px-3.5 py-2 bg-clay-100 text-clay-700 hover:bg-clay-200 rounded-xl text-xs sm:text-sm font-bold transition-colors flex items-center space-x-1.5"
+              className="px-3.5 py-2 bg-moss-100 text-moss-700 hover:bg-moss-200 rounded-xl text-xs sm:text-sm font-bold transition-colors flex items-center space-x-1.5"
             >
               <span>Compare ({compareList.length})</span>
             </button>
@@ -185,7 +185,7 @@ export default function UniversityView({ path, signals, constraints, onBack, onC
           <p className="text-ink-500 mb-6">Try adjusting your filters or checking your career path.</p>
           <button 
             onClick={onBack}
-            className="px-6 py-3 bg-clay-600 text-white rounded-xl font-bold hover:bg-clay-700 transition-colors"
+            className="px-6 py-3 bg-moss-600 text-white rounded-xl font-bold hover:bg-moss-600 transition-colors"
           >
             Return to Career Paths
           </button>
@@ -200,29 +200,29 @@ export default function UniversityView({ path, signals, constraints, onBack, onC
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.1 }}
-                className="group relative bg-white border border-ink-200 rounded-3xl overflow-hidden shadow-e2 hover:shadow-e5 transition-all duration-500 flex flex-col lg:flex-row"
+                className="group relative bg-white border border-ink-200 rounded-3xl overflow-hidden shadow-e2 transition-all duration-500 flex flex-col lg:flex-row"
               >
                 {/* Hero Image Section */}
                 <div className="lg:w-2/5 h-64 lg:h-auto relative overflow-hidden">
                   <img 
                     src={match.university.heroImage} 
                     alt={match.university.name}
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700"
                   />
                   {/* Purple Gradient Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-r from-clay-900/90 via-clay-900/40 to-transparent"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-r from-ink-950/90 via-ink-950/40 to-transparent"></div>
                   
                   {/* Overlay Content */}
                   <div className="absolute bottom-0 left-0 p-6 lg:p-8 w-full">
                     <div className="flex items-center space-x-3 mb-4">
-                      <div className="h-10 w-10 bg-white/10 backdrop-blur-md rounded-xl flex items-center justify-center border border-white/20 text-2xl shadow-e4">
+                      <div className="h-10 w-10 bg-white/10 rounded-xl flex items-center justify-center border border-white/20 text-2xl">
                         {match.university.logo}
                       </div>
-                      <span className="px-3 py-1 bg-white/20 backdrop-blur-md border border-white/20 rounded-lg text-white text-xs font-bold uppercase tracking-wider">
+                      <span className="px-3 py-1 bg-white/20 border border-white/20 rounded-lg text-white text-xs font-bold uppercase tracking-wider">
                         {match.university.country}
                       </span>
                     </div>
-                    <h2 className="text-2xl lg:text-3xl font-display font-extrabold text-white leading-tight drop-shadow-e2">
+                    <h2 className="text-2xl lg:text-3xl font-display font-bold text-white leading-tight drop-shadow-e2">
                       {match.university.name}
                     </h2>
                   </div>
@@ -232,14 +232,14 @@ export default function UniversityView({ path, signals, constraints, onBack, onC
                 <div className="flex-1 p-4 sm:p-6 lg:p-8 flex flex-col justify-between bg-white relative">
                   
                   {/* Top Row: Meta stats */}
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 pb-6 border-b border-ink-100">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 pb-6 border-b border-ink-200">
                     <div>
                       <p className="text-micro uppercase tracking-wider font-bold text-ink-500 mb-1">QS Rank</p>
-                      <p className="text-base sm:text-xl font-extrabold text-ink-900">#{match.university.qsRanking}</p>
+                      <p className="text-base sm:text-xl font-bold text-ink-900">#{match.university.qsRanking}</p>
                     </div>
                     <div>
                       <p className="text-micro uppercase tracking-wider font-bold text-ink-500 mb-1">Employability</p>
-                      <p className="text-base sm:text-xl font-extrabold text-good-500">{match.programme.graduateEmployability}%</p>
+                      <p className="text-base sm:text-xl font-bold text-good-500">{match.programme.graduateEmployability}%</p>
                     </div>
                     <div>
                       <p className="text-micro uppercase tracking-wider font-bold text-ink-500 mb-1">Difficulty</p>
@@ -248,8 +248,8 @@ export default function UniversityView({ path, signals, constraints, onBack, onC
                     <div>
                       <p className="text-micro uppercase tracking-wider font-bold text-ink-500 mb-1">Match Score</p>
                       <div className="flex items-center space-x-1 mt-1">
-                        <Sparkles className="h-3.5 w-3.5 text-clay-500" />
-                        <span className="text-xs sm:text-sm font-bold text-clay-600">{match.matchScore}%</span>
+                        <Sparkles className="h-3.5 w-3.5 text-moss-600" />
+                        <span className="text-xs sm:text-sm font-bold text-moss-700">{match.matchScore}%</span>
                       </div>
                     </div>
                   </div>
@@ -264,7 +264,7 @@ export default function UniversityView({ path, signals, constraints, onBack, onC
                       <span className="flex items-center"><DollarSign className="h-3.5 w-3.5 mr-0.5 text-ink-500"/> {match.programme.currency} {match.programme.livingCost.toLocaleString()}/yr (Living)</span>
                       <span className="flex items-center"><Clock className="h-3.5 w-3.5 mr-0.5 text-ink-500"/> {match.programme.durationMonths} Mos</span>
                       {match.programme.scholarshipsAvailable && (
-                        <span className="flex items-center text-clay-700 bg-clay-50 px-2 py-0.5 rounded-md text-tiny font-bold border border-clay-200">
+                        <span className="flex items-center text-moss-700 bg-moss-50 px-2 py-0.5 rounded-md text-tiny font-bold border border-moss-200">
                           <Award className="h-3 w-3 mr-0.5"/> Scholarships
                         </span>
                       )}
@@ -272,9 +272,9 @@ export default function UniversityView({ path, signals, constraints, onBack, onC
                   </div>
 
                   {/* Personalized Explanation */}
-                  <div className="bg-ink-50 border border-ink-100 rounded-2xl p-3.5 sm:p-4 mb-6">
+                  <div className="bg-ink-50 border border-ink-200 rounded-2xl p-3.5 sm:p-4 mb-6">
                     <p className="text-xs sm:text-sm text-ink-700 leading-relaxed font-medium">
-                      <span className="font-bold text-clay-700 mr-2">Why this fits you:</span>
+                      <span className="font-bold text-moss-700 mr-2">Why this fits you:</span>
                       {match.personalizedExplanation}
                     </p>
                   </div>
@@ -288,7 +288,7 @@ export default function UniversityView({ path, signals, constraints, onBack, onC
                       onClick={() => toggleCompare(match)}
                       className={`flex-1 py-2.5 sm:py-3 rounded-xl font-bold text-xs sm:text-sm transition-colors border text-center ${
                         isCompared 
-                          ? 'bg-clay-50 text-clay-700 border-clay-200' 
+                          ? 'bg-moss-50 text-moss-700 border-moss-200' 
                           : 'bg-white text-ink-700 border-ink-200 hover:bg-ink-50'
                       }`}
                     >
@@ -318,23 +318,23 @@ export default function UniversityView({ path, signals, constraints, onBack, onC
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="absolute inset-0 bg-ink-900/60 backdrop-blur-sm"
+              className="absolute inset-0 bg-ink-900/60"
               onClick={() => setShowCompare(false)}
             />
             <motion.div 
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-6xl bg-white rounded-3xl shadow-e5 overflow-hidden flex flex-col max-h-[90vh]"
+              className="relative w-full max-w-6xl bg-white rounded-2xl shadow-e5 border border-ink-200 overflow-hidden flex flex-col max-h-[90vh]"
             >
-              <div className="p-6 border-b border-ink-100 flex items-center justify-between bg-ink-50">
+              <div className="p-6 border-b border-ink-200 flex items-center justify-between bg-ink-50">
                 <div>
-                  <h3 className="text-2xl font-display font-extrabold text-ink-900">Compare Universities</h3>
+                  <h3 className="text-2xl font-display font-bold text-ink-900">Compare Universities</h3>
                   <p className="text-sm font-medium text-ink-500 mt-1">Side-by-side analysis of your top picks.</p>
                 </div>
                 <button 
                   onClick={() => setShowCompare(false)}
-                  className="p-2 bg-white border border-ink-200 rounded-full text-ink-500 hover:text-ink-900 hover:bg-ink-100 transition-colors"
+                  className="p-2 bg-white border border-ink-200 rounded-md text-ink-500 hover:text-ink-900 hover:bg-ink-100 transition-colors"
                 >
                   <X className="h-5 w-5" />
                 </button>
@@ -348,16 +348,16 @@ export default function UniversityView({ path, signals, constraints, onBack, onC
                 <div className="grid min-w-[800px] grid-cols-4 gap-6">
                   {/* Labels Column */}
                   <div className="space-y-6 pt-48">
-                    <div className="text-sm font-bold text-ink-500 uppercase tracking-wider py-4 border-b border-ink-100">QS Rank</div>
-                    <div className="text-sm font-bold text-ink-500 uppercase tracking-wider py-4 border-b border-ink-100">Programme</div>
-                    <div className="text-sm font-bold text-ink-500 uppercase tracking-wider py-4 border-b border-ink-100">Tuition Fee</div>
-                    <div className="text-sm font-bold text-ink-500 uppercase tracking-wider py-4 border-b border-ink-100">Living Cost</div>
-                    <div className="text-sm font-bold text-ink-500 uppercase tracking-wider py-4 border-b border-ink-100">Scholarships</div>
-                    <div className="text-sm font-bold text-ink-500 uppercase tracking-wider py-4 border-b border-ink-100">Admission Difficulty</div>
-                    <div className="text-sm font-bold text-ink-500 uppercase tracking-wider py-4 border-b border-ink-100">Employability</div>
-                    <div className="text-sm font-bold text-ink-500 uppercase tracking-wider py-4 border-b border-ink-100">Research Strength</div>
-                    <div className="text-sm font-bold text-ink-500 uppercase tracking-wider py-4 border-b border-ink-100">Campus Size</div>
-                    <div className="text-sm font-bold text-ink-500 uppercase tracking-wider py-4 border-b border-ink-100">Intl. Diversity</div>
+                    <div className="text-sm font-bold text-ink-500 uppercase tracking-wider py-4 border-b border-ink-200">QS Rank</div>
+                    <div className="text-sm font-bold text-ink-500 uppercase tracking-wider py-4 border-b border-ink-200">Programme</div>
+                    <div className="text-sm font-bold text-ink-500 uppercase tracking-wider py-4 border-b border-ink-200">Tuition Fee</div>
+                    <div className="text-sm font-bold text-ink-500 uppercase tracking-wider py-4 border-b border-ink-200">Living Cost</div>
+                    <div className="text-sm font-bold text-ink-500 uppercase tracking-wider py-4 border-b border-ink-200">Scholarships</div>
+                    <div className="text-sm font-bold text-ink-500 uppercase tracking-wider py-4 border-b border-ink-200">Admission Difficulty</div>
+                    <div className="text-sm font-bold text-ink-500 uppercase tracking-wider py-4 border-b border-ink-200">Employability</div>
+                    <div className="text-sm font-bold text-ink-500 uppercase tracking-wider py-4 border-b border-ink-200">Research Strength</div>
+                    <div className="text-sm font-bold text-ink-500 uppercase tracking-wider py-4 border-b border-ink-200">Campus Size</div>
+                    <div className="text-sm font-bold text-ink-500 uppercase tracking-wider py-4 border-b border-ink-200">Intl. Diversity</div>
                     <div className="text-sm font-bold text-ink-500 uppercase tracking-wider py-4">Industry Connections</div>
                   </div>
 
@@ -372,16 +372,16 @@ export default function UniversityView({ path, signals, constraints, onBack, onC
                         </div>
                       </div>
 
-                      <div className="text-sm font-bold text-ink-900 py-4 border-b border-ink-100">#{match.university.qsRanking}</div>
-                      <div className="text-sm font-bold text-ink-900 py-4 border-b border-ink-100">{match.programme.title}</div>
-                      <div className="text-sm font-bold text-ink-900 py-4 border-b border-ink-100">{match.programme.currency} {match.programme.tuitionFee.toLocaleString()}</div>
-                      <div className="text-sm font-bold text-ink-900 py-4 border-b border-ink-100">{match.programme.currency} {match.programme.livingCost.toLocaleString()}</div>
-                      <div className="text-sm font-bold text-ink-900 py-4 border-b border-ink-100">{match.programme.scholarshipsAvailable ? 'Yes' : 'No'}</div>
-                      <div className="text-sm font-bold text-ink-900 py-4 border-b border-ink-100">{match.programme.admissionDifficulty}</div>
-                      <div className="text-sm font-bold text-good-500 py-4 border-b border-ink-100">{match.programme.graduateEmployability}%</div>
-                      <div className="text-sm font-medium text-ink-700 py-4 border-b border-ink-100">{match.university.researchStrength}</div>
-                      <div className="text-sm font-medium text-ink-700 py-4 border-b border-ink-100">{match.university.campusSize}</div>
-                      <div className="text-sm font-medium text-ink-700 py-4 border-b border-ink-100">{match.university.internationalDiversity}</div>
+                      <div className="text-sm font-bold text-ink-900 py-4 border-b border-ink-200">#{match.university.qsRanking}</div>
+                      <div className="text-sm font-bold text-ink-900 py-4 border-b border-ink-200">{match.programme.title}</div>
+                      <div className="text-sm font-bold text-ink-900 py-4 border-b border-ink-200">{match.programme.currency} {match.programme.tuitionFee.toLocaleString()}</div>
+                      <div className="text-sm font-bold text-ink-900 py-4 border-b border-ink-200">{match.programme.currency} {match.programme.livingCost.toLocaleString()}</div>
+                      <div className="text-sm font-bold text-ink-900 py-4 border-b border-ink-200">{match.programme.scholarshipsAvailable ? 'Yes' : 'No'}</div>
+                      <div className="text-sm font-bold text-ink-900 py-4 border-b border-ink-200">{match.programme.admissionDifficulty}</div>
+                      <div className="text-sm font-bold text-good-500 py-4 border-b border-ink-200">{match.programme.graduateEmployability}%</div>
+                      <div className="text-sm font-medium text-ink-700 py-4 border-b border-ink-200">{match.university.researchStrength}</div>
+                      <div className="text-sm font-medium text-ink-700 py-4 border-b border-ink-200">{match.university.campusSize}</div>
+                      <div className="text-sm font-medium text-ink-700 py-4 border-b border-ink-200">{match.university.internationalDiversity}</div>
                       <div className="text-sm font-medium text-ink-700 py-4">{match.university.industryConnections}</div>
                     </div>
                   ))}
@@ -389,7 +389,7 @@ export default function UniversityView({ path, signals, constraints, onBack, onC
                   {/* Empty place holders if < 3 */}
                   {Array.from({ length: 3 - compareList.length }).map((_, i) => (
                     <div key={`empty-${i}`} className="border-2 border-dashed border-ink-200 rounded-3xl flex flex-col items-center justify-center p-6 bg-ink-50/50">
-                      <div className="h-12 w-12 rounded-full bg-ink-200 flex items-center justify-center mb-4">
+                      <div className="h-12 w-12 rounded-md bg-ink-200 flex items-center justify-center mb-4">
                         <span className="text-ink-500 font-bold">+</span>
                       </div>
                       <p className="text-sm font-bold text-ink-500 text-center">Add another university to compare</p>

@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../../auth/AuthContext";
 import { Logo } from "../Logo";
-import { Button, Wash, cx, inputClass } from "../../ui";
+import { Button, cx, inputClass } from "../../ui";
 
 type Mode = "login" | "register";
 
@@ -102,7 +102,7 @@ function PasswordToggle({
       onClick={onToggle}
       tabIndex={-1}
       aria-label={visible ? "Hide password" : "Show password"}
-      className="rounded-full p-2 text-ink-500 transition-colors hover:bg-ink-100 hover:text-ink-700 cursor-pointer"
+      className="rounded-md p-2 text-ink-500 transition-colors hover:bg-ink-100 hover:text-ink-700 cursor-pointer"
     >
       {visible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
     </button>
@@ -201,41 +201,29 @@ export default function AuthPage() {
     // first impression at all.
     <div className="grid min-h-[100dvh] w-full font-sans text-ink-900 lg:grid-cols-[1.1fr_1fr]">
 
-      {/* Brand panel — desktop only. Deep loam rather than near-black: the
-          panel should read as forest floor, not as a void. */}
+      {/* Brand panel — desktop only. A flat graphite field. The two blurred
+          colour washes that used to drift across it are gone: they were the
+          signature of the old style and they carried no information. What
+          gives the panel its interest now is the type and the rule under the
+          figures, which is the whole argument of the system in one screen. */}
       <aside className="relative hidden flex-col justify-between overflow-hidden bg-ink-900 p-12 lg:flex">
-        {/*
-          Two ambient washes. Moss drifts slowly at top-left, clay sits still
-          at bottom-right — one moving element per screen is enough to feel
-          alive, and the second would start competing. Both are blurred past
-          recognition so what registers is warmth, not a shape.
-        */}
-        <Wash
-          shape={0}
-          tone="moss"
-          animate
-          className="-left-32 -top-32 h-[36rem] w-[36rem] opacity-30"
-        />
-        <Wash
-          shape={2}
-          tone="clay"
-          className="-bottom-40 -right-24 h-[30rem] w-[30rem] opacity-25"
-        />
-
         <div className="relative flex items-center gap-3">
-          <Logo className="h-11 w-11 rounded-full" />
+          <Logo className="h-9 w-9 rounded-md" />
           <div>
-            <div className="font-display text-xl font-bold tracking-tight text-white">northr</div>
-            <div className="font-sans text-micro font-extrabold uppercase tracking-[0.14em] text-white/40">
+            <div className="text-lg font-bold tracking-tight text-white">northr</div>
+            <div className="text-micro font-bold uppercase tracking-[0.09em] text-white/40">
               Your Career OS
             </div>
           </div>
         </div>
 
         <div className="relative max-w-md">
-          <h2 className="font-display text-4xl font-bold leading-[1.05] tracking-tight text-white text-balance">
+          <h2 className="text-4xl font-bold leading-[1.05] tracking-tight text-white text-balance">
             From clinical chaos to{" "}
-            <span className="text-gradient-moss">actual clarity.</span>
+            {/* moss-300 rather than a clipped gradient: on a near-black panel
+                the gradient's fallback colour is invisible, and a solid accent
+                does the same emphatic job. */}
+            <span className="text-moss-300">actual clarity.</span>
           </h2>
           <p className="mt-5 text-base leading-relaxed text-white/60 text-pretty">
             FAB just talks to you. Underneath, every answer maps onto a 25-item
@@ -244,17 +232,17 @@ export default function AuthPage() {
           </p>
         </div>
 
-        <dl className="relative grid grid-cols-3 gap-6 border-t border-white/10 pt-6">
+        <dl className="relative grid grid-cols-3 divide-x divide-white/10 border-t border-white/10 pt-6">
           {[
             ["127", "careers scored"],
             ["26", "degree pathways"],
             ["11", "languages"],
-          ].map(([n, label]) => (
-            <div key={label}>
-              <dt data-numeric className="font-display text-2xl font-bold text-moss-300">
+          ].map(([n, label], i) => (
+            <div key={label} className={i === 0 ? "pr-6" : "px-6"}>
+              <dt data-numeric className="text-2xl font-bold text-white">
                 {n}
               </dt>
-              <dd className="mt-1 font-sans text-micro font-extrabold uppercase tracking-[0.14em] text-white/40">
+              <dd className="mt-1 text-micro font-bold uppercase tracking-[0.09em] text-white/40">
                 {label}
               </dd>
             </div>
@@ -264,19 +252,10 @@ export default function AuthPage() {
 
       {/* Form panel */}
       <main className="relative flex items-center justify-center overflow-hidden bg-ink-50 px-4 py-10 sm:px-8">
-        {/* A single sand wash bled off the bottom-left corner. Barely there —
-            enough that the form sits on a field rather than on a flat fill,
-            never enough to fight the inputs for attention. */}
-        <Wash
-          shape={4}
-          tone="sand"
-          className="-bottom-48 -left-32 h-[28rem] w-[28rem] opacity-40"
-        />
-
         <div className="relative w-full max-w-sm">
           {/* Compact brand lockup, mobile only. */}
           <div className="mb-8 flex items-center gap-2.5 lg:hidden">
-            <Logo className="h-10 w-10 rounded-full" />
+            <Logo className="h-10 w-10 rounded-md" />
             <span className="font-display text-xl font-bold tracking-tight">northr</span>
           </div>
 
@@ -294,7 +273,7 @@ export default function AuthPage() {
           <div
             role="tablist"
             aria-label="Authentication mode"
-            className="mb-6 grid grid-cols-2 gap-1 rounded-full border border-ink-200/60 bg-ink-100/70 p-1.5"
+            className="mb-6 grid grid-cols-2 gap-1 rounded-md border border-ink-200/60 bg-ink-100/70 p-1.5"
           >
             {(["login", "register"] as Mode[]).map((m) => (
               <button
@@ -303,7 +282,7 @@ export default function AuthPage() {
                 type="button"
                 aria-selected={mode === m}
                 onClick={() => switchMode(m)}
-                className={`rounded-full px-3 py-2 text-sm font-bold transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                className={`rounded-md px-3 py-2 text-sm font-bold transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                   mode === m
                     ? "bg-ink-25 text-ink-900 shadow-soft"
                     : "text-ink-500 hover:text-ink-800"

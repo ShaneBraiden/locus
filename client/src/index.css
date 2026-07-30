@@ -1,209 +1,253 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Nunito:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 @import "tailwindcss";
 
 /* ============================================================================
-   NORTHR DESIGN SYSTEM — ORGANIC / NATURAL
+   NORTHR DESIGN SYSTEM — PRECISION / GRAPHITE
    ----------------------------------------------------------------------------
-   One source of truth for colour, type, spacing, elevation, texture and motion.
+   One source of truth for colour, type, spacing, rules, elevation and motion.
 
-   The previous build collapsed three competing visual languages into a single
-   near-black/gold/violet system. This revision keeps that structure — one ramp
-   set, semantic aliases on top, nothing hardcoded in components — but repoints
-   every ramp at an earth-drawn palette: rice paper, deep loam, moss, clay.
+   This revision replaces the previous "organic" language wholesale. That system
+   was built on the tenet that there are no straight lines in nature: blob
+   radii, asymmetric cards, pill controls, paper grain, moss-and-clay earth
+   tones, and a shadow under every surface. It read as friendly and handmade.
+   It did not read as professional, and — more practically — a page of floating
+   rounded boxes hides its own structure. Twelve cards on a page have twelve
+   outlines and no hierarchy.
 
-   The guiding tenet is "there are no straight lines in nature". Radii are
-   generous, shadows are colour-tinted rather than grey, surfaces carry a paper
-   grain, and motion is eased rather than snapped.
+   The replacement tenet: STRUCTURE IS DRAWN WITH LINES, NOT WITH BOXES.
 
-   Ramp roles:
-     ink   — the neutral ramp. Rice paper through stone, timber, dried grass,
-             bark, deep loam. Every surface, border and text colour.
-     moss  — primary accent (#5D7052). Brand, primary action, wayfinding.
-     clay  — secondary accent (#C18C5D). Data series, secondary emphasis.
-     good / warn / bad / info — status, naturalised to sit with the above.
+     - Content sits directly on the page. Sections are separated by 1px rules
+       and by whitespace, not by a container with a shadow under it. Elevation
+       is reserved for things that genuinely float: modals, popovers, dropdowns,
+       toasts. Nothing else casts a shadow.
+     - Geometry is sharp but not brutal. The radius ramp tops out at 12px and
+       lives mostly at 4-6px — enough to soften a corner, never enough to read
+       as a lozenge. Controls are rectangles with a small radius, not pills.
+     - Colour is a neutral graphite ramp plus exactly one accent. Colour marks
+       state and action. It does not decorate.
+     - Motion is short and functional: 150ms, standard easing. Nothing lifts,
+       tilts, grows or settles.
 
-   RULE: never write a raw hex or a `text-[13px]` in a component again. If a
-   value is missing here, add it here first.
+   RAMP NAMES ARE HISTORICAL. `moss` and `clay` are referenced by class name in
+   several thousand lines of view code, so the ramps keep their names and are
+   repointed rather than renamed. What they mean now:
+
+     ink   — the neutral ramp. White through graphite to near-black. Every
+             surface, rule, border and text colour in the app.
+     moss  — THE ACCENT (#2563A8, a deep functional blue). Brand, primary
+             action, active nav, selected state, primary data series. If a
+             thing is not interactive and not the current selection, it is not
+             this colour.
+     clay  — secondary data only (#9A6B2F, bronze). Charts and comparison
+             series. Never a UI accent, never a button, never a link.
+     good / warn / bad / info — status. Muted, not saturated.
+
+   RULE: never write a raw hex or a `text-[13px]` in a component. If a value is
+   missing here, add it here first.
    ========================================================================= */
 
 @theme {
   /* --- Type families -----------------------------------------------------
-     Fraunces is a variable serif with soft, old-style warmth that still reads
-     as modern — it carries the handmade quality the palette implies. Nunito's
-     rounded terminals echo the organic shapes. JetBrains Mono survives in one
-     job only: tabular figures, where digit alignment matters more than
-     personality. */
-  --font-sans: "Nunito", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Fraunces", "Nunito", Georgia, serif;
+     One family. Inter is the neutral, high-legibility grotesque that dense
+     data UI is built on: unambiguous at 11px, tight enough to set a table in,
+     and with no voice of its own to fight the content. The previous system
+     paired a variable serif with a rounded sans, which is two personalities
+     more than an application interface needs.
+
+     `--font-display` deliberately resolves to the same family. Headings are
+     distinguished by weight, size and tracking — not by a second typeface. It
+     stays as a separate token so the ~200 `font-display` classes across the
+     views keep working. */
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-display: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 
   /* --- Type scale --------------------------------------------------------
-     Ten steps on a ~1.25 ratio, each with a paired line-height and tracking.
-     Tracking is looser than the old system: Fraunces and Nunito both want
-     air, and tight negative tracking reads as mechanical. `micro` and `tiny`
-     are the only sizes below 12px, and both are reserved for uppercase
-     labels — never for reading copy. */
+     Tightened throughout. Line-heights come down (1.7 body → 1.55; 1.6 UI →
+     1.45) because generous leading is what makes an interface read as a
+     brochure. Tracking goes negative from `lg` up — at display sizes Inter
+     needs the corners pulled in — and stays slightly positive only on the two
+     uppercase label sizes, which are the only sizes below 12px and are never
+     used for reading copy. */
   --text-micro: 0.625rem;      /* 10px — eyebrow labels only               */
   --text-micro--line-height: 1.2;
-  --text-micro--letter-spacing: 0.12em;
+  --text-micro--letter-spacing: 0.08em;
   --text-tiny: 0.6875rem;      /* 11px — dense metadata, badges            */
   --text-tiny--line-height: 1.3;
-  --text-tiny--letter-spacing: 0.05em;
+  --text-tiny--letter-spacing: 0.02em;
   --text-xs: 0.75rem;          /* 12px — secondary UI text                 */
-  --text-xs--line-height: 1.45;
-  --text-sm: 0.875rem;         /* 14px — default UI text                   */
-  --text-sm--line-height: 1.6;
-  --text-base: 1rem;           /* 16px — body copy, chat bubbles           */
-  --text-base--line-height: 1.7;
-  --text-lg: 1.125rem;         /* 18px — card titles                       */
-  --text-lg--line-height: 1.5;
-  --text-lg--letter-spacing: -0.005em;
-  --text-xl: 1.375rem;         /* 22px — section headings                  */
-  --text-xl--line-height: 1.35;
-  --text-xl--letter-spacing: -0.012em;
-  --text-2xl: 1.75rem;         /* 28px — view titles                       */
-  --text-2xl--line-height: 1.25;
-  --text-2xl--letter-spacing: -0.018em;
-  --text-3xl: 2.25rem;         /* 36px — hero numbers                      */
+  --text-xs--line-height: 1.4;
+  --text-sm: 0.8125rem;        /* 13px — default UI text                   */
+  --text-sm--line-height: 1.45;
+  --text-base: 0.9375rem;      /* 15px — body copy, chat bubbles           */
+  --text-base--line-height: 1.55;
+  --text-lg: 1.0625rem;        /* 17px — panel titles                      */
+  --text-lg--line-height: 1.4;
+  --text-lg--letter-spacing: -0.011em;
+  --text-xl: 1.25rem;          /* 20px — section headings                  */
+  --text-xl--line-height: 1.3;
+  --text-xl--letter-spacing: -0.017em;
+  --text-2xl: 1.5rem;          /* 24px — view titles                       */
+  --text-2xl--line-height: 1.22;
+  --text-2xl--letter-spacing: -0.022em;
+  --text-3xl: 2rem;            /* 32px — hero numbers                      */
   --text-3xl--line-height: 1.1;
-  --text-3xl--letter-spacing: -0.022em;
-  --text-4xl: 3rem;            /* 48px — display                           */
-  --text-4xl--line-height: 1.05;
-  --text-4xl--letter-spacing: -0.026em;
+  --text-3xl--letter-spacing: -0.028em;
+  --text-4xl: 2.75rem;         /* 44px — display                           */
+  --text-4xl--line-height: 1.04;
+  --text-4xl--letter-spacing: -0.032em;
 
   /* --- Ink: the single neutral ramp --------------------------------------
-     Drawn from unbleached paper, river stone, raw timber, dried grass and
-     forest loam. Warm through the whole ramp so it sits with the moss and
-     clay instead of fighting them.
+     Graphite. A hair cool rather than dead neutral — a pure-grey ramp reads
+     as unfinished on a screen, and the slight blue cast lets the accent sit
+     on it without looking pasted on.
 
-     Contrast is load-bearing here, so the values are tuned, not picked:
-       ink-400  decorative only — icons, dividers, never text
-       ink-450  lightest value that clears 3:1 on both white and stone, so it
-                is the only legal colour for a control border (WCAG 1.4.11)
-       ink-500  clears 4.5:1 on white, page AND stone, because secondary text
-                lands on all three
+     Contrast is load-bearing, so the values are tuned rather than picked:
+       ink-200  the hairline. This is the workhorse of the whole system now
+                that rules do the job cards used to.
+       ink-300  the visible border, for control edges at rest
+       ink-400  decorative only — icon fills, never text
+       ink-450  lightest legal value for a control border (WCAG 1.4.11, 3:1)
+       ink-500  clears 4.5:1 on white AND on the page tint, because secondary
+                text lands on both
        ink-600+ clears 4.5:1 everywhere with headroom */
   --color-ink-0:   #FFFFFF;
-  --color-ink-25:  #FEFEFA;  /* card surface — a shade warmer than white   */
-  --color-ink-50:  #FDFCF8;  /* rice paper — the page                      */
-  --color-ink-100: #F0EBE5;  /* stone — sunken surfaces, hairline borders  */
-  --color-ink-200: #DED8CF;  /* raw timber — the standard border           */
-  --color-ink-300: #C6BEB0;
-  --color-ink-400: #A29A8B;
-  --color-ink-450: #8A8171;
-  --color-ink-500: #6A6A5E;  /* dried grass                                */
-  --color-ink-600: #5C5C51;
-  --color-ink-700: #4A4A40;  /* bark                                       */
-  --color-ink-800: #3A3A31;
-  --color-ink-900: #2C2C24;  /* deep loam                                  */
-  --color-ink-950: #1A1A14;
+  --color-ink-25:  #FFFFFF;  /* panel surface — true white, flush with page */
+  --color-ink-50:  #F7F8F9;  /* the page                                    */
+  --color-ink-100: #EFF1F3;  /* sunken surfaces, table zebra, track fills   */
+  --color-ink-200: #E1E4E8;  /* THE HAIRLINE — every divider in the app     */
+  --color-ink-300: #CBD0D6;  /* control border at rest                      */
+  --color-ink-400: #9AA2AC;
+  --color-ink-450: #767E89;
+  --color-ink-500: #5F6772;  /* secondary text                              */
+  --color-ink-600: #4A515B;
+  --color-ink-700: #383E46;
+  --color-ink-800: #262B31;
+  --color-ink-900: #14181C;  /* primary text, inverse surfaces              */
+  --color-ink-950: #0A0C0F;
 
-  /* --- Sand: the one warm neutral that is not on the ink ramp ------------
-     For section washes and accent fills where stone reads too grey. */
-  --color-sand-50:  #FAF6EF;
-  --color-sand-100: #F2EADC;
-  --color-sand-200: #E6DCCD;
-  --color-sand-300: #D8C9B2;
+  /* --- Sand: the one off-neutral -----------------------------------------
+     Retained as a token because the views reference it, but repointed onto
+     the cool ramp. There are no warm washes in this system. */
+  --color-sand-50:  #F7F8F9;
+  --color-sand-100: #EFF1F3;
+  --color-sand-200: #E1E4E8;
+  --color-sand-300: #CBD0D6;
 
-  /* --- Moss: primary accent ---------------------------------------------- */
-  --color-moss-50:  #F1F4EF;
-  --color-moss-100: #E1E7DD;
-  --color-moss-200: #C3D0BA;
-  --color-moss-300: #9FB294;
-  --color-moss-400: #7C9070;
-  --color-moss-500: #5D7052;  /* moss green — the brand                    */
-  --color-moss-600: #4A5A41;
-  --color-moss-700: #3B4834;
-  --color-moss-800: #2D3728;
-  --color-moss-900: #1E251B;
+  /* --- Moss: THE ACCENT (historical name) --------------------------------
+     A deep functional blue. 500 measures 5.1:1 under white, so it carries a
+     button label and a link on the page alike. Everything above 600 exists
+     for hover/active depth; everything below 200 for selection tints. */
+  --color-moss-50:  #EFF5FB;
+  --color-moss-100: #DCE9F6;
+  --color-moss-200: #B6CFEA;
+  --color-moss-300: #85AEDA;
+  --color-moss-400: #4C86C4;
+  --color-moss-500: #2563A8;  /* the accent                                 */
+  --color-moss-600: #1E528C;
+  --color-moss-700: #194471;
+  --color-moss-800: #143557;
+  --color-moss-900: #0E2439;
 
-  /* --- Clay: secondary accent, kept for data + wayfinding -----------------
-     500 is the true terracotta and is decorative only (2.9:1 on paper). 600
-     is the lightest value that clears 4.5:1 in *both* directions — as text on
-     the page and as a fill under white text — so it is the one to reach for
-     whenever the clay has to carry a label. */
-  --color-clay-50:  #FBF5EE;
-  --color-clay-100: #F4E7D8;
-  --color-clay-200: #E9D1B5;
-  --color-clay-300: #DBB68D;
-  --color-clay-400: #CE9F70;
-  --color-clay-500: #C18C5D;  /* terracotta                                */
-  --color-clay-600: #8B5F33;
-  --color-clay-700: #7A5230;
-  --color-clay-800: #5C3E24;
-  --color-clay-900: #3E2A18;
+  /* --- Clay: secondary data series only (historical name) -----------------
+     Bronze. Distinguishable from the accent at chart-line width and in a
+     legend swatch, muted enough that it never competes for attention. 600 is
+     the lightest value that clears 4.5:1 both as text on the page and as a
+     fill under white, so it is the one to use whenever the clay carries a
+     label rather than just a stroke. */
+  --color-clay-50:  #FAF5EC;
+  --color-clay-100: #F2E7D2;
+  --color-clay-200: #E3CDA6;
+  --color-clay-300: #CFAE74;
+  --color-clay-400: #B98F4C;
+  --color-clay-500: #A5762F;
+  --color-clay-600: #8A6127;  /* the only clay that may carry text          */
+  --color-clay-700: #6F4E1F;
+  --color-clay-800: #533A17;
+  --color-clay-900: #37260F;
 
   /* --- Status ------------------------------------------------------------
-     Naturalised: leaf rather than emerald, ochre rather than amber, burnt
-     sienna rather than red, river stone rather than sky. Each 500 carries
-     white text at 4.5:1 or better — except warn, because ochre under white
-     never clears AA, so warn fills take ink-900 text instead. */
-  --color-good-50:  #EFF5EC;
-  --color-good-100: #DCEAD4;
-  --color-good-300: #A8C89A;
-  --color-good-500: #4F7A3F;
-  --color-good-700: #3D6132;
-  --color-good-900: #253B1E;
+     Desaturated. Status colour in a dense interface is read as a signal in
+     peripheral vision, and a saturated palette makes every row shout. Each
+     500 clears 4.5:1 under white — except warn, where no amber does, so warn
+     fills take ink-900 text instead. */
+  --color-good-50:  #EDF7F0;
+  --color-good-100: #D6ECDD;
+  --color-good-300: #8CC49F;
+  --color-good-500: #227A45;
+  --color-good-700: #1A6136;
+  --color-good-900: #103D22;
 
-  --color-warn-50:  #FCF6E8;
-  --color-warn-100: #F7E9C6;
-  --color-warn-300: #E8C478;
-  --color-warn-500: #B87F1E;
-  --color-warn-700: #8A5E14;
-  --color-warn-900: #533909;
+  --color-warn-50:  #FDF6E7;
+  --color-warn-100: #F9EAC4;
+  --color-warn-300: #EBC96E;
+  --color-warn-500: #9A6B10;
+  --color-warn-700: #7A540B;
+  --color-warn-900: #4B3306;
 
-  --color-bad-50:  #FBF0EE;
-  --color-bad-100: #F5DCD8;
-  --color-bad-300: #DCA79E;
-  --color-bad-500: #A85448;  /* burnt sienna                               */
-  --color-bad-700: #8A3E33;
-  --color-bad-900: #55251E;
+  --color-bad-50:  #FCF0EF;
+  --color-bad-100: #F8DCD9;
+  --color-bad-300: #E4A49C;
+  --color-bad-500: #B23A2C;
+  --color-bad-700: #8E2C20;
+  --color-bad-900: #571A12;
 
-  --color-info-50:  #EEF4F6;
-  --color-info-100: #D8E7EC;
-  --color-info-300: #9CC0CC;
-  --color-info-500: #457181;  /* river stone                               */
-  --color-info-700: #365A67;
-  --color-info-900: #223B44;
+  --color-info-50:  #EFF4F8;
+  --color-info-100: #DAE6EF;
+  --color-info-300: #9CB9D0;
+  --color-info-500: #3A6285;
+  --color-info-700: #2C4D6A;
+  --color-info-900: #1B303F;
 
   /* --- Radii -------------------------------------------------------------
-     Scaled up across the board. In this system a "small" radius is what the
-     old system called large — nothing should read as a rectangle with the
-     corners shaved. Every component keeps the token it always used, so the
-     whole app softens from this one block. */
-  --radius-xs:  0.5rem;
-  --radius-sm:  0.75rem;
-  --radius-md:  1rem;
-  --radius-lg:  1.25rem;
-  --radius-xl:  1.5rem;
-  --radius-2xl: 2rem;
-  --radius-3xl: 2.75rem;
+     Scaled down hard. In the previous system a "small" radius was 8px and the
+     largest was 44px; here the entire ramp fits inside what that system called
+     small. Every component keeps the token it always used, so the whole app
+     sharpens from this one block.
+
+     The ceiling is deliberate: 12px on a 400px panel is a corner treatment,
+     not a shape. Nothing in the app should have a radius large enough that you
+     notice the curve before you notice the content. */
+  --radius-xs:  0.125rem;  /* 2px  — chips, swatches, tags                  */
+  --radius-sm:  0.1875rem; /* 3px  — inputs, small buttons                  */
+  --radius-md:  0.25rem;   /* 4px  — the default. Buttons, fields, tiles    */
+  --radius-lg:  0.375rem;  /* 6px  — panels, table wrappers                 */
+  --radius-xl:  0.5rem;    /* 8px  — sheets, large containers               */
+  --radius-2xl: 0.625rem;  /* 10px — modals                                 */
+  --radius-3xl: 0.75rem;   /* 12px — the ceiling                            */
 
   /* --- Elevation ---------------------------------------------------------
-     Never pure black. Moss-tinted through the low end, warmed with clay as
-     the surface lifts — the way a shadow on a forest floor picks up the
-     colour of what is around it. */
-  --shadow-e1: 0 1px 2px 0 rgb(93 112 82 / 0.07);
-  --shadow-e2: 0 2px 8px -2px rgb(93 112 82 / 0.12), 0 1px 2px -1px rgb(93 112 82 / 0.07);
-  --shadow-e3: 0 4px 20px -2px rgb(93 112 82 / 0.15);
-  --shadow-e4: 0 14px 34px -10px rgb(93 112 82 / 0.18), 0 4px 12px -6px rgb(193 140 93 / 0.14);
-  --shadow-e5: 0 28px 60px -14px rgb(93 112 82 / 0.22), 0 10px 24px -10px rgb(193 140 93 / 0.16);
-  /* The two signature treatments, named for how they read. */
-  --shadow-soft:  0 4px 20px -2px rgb(93 112 82 / 0.15);
-  --shadow-float: 0 10px 40px -10px rgb(193 140 93 / 0.20);
-  --shadow-glow-moss: 0 0 0 1px rgb(93 112 82 / 0.25), 0 6px 20px -6px rgb(93 112 82 / 0.35);
-  --shadow-glow-clay: 0 0 0 1px rgb(193 140 93 / 0.30), 0 6px 20px -6px rgb(193 140 93 / 0.35);
+     Neutral, tight, and mostly absent. e1 and e2 are effectively invisible and
+     exist only so the ~180 inline `shadow-soft` references across the views
+     resolve to something harmless rather than needing 180 edits. Real
+     elevation starts at e3 and is for floating chrome ONLY — popovers,
+     dropdowns, modals, toasts. A panel sitting in the page flow gets a border
+     and nothing else. */
+  --shadow-e1: none;
+  --shadow-e2: 0 1px 2px 0 rgb(20 24 28 / 0.04);
+  --shadow-e3: 0 2px 6px -1px rgb(20 24 28 / 0.08), 0 1px 2px -1px rgb(20 24 28 / 0.05);
+  --shadow-e4: 0 8px 20px -6px rgb(20 24 28 / 0.12), 0 2px 6px -2px rgb(20 24 28 / 0.07);
+  --shadow-e5: 0 16px 40px -12px rgb(20 24 28 / 0.18), 0 4px 10px -4px rgb(20 24 28 / 0.08);
+  /* Legacy aliases. `soft` was under every card in the old build; it is now
+     nothing, which is what flattens the app in one line. `float` survives for
+     genuine overlays. */
+  --shadow-soft: none;
+  --shadow-float: 0 8px 20px -6px rgb(20 24 28 / 0.12), 0 2px 6px -2px rgb(20 24 28 / 0.07);
+  --shadow-glow-moss: 0 0 0 1px rgb(37 99 168 / 0.35);
+  --shadow-glow-clay: 0 0 0 1px rgb(165 118 47 / 0.35);
 
   /* --- Motion ------------------------------------------------------------
-     Gentle. Nothing snaps; things settle. */
-  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-in-out-soft: cubic-bezier(0.65, 0, 0.35, 1);
-  --ease-organic: cubic-bezier(0.34, 1.26, 0.64, 1);
+     Short and linear-ish. An interface control should change state, not
+     perform. The old `ease-organic` overshot deliberately; it is repointed to
+     a standard curve so any component still asking for it behaves. */
+  --ease-out-soft: cubic-bezier(0.2, 0, 0, 1);
+  --ease-in-out-soft: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-organic: cubic-bezier(0.2, 0, 0, 1);
 
   /* --- Layout ------------------------------------------------------------ */
-  --spacing-rail: 4.75rem;   /* collapsed sidebar */
-  --spacing-sidebar: 16rem;  /* expanded sidebar  */
-  --spacing-topbar: 3.5rem;
+  --spacing-rail: 3.5rem;    /* collapsed sidebar (icons only)  */
+  --spacing-sidebar: 15rem;  /* expanded sidebar                */
+  --spacing-topbar: 3.25rem;
 }
 
 /* ============================================================================
@@ -212,13 +256,16 @@
    dark mode) is a change in one place.
    ========================================================================= */
 @theme {
-  --color-surface:         var(--color-ink-25);
+  --color-surface:         var(--color-ink-0);
   --color-surface-sunken:  var(--color-ink-100);
   --color-surface-page:    var(--color-ink-50);
   --color-surface-inverse: var(--color-ink-900);
 
-  --color-line:        var(--color-ink-100);
-  --color-line-strong: var(--color-ink-200);
+  /* Two weights of rule, and that is all. `line` is the default divider that
+     separates rows and sections; `line-strong` is for the edge of a region
+     (sidebar, top bar, table frame) where the boundary is structural. */
+  --color-line:        var(--color-ink-200);
+  --color-line-strong: var(--color-ink-300);
   /* Boundaries a user has to perceive to operate the control. */
   --color-field:       var(--color-ink-450);
 
@@ -230,8 +277,8 @@
   --color-brand:       var(--color-moss-500);
   --color-brand-hover: var(--color-moss-600);
   --color-brand-soft:  var(--color-moss-50);
-  --color-accent:      var(--color-clay-500);
-  --color-accent-soft: var(--color-clay-50);
+  --color-accent:      var(--color-moss-500);
+  --color-accent-soft: var(--color-moss-50);
 }
 
 /* ============================================================================
@@ -247,24 +294,26 @@
     background-color: var(--color-ink-50);
     color: var(--color-ink-900);
     font-family: var(--font-sans);
+    font-feature-settings: "cv05" 1, "ss03" 1;  /* single-storey l, curved r */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overscroll-behavior-y: none;
   }
 
+  /* Headings are the same face as body copy. What separates them is weight
+     and negative tracking — the mechanism a working interface uses, rather
+     than a change of voice. */
   h1, h2, h3, h4 {
     font-family: var(--font-display);
     font-weight: 700;
-    /* Fraunces' soft axis is what gives the headings their warmth; without it
-       the serif reads as editorial rather than handmade. */
-    font-variation-settings: "SOFT" 40, "WONK" 1;
-    letter-spacing: -0.015em;
+    letter-spacing: -0.019em;
     color: var(--color-ink-900);
   }
 
   /* Numbers should never wobble as they tick. */
   time, [data-numeric] {
     font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1;
   }
 
   button, [role="button"] {
@@ -274,85 +323,59 @@
     cursor: not-allowed;
   }
 
-  /* One focus treatment everywhere. Moss rather than a system blue, but still
-     2px and offset, so it is unmissable. */
+  /* One focus treatment everywhere: a 2px accent ring, offset, with the same
+     small radius as the control it wraps. */
   :where(a, button, input, select, textarea, [tabindex]):focus-visible {
     outline: 2px solid var(--color-moss-500);
-    outline-offset: 2px;
+    outline-offset: 1px;
     border-radius: var(--radius-sm);
   }
 
   ::selection {
-    background: var(--color-moss-200);
+    background: var(--color-moss-100);
     color: var(--color-ink-900);
   }
 
-  /* ==========================================================================
-     PAPER GRAIN — the texture that makes the whole thing feel tactile.
-     A single fixed overlay on the document, multiply-blended at 3.5%. Fixed
-     rather than scrolling, so the grain belongs to the screen the way paper
-     stock belongs to the sheet rather than to what is printed on it.
-     ======================================================================= */
-  body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    pointer-events: none;
-    opacity: 0.035;
-    mix-blend-mode: multiply;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
-  }
+  /* The paper grain overlay that used to sit over the entire document is
+     gone. It was the single largest contributor to the handmade read, and a
+     texture over a data table is noise in the literal sense. */
 }
 
 @layer components {
   /* ==========================================================================
-     ORGANIC SHAPES
-     Six blob radii. Cycle through them with `index % 6` so a grid of cards
-     never repeats a silhouette twice in a row — the varied outline is what
-     stops a card grid reading as a spreadsheet.
+     SHAPE COMPATIBILITY SHIMS
+     The organic silhouette classes are referenced from view code. Rather than
+     chase every call site, they are redefined here onto the sharp ramp. A
+     `.blob-3` is now a 4px rounded rectangle; a `.card-organic-2` is a 6px
+     one. Left in place so nothing renders unstyled, but they should be
+     considered deprecated — new code uses the radius tokens directly.
      ======================================================================= */
-  .blob-1 { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
-  .blob-2 { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
-  .blob-3 { border-radius: 70% 30% 50% 50% / 30% 50% 50% 70%; }
-  .blob-4 { border-radius: 40% 60% 60% 40% / 70% 30% 70% 30%; }
-  .blob-5 { border-radius: 50% 50% 30% 70% / 40% 60% 40% 60%; }
-  .blob-6 { border-radius: 65% 35% 45% 55% / 55% 45% 55% 45%; }
+  .blob-1, .blob-2, .blob-3,
+  .blob-4, .blob-5, .blob-6 { border-radius: var(--radius-md); }
 
-  /* Asymmetric card silhouettes. One corner opens up dramatically while the
-     rest stay soft — handmade, not lopsided. */
-  .card-organic-0 { border-radius: 2rem; }
-  .card-organic-1 { border-radius: 3.5rem 1.5rem 1.5rem 1.5rem; }
-  .card-organic-2 { border-radius: 1.5rem 3.5rem 1.5rem 1.5rem; }
-  .card-organic-3 { border-radius: 1.5rem 1.5rem 3.5rem 1.5rem; }
-  .card-organic-4 { border-radius: 1.5rem 1.5rem 1.5rem 3.5rem; }
-  .card-organic-5 { border-radius: 3rem 1.5rem 3rem 1.5rem; }
+  .card-organic-0, .card-organic-1, .card-organic-2,
+  .card-organic-3, .card-organic-4, .card-organic-5 { border-radius: var(--radius-lg); }
 
-  /* Image mask — a pebble worn smooth. */
-  .mask-organic { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+  .mask-organic { border-radius: var(--radius-md); }
 
-  /* The ambient colour wash behind a hero or section. Always paired with
-     blur; the shape should be felt, never identified. */
-  .wash {
-    position: absolute;
-    pointer-events: none;
-    filter: blur(64px);
-    opacity: 0.5;
-  }
+  /* The ambient blurred colour wash is neutralised. Blurred colour fields
+     behind content are decoration, and this system does not decorate. Kept as
+     a no-op so the `<Wash />` component and its call sites stay valid. */
+  .wash { display: none; }
 
   /* ==========================================================================
-     SURFACES
+     SURFACES AND STRUCTURE
      ======================================================================= */
   .scroll-slim {
     scrollbar-width: thin;
     scrollbar-color: var(--color-ink-300) transparent;
   }
-  .scroll-slim::-webkit-scrollbar { width: 8px; height: 8px; }
+  .scroll-slim::-webkit-scrollbar { width: 10px; height: 10px; }
   .scroll-slim::-webkit-scrollbar-track { background: transparent; }
   .scroll-slim::-webkit-scrollbar-thumb {
     background-color: var(--color-ink-300);
-    border-radius: 999px;
-    border: 2px solid transparent;
+    border-radius: var(--radius-sm);
+    border: 3px solid transparent;
     background-clip: content-box;
   }
   .scroll-slim::-webkit-scrollbar-thumb:hover {
@@ -360,69 +383,131 @@
     background-clip: content-box;
   }
 
-  /* Frosted floating chrome — nav pills, sticky bars. */
+  /* Sticky chrome. Formerly a frosted translucent pill; now an opaque surface
+     with a hairline underneath. Blur behind a sticky bar was costing a
+     compositor layer to achieve an effect that reads as decorative. */
   .glass {
-    background-color: rgb(255 255 255 / 0.72);
-    backdrop-filter: blur(12px) saturate(1.4);
-    -webkit-backdrop-filter: blur(12px) saturate(1.4);
+    background-color: var(--color-ink-0);
+    border-color: var(--color-ink-200);
   }
 
-  /* Uppercase label. Used for every eyebrow/kicker in the app. Nunito rather
-     than the mono: at 10px the rounded terminals still read, and the mono's
-     mechanical rhythm fights everything else on the page. ink-500 rather than
-     ink-400 because at this size it is small text and has to clear 4.5:1. */
+  /* Uppercase label. Every eyebrow/kicker in the app. ink-500 rather than
+     ink-400 because at 10px it is small text and has to clear 4.5:1. */
   .eyebrow {
     font-family: var(--font-sans);
     font-size: var(--text-micro);
     line-height: 1.2;
-    letter-spacing: 0.14em;
-    font-weight: 800;
+    letter-spacing: 0.09em;
+    font-weight: 700;
     text-transform: uppercase;
     color: var(--color-ink-500);
   }
 
-  /* Consistent page gutter + max width for every scrolling view. */
+  /* Consistent page gutter + max width for every scrolling view. Narrower
+     than before (72rem, was 80rem) and with tighter block padding: in a
+     sidebar layout the content column already has the rail's width taken off
+     it, and a measure much beyond this stops being scannable. */
   .page {
     width: 100%;
-    max-width: 80rem;
+    max-width: 72rem;
     margin-inline: auto;
     padding-inline: 1rem;
     padding-block: 1.25rem;
   }
   @media (min-width: 640px) {
-    .page { padding-inline: 1.5rem; padding-block: 1.75rem; }
+    .page { padding-inline: 1.5rem; padding-block: 1.5rem; }
   }
   @media (min-width: 1024px) {
-    .page { padding-inline: 2rem; padding-block: 2rem; }
+    .page { padding-inline: 2rem; padding-block: 1.75rem; }
   }
 
-  /* Warm gradient for hero numerals. Sparingly. */
+  /* --- The rule vocabulary ------------------------------------------------
+     These four classes are what replaced the card. Structure in this system is
+     drawn, so the drawing tools get first-class names.
+
+     `.section` — a band of content with a rule above it. Stack them and the
+     page reads as a document with parts, at zero elevation cost.
+     `.divide-rule` — horizontal rules between children, for row lists.
+     `.rule-l` — a vertical rule, for splitting a row into columns.
+     `.hairline-b` — an inset bottom rule that survives a transform, unlike a
+     border on a scaled element. */
+  .section {
+    border-top: 1px solid var(--color-ink-200);
+    padding-block-start: 1.5rem;
+    margin-block-start: 1.5rem;
+  }
+  .section:first-child {
+    border-top: 0;
+    padding-block-start: 0;
+    margin-block-start: 0;
+  }
+
+  .divide-rule > * + * {
+    border-top: 1px solid var(--color-ink-200);
+  }
+
+  .rule-l { border-left: 1px solid var(--color-ink-200); }
+
+  .hairline-b { box-shadow: inset 0 -1px 0 0 var(--color-ink-200); }
+
+  /* --- Data tables --------------------------------------------------------
+     Card grids that were really tables are now really tables. This is the
+     shared chrome so every one of them matches: a hairline frame, uppercase
+     column heads on a sunken fill, rules between rows and nothing else. */
+  .table-flat {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: var(--text-sm);
+  }
+  .table-flat thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: var(--color-ink-50);
+    border-bottom: 1px solid var(--color-ink-200);
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+    font-size: var(--text-micro);
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--color-ink-500);
+    white-space: nowrap;
+  }
+  .table-flat tbody td {
+    border-bottom: 1px solid var(--color-ink-200);
+    padding: 0.625rem 0.75rem;
+    vertical-align: top;
+    color: var(--color-ink-800);
+  }
+  .table-flat tbody tr:last-child td { border-bottom: 0; }
+  .table-flat tbody tr:hover td { background-color: var(--color-ink-50); }
+  .table-flat [data-numeric],
+  .table-flat .num {
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+
+  /* Gradient text is gone — a hero numeral is data, and data is ink-900. Kept
+     as a flat override so existing call sites degrade to something correct
+     rather than to transparent text on a missing background clip. */
   .text-gradient-moss {
-    background-image: linear-gradient(120deg, #7C9070 0%, #5D7052 45%, #C18C5D 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    background-image: none;
+    -webkit-background-clip: border-box;
+    background-clip: border-box;
+    color: var(--color-ink-900);
   }
-
-  /* Hairline that survives a transform, unlike a border on a scaled element. */
-  .hairline-b { box-shadow: inset 0 -1px 0 0 var(--color-ink-100); }
 }
 
 /* ============================================================================
-   MOTION — respect the OS setting. Everything here is gentle by default; for
-   people who asked for stillness it is nothing at all.
+   MOTION — respect the OS setting.
    ========================================================================= */
 @layer utilities {
-  /* Slow ambient movement for background washes. Long enough (18s) that it
-     is never the thing you are looking at. */
-  .animate-drift {
-    animation: drift 18s var(--ease-in-out-soft) infinite;
-  }
-  @keyframes drift {
-    0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
-    33%      { transform: translate3d(2%, -3%, 0) scale(1.05); }
-    66%      { transform: translate3d(-2%, 2%, 0) scale(0.97); }
-  }
+  /* The 18s ambient drift on background washes is removed; the washes it
+     animated are display:none. Neutralised rather than deleted so any element
+     still carrying the class does not animate. */
+  .animate-drift { animation: none; }
 
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {

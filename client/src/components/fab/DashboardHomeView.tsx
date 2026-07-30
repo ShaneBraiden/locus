@@ -72,7 +72,7 @@ function EmptyPanel({
         compact ? "py-6 px-4 gap-2" : "py-10 px-6 gap-3"
       }`}
     >
-      <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-clay-100 bg-clay-50 text-clay-700">
+      <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-moss-100 bg-moss-50 text-moss-700">
         <Icon className="h-4.5 w-4.5" />
       </div>
       <h4 className="font-display text-sm font-bold text-ink-900">{title}</h4>
@@ -80,7 +80,7 @@ function EmptyPanel({
       {ctaLabel && onCta && (
         <button
           onClick={onCta}
-          className="mt-1 inline-flex items-center gap-1.5 rounded-xl bg-clay-700 px-4 py-2 text-tiny font-bold uppercase tracking-wider text-white transition-colors hover:bg-clay-900 cursor-pointer"
+          className="mt-1 inline-flex items-center gap-1.5 rounded-xl bg-moss-500 px-4 py-2 text-tiny font-bold uppercase tracking-wider text-white transition-colors hover:bg-moss-600 cursor-pointer"
         >
           {ctaLabel}
           <ArrowRight className="h-3.5 w-3.5" />
@@ -193,9 +193,9 @@ export default function DashboardHomeView({
       className="space-y-6 md:space-y-8 max-w-6xl mx-auto pb-12 md:pb-16"
     >
       {/* 1. SAAS HEADER */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-ink-100 pb-5">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-ink-200 pb-5">
         <div className="min-w-0">
-          <h1 className="text-2xl md:text-3xl font-display font-extrabold text-ink-900 tracking-tight truncate">
+          <h1 className="text-2xl md:text-3xl font-display font-bold text-ink-900 tracking-tight truncate">
             {greeting()}, {firstName} 👋
           </h1>
           <p className="text-xs md:text-sm text-ink-600 mt-1 font-medium">
@@ -205,13 +205,13 @@ export default function DashboardHomeView({
           </p>
         </div>
         <div className="flex items-center justify-between md:justify-start gap-3 w-full md:w-auto">
-          <span className="bg-clay-50 text-ink-900 text-micro md:text-xs px-3 py-1 rounded-full border border-ink-100 shadow-e2 font-bold flex items-center space-x-1.5 min-w-0">
+          <span className="bg-moss-50 text-ink-900 text-micro md:text-xs px-3 py-1 rounded-xs border border-ink-200 shadow-e2 font-bold flex items-center space-x-1.5 min-w-0">
             <span className="h-2 w-2 rounded-full bg-good-500 shrink-0" />
             <span className="truncate">{degreeLabel}</span>
           </span>
           <button
             onClick={() => onNavigateToTab("fab")}
-            className="bg-clay-700 hover:bg-clay-900 text-white text-tiny md:text-xs font-bold px-4 py-2 rounded-xl transition-all cursor-pointer shadow-e2 shrink-0"
+            className="bg-moss-500 hover:bg-moss-600 text-white text-tiny md:text-xs font-bold px-4 py-2 rounded-xl transition-all cursor-pointer shadow-e2 shrink-0"
           >
             Talk to FAB
           </button>
@@ -255,7 +255,7 @@ export default function DashboardHomeView({
                   />
                 </svg>
                 <div className="absolute top-10 flex flex-col items-center">
-                  <span className="text-3xl font-extrabold text-ink-900 tabular-nums">
+                  <span className="text-3xl font-bold text-ink-900 tabular-nums">
                     {confidenceScore}%
                   </span>
                   <span className="text-micro text-ink-500 font-bold uppercase tracking-wider">
@@ -276,7 +276,7 @@ export default function DashboardHomeView({
           <div className="w-full flex justify-between items-center text-xs font-bold text-ink-500">
             <span>Current Best Match</span>
             {topPath && (
-              <span className="text-clay-700 bg-clay-50 border border-clay-100 text-micro px-2 py-0.5 rounded-full font-mono uppercase font-bold">
+              <span className="text-moss-700 bg-moss-50 border border-moss-100 text-micro px-2 py-0.5 rounded-xs font-mono uppercase font-bold">
                 {Math.round(topPath.matchScore)}% Match
               </span>
             )}
@@ -285,7 +285,7 @@ export default function DashboardHomeView({
           {topPath ? (
             <>
               <div className="my-3 flex flex-col items-center">
-                <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-2xl bg-clay-50 border border-clay-100 flex items-center justify-center text-clay-700 shadow-e1 mb-2 sm:mb-3">
+                <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-2xl bg-moss-50 border border-moss-100 flex items-center justify-center text-moss-700 shadow-e1 mb-2 sm:mb-3">
                   <Heart className="h-5 sm:h-6 w-5 sm:w-6 fill-current" />
                 </div>
                 <h3 className="text-sm sm:text-base font-bold text-ink-900 font-display text-center leading-tight">
@@ -298,7 +298,7 @@ export default function DashboardHomeView({
 
               <button
                 onClick={() => onNavigateToTab("paths")}
-                className="w-full py-2 bg-ink-50 hover:bg-clay-700 hover:text-white border border-ink-200 hover:border-clay-700 rounded-xl text-xs font-bold text-ink-700 transition-all cursor-pointer"
+                className="w-full py-2 bg-ink-50 hover:bg-moss-600 hover:text-white border border-ink-200 hover:border-moss-500 rounded-xl text-xs font-bold text-ink-700 transition-all cursor-pointer"
               >
                 Explore Alternative Hypotheses
               </button>
@@ -357,7 +357,7 @@ export default function DashboardHomeView({
 
           <button
             onClick={() => onNavigateToTab("journey")}
-            className="w-full py-2 bg-ink-50 hover:bg-clay-700 hover:text-white border border-ink-200 hover:border-clay-700 rounded-xl text-xs font-bold text-ink-700 transition-all cursor-pointer"
+            className="w-full py-2 bg-ink-50 hover:bg-moss-600 hover:text-white border border-ink-200 hover:border-moss-500 rounded-xl text-xs font-bold text-ink-700 transition-all cursor-pointer"
           >
             View Your Journey
           </button>
@@ -367,33 +367,33 @@ export default function DashboardHomeView({
       {/* 3. TODAY'S CURATED EXPERIENCE */}
       <div className="space-y-4">
         <div className="flex items-center space-x-2">
-          <Sparkles className="h-4 w-4 text-clay-700" />
-          <h2 className="text-xl font-display font-extrabold text-ink-900">Today's Experience</h2>
+          <Sparkles className="h-4 w-4 text-moss-700" />
+          <h2 className="text-xl font-display font-bold text-ink-900">Today's Experience</h2>
         </div>
 
         {topExperience ? (
-          <div className="relative overflow-hidden border border-ink-200 bg-white rounded-3xl p-5 sm:p-6 shadow-e1 hover:shadow-e3 hover:border-clay-700/30 transition-all duration-300 group">
+          <div className="relative overflow-hidden border border-ink-200 bg-white rounded-3xl p-5 sm:p-6 shadow-e1 hover:border-moss-500/30 transition-all duration-300 group">
             <div className="relative flex flex-col lg:flex-row lg:items-center justify-between gap-6">
               <div className="space-y-3 flex-1 min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="rounded-full bg-clay-50 border border-ink-100 shadow-e2 text-ink-600 px-2.5 py-0.5 text-micro font-mono font-bold uppercase">
+                  <span className="rounded-xs bg-moss-50 border border-ink-200 shadow-e2 text-ink-600 px-2.5 py-0.5 text-micro font-mono font-bold uppercase">
                     {topExperience.subject}
                   </span>
                   {topExperience.id.startsWith("JS_") && (
-                    <span className="rounded-full bg-clay-50 border border-clay-100 text-clay-700 px-2.5 py-0.5 text-micro font-mono font-bold uppercase flex items-center">
+                    <span className="rounded-xs bg-moss-50 border border-moss-100 text-moss-700 px-2.5 py-0.5 text-micro font-mono font-bold uppercase flex items-center">
                       <Briefcase className="h-3 w-3 mr-1" />
                       Job Simulation
                     </span>
                   )}
                   <span
-                    className={`text-micro font-mono px-2 py-0.5 rounded-full font-bold border uppercase ${
+                    className={`text-micro font-mono px-2 py-0.5 rounded-xs font-bold border uppercase ${
                       topExperience.cognitiveLoad === "Deep"
                         ? "bg-bad-50 text-bad-700 border-bad-100"
                         : topExperience.cognitiveLoad === "Focused"
-                          ? "bg-clay-50 text-clay-700 border-clay-100"
+                          ? "bg-moss-50 text-moss-700 border-moss-100"
                           : topExperience.cognitiveLoad === "Light"
                             ? "bg-info-50 text-info-700 border-info-100"
-                            : "bg-ink-50 text-ink-700 border-ink-100"
+                            : "bg-ink-50 text-ink-700 border-ink-200"
                     }`}
                   >
                     {topExperience.cognitiveLoad} Load
@@ -410,14 +410,14 @@ export default function DashboardHomeView({
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
-                  <div className="p-3 bg-ink-50 border border-ink-100 rounded-2xl text-tiny text-ink-600 space-y-1">
-                    <span className="text-micro font-mono text-clay-700 font-extrabold uppercase block tracking-wider">
+                  <div className="p-3 bg-ink-50 border border-ink-200 rounded-2xl text-tiny text-ink-600 space-y-1">
+                    <span className="text-micro font-mono text-moss-700 font-bold uppercase block tracking-wider">
                       Why you're seeing this:
                     </span>
                     <p className="leading-relaxed font-medium">{topExperience.rationale}</p>
                   </div>
-                  <div className="p-3 bg-ink-50 border border-ink-100 rounded-2xl text-tiny text-ink-600 space-y-1">
-                    <span className="text-micro font-mono text-clay-700 font-extrabold uppercase block tracking-wider">
+                  <div className="p-3 bg-ink-50 border border-ink-200 rounded-2xl text-tiny text-ink-600 space-y-1">
+                    <span className="text-micro font-mono text-moss-700 font-bold uppercase block tracking-wider">
                       Expected Outcome:
                     </span>
                     <p className="leading-relaxed font-medium">{topExperience.expectedOutcome}</p>
@@ -425,19 +425,19 @@ export default function DashboardHomeView({
                 </div>
               </div>
 
-              <div className="lg:border-l lg:border-ink-100 lg:pl-6 flex flex-row lg:flex-col items-center lg:justify-center justify-between gap-4 shrink-0">
+              <div className="lg:border-l lg:border-ink-200 lg:pl-6 flex flex-row lg:flex-col items-center lg:justify-center justify-between gap-4 shrink-0">
                 <div className="text-right lg:text-center">
                   <span className="text-micro font-mono text-ink-500 font-bold block uppercase">
                     Estimated time
                   </span>
-                  <span className="text-xs font-extrabold text-clay-700 font-mono flex items-center justify-end lg:justify-center mt-0.5">
+                  <span className="text-xs font-bold text-moss-700 font-mono flex items-center justify-end lg:justify-center mt-0.5">
                     <Clock className="h-3.5 w-3.5 mr-1" />
                     {topExperience.estimatedTime}
                   </span>
                 </div>
                 <button
                   onClick={() => handleEngageExperience(topExperience)}
-                  className="text-xs font-bold bg-clay-700 hover:bg-clay-900 text-white px-6 py-2.5 rounded-xl transition-all cursor-pointer shadow-e2 shrink-0"
+                  className="text-xs font-bold bg-moss-500 hover:bg-moss-600 text-white px-6 py-2.5 rounded-xl transition-all cursor-pointer shadow-e2 shrink-0"
                 >
                   Start Experience
                 </button>
@@ -462,7 +462,7 @@ export default function DashboardHomeView({
         {/* Pathway spotlight carousel — driven by the student's real ranked paths */}
         <div className="lg:col-span-2 rounded-3xl border border-ink-200 bg-white p-5 sm:p-6 shadow-e1 flex flex-col justify-between relative overflow-hidden">
           <div className="absolute top-0 right-0 p-3 z-10">
-            <span className="bg-clay-700 text-white text-micro font-mono uppercase px-2.5 py-0.5 rounded-full font-bold shadow-e3">
+            <span className="bg-moss-500 text-white text-micro font-mono uppercase px-2.5 py-0.5 rounded-xs font-bold">
               Pathway Spotlight
             </span>
           </div>
@@ -470,7 +470,7 @@ export default function DashboardHomeView({
           {spotlightPath ? (
             <>
               <div className="space-y-3 pr-24">
-                <span className="inline-block text-micro font-mono font-bold text-clay-700 uppercase bg-clay-50 px-2.5 py-1 rounded-full border border-clay-100">
+                <span className="inline-block text-micro font-mono font-bold text-moss-700 uppercase bg-moss-50 px-2.5 py-1 rounded-xs border border-moss-100">
                   Match Score: {Math.round(spotlightPath.matchScore)}%
                 </span>
                 <h4 className="text-base font-bold text-ink-900 font-display leading-snug">
@@ -487,7 +487,7 @@ export default function DashboardHomeView({
                         key={idx}
                         className="flex items-start gap-2 text-tiny font-medium text-ink-600"
                       >
-                        <Target className="mt-0.5 h-3 w-3 shrink-0 text-clay-700" />
+                        <Target className="mt-0.5 h-3 w-3 shrink-0 text-moss-700" />
                         <span>{reason}</span>
                       </li>
                     ))}
@@ -495,7 +495,7 @@ export default function DashboardHomeView({
                 )}
               </div>
 
-              <div className="pt-4 border-t border-ink-100 flex items-center justify-between mt-4">
+              <div className="pt-4 border-t border-ink-200 flex items-center justify-between mt-4">
                 <div className="flex items-center space-x-1">
                   <button
                     onClick={handlePrevPath}
@@ -520,7 +520,7 @@ export default function DashboardHomeView({
 
                 <button
                   onClick={() => onNavigateToTab("paths")}
-                  className="px-4 py-1.5 bg-ink-50 hover:bg-clay-700 hover:text-white border border-ink-200 rounded-lg text-xs font-bold text-ink-700 cursor-pointer transition-all"
+                  className="px-4 py-1.5 bg-ink-50 hover:bg-moss-600 hover:text-white border border-ink-200 rounded-lg text-xs font-bold text-ink-700 cursor-pointer transition-all"
                 >
                   View Details
                 </button>
@@ -554,9 +554,9 @@ export default function DashboardHomeView({
                       ×{item.count}
                     </span>
                   </div>
-                  <div className="h-1.5 bg-ink-100 rounded-full overflow-hidden border border-ink-200">
+                  <div className="h-1.5 bg-ink-100 rounded-md overflow-hidden border border-ink-200">
                     <div
-                      className="h-full bg-clay-700 rounded-full transition-[width] duration-500"
+                      className="h-full bg-moss-500 rounded-md transition-[width] duration-500"
                       style={{ width: `${item.pct}%` }}
                     />
                   </div>
@@ -579,7 +579,7 @@ export default function DashboardHomeView({
       {/* 6. RECENT ACHIEVEMENTS */}
       <div className="rounded-3xl border border-ink-200 bg-white p-5 sm:p-6 shadow-e1">
         <div className="flex items-center space-x-2 text-micro font-mono uppercase tracking-wider text-ink-500 font-bold mb-4">
-          <Award className="h-4 w-4 text-clay-700" />
+          <Award className="h-4 w-4 text-moss-700" />
           <span>Recent Achievements & Evidence</span>
         </div>
 
@@ -588,13 +588,13 @@ export default function DashboardHomeView({
             {recentAchievements.map((exp) => (
               <div
                 key={exp.id}
-                className="p-4 bg-white border border-ink-100 rounded-xl flex items-start space-x-3"
+                className="p-4 bg-white border border-ink-200 rounded-xl flex items-start space-x-3"
               >
                 <div className="h-7 w-7 rounded-lg bg-good-50 border border-good-100 flex items-center justify-center text-good-500 shrink-0">
                   <CheckCircle2 className="h-4 w-4 stroke-[3]" />
                 </div>
                 <div className="min-w-0">
-                  <span className="block text-micro font-mono uppercase tracking-wider text-good-500 font-extrabold truncate">
+                  <span className="block text-micro font-mono uppercase tracking-wider text-good-500 font-bold truncate">
                     {exp.subject}
                   </span>
                   <h5 className="text-xs font-bold text-ink-900 leading-snug">{exp.title}</h5>

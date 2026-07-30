@@ -31,7 +31,7 @@ import {
 } from "lucide-react";
 
 import { Logo } from "./components/Logo";
-import { Button, Segmented, Wash } from "./ui";
+import { Button, Segmented } from "./ui";
 import AuthPage from "./components/auth/AuthPage";
 import { AuthUser, useAuth } from "./auth/AuthContext";
 import {
@@ -989,18 +989,19 @@ function Workspace({ user }: { user: AuthUser }) {
     setIsMobileMenuOpen(false);
   };
 
-  /** Navigation pill button. Same treatment on desktop and inside the mobile
-   *  dropdown, so the two can never drift apart visually. */
-  const NavPill = ({
+  /** A sidebar navigation row. The active item is marked by a 2px accent rule
+   *  on its leading edge plus a tinted fill — the standard for a vertical rail,
+   *  and readable at a glance in a way a filled pill in a horizontal strip is
+   *  not once there are five of them. Used by both the desktop rail and the
+   *  mobile drawer so the two can never drift apart. */
+  const NavItem = ({
     id,
     label,
     icon: Icon,
-    block,
   }: {
     id: (typeof NAV_ITEMS)[number]["id"];
     label: string;
     icon: React.ComponentType<{ className?: string }>;
-    block?: boolean;
   }) => {
     const active = activeTab === id;
     return (
@@ -1009,19 +1010,13 @@ function Workspace({ user }: { user: AuthUser }) {
         id={`nav-${id}`}
         onClick={() => go(id)}
         aria-current={active ? "page" : undefined}
-        className={`group inline-flex shrink-0 items-center gap-2 rounded-full text-sm font-bold transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-          block ? "w-full px-4 py-3" : "px-4 py-2.5"
-        } ${
+        className={`relative flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-sm font-semibold transition-colors duration-150 ${
           active
-            ? "bg-moss-500 text-white shadow-soft"
-            : "text-ink-600 hover:bg-moss-500/10 hover:text-moss-700"
+            ? "bg-moss-50 text-moss-700 before:absolute before:inset-y-1 before:left-0 before:w-[2px] before:rounded-r before:bg-moss-500 before:content-['']"
+            : "text-ink-600 hover:bg-ink-100 hover:text-ink-900"
         }`}
       >
-        <Icon
-          className={`h-4 w-4 shrink-0 transition-transform duration-300 ${
-            active ? "" : "group-hover:scale-110"
-          }`}
-        />
+        <Icon className="h-4 w-4 shrink-0" />
         <span className="truncate">{label}</span>
       </button>
     );
@@ -1030,76 +1025,173 @@ function Workspace({ user }: { user: AuthUser }) {
   const syncState = isGuest
     ? { Icon: CloudOff, text: "Saved on this device", tone: "text-ink-500" }
     : isSyncing
-      ? { Icon: Loader2, text: "Syncing…", tone: "text-clay-700" }
-      : { Icon: Cloud, text: "Synced to your account", tone: "text-good-700" };
+      ? { Icon: Loader2, text: "Syncing…", tone: "text-ink-500" }
+      : { Icon: Cloud, text: "Synced", tone: "text-good-700" };
+
+  /** The top bar renders the current location rather than repeating the nav.
+   *  Paths is the only tab with depth, so it is the only one that produces a
+   *  second crumb. */
+  const activeNav = NAV_ITEMS.find((item) => item.id === activeTab);
+  const pageTitle = activeNav?.label ?? "";
+  const crumb =
+    activeTab === "paths" && pathsSubTab !== "list"
+      ? pathsSubTab === "detail"
+        ? selectedPath?.fieldName ?? "Details"
+        : pathsSubTab === "universities"
+          ? "Universities"
+          : "90-Day Plan"
+      : null;
+
+  /** The nav list, shared by the desktop rail and the mobile drawer. */
+  const navList = (
+    <nav aria-label="Primary" className="flex flex-col gap-0.5 p-2">
+      {NAV_ITEMS.map((item) => (
+        <NavItem key={item.id} {...item} />
+      ))}
+    </nav>
+  );
 
   return (
-    // The shell is a fixed-height column with the nav floating over it. Top
-    // padding on this element — not on <main> — reserves the nav's space, so
-    // every view underneath keeps its own scroll and overflow behaviour
-    // untouched.
-    <div className="relative flex h-[100dvh] flex-col overflow-hidden bg-ink-50 pt-[4.75rem] font-sans text-ink-900 sm:pt-[5.5rem]">
-
-      {/* Ambient wash behind the whole app. Fixed and enormous, so the page
-          reads as paper laid over a colour field rather than as a flat fill. */}
-      <Wash
-        shape={1}
-        tone="sand"
-        className="fixed -right-40 -top-40 h-[42rem] w-[42rem] opacity-40"
-      />
+    // The shell is a two-column frame: a fixed rail on the left, and a column
+    // on the right holding the top bar and the scrolling content region. Both
+    // columns own their own overflow, so the rail never scrolls with the view
+    // and the view never has to reserve space for floating chrome.
+    <div className="flex h-[100dvh] overflow-hidden bg-ink-50 font-sans text-ink-900">
 
       {/* ====================================================================
-          FLOATING NAVIGATION
-          A frosted pill that hovers over the content rather than a bar bolted
-          to the top of it. `pointer-events-none` on the wrapper with
-          `pointer-events-auto` on the pill lets the gap either side of it
-          stay clickable — otherwise the invisible full-width strip would eat
-          clicks meant for the view underneath.
+          SIDEBAR
+          A real column, not a floating pill. It is bounded by a single rule on
+          its right edge; everything inside it aligns to one left margin.
           ================================================================= */}
-      <header className="pointer-events-none absolute inset-x-0 top-0 z-50 px-3 pt-3 sm:px-6 sm:pt-4">
-        <nav
-          aria-label="Primary"
-          className="glass pointer-events-auto mx-auto flex w-full max-w-6xl items-center gap-2 rounded-full border border-ink-200/60 p-2 shadow-float sm:gap-3 sm:p-2.5"
-        >
-          {/* Brand */}
+      <aside className="hidden w-60 shrink-0 flex-col border-r border-ink-200 bg-white md:flex">
+        {/* Brand block. Same height as the top bar so the two rules opposite
+            each other line up across the seam. */}
+        <div className="flex h-13 shrink-0 items-center gap-2.5 border-b border-ink-200 px-4">
           <button
             onClick={() => go("home")}
             aria-label="Northr home"
-            className="flex min-w-0 shrink-0 items-center gap-2.5 rounded-full pr-1 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105"
+            className="flex min-w-0 items-center gap-2.5 rounded-md"
           >
-            <Logo className="h-10 w-10 shrink-0 rounded-full" />
-            <span className="hidden min-w-0 text-left lg:block">
-              <span className="flex items-center gap-1.5">
-                <span className="truncate font-display text-lg font-bold leading-none text-ink-900">
-                  northr
-                </span>
-                <span className="shrink-0 rounded-full bg-moss-500/10 px-2 py-0.5 text-micro font-extrabold uppercase tracking-[0.14em] text-moss-700">
-                  Pro
-                </span>
-              </span>
+            <Logo className="h-6 w-6 shrink-0 rounded-xs" />
+            <span className="truncate text-sm font-bold tracking-tight text-ink-900">
+              northr
+            </span>
+            <span className="shrink-0 rounded-xs border border-ink-200 bg-ink-50 px-1.5 py-px text-micro font-bold uppercase tracking-[0.07em] text-ink-500">
+              Pro
             </span>
           </button>
+        </div>
 
-          {/* Desktop tabs. Centred in the remaining space so the pill reads as
-              symmetrical even though the two end clusters differ in width. */}
-          <div className="hidden flex-1 items-center justify-center gap-1 md:flex">
-            {NAV_ITEMS.map((item) => (
-              <NavPill key={item.id} {...item} />
-            ))}
+        <div className="scroll-slim min-h-0 flex-1 overflow-y-auto">{navList}</div>
+
+        {/* Rail footer: session state and the destructive-ish reset, kept far
+            from the primary nav and behind a rule. */}
+        <div className="shrink-0 border-t border-ink-200 p-2">
+          <div
+            className={`flex items-center gap-1.5 px-2.5 py-1.5 text-micro font-bold uppercase tracking-[0.07em] ${syncState.tone}`}
+          >
+            <syncState.Icon
+              className={`h-3 w-3 shrink-0 ${isSyncing && !isGuest ? "animate-spin" : ""}`}
+            />
+            <span className="truncate">{syncState.text}</span>
+          </div>
+          <button
+            onClick={resetSession}
+            disabled={isProcessing}
+            className="flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-sm font-semibold text-ink-600 transition-colors duration-150 hover:bg-ink-100 hover:text-ink-900 disabled:opacity-40"
+          >
+            <RefreshCw className={`h-4 w-4 shrink-0 ${isProcessing ? "animate-spin" : ""}`} />
+            <span className="truncate">Start fresh</span>
+          </button>
+        </div>
+      </aside>
+
+      {/* Mobile drawer + scrim. Slides from the left, because that is where the
+          rail lives on every other breakpoint. */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
+              className="fixed inset-0 z-40 bg-ink-900/40 md:hidden"
+              onClick={() => setIsMobileMenuOpen(false)}
+              aria-hidden
+            />
+            <motion.aside
+              initial={{ x: "-100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "-100%" }}
+              transition={{ duration: 0.18, ease: [0.2, 0, 0, 1] }}
+              className="fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-ink-200 bg-white shadow-e5 md:hidden"
+            >
+              <div className="flex h-13 shrink-0 items-center justify-between border-b border-ink-200 px-4">
+                <span className="flex items-center gap-2.5">
+                  <Logo className="h-6 w-6 rounded-xs" />
+                  <span className="text-sm font-bold tracking-tight">northr</span>
+                </span>
+                <button
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  aria-label="Close menu"
+                  className="flex h-8 w-8 items-center justify-center rounded-md text-ink-500 hover:bg-ink-100 hover:text-ink-900"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+              <div className="scroll-slim min-h-0 flex-1 overflow-y-auto">{navList}</div>
+              <div className="shrink-0 border-t border-ink-200 p-2">
+                <button
+                  onClick={resetSession}
+                  disabled={isProcessing}
+                  className="flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-sm font-semibold text-ink-600 hover:bg-ink-100 hover:text-ink-900 disabled:opacity-40"
+                >
+                  <RefreshCw className={`h-4 w-4 ${isProcessing ? "animate-spin" : ""}`} />
+                  <span>Start fresh</span>
+                </button>
+              </div>
+            </motion.aside>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* ====================================================================
+          CONTENT COLUMN
+          ================================================================= */}
+      <div className="flex min-w-0 flex-1 flex-col">
+
+        {/* Top bar. States where you are; it does not repeat the nav. */}
+        <header className="flex h-13 shrink-0 items-center gap-3 border-b border-ink-200 bg-white px-3 sm:px-4">
+          <button
+            onClick={() => setIsMobileMenuOpen(true)}
+            aria-label="Open menu"
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-ink-600 transition-colors hover:bg-ink-100 hover:text-ink-900 md:hidden"
+          >
+            <Menu className="h-4 w-4" />
+          </button>
+
+          {/* Breadcrumb. Truncation is on the trailing crumb, so the section
+              name never disappears before the leaf does. */}
+          <div className="flex min-w-0 items-center gap-1.5">
+            <span
+              className={`shrink-0 text-sm font-bold tracking-tight ${
+                crumb ? "text-ink-500" : "text-ink-900"
+              }`}
+            >
+              {pageTitle}
+            </span>
+            {crumb && (
+              <>
+                <ChevronRight className="h-3.5 w-3.5 shrink-0 text-ink-300" />
+                <span className="min-w-0 truncate text-sm font-bold tracking-tight text-ink-900">
+                  {crumb}
+                </span>
+              </>
+            )}
           </div>
 
-          {/* Right cluster */}
-          <div className="ml-auto flex shrink-0 items-center gap-1 md:ml-0">
-            <button
-              onClick={resetSession}
-              disabled={isProcessing}
-              title="Start fresh"
-              aria-label="Start fresh"
-              className="flex h-10 w-10 items-center justify-center rounded-full text-ink-500 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105 hover:bg-moss-500/10 hover:text-moss-700 active:scale-95 disabled:opacity-40"
-            >
-              <RefreshCw className={`h-4 w-4 ${isProcessing ? "animate-spin" : ""}`} />
-            </button>
-
+          <div className="ml-auto flex shrink-0 items-center gap-1.5">
             {/* Account popover */}
             <div className="relative" ref={accountRef}>
               <button
@@ -1107,37 +1199,37 @@ function Workspace({ user }: { user: AuthUser }) {
                 aria-haspopup="menu"
                 aria-expanded={isAccountOpen}
                 aria-label={`Account: ${displayName}`}
-                className="flex h-10 w-10 items-center justify-center rounded-full bg-ink-900 text-xs font-extrabold uppercase text-moss-200 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105 active:scale-95"
+                className="flex h-8 items-center gap-2 rounded-md border border-ink-200 bg-white pl-1 pr-2 transition-colors duration-150 hover:bg-ink-50"
               >
-                {displayName.charAt(0)}
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-xs bg-ink-900 text-micro font-bold uppercase text-white">
+                  {displayName.charAt(0)}
+                </span>
+                <span className="hidden max-w-32 truncate text-xs font-semibold text-ink-700 sm:block">
+                  {displayName}
+                </span>
               </button>
 
               <AnimatePresence>
                 {isAccountOpen && (
                   <motion.div
                     role="menu"
-                    initial={{ opacity: 0, y: -8, scale: 0.96 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: -8, scale: 0.96 }}
-                    transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-                    className="glass absolute right-0 top-[calc(100%+0.75rem)] w-64 origin-top-right rounded-[2rem] border border-ink-200/60 p-4 shadow-e5"
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    transition={{ duration: 0.12, ease: [0.2, 0, 0, 1] }}
+                    className="absolute right-0 top-[calc(100%+0.375rem)] z-50 w-60 origin-top-right rounded-lg border border-ink-200 bg-white shadow-e4"
                   >
-                    <div className="flex items-center gap-3">
-                      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-ink-900 text-sm font-extrabold uppercase text-moss-200">
-                        {displayName.charAt(0)}
-                      </span>
-                      <span className="min-w-0">
-                        <span className="block truncate text-sm font-bold leading-tight text-ink-900">
-                          {displayName}
-                        </span>
-                        <span className="mt-0.5 block truncate text-tiny text-ink-500">
-                          {user.email || "Guest session"}
-                        </span>
-                      </span>
+                    <div className="border-b border-ink-200 px-3 py-2.5">
+                      <div className="truncate text-sm font-bold leading-tight text-ink-900">
+                        {displayName}
+                      </div>
+                      <div className="mt-0.5 truncate text-xs text-ink-500">
+                        {user.email || "Guest session"}
+                      </div>
                     </div>
 
                     <div
-                      className={`mt-4 flex items-center gap-1.5 text-micro font-extrabold uppercase tracking-[0.14em] ${syncState.tone}`}
+                      className={`flex items-center gap-1.5 border-b border-ink-200 px-3 py-2 text-micro font-bold uppercase tracking-[0.07em] ${syncState.tone}`}
                     >
                       <syncState.Icon
                         className={`h-3 w-3 shrink-0 ${isSyncing && !isGuest ? "animate-spin" : ""}`}
@@ -1145,96 +1237,52 @@ function Workspace({ user }: { user: AuthUser }) {
                       <span className="truncate">{syncState.text}</span>
                     </div>
 
-                    <Button
-                      className="mt-4"
-                      variant="ghost"
-                      size="sm"
-                      block
-                      onClick={() => {
-                        setIsAccountOpen(false);
-                        handleSignOut();
-                      }}
-                    >
-                      <LogOut className="h-3.5 w-3.5" />
-                      <span>Sign out</span>
-                    </Button>
+                    <div className="p-1">
+                      <button
+                        onClick={() => {
+                          setIsAccountOpen(false);
+                          handleSignOut();
+                        }}
+                        className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm font-semibold text-ink-700 transition-colors hover:bg-ink-100 hover:text-ink-900"
+                      >
+                        <LogOut className="h-3.5 w-3.5" />
+                        <span>Sign out</span>
+                      </button>
+                    </div>
                   </motion.div>
                 )}
               </AnimatePresence>
             </div>
-
-            {/* Mobile menu toggle */}
-            <button
-              onClick={() => setIsMobileMenuOpen((v) => !v)}
-              aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
-              aria-expanded={isMobileMenuOpen}
-              className="flex h-10 w-10 items-center justify-center rounded-full text-ink-600 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105 hover:bg-moss-500/10 hover:text-moss-700 active:scale-95 md:hidden"
-            >
-              {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </button>
           </div>
-        </nav>
+        </header>
 
-        {/* Mobile dropdown. A rounded panel that drops out of the pill rather
-            than a slide-in drawer — it belongs to the nav, so it should look
-            like it grew from it. */}
-        <AnimatePresence>
-          {isMobileMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, y: -12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -12 }}
-              transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-              className="glass pointer-events-auto mx-auto mt-2 w-full max-w-6xl space-y-1 rounded-[2rem] border border-ink-200/60 p-3 shadow-e5 md:hidden"
-            >
-              {NAV_ITEMS.map((item) => (
-                <NavPill key={item.id} {...item} block />
-              ))}
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Errors ride with the nav rather than pushing the layout down, so
-            nothing below them jumps when one appears. */}
+        {/* Errors sit directly under the top bar as a full-width strip rather
+            than as a floating capsule — an alert is part of the page, and one
+            that overlays content hides the thing it is describing. */}
         <AnimatePresence>
           {errorMessage && (
             <motion.div
-              initial={{ opacity: 0, y: -12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -12 }}
-              transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.15 }}
               role="alert"
-              className="pointer-events-auto mx-auto mt-2 flex w-full max-w-6xl items-center justify-center gap-3 rounded-full border border-bad-300/60 bg-bad-50 px-5 py-2.5 text-xs font-bold text-bad-700 shadow-soft"
+              className="shrink-0 overflow-hidden border-b border-bad-300/60 bg-bad-50"
             >
-              <span className="text-center text-pretty">{errorMessage}</span>
-              <button
-                onClick={() => setErrorMessage(null)}
-                className="shrink-0 rounded-full px-3 py-1 text-micro font-extrabold uppercase tracking-[0.14em] text-bad-700 transition-colors hover:bg-bad-100"
-              >
-                Dismiss
-              </button>
+              <div className="flex items-center gap-3 px-4 py-2">
+                <span className="min-w-0 flex-1 text-xs font-semibold text-bad-700 text-pretty">
+                  {errorMessage}
+                </span>
+                <button
+                  onClick={() => setErrorMessage(null)}
+                  className="shrink-0 rounded-xs px-2 py-0.5 text-micro font-bold uppercase tracking-[0.07em] text-bad-700 transition-colors hover:bg-bad-100"
+                >
+                  Dismiss
+                </button>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
-      </header>
-
-      {/* Scrim behind the mobile dropdown. */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.28 }}
-            className="fixed inset-0 z-40 bg-ink-900/30 backdrop-blur-sm md:hidden"
-            onClick={() => setIsMobileMenuOpen(false)}
-            aria-hidden
-          />
-        )}
-      </AnimatePresence>
-
-      {/* Main split-screen layout */}
-      <div className="flex flex-1 overflow-hidden">
 
         {/* MAIN WORKSPACE AREA */}
         <main
@@ -1243,25 +1291,25 @@ function Workspace({ user }: { user: AuthUser }) {
           }`}
         >
 
-          {/* Paths sub-navigation. Previously a wrapping row of pill buttons
-              that broke onto three lines on a phone; now a sticky bar with a
-              real back affordance and a horizontally scrolling segmented
-              control. */}
+          {/* Paths sub-navigation: a back affordance and an underlined tab
+              strip on an opaque sticky bar. */}
           {activeTab === "paths" && pathsSubTab !== "list" && (
-            <div className="glass sticky top-0 z-20 flex shrink-0 flex-wrap items-center gap-3 border-b border-ink-200/50 px-4 py-3 sm:px-6">
-              <Button size="sm" variant="ghost" onClick={() => setPathsSubTab("list")}>
+            <div className="sticky top-0 z-20 flex shrink-0 flex-wrap items-end gap-3 border-b border-ink-200 bg-white px-4 pt-2 sm:px-6">
+              <Button
+                className="mb-2"
+                size="sm"
+                variant="ghost"
+                onClick={() => setPathsSubTab("list")}
+              >
                 <ChevronRight className="h-3.5 w-3.5 rotate-180" />
                 <span>Hypotheses</span>
               </Button>
 
-              {selectedPath && (
-                <span className="hidden min-w-0 max-w-[14rem] truncate text-xs font-semibold text-ink-500 sm:block">
-                  {selectedPath.fieldName}
-                </span>
-              )}
-
+              {/* The tab strip's own bottom rule lands exactly on the bar's, so
+                  the active underline reads as a mark on one continuous line
+                  rather than as a second border. */}
               <Segmented
-                className="ml-auto"
+                className="ml-auto border-b-0"
                 ariaLabel="Career path sections"
                 value={pathsSubTab as "detail" | "universities" | "roadmap"}
                 onChange={(v) => setPathsSubTab(v)}
@@ -1496,40 +1544,6 @@ function Workspace({ user }: { user: AuthUser }) {
         </main>
 
       </div>
-
-      {/* Mobile bottom navigation. The old version hardcoded w-16 per item and
-          used the full "Experiments" label, which clipped on a 360px screen;
-          items now flex evenly and use the short labels from NAV_ITEMS. */}
-      <nav
-        aria-label="Primary mobile"
-        className="z-40 flex shrink-0 items-stretch gap-0.5 border-t border-ink-100 bg-white/95 px-1 pb-[max(0.25rem,env(safe-area-inset-bottom))] pt-1 backdrop-blur-md md:hidden"
-      >
-        {NAV_ITEMS.map(({ id, short, icon: Icon }) => {
-          const active = activeTab === id;
-          return (
-            <button
-              key={id}
-              onClick={() => go(id)}
-              aria-current={active ? "page" : undefined}
-              className={`flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-lg py-1.5 transition-colors ${
-                active ? "text-ink-900" : "text-ink-500 active:bg-ink-50"
-              }`}
-            >
-              <span
-                className={`flex h-7 w-full max-w-12 items-center justify-center rounded-full transition-colors ${
-                  active ? "bg-moss-100" : ""
-                }`}
-              >
-                <Icon className={`h-4.5 w-4.5 ${active ? "text-moss-700" : ""}`} />
-              </span>
-              <span className="w-full truncate text-center text-micro font-bold tracking-normal">
-                {short}
-              </span>
-            </button>
-          );
-        })}
-      </nav>
-
     </div>
   );
 }
@@ -1538,7 +1552,7 @@ function Workspace({ user }: { user: AuthUser }) {
 function BootSplash() {
   return (
     <div className="flex h-[100dvh] w-full flex-col items-center justify-center gap-5 bg-ink-950">
-      <Logo className="h-14 w-14 rounded-full" />
+      <Logo className="h-12 w-12 rounded-md" />
       <div className="flex items-center gap-2 font-mono text-micro font-bold uppercase tracking-wider text-white/40">
         <Loader2 className="h-3.5 w-3.5 animate-spin" />
         <span>Restoring your session</span>

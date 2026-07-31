@@ -11,7 +11,7 @@ import { interviewItemCount } from './bridge.js';
 import { initDb, getRepos } from './db.js';
 import { buildCareerPaths, buildProfile } from './engine.js';
 import { respond, type FlowResponse } from './flow.js';
-import { geminiEnabled } from './gemini.js';
+import { geminiEnabled, geminiKeys } from './gemini.js';
 import {
   clearContext, contextBrief, loadContext, publicContext, saveContext, updateContext,
 } from './memory.js';
@@ -21,7 +21,7 @@ import {
 import { QUESTIONS } from './questions.js';
 import {
   DEFAULT_LANGUAGE, VOICE_LANGUAGES, isEnglish, normalizeLanguage, sarvamEnabled,
-  speak, transcribe, translate,
+  sarvamKeyCount, speak, transcribe, translate,
 } from './sarvam.js';
 import { liveEnabled, pcmSeconds, transcribeLive } from './geminiLive.js';
 import { findDegree, loadDegrees } from './topology.js';
@@ -94,6 +94,9 @@ app.get('/healthz', (_req, res) => {
     gemini: geminiEnabled() ? 'enabled' : 'fallback',
     sarvam: sarvamEnabled() ? 'enabled' : 'disabled',
     liveStt: liveEnabled() ? 'enabled' : 'disabled',
+    // How much failover headroom each provider has. Key values are never
+    // exposed — only how many are configured.
+    keys: { gemini: geminiKeys.size(), sarvam: sarvamKeyCount() },
     db: getRepos().backend,
   });
 });
@@ -509,8 +512,9 @@ async function start() {
     console.log(`Northr server listening on http://localhost:${PORT}`);
     console.log(`Storage: ${getRepos().backend}`);
     console.log(`Interview: ${interviewItemCount()} items, ${careerProfiles().length} career profiles, ${degreePivots().length} degree pivot rows`);
-    console.log(`Gemini: ${process.env.GEMINI_API_KEY ? 'enabled (' + (process.env.GEMINI_MODEL || 'gemini-3.5-flash') + ')' : 'disabled — conversation falls back to multiple choice'}`);
-    console.log(`Sarvam: ${sarvamEnabled() ? `enabled (${VOICE_LANGUAGES.length} languages, speaker ${process.env.SARVAM_SPEAKER || 'anushka'})` : 'disabled — voice chat is hidden, typing unaffected'}`);
+    const plural = (n: number) => `${n} key${n === 1 ? '' : 's'}`;
+    console.log(`Gemini: ${geminiEnabled() ? `enabled (${process.env.GEMINI_MODEL || 'gemini-3.5-flash'}, ${plural(geminiKeys.size())})` : 'disabled — conversation falls back to multiple choice'}`);
+    console.log(`Sarvam: ${sarvamEnabled() ? `enabled (${VOICE_LANGUAGES.length} languages, speaker ${process.env.SARVAM_SPEAKER || 'anushka'}, ${plural(sarvamKeyCount())}) — voice turns only` : 'disabled — voice chat is hidden, typing unaffected'}`);
   });
 }
 

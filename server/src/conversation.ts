@@ -1,5 +1,6 @@
 import { generateJson } from './gemini.js';
 import { interviewItemById, isValidAnswer, type InterviewItem } from './bridge.js';
+import { readTypingStyle, styleDirective } from './style.js';
 import type { Message } from './types.js';
 
 // FAB's interviewer. One Gemini call per turn does two jobs at once: work out
@@ -40,10 +41,10 @@ Hard rules for your "reply" text:
 - If they ask you a question, answer it briefly and warmly, then come back to what you were curious about.
 - If they are vague or say "idk", get curious about a specific angle instead of repeating yourself word for word.
 
-Language:
+Reading them:
 - Most of these students are Indian and many will answer in Tamil, or in Hindi, Telugu, Malayalam, Kannada, Bengali, Marathi, Gujarati, Punjabi or Odia, or in a mix of one of those and English. Read whatever arrives exactly as carefully as you would read English, and interpret it against the readings below with the same confidence you would give the equivalent English answer. An answer in Tamil is a real answer, not a vague one.
-- Never ask them to switch to English, and never remark on which language they used.
-- Always write your own "reply" in English regardless of what they wrote. The app translates it into their language for them, so a reply in any other language reaches them twice-translated and broken.`;
+
+How you WRITE the reply is decided per turn — see the HOW TO SOUND block below, and follow it over any habit of your own.`;
 
 function describeItem(item: InterviewItem): string {
   const opts = item.options.map((o) => `      ${o.id}: ${o.label}`).join('\n');
@@ -128,12 +129,11 @@ export async function interviewTurn(input: InterviewInput): Promise<Conversation
     ? `\nIf their last message was too vague to read for "${pending.id}", set needsFollowUp to true and make your reply circle back on ${pending.id} from a different angle instead of asking about ${target.id}. Otherwise leave needsFollowUp false and ask about ${target.id}.`
     : '';
 
-  // A spoken answer is transcribed, so it arrives without punctuation cues and
-  // is heard back rather than read. Short plain sentences survive that trip;
-  // long ones do not.
-  const voiceNote = channel === 'voice'
-    ? `\nThis turn came in as speech and your reply will be read out loud to them. Keep it to two short spoken sentences, plain words, nothing that only works in writing.`
-    : '';
+  // How FAB should sound this turn. A spoken turn gets plain English (Sarvam
+  // translates and speaks it); a typed turn gets the student's own language,
+  // script and register mirrored back, because nothing translates a typed reply
+  // and Sarvam is never called on this path.
+  const soundNote = `\n${styleDirective(readTypingStyle(messages), channel ?? 'text')}`;
 
   const memory = brief?.trim() ? `\n${brief.trim()}\n` : '';
 
@@ -151,7 +151,8 @@ YOUR TWO JOBS THIS TURN:
 ${scoreable.length ? `Readings you may record:\n${scoreable.map(describeItem).join('\n')}` : ''}
 
 ${askBlock}
-${followUpRule}${followUpNote}${openingNote}${voiceNote}
+${followUpRule}${followUpNote}${openingNote}
+${soundNote}
 
 Return ONLY this JSON:
 {

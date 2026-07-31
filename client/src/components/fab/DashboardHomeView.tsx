@@ -1,19 +1,19 @@
 import React, { useMemo, useState } from "react";
 import {
-  Sparkles,
   ArrowRight,
-  Compass,
-  Clock,
   Award,
-  TrendingUp,
-  CheckCircle2,
+  Bookmark,
   Briefcase,
-  Heart,
+  CheckCircle2,
   ChevronLeft,
   ChevronRight,
+  ClipboardList,
+  Clock,
   MessageSquare,
-  Beaker,
+  Navigation,
+  Star,
   Target,
+  TrendingUp,
 } from "lucide-react";
 import { CHART } from "../../ui";
 import { CareerConfidence, CareerPath } from "../../types";
@@ -196,7 +196,7 @@ export default function DashboardHomeView({
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-ink-200 pb-5">
         <div className="min-w-0">
           <h1 className="text-2xl md:text-3xl font-display font-bold text-ink-900 tracking-tight truncate">
-            {greeting()}, {firstName} 👋
+            {greeting()}, {firstName}
           </h1>
           <p className="text-xs md:text-sm text-ink-600 mt-1 font-medium">
             {hasPaths
@@ -229,7 +229,7 @@ export default function DashboardHomeView({
           {confidenceScore === null ? (
             <EmptyPanel
               compact
-              icon={Compass}
+              icon={Navigation}
               title="No reading yet"
               body="Finish the FAB conversation and your confidence score appears here."
             />
@@ -286,7 +286,7 @@ export default function DashboardHomeView({
             <>
               <div className="my-3 flex flex-col items-center">
                 <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-2xl bg-moss-50 border border-moss-100 flex items-center justify-center text-moss-700 shadow-e1 mb-2 sm:mb-3">
-                  <Heart className="h-5 sm:h-6 w-5 sm:w-6 fill-current" />
+                  <Bookmark className="h-5 sm:h-6 w-5 sm:w-6 fill-current" />
                 </div>
                 <h3 className="text-sm sm:text-base font-bold text-ink-900 font-display text-center leading-tight">
                   {topPath.fieldName}
@@ -367,7 +367,7 @@ export default function DashboardHomeView({
       {/* 3. TODAY'S CURATED EXPERIENCE */}
       <div className="space-y-4">
         <div className="flex items-center space-x-2">
-          <Sparkles className="h-4 w-4 text-moss-700" />
+          <Star className="h-4 w-4 text-moss-700" />
           <h2 className="text-xl font-display font-bold text-ink-900">Today's Experience</h2>
         </div>
 
@@ -447,7 +447,7 @@ export default function DashboardHomeView({
         ) : (
           <div className="rounded-3xl border border-ink-200 bg-white shadow-e1">
             <EmptyPanel
-              icon={Beaker}
+              icon={ClipboardList}
               title="Nothing queued right now"
               body="Complete the FAB conversation so the Pilot can curate experiments that fit your week."
               ctaLabel="Browse experiments"
@@ -528,7 +528,7 @@ export default function DashboardHomeView({
             </>
           ) : (
             <EmptyPanel
-              icon={Compass}
+              icon={Navigation}
               title="Your pathways land here"
               body="Chat with FAB to unlock your career paths — you'll get a ranked list with a 90-day plan for each."
               ctaLabel="Chat with FAB"
@@ -566,7 +566,7 @@ export default function DashboardHomeView({
           ) : (
             <EmptyPanel
               compact
-              icon={Beaker}
+              icon={ClipboardList}
               title="No skills logged yet"
               body="Every experiment you complete adds real evidence here."
               ctaLabel="Run an experiment"

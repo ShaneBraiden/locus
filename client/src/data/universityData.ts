@@ -3,6 +3,7 @@ export interface University {
   name: string;
   country: string;
   heroImage: string;
+  /** Short initialism used as the crest mark, e.g. "MIT". */
   logo: string;
   qsRanking: number;
   programmes: UniversityProgramme[];
@@ -43,7 +44,7 @@ export const UNIVERSITIES_DB: University[] = [
     name: "Massachusetts Institute of Technology (MIT)",
     country: "United States",
     heroImage: "https://images.unsplash.com/photo-1564981797816-1043664bf78d?q=80&w=2000&auto=format&fit=crop",
-    logo: "🏛️",
+    logo: "MIT",
     qsRanking: 1,
     campusSize: "Large, Urban",
     internationalDiversity: "34% International",
@@ -74,7 +75,7 @@ export const UNIVERSITIES_DB: University[] = [
     name: "Stanford University",
     country: "United States",
     heroImage: "https://images.unsplash.com/photo-1622397333309-3056849bc70b?q=80&w=2000&auto=format&fit=crop",
-    logo: "🌲",
+    logo: "SU",
     qsRanking: 2,
     campusSize: "Vast, Suburban",
     internationalDiversity: "24% International",
@@ -105,7 +106,7 @@ export const UNIVERSITIES_DB: University[] = [
     name: "University of Cambridge",
     country: "United Kingdom",
     heroImage: "https://images.unsplash.com/photo-1582650893046-24e52f5898d9?q=80&w=2000&auto=format&fit=crop",
-    logo: "🛡️",
+    logo: "CAM",
     qsRanking: 2,
     campusSize: "Historic, Collegiate",
     internationalDiversity: "40% International",
@@ -153,7 +154,7 @@ export const UNIVERSITIES_DB: University[] = [
     name: "ETH Zurich",
     country: "Switzerland",
     heroImage: "https://images.unsplash.com/photo-1542470719-74d115e5d3fa?q=80&w=2000&auto=format&fit=crop",
-    logo: "⛰️",
+    logo: "ETH",
     qsRanking: 8,
     campusSize: "Urban & Suburban split",
     internationalDiversity: "38% International",
@@ -184,7 +185,7 @@ export const UNIVERSITIES_DB: University[] = [
     name: "National University of Singapore (NUS)",
     country: "Singapore",
     heroImage: "https://images.unsplash.com/photo-1555899434-94d1368aa7af?q=80&w=2000&auto=format&fit=crop",
-    logo: "🦁",
+    logo: "NUS",
     qsRanking: 8,
     campusSize: "Large, Tropical Urban",
     internationalDiversity: "30% International",
@@ -215,7 +216,7 @@ export const UNIVERSITIES_DB: University[] = [
     name: "London Business School (LBS)",
     country: "United Kingdom",
     heroImage: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=2000&auto=format&fit=crop",
-    logo: "🏢",
+    logo: "LBS",
     qsRanking: 12,
     campusSize: "Compact, Urban",
     internationalDiversity: "90% International",
@@ -246,7 +247,7 @@ export const UNIVERSITIES_DB: University[] = [
     name: "Technical University of Munich (TUM)",
     country: "Germany",
     heroImage: "https://images.unsplash.com/photo-1599557422176-13a2a6b28189?q=80&w=2000&auto=format&fit=crop",
-    logo: "🏰",
+    logo: "TUM",
     qsRanking: 37,
     campusSize: "Urban & Garching Tech Hub",
     internationalDiversity: "34% International",

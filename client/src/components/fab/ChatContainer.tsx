@@ -1,7 +1,18 @@
 import React, { useState, useRef, useEffect } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Message, Phase, VoiceLanguage } from "../../types";
-import { Check, ClipboardList, Loader2, Mic, Plus, Send, Square, Volume2, VolumeX, X } from "lucide-react";
+import {
+  Check,
+  ClipboardList,
+  Loader2,
+  Mic,
+  Plus,
+  Send,
+  Square,
+  Volume2,
+  VolumeX,
+  X,
+} from "lucide-react";
 import { Recorder, Recording, isRecordingSupported, startRecording } from "../../lib/voice";
 import { Button, EmptyState, Progress } from "../../ui";
 

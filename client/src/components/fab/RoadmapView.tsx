@@ -1,35 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { RoadmapData } from "../../types";
 import { motion } from "motion/react";
-import { 
-  ArrowLeft, 
-  Check, 
-  Compass, 
-  ShieldCheck, 
-  Sparkles, 
-  TrendingUp, 
-  DollarSign, 
-  Users, 
-  Award, 
-  ShieldAlert, 
-  GraduationCap, 
-  MapPin, 
-  Briefcase, 
-  Calendar, 
-  ChevronRight,
-  Info,
-  Sliders,
-  CheckCircle2,
-  XCircle,
-  Clock,
-  Globe,
+import {
   AlertCircle,
-  HelpCircle,
-  Activity,
-  FileText,
-  BookOpen,
+  ArrowLeft,
   ArrowRight,
-  ThumbsUp
+  Check,
+  CheckCircle2,
+  FileText,
+  HelpCircle,
+  LineChart,
+  Navigation,
+  ShieldAlert,
+  Sliders,
+  Star,
+  XCircle,
 } from "lucide-react";
 
 interface RoadmapViewProps {
@@ -390,7 +375,7 @@ export default function RoadmapView({ roadmap, onBack }: RoadmapViewProps) {
           actionSnippetLabel: "View Case Baseline Guide",
           actionSnippetContent: (
             <div className="text-xs bg-moss-50 p-4 rounded-xl border border-ink-200 shadow-e2 space-y-2 font-mono">
-              <p className="font-bold text-ink-900">🚀 Core Consulting Framework (Structure First):</p>
+              <p className="font-bold text-ink-900">Core Consulting Framework (Structure First):</p>
               <p className="text-ink-600">1. <strong>Profits Formulation:</strong> Profit = (Price × Volume) - (Fixed Costs + Variable Costs)</p>
               <p className="text-ink-600">2. <strong>Market Entry:</strong> Market Size → Competitors → Regulatory Hurdles → Logistics → Financial Feasibility</p>
               <p className="text-ink-600">Try calculating: How many hospital beds are required in Bangalore city?</p>
@@ -419,9 +404,9 @@ export default function RoadmapView({ roadmap, onBack }: RoadmapViewProps) {
           actionSnippetLabel: "Analyze Resume Bullet Template",
           actionSnippetContent: (
             <div className="text-xs bg-moss-50 p-4 rounded-xl border border-ink-200 shadow-e2 space-y-2 font-mono">
-              <p className="font-bold text-ink-900">⭐ STAR Resume Template:</p>
-              <p className="text-bad-700 italic">❌ Weak: \"Worked in a clinical project analyzing patient data.\"</p>
-              <p className="text-moss-700 font-bold">✔️ Strong: \"Engineered a clinical throughput model for 500+ patients, reducing laboratory bottleneck delays by 22% and saving $14,000 in monthly hospital operations cost.\"</p>
+              <p className="font-bold text-ink-900">STAR Resume Template:</p>
+              <p className="text-bad-700 italic">Weak: \"Worked in a clinical project analyzing patient data.\"</p>
+              <p className="text-moss-700 font-bold">Strong: \"Engineered a clinical throughput model for 500+ patients, reducing laboratory bottleneck delays by 22% and saving $14,000 in monthly hospital operations cost.\"</p>
             </div>
           )
         },
@@ -478,7 +463,7 @@ export default function RoadmapView({ roadmap, onBack }: RoadmapViewProps) {
           actionSnippetLabel: "Run Python Sequence Audit Code",
           actionSnippetContent: (
             <div className="text-xs bg-moss-50 p-4 rounded-xl border border-ink-200 shadow-e2 space-y-2 font-mono">
-              <p className="font-bold text-ink-900">🐍 Simple RNA Transcript Count:</p>
+              <p className="font-bold text-ink-900">Simple RNA Transcript Count:</p>
               <pre className="scroll-slim overflow-x-auto rounded-lg bg-ink-900 p-2.5 text-micro text-moss-300">
 {`def gc_content(seq):
     return (seq.count('G') + seq.count('C')) / len(seq) * 100
@@ -509,10 +494,10 @@ print(f"GC content: {gc_content('ATGCGATCG'):.1f}%")`}
           actionSnippetLabel: "View Pipeline Structure Outline",
           actionSnippetContent: (
             <div className="text-xs bg-moss-50 p-4 rounded-xl border border-ink-200 shadow-e2 space-y-2 font-mono">
-              <p className="font-bold text-ink-900">🧬 Required Repository Layout:</p>
-              <p className="text-ink-600">📂 <strong>/pipeline:</strong> contains raw FastQC shell scripts</p>
-              <p className="text-ink-600">📂 <strong>/docker:</strong> holds container configuration for scalable AWS cluster execution</p>
-              <p className="text-ink-600">📂 <strong>/results:</strong> visual plots mapping genomic variants vs. public ClinVar labels</p>
+              <p className="font-bold text-ink-900">Required Repository Layout:</p>
+              <p className="text-ink-600"><strong>/pipeline:</strong> contains raw FastQC shell scripts</p>
+              <p className="text-ink-600"><strong>/docker:</strong> holds container configuration for scalable AWS cluster execution</p>
+              <p className="text-ink-600"><strong>/results:</strong> visual plots mapping genomic variants vs. public ClinVar labels</p>
             </div>
           )
         },
@@ -569,7 +554,7 @@ print(f"GC content: {gc_content('ATGCGATCG'):.1f}%")`}
           actionSnippetLabel: "View Basic R Epidemic Formula",
           actionSnippetContent: (
             <div className="text-xs bg-moss-50 p-4 rounded-xl border border-ink-200 shadow-e2 space-y-2 font-mono">
-              <p className="font-bold text-ink-900">📊 Odds Ratio (OR) Calculation in Epidemiology:</p>
+              <p className="font-bold text-ink-900">Odds Ratio (OR) Calculation in Epidemiology:</p>
               <p className="text-ink-600">OR = (Exposed Cases / Unexposed Cases) / (Exposed Controls / Unexposed Controls)</p>
               <p className="text-ink-600">An OR &gt; 1 indicates strong exposure-disease correlation.</p>
             </div>
@@ -646,7 +631,7 @@ print(f"GC content: {gc_content('ATGCGATCG'):.1f}%")`}
           actionSnippetLabel: "View Regulation Audit Checklist",
           actionSnippetContent: (
             <div className="text-xs bg-moss-50 p-4 rounded-xl border border-ink-200 shadow-e2 space-y-2 font-mono">
-              <p className="font-bold text-ink-900">📋 Quality and Biosafety Core Areas:</p>
+              <p className="font-bold text-ink-900">Quality and Biosafety Core Areas:</p>
               <p className="text-ink-600">1. <strong>GLP (Good Laboratory Practice):</strong> Traceability, equipment calibration, documentation audits.</p>
               <p className="text-ink-600">2. <strong>CTD Structure:</strong> Module 1 (Admin) &rarr; Module 2 (Summaries) &rarr; Module 3 (Quality/CMC).</p>
             </div>
@@ -759,9 +744,8 @@ ${remainingGaps.map((g, i) => `${i + 1}. [BLOCKED] ${g.title}\n   - Why: ${g.des
 RESOLVED READINESS METRICS:
 ${baseGaps.filter(g => solvedGaps[g.id]).map((g, i) => `${i + 1}. [RESOLVED] ${g.title}`).join("\n")}
 
-👉 RECOMMENDED NEXT BEST ACTION:
-"${nextBestAction.title}"
-Why this matters: ${nextBestAction.why}
+RECOMMENDED NEXT BEST ACTION:
+"${nextBestAction.title}"Why this matters: ${nextBestAction.why}
 
 ADAPTIVE READINESS PROGRESSION:
 - LEVEL 1 (FOUNDATION): Build clarity and baseline eligibility.
@@ -798,7 +782,7 @@ ADAPTIVE READINESS PROGRESSION:
           </button>
         )}
         <div className="flex items-center space-x-2 bg-moss-50 px-3.5 py-1.5 rounded-xl border border-ink-200 shadow-e2">
-          <Activity className="h-4 w-4 text-moss-700" />
+          <LineChart className="h-4 w-4 text-moss-700" />
           <span className="text-xs font-mono font-bold text-moss-700 uppercase tracking-wider">
             Execution Intelligence Active
           </span>
@@ -843,7 +827,7 @@ ADAPTIVE READINESS PROGRESSION:
                   : "text-ink-600 hover:text-ink-900"
               }`}
             >
-              <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+              <Star className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
               <span>Interactive Drills</span>
             </button>
           </div>
@@ -852,18 +836,18 @@ ADAPTIVE READINESS PROGRESSION:
         {/* ACTIVE TAB: INTELLIGENCE SYSTEM */}
         {activeTab === "system" && (
           <div className="p-6 sm:p-8 space-y-10">
-            
+
             {/* Row 1: STEP 1 (Classification) & STEP 2 (Confidence) */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-              
+
               {/* Classification Card */}
               <div className="lg:col-span-5 bg-white border border-ink-200 rounded-2xl p-6 shadow-e1 flex flex-col justify-between">
                 <div>
                   <div className="flex items-center space-x-2 text-micro font-mono uppercase tracking-widest text-ink-600 font-bold mb-4">
-                    <Activity className="h-4.5 w-4.5 text-moss-700" />
+                    <LineChart className="h-4.5 w-4.5 text-moss-700" />
                     <span>Inferred Readiness Stage</span>
                   </div>
-                  
+
                   <div className={`inline-flex items-center space-x-2 px-3 py-1.5 rounded-xl border text-xs font-bold uppercase tracking-wide ${stageColor} mb-4`}>
                     <span className={`h-2 w-2 rounded-full ${stageDot} animate-pulse`} />
                     <span>{readinessStage} Stage</span>
@@ -905,13 +889,13 @@ ADAPTIVE READINESS PROGRESSION:
                       {computedConfidence}%
                     </span>
                     <span className="text-xs font-mono font-bold text-moss-900">
-                      {computedConfidence >= 80 ? "🎯 Highly Aligned" : "💡 Building Momentum"}
+                      {computedConfidence >= 80 ? "Highly Aligned" : "Building Momentum"}
                     </span>
                   </div>
 
                   {/* Confidence Bar */}
                   <div className="w-full bg-ink-100 h-2.5 rounded-md overflow-hidden mb-6 border border-ink-200/40">
-                    <div 
+                    <div
                       className="bg-moss-600 h-full rounded-md transition-all duration-500"
                       style={{ width: `${computedConfidence}%` }}
                     />
@@ -941,24 +925,24 @@ ADAPTIVE READINESS PROGRESSION:
             </div>
 
             {/* STEP 5: NEXT BEST ACTION ENGINE (CORE OUTPUT) */}
-            <motion.div 
-              id="next-best-action-card" 
+            <motion.div
+              id="next-best-action-card"
               className="bg-moss-600 text-white rounded-2xl p-6 sm:p-8 relative overflow-hidden"
               whileHover={{ scale: 1.01 }}
               transition={{ duration: 0.2 }}
             >
               <div className="absolute top-0 right-0 p-8 opacity-[0.08] pointer-events-none">
-                <Compass className="h-40 w-40" />
+                <Navigation className="h-40 w-40" />
               </div>
 
               <div className="flex items-center space-x-2 text-micro font-mono uppercase tracking-widest text-white/80 font-bold mb-4">
-                <Sparkles className="h-4.5 w-4.5 text-moss-300" />
+                <Star className="h-4.5 w-4.5 text-moss-300" />
                 <span>Your Next Best Action</span>
               </div>
 
               <div className="space-y-3 max-w-3xl">
                 <h3 className="text-xl sm:text-2xl font-display font-bold tracking-tight">
-                  👉 "{nextBestAction.title}"
+                  "{nextBestAction.title}"
                 </h3>
                 <p className="text-xs sm:text-sm text-white/95 leading-relaxed font-semibold italic">
                   "{nextBestAction.why}"
@@ -1004,7 +988,7 @@ ADAPTIVE READINESS PROGRESSION:
                   }}
                   className="bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-bold uppercase tracking-wider px-5 py-3 rounded-xl transition-all cursor-pointer"
                 >
-                  Mark Gap as Resolved ✓
+                  Mark Gap as Resolved
                 </button>
               </div>
             </motion.div>
@@ -1031,11 +1015,11 @@ ADAPTIVE READINESS PROGRESSION:
                 {baseGaps.map((gap) => {
                   const isCleared = !!solvedGaps[gap.id];
                   return (
-                    <div 
+                    <div
                       key={gap.id}
                       className={`p-4 rounded-2xl border transition-all duration-300 flex flex-col justify-between ${
-                        isCleared 
-                          ? "bg-moss-50/40 border-moss-200 shadow-inner" 
+                        isCleared
+                          ? "bg-moss-50/40 border-moss-200 shadow-inner"
                           : "bg-white border-ink-200/80 hover:border-moss-200 hover:bg-moss-50/10 shadow-e1"
                       }`}
                     >
@@ -1044,11 +1028,11 @@ ADAPTIVE READINESS PROGRESSION:
                         <span className="text-micro font-mono font-bold bg-moss-500 text-ink-950 px-2.5 py-1 rounded-xs uppercase">
                           {gap.category} Gap
                         </span>
-                        
+
                         <h4 className="text-xs sm:text-sm font-bold text-ink-900">
                           {gap.title}
                         </h4>
-                        
+
                         <p className="text-xs text-ink-600 leading-relaxed">
                           {gap.description}
                         </p>
@@ -1059,12 +1043,12 @@ ADAPTIVE READINESS PROGRESSION:
                           <button
                             onClick={() => toggleGap(gap.id)}
                             className={`py-1.5 px-3 rounded-lg border text-micro font-mono font-bold transition-colors cursor-pointer ${
-                              isCleared 
-                                ? "bg-moss-100 text-moss-800 border-moss-300 hover:bg-moss-200" 
+                              isCleared
+                                ? "bg-moss-100 text-moss-800 border-moss-300 hover:bg-moss-200"
                                 : "bg-ink-50 text-ink-600 border-ink-200 hover:bg-ink-100"
                             }`}
                           >
-                            {isCleared ? "✓ Resolved" : "Unresolved"}
+                            {isCleared ? "Resolved" : "Unresolved"}
                           </button>
                         </div>
                         <span className="text-micro font-semibold text-moss-700 flex items-center gap-1.5 leading-tight">
@@ -1087,7 +1071,7 @@ ADAPTIVE READINESS PROGRESSION:
                 <h3 className="font-display font-bold text-lg text-ink-900">
                   Adaptive Execution Framework
                 </h3>
-                
+
                 {/* Level Tabs */}
                 <div className="flex flex-wrap gap-1 bg-ink-100 p-0.5 rounded-xl border border-ink-200">
                   {[1, 2, 3, 4].map((lvl) => (
@@ -1096,8 +1080,8 @@ ADAPTIVE READINESS PROGRESSION:
                       id={`level-tab-${lvl}`}
                       onClick={() => setActiveLevel(lvl)}
                       className={`px-3 py-1.5 rounded-lg text-micro font-bold uppercase tracking-wider transition-all cursor-pointer ${
-                        activeLevel === lvl 
-                          ? "bg-moss-600 text-white shadow-e1" 
+                        activeLevel === lvl
+                          ? "bg-moss-600 text-white shadow-e1"
                           : "text-ink-500 hover:text-ink-800"
                       }`}
                     >
@@ -1136,11 +1120,11 @@ ADAPTIVE READINESS PROGRESSION:
                 {levelTasks.filter(t => t.level === activeLevel).map((task) => {
                   const isExpanded = expandedTask === task.id;
                   return (
-                    <div 
+                    <div
                       key={task.id}
                       className="bg-white border border-ink-200 rounded-2xl overflow-hidden transition-all duration-300 shadow-e1"
                     >
-                      <div 
+                      <div
                         onClick={() => handleTaskClick(task.id)}
                         className="p-4 flex items-center justify-between gap-4 cursor-pointer hover:bg-ink-50/40"
                       >
@@ -1206,18 +1190,18 @@ ADAPTIVE READINESS PROGRESSION:
                 <HelpCircle className="h-4.5 w-4.5" />
                 <span>Is this career path still a good fit?</span>
               </div>
-              
+
               <h3 className="text-sm sm:text-base font-bold text-ink-900">
                 After reviewing the readiness gaps, daily realities, and progression timelines, how is your excitation level?
               </h3>
 
               <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
                 {[
-                  { level: "😍 Very Excited", key: "very_excited" },
-                  { level: "🙂 Interested", key: "interested" },
-                  { level: "😐 Unsure", key: "unsure" },
-                  { level: "😕 Probably Not", key: "probably_not" },
-                  { level: "😞 Definitely Not", key: "definitely_not" }
+                  { level: "Very Excited", key: "very_excited" },
+                  { level: "Interested", key: "interested" },
+                  { level: "Unsure", key: "unsure" },
+                  { level: "Probably Not", key: "probably_not" },
+                  { level: "Definitely Not", key: "definitely_not" }
                 ].map((opt) => (
                   <button
                     key={opt.key}
@@ -1250,7 +1234,7 @@ ADAPTIVE READINESS PROGRESSION:
           <div className="p-6 sm:p-8 space-y-8">
             <div className="space-y-2">
               <div className="flex items-center space-x-2 text-micro font-mono uppercase tracking-widest text-moss-700 font-bold">
-                <Sparkles className="h-4.5 w-4.5" />
+                <Star className="h-4.5 w-4.5" />
                 <span>Interactive Drills &amp; Micro-Diagnostic Modules</span>
               </div>
               <h3 className="text-base sm:text-lg font-display font-bold text-ink-900">
@@ -1262,7 +1246,7 @@ ADAPTIVE READINESS PROGRESSION:
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-              
+
               {/* Question Drill Panel */}
               <div className="lg:col-span-7 bg-white border border-ink-200 rounded-2xl p-6 shadow-e1 space-y-6">
                 <h4 className="text-xs font-mono uppercase text-moss-700 tracking-wider font-bold border-b border-ink-200 pb-2.5">
@@ -1273,14 +1257,14 @@ ADAPTIVE READINESS PROGRESSION:
                   <div className="space-y-4 text-xs">
                     <p className="font-bold text-ink-900">Q: A global hospital chain experiences a 15% drop in operating margins. Which is the best structured root-cause hypothesis to present first?</p>
                     <div className="space-y-2">
-                      <button 
+                      <button
                         id="consulting-drill-opt-1"
                         onClick={() => setActionOutput("correct_cons")}
                         className="w-full text-left p-3 rounded-xl border border-ink-200 shadow-e2 hover:border-moss-600 hover:bg-ink-50 font-bold transition-all cursor-pointer"
                       >
                         A. Check price vs volume trends across both elective surgeries and emergency outpatient clinics. (Isolates MECE variables)
                       </button>
-                      <button 
+                      <button
                         id="consulting-drill-opt-2"
                         onClick={() => setActionOutput("wrong_cons")}
                         className="w-full text-left p-3 rounded-xl border border-ink-200 shadow-e2 hover:border-moss-600 hover:bg-ink-50 font-bold transition-all cursor-pointer"
@@ -1295,14 +1279,14 @@ ADAPTIVE READINESS PROGRESSION:
                   <div className="space-y-4 text-xs">
                     <p className="font-bold text-ink-900">Q: You have a memory-bound process aligning 100 whole genomes. How should you optimize file handling to prevent container out-of-memory (OOM) crashes?</p>
                     <div className="space-y-2">
-                      <button 
+                      <button
                         id="bioinformatics-drill-opt-1"
                         onClick={() => setActionOutput("correct_bio")}
                         className="w-full text-left p-3 rounded-xl border border-ink-200 shadow-e2 hover:border-moss-600 hover:bg-ink-50 font-bold transition-all cursor-pointer"
                       >
                         A. Stream datasets using Samtools block compression and deploy parallel workers bounded by Nextflow memory caps.
                       </button>
-                      <button 
+                      <button
                         id="bioinformatics-drill-opt-2"
                         onClick={() => setActionOutput("wrong_bio")}
                         className="w-full text-left p-3 rounded-xl border border-ink-200 shadow-e2 hover:border-moss-600 hover:bg-ink-50 font-bold transition-all cursor-pointer"
@@ -1317,14 +1301,14 @@ ADAPTIVE READINESS PROGRESSION:
                   <div className="space-y-4 text-xs">
                     <p className="font-bold text-ink-900">Q: How do you verify quality and biosafety compliance parameters before drafting the core Module 3 dossier for regulatory submissions?</p>
                     <div className="space-y-2">
-                      <button 
+                      <button
                         id="default-drill-opt-1"
                         onClick={() => setActionOutput("correct_default")}
                         className="w-full text-left p-3 rounded-xl border border-ink-200 shadow-e2 hover:border-moss-600 hover:bg-ink-50 font-bold transition-all cursor-pointer"
                       >
                         A. Cross-reference stable physical laboratory assays and audit batch-record sanitization logs.
                       </button>
-                      <button 
+                      <button
                         id="default-drill-opt-2"
                         onClick={() => setActionOutput("wrong_default")}
                         className="w-full text-left p-3 rounded-xl border border-ink-200 shadow-e2 hover:border-moss-600 hover:bg-ink-50 font-bold transition-all cursor-pointer"
@@ -1338,16 +1322,16 @@ ADAPTIVE READINESS PROGRESSION:
                 {/* Drill feedback output */}
                 {actionOutput && (
                   <div className={`p-4 rounded-xl border text-xs leading-relaxed ${
-                    actionOutput.startsWith("correct") 
-                      ? "bg-moss-50 border-moss-200 text-moss-800" 
+                    actionOutput.startsWith("correct")
+                      ? "bg-moss-50 border-moss-200 text-moss-800"
                       : "bg-bad-50 border-bad-100 text-bad-700"
                   }`}>
-                    {actionOutput === "correct_cons" && "🎉 Correct! Testing Price vs Volume trends is Mutually Exclusive & Collectively Exhaustive (MECE), preventing premature solution bias."}
-                    {actionOutput === "wrong_cons" && "❌ Incorrect. Recommending staff firing without isolating the operational segment is highly unstructured and violates MECE principles."}
-                    {actionOutput === "correct_bio" && "🎉 Correct! Streaming block-compressed chunks under Nextflow memory boundary limits is standard best-practice to protect cloud instances."}
-                    {actionOutput === "wrong_bio" && "❌ Incorrect. Loading multiple multi-gigabyte files into raw RAM instantly triggers OOM crashes in cloud micro-nodes."}
-                    {actionOutput === "correct_default" && "🎉 Correct! Real-world validation of manufacturing batch logs is critical to secure approval from international bodies like the FDA."}
-                    {actionOutput === "wrong_default" && "❌ Incorrect. Guessing regulatory parameters or utilizing un-audited marketing materials triggers instant dossier rejections."}
+                    {actionOutput === "correct_cons" && "Correct! Testing Price vs Volume trends is Mutually Exclusive & Collectively Exhaustive (MECE), preventing premature solution bias."}
+                    {actionOutput === "wrong_cons" && "Incorrect. Recommending staff firing without isolating the operational segment is highly unstructured and violates MECE principles."}
+                    {actionOutput === "correct_bio" && "Correct! Streaming block-compressed chunks under Nextflow memory boundary limits is standard best-practice to protect cloud instances."}
+                    {actionOutput === "wrong_bio" && "Incorrect. Loading multiple multi-gigabyte files into raw RAM instantly triggers OOM crashes in cloud micro-nodes."}
+                    {actionOutput === "correct_default" && "Correct! Real-world validation of manufacturing batch logs is critical to secure approval from international bodies like the FDA."}
+                    {actionOutput === "wrong_default" && "Incorrect. Guessing regulatory parameters or utilizing un-audited marketing materials triggers instant dossier rejections."}
                   </div>
                 )}
               </div>

@@ -1,15 +1,15 @@
 import React, { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
-  TrendingUp,
-  FlaskConical,
   BookOpen,
-  Sparkles,
-  Compass,
-  MessageSquare,
-  Lightbulb,
   CheckCircle2,
   ChevronRight,
+  ClipboardList,
+  Info,
+  MessageSquare,
+  Navigation,
+  Star,
+  TrendingUp,
 } from "lucide-react";
 import { XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Area, AreaChart } from "recharts";
 import { CareerConfidence, CareerPath, PracticalConstraints, ProfileSignals } from "../../types";
@@ -159,7 +159,7 @@ export default function JourneyView({
             </div>
             <div className="relative z-10">
               <h2 className="text-xl font-bold text-ink-900">
-                {getGreeting()}, {firstName} 👋
+                {getGreeting()}, {firstName}
               </h2>
               <p className="text-ink-600 text-sm mt-1">
                 {studentDegree ? studentDegree : "Tell FAB what you're studying to sharpen this."}
@@ -168,7 +168,7 @@ export default function JourneyView({
               <div className="mt-8 bg-white rounded-lg p-5 border border-ink-200">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-ink-500 uppercase tracking-wider flex items-center gap-1">
-                    Career Confidence <Lightbulb className="h-3 w-3" />
+                    Career Confidence <Info className="h-3 w-3" />
                   </span>
                 </div>
 
@@ -221,7 +221,7 @@ export default function JourneyView({
               <div className="bg-white rounded-2xl p-5 shadow-e2 border border-ink-200">
                 <div className="flex items-center gap-2 mb-3">
                   <div className="bg-moss-50 p-2 rounded-xl text-moss-700">
-                    <FlaskConical className="h-4 w-4" />
+                    <ClipboardList className="h-4 w-4" />
                   </div>
                   <span className="text-xs font-bold text-ink-700">Evidence</span>
                 </div>
@@ -236,7 +236,7 @@ export default function JourneyView({
               <div className="bg-white rounded-2xl p-5 shadow-e2 border border-ink-200">
                 <div className="flex items-center gap-2 mb-3">
                   <div className="bg-moss-50 p-2 rounded-xl text-moss-700">
-                    <Sparkles className="h-4 w-4" />
+                    <Star className="h-4 w-4" />
                   </div>
                   <span className="text-xs font-bold text-ink-700">Signals</span>
                 </div>
@@ -251,7 +251,7 @@ export default function JourneyView({
               <div className="bg-white rounded-2xl p-5 shadow-e2 border border-ink-200">
                 <div className="flex items-center gap-2 mb-3">
                   <div className="bg-moss-50 p-2 rounded-xl text-moss-700">
-                    <Compass className="h-4 w-4" />
+                    <Navigation className="h-4 w-4" />
                   </div>
                   <span className="text-xs font-bold text-ink-700">Paths</span>
                 </div>
@@ -324,7 +324,7 @@ export default function JourneyView({
                     onClick={() => goTo("experiments")}
                     className="inline-flex items-center gap-1.5 rounded-xl bg-moss-500 px-4 py-2 text-tiny font-bold uppercase tracking-wider text-white transition-colors hover:bg-moss-600 cursor-pointer"
                   >
-                    <FlaskConical className="h-3.5 w-3.5" />
+                    <ClipboardList className="h-3.5 w-3.5" />
                     Run your first experiment
                   </button>
                 </div>
@@ -352,7 +352,7 @@ export default function JourneyView({
                     >
                       <div className="flex items-center gap-3 mb-2">
                         <div className="p-2 bg-moss-50 rounded-xl text-moss-700 shrink-0">
-                          <FlaskConical className="h-4 w-4" />
+                          <ClipboardList className="h-4 w-4" />
                         </div>
                         <h4 className="font-bold text-ink-900 text-sm min-w-0 break-words">
                           {ev.title || ev.type || "Evidence logged"}
@@ -528,7 +528,7 @@ export default function JourneyView({
                     >
                       <div className="flex items-center gap-4 min-w-0">
                         <div className="bg-moss-50 p-2 rounded-xl text-moss-700 shrink-0">
-                          <Compass className="h-4 w-4" />
+                          <Navigation className="h-4 w-4" />
                         </div>
                         <div className="min-w-0">
                           <span className="block text-sm font-medium text-ink-700 truncate">
@@ -547,7 +547,7 @@ export default function JourneyView({
               ) : (
                 <div className="flex flex-col items-center gap-3 p-8 text-center">
                   <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-moss-100 bg-moss-50 text-moss-700">
-                    <Compass className="h-4 w-4" />
+                    <Navigation className="h-4 w-4" />
                   </div>
                   <p className="max-w-xs text-xs font-medium leading-relaxed text-ink-500">
                     Complete experiments and confidence in each pathway starts tracking here.
@@ -560,8 +560,7 @@ export default function JourneyView({
           {/* Top Strengths */}
           <div className="space-y-4 pt-4">
             <h3 className="font-bold text-ink-900 flex items-center gap-2 flex-wrap">
-              Top Strengths{" "}
-              <span className="text-micro font-normal text-ink-500 uppercase tracking-wider">
+              Top Strengths<span className="text-micro font-normal text-ink-500 uppercase tracking-wider">
                 (Based on detected signals)
               </span>
             </h3>
@@ -575,11 +574,11 @@ export default function JourneyView({
                   >
                     <div className="bg-info-50 p-3 rounded-2xl text-info-500 shrink-0">
                       {idx === 0 ? (
-                        <Sparkles className="h-5 w-5" />
+                        <Star className="h-5 w-5" />
                       ) : idx === 1 ? (
                         <MessageSquare className="h-5 w-5" />
                       ) : (
-                        <Lightbulb className="h-5 w-5" />
+                        <Info className="h-5 w-5" />
                       )}
                     </div>
                     <div className="min-w-0">
@@ -614,7 +613,7 @@ export default function JourneyView({
             onClick={() => goTo(bestFitPaths.length > 0 ? "paths" : "fab")}
             className="w-full bg-moss-500 hover:bg-moss-600 text-white rounded-2xl py-4 font-bold transition-all flex items-center justify-center gap-2 mt-4 cursor-pointer"
           >
-            <Sparkles className="h-4 w-4" />
+            <Star className="h-4 w-4" />
             {bestFitPaths.length > 0 ? "Review your pathways" : "Find your direction"}
             <ChevronRight className="h-4 w-4" />
           </button>

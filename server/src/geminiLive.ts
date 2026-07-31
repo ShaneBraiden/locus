@@ -1,4 +1,5 @@
 import { GoogleGenAI, Modality } from '@google/genai';
+import { geminiKeys } from './gemini.js';
 import { DEFAULT_LANGUAGE, normalizeLanguage, type Transcription } from './sarvam.js';
 
 // Gemini Flash Live as FAB's ear.
@@ -43,17 +44,12 @@ const TRANSCRIBE_TIMEOUT_MS = 20000;
  */
 const QUIET_MS = 700;
 
-let client: GoogleGenAI | null | undefined;
-
-function ai(): GoogleGenAI | null {
-  if (client !== undefined) return client;
-  const key = process.env.GEMINI_API_KEY;
-  client = key ? new GoogleGenAI({ apiKey: key }) : null;
-  return client;
-}
-
+// The ear shares gemini.ts's key pool rather than holding its own client, so a
+// key that gets quota'd by the interviewer is already benched when the next
+// spoken turn arrives, and a spoken turn that fails on one key is re-heard on
+// the next with the same audio buffer.
 export const liveEnabled = () =>
-  ai() !== null && process.env.GEMINI_LIVE_STT !== 'off';
+  geminiKeys.enabled() && process.env.GEMINI_LIVE_STT !== 'off';
 
 /**
  * Each Indic script belongs to exactly one of the languages Sarvam can speak
@@ -90,12 +86,31 @@ export function languageFromScript(text: string): string {
 export async function transcribeLive(
   pcm: Buffer, languageHint?: string,
 ): Promise<Transcription | null> {
-  const g = ai();
-  if (!g || !pcm.length) return null;
+  if (!liveEnabled() || !pcm.length) return null;
+  try {
+    // The closure captures the audio buffer, so if the first key is quota'd the
+    // pool re-listens to the same clip on the next one. The student is never
+    // asked to say it again.
+    return await geminiKeys.run('live transcribe', (g) => listen(g, pcm, languageHint));
+  } catch (e: any) {
+    console.warn('[live] transcription failed:', e.message);
+    return null;
+  }
+}
 
+/**
+ * One Live session. Throws rather than returning null so `createKeyPool` can
+ * tell a quota'd key (rotate and retry) from a clip it simply could not make
+ * out (give up and let the caller fall back to Sarvam).
+ */
+async function listen(
+  g: GoogleGenAI, pcm: Buffer, languageHint?: string,
+): Promise<Transcription | null> {
   let heard = '';
   let settled = false;
   let quiet: NodeJS.Timeout | null = null;
+  /** Kept so an auth/quota close can be rethrown for the pool to classify. */
+  let socketError: Error | null = null;
   let finish!: () => void;
   const done = new Promise<void>((resolve) => {
     finish = () => { if (!settled) { settled = true; resolve(); } };
@@ -130,6 +145,7 @@ export async function transcribeLive(
           },
           onerror: (e: any) => {
             console.warn('[live] socket error:', e?.message ?? e);
+            socketError = e instanceof Error ? e : new Error(String(e?.message ?? e));
             finish();
           },
           onclose: () => finish(),
@@ -148,15 +164,16 @@ export async function transcribeLive(
       done,
       new Promise<void>((r) => setTimeout(r, TRANSCRIBE_TIMEOUT_MS)),
     ]);
-  } catch (e: any) {
-    console.warn('[live] transcription failed:', e.message);
-    return null;
   } finally {
     if (quiet) clearTimeout(quiet);
     try { session?.close(); } catch { /* already gone */ }
   }
 
   const text = heard.trim();
+  // A socket that died before producing a single word may well have died
+  // because the key is spent. Rethrow so the pool can decide; if the error is
+  // not key-shaped it propagates out to transcribeLive and becomes a null.
+  if (!text && socketError) throw socketError;
   if (!text) return null;
 
   // An explicitly chosen language wins; otherwise the script tells us.

@@ -10,7 +10,9 @@ import {
 import {
   CONFIDENCE_FLOOR, fallbackQuestion, interviewTurn, sanitizeReply,
 } from './conversation.js';
-import { casualReply, narrateRecommendation, narrateReflection } from './gemini.js';
+import {
+  casualReply, narrateRecommendation, narrateReflection, toEnglishForMatching,
+} from './gemini.js';
 import { degreeNames, findDegree, loadDegrees } from './topology.js';
 import { DEFAULT_LANGUAGE, toEnglish } from './sarvam.js';
 import type {
@@ -312,17 +314,37 @@ async function runFlow(
   // empty string against all of them. So the answer is brought into English
   // once per turn and reused, instead of each matcher failing in its own way.
   //
-  // Lazy on purpose: the interview itself is read by Gemini, which handles
-  // Tamil natively, so most turns never pay for the translation call. Falls
-  // back to the raw text whenever Sarvam is unavailable.
+  // WHICH ENGINE DOES THE TRANSLATING DEPENDS ON HOW THE TURN ARRIVED, and that
+  // is deliberate: Sarvam is the voice engine and is used only on voice.
+  //
+  //   spoken turn -> Sarvam. The clip already went through Sarvam or Gemini
+  //                  Live to become text, we have a real detected language code
+  //                  to give it, and the reply is going back out through Sarvam
+  //                  anyway. One provider, one round trip.
+  //   typed  turn -> Gemini. Nothing about a typed turn is a voice operation.
+  //                  Sending it to Sarvam meant a student who never once tapped
+  //                  the mic still spent voice quota and still needed the voice
+  //                  provider reachable for their own name to be read properly.
+  //                  Gemini is already in this request and reads Indic script
+  //                  natively, so it does it for free.
+  //
+  // Lazy on purpose: the interview itself is read by Gemini, which handles Tamil
+  // natively, so most turns never pay for the translation call at all. Either
+  // path falls back to the raw text when its engine is unavailable.
   let englishCache: string | null = null;
   const answerInEnglish = async (): Promise<string> => {
     if (englishCache !== null) return englishCache;
     if (!lastUserText || !hasNonLatinScript(lastUserText)) return (englishCache = lastUserText);
+
+    const spoken = ctx.channel === 'voice';
     const lang = lastUser?.language ?? DEFAULT_LANGUAGE;
-    englishCache = (await toEnglish(lastUserText, lang)) ?? lastUserText;
+    const read = spoken
+      ? await toEnglish(lastUserText, lang)
+      : await toEnglishForMatching(lastUserText);
+
+    englishCache = read ?? lastUserText;
     if (englishCache !== lastUserText) {
-      console.log(`[flow] read ${lang} answer as: ${englishCache}`);
+      console.log(`[flow] read ${spoken ? `${lang} speech` : 'typed answer'} as: ${englishCache}`);
     }
     return englishCache;
   };
@@ -503,6 +525,7 @@ async function finish(
     const deterministic = reflectionText(name, degree, profile);
     const narrated = await narrateReflection(
       name, degree.name, deterministic, profile.reflections.slice(0, 6), ctx.brief,
+      { messages, channel: ctx.channel },
     );
     const text = narrated ? sanitizeReply(narrated) : deterministic;
     s.reflectionShown = true;
@@ -537,7 +560,7 @@ async function finish(
     let narrative = await narrateRecommendation(name, degree, profile, paths, {
       scores: psych.scores, matches: psych.topMatches, motivationNote: psych.motivationNote,
       pivots: psych.pivots.pivot,
-    }, ctx.brief);
+    }, ctx.brief, { messages, channel: ctx.channel });
 
     if (narrative) {
       narrative = sanitizeReply(narrative);
@@ -566,7 +589,9 @@ async function finish(
   // ---- Step 6: open chat -------------------------------------------------
   const paths = buildCareerPaths(degree, profile, 5);
   const canned = `I'm right here, ${name}. Your paths are saved in the Best Fit Paths tab — poke around the roadmaps and tell me what feels right or what feels off. That reaction is real data too.`;
-  const reply = (await casualReply(name, messages, paths[0]?.fieldName ?? null, ctx.brief)) ?? canned;
+  const reply = (await casualReply(
+    name, messages, paths[0]?.fieldName ?? null, ctx.brief, ctx.channel,
+  )) ?? canned;
   return {
     reply: sanitizeReply(reply),
     updatedPhase: 'closing',

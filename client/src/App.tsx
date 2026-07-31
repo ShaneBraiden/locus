@@ -12,22 +12,22 @@ import { ChatSession, Message, Phase, ProfileSignals, PracticalConstraints, Care
 import { motion, AnimatePresence } from "motion/react";
 import { DailyReality, CognitiveLoad, PilotExperience } from "./lib/pilotOrchestrator";
 import {
-  MessageSquare,
-  Layers,
-  GraduationCap,
+  BookOpen,
   CalendarRange,
   ChevronRight,
-  Info,
-  Home,
-  Beaker,
-  BookOpen,
-  RefreshCw,
-  Menu,
-  Loader2,
+  ClipboardList,
   Cloud,
   CloudOff,
+  GraduationCap,
+  Home,
+  Info,
+  Layers,
+  Loader2,
   LogOut,
-  X
+  Menu,
+  MessageSquare,
+  RefreshCw,
+  X,
 } from "lucide-react";
 
 import { Logo } from "./components/Logo";
@@ -979,7 +979,7 @@ function Workspace({ user }: { user: AuthUser }) {
     { id: "home",        label: "Home",        short: "Home",  icon: Home },
     { id: "fab",         label: "FAB Chat",    short: "Chat",  icon: MessageSquare },
     { id: "paths",       label: "Career Paths",short: "Paths", icon: Layers },
-    { id: "experiments", label: "Experiments", short: "Lab",   icon: Beaker },
+    { id: "experiments", label: "Experiments", short: "Lab",   icon: ClipboardList },
     { id: "journey",     label: "Journey",     short: "Journey", icon: BookOpen },
   ] as const;
 

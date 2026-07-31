@@ -3,9 +3,14 @@ import { CareerPath, ProfileSignals, PracticalConstraints } from "../../types";
 import { UniversityMatch, UniversityProgramme, University } from "../../data/universityData";
 import { getUniversityRecommendations } from "../../lib/universityIntelligence";
 import { motion, AnimatePresence } from "motion/react";
-import { 
-  ChevronRight, Bookmark, MapPin, Award, DollarSign,
-  Briefcase, GraduationCap, Building, Users, Clock, ArrowRight, X, Sparkles, TrendingUp
+import {
+  Award,
+  Bookmark,
+  Clock,
+  DollarSign,
+  GraduationCap,
+  Star,
+  X,
 } from "lucide-react";
 
 interface UniversityViewProps {
@@ -215,7 +220,7 @@ export default function UniversityView({ path, signals, constraints, onBack, onC
                   {/* Overlay Content */}
                   <div className="absolute bottom-0 left-0 p-6 lg:p-8 w-full">
                     <div className="flex items-center space-x-3 mb-4">
-                      <div className="h-10 w-10 bg-white/10 rounded-xl flex items-center justify-center border border-white/20 text-2xl">
+                      <div className="flex h-8 items-center justify-center border border-white/25 bg-white/10 px-2 text-xs font-bold tracking-[0.08em] text-white">
                         {match.university.logo}
                       </div>
                       <span className="px-3 py-1 bg-white/20 border border-white/20 rounded-lg text-white text-xs font-bold uppercase tracking-wider">
@@ -248,7 +253,7 @@ export default function UniversityView({ path, signals, constraints, onBack, onC
                     <div>
                       <p className="text-micro uppercase tracking-wider font-bold text-ink-500 mb-1">Match Score</p>
                       <div className="flex items-center space-x-1 mt-1">
-                        <Sparkles className="h-3.5 w-3.5 text-moss-600" />
+                        <Star className="h-3.5 w-3.5 text-moss-600" />
                         <span className="text-xs sm:text-sm font-bold text-moss-700">{match.matchScore}%</span>
                       </div>
                     </div>

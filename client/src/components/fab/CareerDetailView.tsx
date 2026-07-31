@@ -2,28 +2,25 @@ import React from "react";
 import { CareerPath } from "../../types";
 import { motion } from "motion/react";
 import { getCareerIntelligence } from "../../lib/careerIntelligence";
-import { 
-  Sparkles, 
-  ChevronRight, 
-  Layers, 
-  MapPin, 
-  Briefcase, 
-  Globe2, 
-  TrendingUp, 
-  ShieldAlert, 
-  Clock, 
-  BookOpen,
-  Building2,
-  GraduationCap,
+import {
+  AlertCircle,
+  ArrowUpRight,
   Award,
-  AlertTriangle,
-  BrainCircuit,
-  Zap,
-  Target,
-  Users,
-  Sun,
+  BookOpen,
+  Briefcase,
+  Building2,
+  ChevronRight,
+  Clock,
+  Gauge,
+  Globe2,
+  GraduationCap,
+  Layers,
+  Network,
+  ShieldAlert,
   ShieldCheck,
-  Rocket
+  Star,
+  Target,
+  TrendingUp,
 } from "lucide-react";
 
 interface CareerDetailViewProps {
@@ -76,7 +73,7 @@ export default function CareerDetailView({
         {/* Hero Content */}
         <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-12 z-20 max-w-5xl mx-auto flex flex-col items-start">
           <div className="inline-flex items-center gap-1.5 bg-moss-400 text-ink-900 px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-micro sm:text-xs font-bold uppercase tracking-widest mb-3 sm:mb-4">
-            <Sparkles className="h-3.5 sm:h-4 w-3.5 sm:w-4" />
+            <Star className="h-3.5 sm:h-4 w-3.5 sm:w-4" />
             {path.matchScore}% MATCH
           </div>
           
@@ -130,7 +127,7 @@ export default function CareerDetailView({
         <section>
           <div className="mb-6 sm:mb-8">
             <h2 className="text-xl sm:text-2xl font-bold text-ink-900 uppercase tracking-tight flex items-center gap-3">
-              <Sparkles className="h-5 sm:h-6 w-5 sm:w-6 text-moss-600" />
+              <Star className="h-5 sm:h-6 w-5 sm:w-6 text-moss-600" />
               Why This Is For You
             </h2>
           </div>
@@ -152,7 +149,7 @@ export default function CareerDetailView({
         <section>
           <div className="mb-6 sm:mb-8">
             <h2 className="text-xl sm:text-2xl font-bold text-ink-900 uppercase tracking-tight flex items-center gap-3">
-              <Zap className="h-5 sm:h-6 w-5 sm:w-6 text-info-500" />
+              <Gauge className="h-5 sm:h-6 w-5 sm:w-6 text-info-500" />
               Career Snapshot
             </h2>
           </div>
@@ -165,7 +162,7 @@ export default function CareerDetailView({
               { label: "Years to Enter", value: detail.yearsToEnter, icon: Clock },
               { label: "Work Style", value: detail.workEnvironment, icon: Building2 },
               { label: "Difficulty", value: path.keyInsights.difficultyToEnter, icon: Target },
-              { label: "Work-Life Balance", value: path.keyInsights.workLifeBalance, icon: Sun }
+              { label: "Work-Life Balance", value: path.keyInsights.workLifeBalance, icon: Clock }
             ].map((stat, i) => (
               <div key={i} className="bg-white border border-ink-200 rounded-2xl p-3.5 sm:p-5 shadow-e2">
                 <div className="flex items-center gap-1.5 mb-1.5">
@@ -182,7 +179,7 @@ export default function CareerDetailView({
         <section>
           <div className="mb-6 sm:mb-8">
             <h2 className="text-xl sm:text-2xl font-bold text-ink-900 uppercase tracking-tight flex items-center gap-3">
-              <Sun className="h-5 sm:h-6 w-5 sm:w-6 text-moss-600" />
+              <Clock className="h-5 sm:h-6 w-5 sm:w-6 text-moss-600" />
               A Day In The Life
             </h2>
           </div>
@@ -198,7 +195,7 @@ export default function CareerDetailView({
         <section>
           <div className="mb-6 sm:mb-8">
             <h2 className="text-xl sm:text-2xl font-bold text-ink-900 uppercase tracking-tight flex items-center gap-3">
-              <Rocket className="h-5 sm:h-6 w-5 sm:w-6 text-moss-600" />
+              <ArrowUpRight className="h-5 sm:h-6 w-5 sm:w-6 text-moss-600" />
               Career Roadmap
             </h2>
           </div>
@@ -252,7 +249,7 @@ export default function CareerDetailView({
         <section>
           <div className="mb-6 sm:mb-8">
             <h2 className="text-xl sm:text-2xl font-bold text-ink-900 uppercase tracking-tight flex items-center gap-3">
-              <BrainCircuit className="h-5 sm:h-6 w-5 sm:w-6 text-good-500" />
+              <Network className="h-5 sm:h-6 w-5 sm:w-6 text-good-500" />
               Skills Required
             </h2>
           </div>
@@ -469,7 +466,7 @@ export default function CareerDetailView({
         <section>
           <div className="mb-6 sm:mb-8">
             <h2 className="text-xl sm:text-2xl font-bold text-ink-900 uppercase tracking-tight flex items-center gap-3">
-              <AlertTriangle className="h-5 sm:h-6 w-5 sm:w-6 text-bad-500" />
+              <AlertCircle className="h-5 sm:h-6 w-5 sm:w-6 text-bad-500" />
               Reality Check & Challenges
             </h2>
           </div>

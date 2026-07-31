@@ -1,4 +1,5 @@
 import { SarvamAIClient } from 'sarvamai';
+import { createKeyPool } from './keypool.js';
 
 // Sarvam is Northr's voice. It hears the student (speech to text) and answers
 // out loud (text to speech), in English or any of the Indic languages the
@@ -58,19 +59,26 @@ export function normalizeLanguage(input: unknown): string {
 
 export const isEnglish = (code: string) => normalizeLanguage(code) === DEFAULT_LANGUAGE;
 
-let client: SarvamAIClient | null | undefined;
+/**
+ * Up to four keys: SARVAM_API_KEY, then _2, _3, _4.
+ *
+ * Voice is the most quota-hungry thing the app does — a single spoken turn can
+ * be an STT call, a translate call and several TTS chunks — so this is the pool
+ * that matters most in practice. Each call below runs through `keys.run`, which
+ * replays the identical request (the same audio buffer, the same text, the same
+ * target language) on the next key when one is exhausted.
+ */
+const keys = createKeyPool<SarvamAIClient>({
+  name: 'sarvam',
+  envPrefix: 'SARVAM_API_KEY',
+  build: (apiSubscriptionKey) => new SarvamAIClient({ apiSubscriptionKey }),
+  disabledNote: 'voice chat is disabled, typing still works',
+});
 
-function sarvam(): SarvamAIClient | null {
-  if (client !== undefined) return client;
-  const key = process.env.SARVAM_API_KEY;
-  client = key ? new SarvamAIClient({ apiSubscriptionKey: key }) : null;
-  if (!client) {
-    console.warn('[sarvam] SARVAM_API_KEY not set — voice chat is disabled, typing still works');
-  }
-  return client;
-}
+export const sarvamEnabled = () => keys.enabled();
 
-export const sarvamEnabled = () => sarvam() !== null;
+/** How many Sarvam keys are configured. Surfaced on /healthz. */
+export const sarvamKeyCount = () => keys.size();
 
 function withTimeout<T>(work: Promise<T>, label: string): Promise<T> {
   return Promise.race([
@@ -94,8 +102,7 @@ export interface Transcription {
 export async function transcribe(
   audio: Buffer, contentType: string, languageHint?: string,
 ): Promise<Transcription | null> {
-  const s = sarvam();
-  if (!s) return null;
+  if (!keys.enabled()) return null;
 
   // "unknown" is Sarvam's own auto-detect value; passing a real code skips
   // detection and is noticeably more accurate when the student has told us.
@@ -107,7 +114,7 @@ export async function transcribe(
   const baseType = contentType.split(';')[0].trim().toLowerCase() || 'audio/webm';
 
   try {
-    const res = await withTimeout(
+    const res = await keys.run('speech-to-text', (s) => withTimeout(
       s.speechToText.transcribe({
         file: {
           data: audio,
@@ -118,7 +125,7 @@ export async function transcribe(
         language_code: (requested ?? 'unknown') as any,
       }),
       'sarvam speech-to-text',
-    );
+    ));
 
     const text = (res.transcript ?? '').trim();
     if (!text) return null;
@@ -145,8 +152,7 @@ function extensionFor(contentType: string): string {
  * limit, so a long recommendation comes back as several clips.
  */
 export async function speak(text: string, language = DEFAULT_LANGUAGE): Promise<string[] | null> {
-  const s = sarvam();
-  if (!s) return null;
+  if (!keys.enabled()) return null;
 
   const clean = speakable(text);
   if (!clean) return null;
@@ -155,8 +161,12 @@ export async function speak(text: string, language = DEFAULT_LANGUAGE): Promise<
   const audios: string[] = [];
 
   try {
+    // Rotation is per chunk, not per utterance. A long recommendation is
+    // several TTS calls, and if the key runs dry on chunk three the remaining
+    // chunks continue on the next key — the student hears one continuous reply
+    // rather than a sentence and a half.
     for (const chunk of splitForLimit(clean, TTS_CHUNK_CHARS)) {
-      const res = await withTimeout(
+      const res = await keys.run('text-to-speech', (s) => withTimeout(
         s.textToSpeech.convert({
           text: chunk,
           target_language_code: target as any,
@@ -165,7 +175,7 @@ export async function speak(text: string, language = DEFAULT_LANGUAGE): Promise<
           enable_preprocessing: true,
         }),
         'sarvam text-to-speech',
-      );
+      ));
       audios.push(...(res.audios ?? []));
     }
   } catch (e: any) {
@@ -182,8 +192,7 @@ export async function speak(text: string, language = DEFAULT_LANGUAGE): Promise<
  * reads a consistent conversation.
  */
 export async function translate(text: string, target: string): Promise<string | null> {
-  const s = sarvam();
-  if (!s) return null;
+  if (!keys.enabled()) return null;
 
   const to = normalizeLanguage(target);
   if (isEnglish(to)) return text;
@@ -191,7 +200,7 @@ export async function translate(text: string, target: string): Promise<string | 
   try {
     const parts: string[] = [];
     for (const chunk of splitForLimit(text, TRANSLATE_CHUNK_CHARS)) {
-      const res = await withTimeout(
+      const res = await keys.run('translate', (s) => withTimeout(
         s.text.translate({
           input: chunk,
           source_language_code: 'en-IN' as any,
@@ -199,7 +208,7 @@ export async function translate(text: string, target: string): Promise<string | 
           model: TRANSLATE_MODEL as any,
         }),
         'sarvam translate',
-      );
+      ));
       if (res.translated_text) parts.push(res.translated_text);
     }
     const joined = parts.join(' ').trim();
@@ -220,8 +229,7 @@ export async function translate(text: string, target: string): Promise<string | 
  * unaffected; this is only for lookup.
  */
 export async function toEnglish(text: string, source: string): Promise<string | null> {
-  const s = sarvam();
-  if (!s) return null;
+  if (!keys.enabled()) return null;
 
   const from = normalizeLanguage(source);
   if (isEnglish(from)) return text;
@@ -230,7 +238,7 @@ export async function toEnglish(text: string, source: string): Promise<string | 
   if (!input) return null;
 
   try {
-    const res = await withTimeout(
+    const res = await keys.run('translate to english', (s) => withTimeout(
       s.text.translate({
         input,
         source_language_code: from as any,
@@ -238,7 +246,7 @@ export async function toEnglish(text: string, source: string): Promise<string | 
         model: TRANSLATE_MODEL as any,
       }),
       'sarvam translate to english',
-    );
+    ));
     return (res.translated_text ?? '').trim() || null;
   } catch (e: any) {
     console.warn('[sarvam] translation to English failed:', e.message);

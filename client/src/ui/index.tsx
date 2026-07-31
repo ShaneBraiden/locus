@@ -7,7 +7,7 @@
  * Everything here reads from the tokens in `index.css`. No raw hex, no
  * arbitrary pixel type sizes.
  *
- * Four rules carry the current style through this file:
+ * Five rules carry the current style through this file:
  *
  *   1. STRUCTURE IS DRAWN WITH LINES. A region is defined by a 1px rule and by
  *      whitespace. The card — a floating rounded box with a shadow under it —
@@ -17,10 +17,15 @@
  *   2. ELEVATION MEANS FLOATING. Only things that actually leave the page get a
  *      shadow: modals, popovers, dropdowns, toasts. Nothing in the document
  *      flow casts one.
- *   3. GEOMETRY IS SHARP. Controls are rectangles with a 3-4px radius. The only
- *      full-round elements left are the ones that are genuinely circular —
+ *   3. GEOMETRY IS FLAT. Controls are square. Every radius token from `xs` to
+ *      `lg` is zero, so `rounded-md` on a button resolves to no corner at all.
+ *      The only round elements left are the ones that are genuinely circular —
  *      avatars, status dots, spinners.
- *   4. INTERACTION IS A STATE CHANGE, NOT A PERFORMANCE. 150ms on colour and
+ *   4. PADDING IS THE MINIMUM THAT KEEPS CONTENT OFF AN EDGE. Panels are 12px
+ *      and do not grow with the viewport. Rows are 8px. Nothing here reserves
+ *      space it is not using, and no component's padding scales at a
+ *      breakpoint — a wider screen should show more content, not more margin.
+ *   5. INTERACTION IS A STATE CHANGE, NOT A PERFORMANCE. 150ms on colour and
  *      border. Nothing scales, lifts, tilts or settles.
  */
 import React from "react";
@@ -31,6 +36,25 @@ import React from "react";
 export function cx(...parts: Array<string | false | null | undefined>): string {
   return parts.filter(Boolean).join(" ");
 }
+
+/* ---------------------------------------------------------------------------
+ * IconType — the shape every icon slot in this file accepts.
+ *
+ * Lucide components take `strokeWidth` as well as `className`, and the flat
+ * system sets it explicitly: the library default of 2 reads heavy and slightly
+ * hand-drawn beside Inter at 13px. 1.75 is the weight that matches the type
+ * without thinning into invisibility at 14px.
+ *
+ * Declared here rather than importing lucide's own type so the primitives stay
+ * independent of the icon library.
+ * ------------------------------------------------------------------------ */
+export type IconType = React.ComponentType<{
+  className?: string;
+  strokeWidth?: number | string;
+}>;
+
+/** The one stroke weight for icons rendered by these primitives. */
+export const ICON_STROKE = 1.75;
 
 /* ---------------------------------------------------------------------------
  * CHART — the one sanctioned place for literal hex in the app.
@@ -177,20 +201,20 @@ export function Section({
   return (
     <Tag
       className={cx(
-        seamless ? "pt-0 mt-0 border-0" : "border-t border-ink-200 pt-6 mt-6 first:border-0 first:pt-0 first:mt-0",
+        seamless ? "pt-0 mt-0 border-0" : "border-t border-ink-200 pt-4 mt-4 first:border-0 first:pt-0 first:mt-0",
         className,
       )}
       {...(rest as any)}
     >
       {(title || actions || eyebrow) && (
-        <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between">
+        <div className="mb-2.5 flex flex-col gap-1.5 sm:flex-row sm:items-baseline sm:justify-between">
           <div className="min-w-0">
-            {eyebrow && <div className="eyebrow mb-1.5">{eyebrow}</div>}
+            {eyebrow && <div className="eyebrow mb-1">{eyebrow}</div>}
             {title && (
               <h2 className="text-lg font-bold text-ink-900 text-balance">{title}</h2>
             )}
             {description && (
-              <p className="mt-1 max-w-prose text-sm text-ink-500 text-pretty">{description}</p>
+              <p className="mt-0.5 max-w-prose text-sm text-ink-500 text-pretty">{description}</p>
             )}
           </div>
           {actions && (
@@ -270,11 +294,14 @@ export function Panel({
         // wrapper) so that the many call sites passing their own layout
         // classes — `flex`, `grid`, `space-y-*` — still apply to the children
         // they were written for.
-        !flush && !hasHeader && "p-4 sm:p-5",
+        //
+        // Flat 12px, and it no longer grows at the `sm` breakpoint. A panel's
+        // padding exists to keep content off the border; scaling it with the
+        // viewport just meant wider screens got more air, not more content.
+        !flush && !hasHeader && "p-3",
         accent &&
           cx(
             "before:absolute before:left-0 before:top-0 before:h-full before:w-[2px] before:content-['']",
-            "before:rounded-l-lg",
             ACCENT_EDGE[accent],
           ),
         interactive && cx(MOTION, "hover:border-ink-400 focus-within:border-moss-500"),
@@ -284,13 +311,13 @@ export function Panel({
     >
       {hasHeader ? (
         <>
-          <div className="flex items-center justify-between gap-3 border-b border-ink-200 px-4 py-2.5">
+          <div className="flex items-center justify-between gap-2 border-b border-ink-200 px-3 py-1.5">
             {title && (
               <h3 className="min-w-0 truncate text-sm font-bold text-ink-900">{title}</h3>
             )}
             {actions && <div className="flex shrink-0 items-center gap-1.5">{actions}</div>}
           </div>
-          <div className={cx(!flush && "p-4")}>{children}</div>
+          <div className={cx(!flush && "p-3")}>{children}</div>
         </>
       ) : (
         children
@@ -337,7 +364,7 @@ export function Rule({
  * ======================================================================== */
 export interface RowProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
   /** Left-hand icon slot. Kept small — 16px, ink-400. */
-  icon?: React.ComponentType<{ className?: string }>;
+  icon?: IconType;
   title: React.ReactNode;
   meta?: React.ReactNode;
   /** Right-aligned value, action or badge. */
@@ -360,17 +387,19 @@ export function Row({
   return (
     <div
       className={cx(
-        "flex items-start gap-3 px-1 py-3",
+        "flex items-start gap-2.5 px-1 py-2",
         interactive && cx(MOTION, "cursor-pointer hover:bg-ink-50"),
         active && "bg-moss-50",
         className,
       )}
       {...rest}
     >
-      {Icon && <Icon className="mt-0.5 h-4 w-4 shrink-0 text-ink-400" />}
+      {Icon && (
+        <Icon className="mt-0.5 h-4 w-4 shrink-0 text-ink-400" strokeWidth={ICON_STROKE} />
+      )}
       <div className="min-w-0 flex-1">
         <div className="text-sm font-semibold text-ink-900">{title}</div>
-        {meta && <div className="mt-0.5 text-xs text-ink-500">{meta}</div>}
+        {meta && <div className="mt-px text-xs text-ink-500">{meta}</div>}
         {children}
       </div>
       {trailing && (
@@ -442,7 +471,7 @@ export interface SectionHeaderProps {
   description?: React.ReactNode;
   /** Right-aligned actions. Wraps below the title on narrow screens. */
   actions?: React.ReactNode;
-  icon?: React.ComponentType<{ className?: string }>;
+  icon?: IconType;
   /** Suppresses the bottom rule when the header sits inside a framed panel. */
   bare?: boolean;
   className?: string;
@@ -460,24 +489,24 @@ export function SectionHeader({
   return (
     <div
       className={cx(
-        "flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between",
-        !bare && "border-b border-ink-200 pb-3",
+        "flex flex-col gap-1.5 sm:flex-row sm:items-start sm:justify-between",
+        !bare && "border-b border-ink-200 pb-2",
         className,
       )}
     >
-      <div className="flex min-w-0 items-start gap-2.5">
+      <div className="flex min-w-0 items-start gap-2">
         {Icon && (
-          // A 28px square at 4px radius, not a 44px circle. An icon beside a
-          // heading is a locator, not a feature.
-          <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-ink-200 bg-ink-50 text-ink-600">
-            <Icon className="h-3.5 w-3.5" />
+          // A 24px square, flat and square-cornered. An icon beside a heading
+          // is a locator, not a feature — it should not out-weigh the words.
+          <span className="mt-px flex h-6 w-6 shrink-0 items-center justify-center border border-ink-200 bg-ink-50 text-ink-600">
+            <Icon className="h-3.5 w-3.5" strokeWidth={1.75} />
           </span>
         )}
         <div className="min-w-0">
-          {eyebrow && <div className="eyebrow mb-1">{eyebrow}</div>}
-          <h2 className="text-xl font-bold text-ink-900 text-balance">{title}</h2>
+          {eyebrow && <div className="eyebrow mb-0.5">{eyebrow}</div>}
+          <h2 className="text-lg font-bold text-ink-900 text-balance">{title}</h2>
           {description && (
-            <p className="mt-1.5 max-w-prose text-sm text-ink-500 text-pretty">
+            <p className="mt-0.5 max-w-prose text-sm text-ink-500 text-pretty">
               {description}
             </p>
           )}
@@ -503,7 +532,7 @@ export interface StatProps {
   label: React.ReactNode;
   value: React.ReactNode;
   hint?: React.ReactNode;
-  icon?: React.ComponentType<{ className?: string }>;
+  icon?: IconType;
   tone?: BadgeTone;
   className?: string;
 }
@@ -520,14 +549,19 @@ const STAT_TONE: Record<BadgeTone, string> = {
 
 export function Stat({ label, value, hint, icon: Icon, tone = "neutral", className }: StatProps) {
   return (
-    <div className={cx("flex min-w-0 flex-col gap-1 px-4 py-3", className)}>
+    <div className={cx("flex min-w-0 flex-col gap-0.5 px-3 py-2", className)}>
       <div className="flex items-center gap-1.5">
-        {Icon && <Icon className={cx("h-3.5 w-3.5 shrink-0", STAT_TONE[tone])} />}
+        {Icon && (
+          <Icon
+            className={cx("h-3.5 w-3.5 shrink-0", STAT_TONE[tone])}
+            strokeWidth={ICON_STROKE}
+          />
+        )}
         <span className="eyebrow truncate">{label}</span>
       </div>
       <div
         data-numeric
-        className="text-2xl font-bold leading-none tracking-tight text-ink-900"
+        className="text-xl font-bold leading-none tracking-tight text-ink-900"
       >
         {value}
       </div>
@@ -619,7 +653,7 @@ export function Progress({
  * EMPTY STATE
  * ======================================================================== */
 export interface EmptyStateProps {
-  icon?: React.ComponentType<{ className?: string }>;
+  icon?: IconType;
   title: React.ReactNode;
   description?: React.ReactNode;
   action?: React.ReactNode;
@@ -636,24 +670,25 @@ export function EmptyState({
   return (
     <div
       className={cx(
-        "flex flex-col items-center justify-center gap-2.5 rounded-lg border border-dashed",
-        "border-ink-300 bg-ink-50 px-6 py-10 text-center",
+        "flex flex-col items-center justify-center gap-1.5 rounded-lg border border-dashed",
+        // Was px-6 py-10. An empty state is a placeholder, not a feature — at
+        // 40px of vertical padding it was reserving more room than the content
+        // it stands in for would have taken.
+        "border-ink-300 bg-ink-50 px-4 py-6 text-center",
         className,
       )}
     >
       {Icon && (
-        // A square at 4px radius. The old blob was the shape language being
-        // obvious in the one place it had room to be; there is no shape
-        // language to demonstrate now.
-        <span className="flex h-9 w-9 items-center justify-center rounded-md border border-ink-200 bg-white text-ink-400">
-          <Icon className="h-4 w-4" />
-        </span>
+        // A plain square. No frame, no chip, no fill — the icon is a hint at
+        // what is missing, and wrapping it in a bordered box made the absence
+        // of content look like a component in its own right.
+        <Icon className="h-4 w-4 text-ink-400" strokeWidth={ICON_STROKE} />
       )}
       <h3 className="text-sm font-bold text-ink-900 text-balance">{title}</h3>
       {description && (
         <p className="max-w-sm text-xs text-ink-500 text-pretty">{description}</p>
       )}
-      {action && <div className="mt-1">{action}</div>}
+      {action && <div className="mt-0.5">{action}</div>}
     </div>
   );
 }
@@ -667,7 +702,7 @@ export function EmptyState({
 export interface SegmentedOption<T extends string> {
   value: T;
   label: React.ReactNode;
-  icon?: React.ComponentType<{ className?: string }>;
+  icon?: IconType;
 }
 
 export interface SegmentedProps<T extends string> {
@@ -735,7 +770,7 @@ export function Segmented<T extends string>({
                   ),
             )}
           >
-            {Icon && <Icon className="h-3.5 w-3.5 shrink-0" />}
+            {Icon && <Icon className="h-3.5 w-3.5 shrink-0" strokeWidth={ICON_STROKE} />}
             <span className="whitespace-nowrap">{opt.label}</span>
           </button>
         );

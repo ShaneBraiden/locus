@@ -1,37 +1,32 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { 
-  Sparkles, 
-  Search, 
-  ArrowRight, 
-  BookOpen, 
-  Clock, 
-  Check, 
-  Award, 
-  Flame, 
-  Dna, 
-  Brain, 
-  FileText, 
-  MessageSquare, 
-  Users, 
-  Sliders, 
-  Compass, 
-  Share2, 
-  Bookmark, 
-  X, 
-  MoreHorizontal, 
-  Bell, 
+import {
   ArrowLeft,
+  Award,
+  BookOpen,
+  Bookmark,
+  Check,
+  CheckCircle2,
   ChevronRight,
-  Heart,
-  Activity,
+  Clock,
   ExternalLink,
+  FileText,
+  Gauge,
+  LineChart,
+  Microscope,
+  MoreHorizontal,
+  Navigation,
+  Network,
   Plus,
+  Search,
+  Server,
+  Share2,
+  Sliders,
+  Star,
+  TrendingUp,
   Upload,
-  AlertCircle,
-  Zap,
-  Cpu,
-  CheckCircle2
+  Users,
+  X,
 } from "lucide-react";
 import { CareerPath, Experience } from "../../types";
 import { experienceLibrary } from "../../data/experienceLibrary";
@@ -41,7 +36,7 @@ interface ExperimentsViewProps {
   onAddEvidence: (evidenceItem: any) => void;
   bestFitPaths?: CareerPath[];
   onConfidenceUpdate: (fieldName: string, change: number) => void;
-  
+
   // Pilot Orchestrator props
   dailyReality?: DailyReality;
   setDailyReality?: (dr: DailyReality) => void;
@@ -87,7 +82,7 @@ export function getEvidenceText(exp: any): string {
 export function getExperienceImage(subject: string, title: string): string {
   const t = (title || "").toLowerCase();
   const s = (subject || "").toLowerCase();
-  
+
   if (t.includes("dna") || s.includes("dna") || t.includes("crispr") || t.includes("gene") || t.includes("cloning") || t.includes("biotech")) {
     return "https://images.unsplash.com/photo-1530026405186-ed1ea0ac7a63?auto=format&fit=crop&w=300&q=80"; // DNA / Biotech
   }
@@ -106,7 +101,7 @@ export function getExperienceImage(subject: string, title: string): string {
   if (t.includes("interview") || t.includes("career") || t.includes("resume") || t.includes("job") || t.includes("linkedin")) {
     return "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80"; // Interview / Career
   }
-  
+
   // Defaults based on subject
   if (s.includes("biomedical") || s.includes("science") || s.includes("biology") || s.includes("chemistry")) {
     return "https://images.unsplash.com/photo-1532187863486-abf9d39d66e8?auto=format&fit=crop&w=300&q=80"; // Science lab
@@ -114,7 +109,7 @@ export function getExperienceImage(subject: string, title: string): string {
   if (s.includes("psychology") || s.includes("behavior") || s.includes("mind") || s.includes("health")) {
     return "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=300&q=80"; // Mindfulness / Psychology
   }
-  
+
   return "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=300&q=80"; // Tech / Abstract
 }
 
@@ -180,7 +175,7 @@ export default function ExperimentsView({
 
   const [isSaved, setIsSaved] = useState(false);
   const [isObserveSaved, setIsObserveSaved] = useState(false);
-  
+
   // Step 3 Interactive checklists
   const [completedSubtasks, setCompletedSubtasks] = useState<Record<number, boolean>>({
     0: false,
@@ -304,12 +299,12 @@ export default function ExperimentsView({
   const handleCustomFileUpload = (file: File) => {
     setSelectedFile(file);
     setSelectedPreset(null);
-    
+
     // Guess subject and skills based on file name or default to general Career OS skills
     const fileNameLower = file.name.toLowerCase();
     let title = file.name.replace(/\.[^/.]+$/, "").split(/[-_]/).map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
     if (title.length > 40) title = title.substring(0, 37) + "...";
-    
+
     let subject = "General Tech & Operations";
     let skills = [
       "Critical Problem Solving",
@@ -319,7 +314,7 @@ export default function ExperimentsView({
       "Digital Tool Competency"
     ];
     let boostField = "Biomedical Sciences";
-    
+
     if (fileNameLower.includes("python") || fileNameLower.includes("code") || fileNameLower.includes("programming") || fileNameLower.includes("dev")) {
       subject = "Software Engineering";
       skills = ["Algorithmic Problem Solving", "Python Programming", "Code Modularization", "Debugging Systems", "Software Architecture"];
@@ -352,7 +347,7 @@ export default function ExperimentsView({
     setCertStep(2);
     setParsingProgress(0);
     setParsingLog([]);
-    
+
     const logs = [
       "Initializing AI-assisted PDF and OCR parsing systems...",
       `Detected document: "${presetOrCustom.title}"`,
@@ -366,12 +361,12 @@ export default function ExperimentsView({
     ];
 
     let currentLogIndex = 0;
-    
+
     // Animate progress and stream logs
     const interval = setInterval(() => {
       setParsingProgress(prev => {
         const next = prev + 4;
-        
+
         // Match logs with progress ranges
         const logTriggers = [0, 10, 25, 40, 55, 70, 80, 90, 98];
         if (currentLogIndex < logs.length && next >= logTriggers[currentLogIndex]) {
@@ -471,7 +466,7 @@ export default function ExperimentsView({
   const todayPicks = curatedRecs.length > 0 ? curatedRecs.map(exp => {
     const isDyn = exp.isCustomGenerated || exp.type === "Dynamic";
     const shortRationale = exp.rationale ? exp.rationale.replace(/^Pilot Orchestrator: |^Hypothesis Match: |^Subject Match: /, "") : "";
-    
+
     // Convert minutes to much shorter durations (e.g. 2-5 mins) for quick actionability
     const rawTime = exp.estimatedTime || "15 minutes";
     let shortTime = "2 min";
@@ -508,13 +503,19 @@ export default function ExperimentsView({
     }
   ];
 
-  // Emoji responses array
-  const emojiList = [
-    { emoji: "😍", label: "Loved it" },
-    { emoji: "🙂", label: "Okay" },
-    { emoji: "😐", label: "Neutral" },
-    { emoji: "😟", label: "Struggled" },
-    { emoji: "😡", label: "Didn't like it" }
+  // The post-experiment reaction scale.
+  //
+  // This was a row of five face emoji. A face is ambiguous across cultures,
+  // renders differently on every platform, and cannot be read by a screen
+  // reader as anything but "pouting face". It is now an ordinal 5-to-1 scale:
+  // the numeral carries the ranking, the label carries the meaning, and the two
+  // together are unambiguous in any font on any device.
+  const reactionScale = [
+    { score: 5, label: "Loved it" },
+    { score: 4, label: "Okay" },
+    { score: 3, label: "Neutral" },
+    { score: 2, label: "Struggled" },
+    { score: 1, label: "Disliked it" },
   ];
 
   // Helper to handle transitioning to Reflection submission and Completed state
@@ -566,12 +567,12 @@ export default function ExperimentsView({
 
   return (
     <div id="experiments-redesign-container" className="w-full h-full flex flex-col select-none font-sans bg-ink-25">
-      
+
       {/* Main Dynamic Workspace Canvas */}
       <div className="relative flex-1 bg-white border-0 sm:border sm:border-ink-200 sm:m-2 sm:rounded-lg overflow-hidden flex flex-col justify-between">
-        
+
         <AnimatePresence mode="wait">
-          
+
           {/* SCREEN 1: EXPERIMENT LIST (DASHBOARD) */}
           {currentScreen === 1 && (
             <motion.div
@@ -595,7 +596,7 @@ export default function ExperimentsView({
                       <h2 className="text-xl sm:text-2xl font-bold text-ink-900 tracking-tight">Experiments Hub</h2>
                     </div>
                   </div>
-                  
+
                   {/* Stats HUD + Convert Action (Highly engaging & fully visible) */}
                   <div className="flex items-center gap-2 sm:space-x-3 self-stretch sm:self-auto justify-between sm:justify-start flex-wrap">
                     <button
@@ -613,11 +614,11 @@ export default function ExperimentsView({
 
                     <div className="flex items-center gap-2 shrink-0">
                       <div className="flex items-center space-x-1 bg-moss-50 border border-moss-100 rounded-xl px-2 py-1 sm:px-3 sm:py-1.5 text-moss-700 shadow-e1 font-mono text-micro sm:text-xs">
-                        <Flame className="h-3 w-3 fill-moss-500 text-moss-500 animate-pulse" />
+                        <TrendingUp className="h-3 w-3 fill-moss-500 text-moss-500 animate-pulse" />
                         <span className="font-bold">{streak}D</span>
                       </div>
                       <div className="flex items-center space-x-1 bg-moss-50 border border-moss-100 rounded-xl px-2 py-1 sm:px-3 sm:py-1.5 text-moss-700 shadow-e1 font-mono text-micro sm:text-xs">
-                        <Sparkles className="h-3 w-3 text-info-500 animate-pulse" />
+                        <Star className="h-3 w-3 text-info-500 animate-pulse" />
                         <span className="font-bold">{xp}XP</span>
                       </div>
                     </div>
@@ -626,26 +627,26 @@ export default function ExperimentsView({
 
                 {/* Sub Tab Selector (Pill Capsule Design) */}
                 <div className="flex w-full sm:w-auto bg-ink-100 p-1 rounded-2xl text-micro sm:text-tiny font-mono font-bold tracking-wider uppercase text-ink-500 overflow-x-auto scroll-slim">
-                  <button 
+                  <button
                     onClick={() => setDashboardTab("for_you")}
                     className={`flex-1 sm:flex-initial text-center whitespace-nowrap px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl transition-all cursor-pointer ${dashboardTab === "for_you" ? "bg-white text-ink-900 shadow-e2" : "hover:text-ink-900"}`}
                   >
-                    ✨ For You
+                     For You
                   </button>
-                  <button 
+                  <button
                     onClick={() => setDashboardTab("in_progress")}
                     className={`flex-1 sm:flex-initial text-center whitespace-nowrap px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl transition-all cursor-pointer ${dashboardTab === "in_progress" ? "bg-white text-ink-900 shadow-e2" : "hover:text-ink-900"}`}
                   >
                     ⏳ In Progress
                   </button>
-                  <button 
+                  <button
                     onClick={() => setDashboardTab("completed")}
                     className={`flex-1 sm:flex-initial text-center whitespace-nowrap px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl transition-all cursor-pointer ${dashboardTab === "completed" ? "bg-white text-ink-900 shadow-e2" : "hover:text-ink-900"}`}
                   >
-                    🏆 Completed ({completedExperienceIds.length})
+                     Completed ({completedExperienceIds.length})
                   </button>
                 </div>
- 
+
                  <AnimatePresence mode="wait">
                    {/* FOR YOU TAB CONTENT */}
                    {dashboardTab === "for_you" && (
@@ -659,9 +660,9 @@ export default function ExperimentsView({
                      >
                        {/* Pilot AI Pick banner (Personalized Counselor tone) */}
                        <div className="p-3.5 sm:p-5 bg-ink-50 border border-ink-200 rounded-2xl sm:rounded-3xl flex items-start gap-3 sm:space-x-4 shadow-e1 relative overflow-hidden group">
-                         
+
                          <div className="h-9 w-9 sm:h-10 sm:w-10 bg-moss-100 rounded-xl sm:rounded-2xl flex items-center justify-center text-moss-700 shrink-0 shadow-e2">
-                           <Sparkles className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
+                           <Star className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
                          </div>
                          <div>
                            <span className="block text-xs sm:text-sm font-bold text-ink-950">Pilot Personalized Recommendation</span>
@@ -674,14 +675,14 @@ export default function ExperimentsView({
                            </span>
                          </div>
                        </div>
- 
+
                        {/* Today's Picks */}
                        <div className="space-y-3 sm:space-y-4">
                          <div className="flex justify-between items-center">
                            <span className="text-micro font-mono font-bold uppercase text-ink-500 tracking-widest">Curated Challenges</span>
                            <span className="text-xs font-bold text-moss-700 hover:underline cursor-pointer">View all ({todayPicks.length})</span>
                          </div>
- 
+
                          <div className="flex flex-col space-y-3 sm:space-y-4">
                            {isLoadingPicks ? (
                              [1, 2, 3].map((_, index) => (
@@ -692,7 +693,7 @@ export default function ExperimentsView({
                                  <div className="flex items-start gap-3 sm:gap-4 min-w-0 flex-1">
                                    {/* Animated Skeleton Avatar */}
                                    <div className="h-10 w-10 sm:h-14 sm:w-14 rounded-full bg-ink-200/50 animate-pulse shrink-0 border-2 border-moss-100/10 shadow-e1 self-center" />
-                                   
+
                                    <div className="min-w-0 flex-1 space-y-2">
                                      {/* Animated Skeleton Title */}
                                      <div className="h-4 sm:h-5 bg-ink-200/60 animate-pulse rounded-md w-3/4 sm:w-1/2" />
@@ -702,7 +703,7 @@ export default function ExperimentsView({
                                      <div className="h-8 bg-moss-50/10 border border-moss-100/5 animate-pulse rounded-xl sm:rounded-2xl w-full" />
                                    </div>
                                  </div>
-                                 
+
                                  {/* Animated Skeleton Duration Pill */}
                                  <div className="h-6 sm:h-8 w-16 bg-ink-100/60 animate-pulse rounded-md shrink-0 self-start sm:self-center" />
                                </div>
@@ -720,9 +721,9 @@ export default function ExperimentsView({
                                    className="p-3 sm:p-5 bg-white border border-ink-200 rounded-lg hover:border-ink-400 transition-colors cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 group"
                                  >
                                    <div className="flex items-start gap-3 sm:gap-4 min-w-0 flex-1">
-                                     <img 
-                                       src={expImage} 
-                                       alt={pick.title} 
+                                     <img
+                                       src={expImage}
+                                       alt={pick.title}
                                        className="h-10 w-10 sm:h-14 sm:w-14 rounded-md object-cover shrink-0 border-2 border-moss-100/50 shadow-e1 self-center"
                                        referrerPolicy="no-referrer"
                                      />
@@ -734,7 +735,7 @@ export default function ExperimentsView({
                                          {pick.desc}
                                        </span>
                                        <p className="text-micro text-ink-500 font-medium leading-relaxed mt-1 flex items-start bg-moss-50/50 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-xl sm:rounded-2xl border border-moss-100/30">
-                                         <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1.5 text-moss-700 shrink-0 mt-0.5" />
+                                         <Star className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1.5 text-moss-700 shrink-0 mt-0.5" />
                                          <span><strong>Pilot Suggestion:</strong> {pick.whyPilotSuggests}</span>
                                        </p>
                                      </div>
@@ -782,7 +783,7 @@ export default function ExperimentsView({
                           <div className="h-1.5 sm:h-2 w-full bg-ink-100 rounded-md overflow-hidden">
                             <div className="h-full bg-moss-500 rounded-md w-[40%]" />
                           </div>
-                          <button 
+                          <button
                             onClick={() => {
                               // Direct continuation trigger
                               setCurrentScreen(3);
@@ -833,7 +834,7 @@ export default function ExperimentsView({
                               const title = foundExp?.title || "Explain CRISPR to a 10-year-old";
                               const subject = foundExp?.subject || "Biomedical Sciences";
                               const skills = foundExp?.primarySkills ? foundExp.primarySkills.split(",") : ["Communication", "Scientific Simplification"];
-                              
+
                               return (
                                 <div key={index} className="p-3 sm:p-4 bg-white border border-ink-200 rounded-xl sm:rounded-2xl flex items-center justify-between shadow-e1 hover:border-good-100 transition-colors">
                                   <div className="space-y-1 flex-1 min-w-0 pr-4">
@@ -848,7 +849,7 @@ export default function ExperimentsView({
                                       ))}
                                     </div>
                                   </div>
-                                  
+
                                   <div className="text-right shrink-0">
                                     <span className="block text-micro sm:text-micro text-ink-500 font-mono font-bold uppercase">Subject Matrix</span>
                                     <span className="block text-xs font-bold text-moss-700 font-mono mt-0.5">{subject}</span>
@@ -878,7 +879,7 @@ export default function ExperimentsView({
             >
               {/* Top Navigation bar */}
               <div className="flex justify-between items-center">
-                <button 
+                <button
                   onClick={() => setCurrentScreen(1)}
                   className="px-3.5 py-1.5 sm:px-4 sm:py-2 border border-ink-200 rounded-xl hover:bg-ink-50 text-ink-600 text-tiny sm:text-xs font-bold transition-all cursor-pointer flex items-center space-x-1.5 bg-white"
                 >
@@ -889,7 +890,7 @@ export default function ExperimentsView({
                   <button className="h-8 w-8 sm:h-9 sm:w-9 rounded-xl border border-ink-200 hover:bg-ink-50 flex items-center justify-center text-ink-500 transition-all bg-white">
                     <Share2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                   </button>
-                  <button 
+                  <button
                     onClick={() => setIsSaved(!isSaved)}
                     className="h-8 w-8 sm:h-9 sm:w-9 rounded-xl border border-ink-200 hover:bg-ink-50 flex items-center justify-center text-ink-500 transition-all bg-white"
                   >
@@ -900,21 +901,21 @@ export default function ExperimentsView({
 
               {/* Main Info Columns */}
               <div className="grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-8 items-start">
-                
+
                 {/* Left block: Title, image and tags */}
                 <div className="md:col-span-5 flex flex-col items-center md:items-start text-center md:text-left space-y-4 sm:space-y-5">
                   <div className="relative h-36 sm:h-44 w-full bg-ink-100 rounded-2xl sm:rounded-3xl overflow-hidden border border-ink-200 shadow-e2">
-                    <img 
-                      src={getExperienceImage(selectedExp?.subject || "Science", selectedExp?.title || "")} 
-                      alt={selectedExp?.title} 
+                    <img
+                      src={getExperienceImage(selectedExp?.subject || "Science", selectedExp?.title || "")}
+                      alt={selectedExp?.title}
                       className="h-full w-full object-cover"
                       referrerPolicy="no-referrer"
                     />
                     <div className="absolute top-3 left-3 bg-white border border-ink-200 rounded-md p-2 sm:p-2.5 text-moss-700 shadow-e2">
                       {selectedExp?.subject === "Biomedical Sciences" ? (
-                        <Dna className="h-4 sm:h-5 w-4 sm:w-5 animate-pulse" />
+                        <Microscope className="h-4 sm:h-5 w-4 sm:w-5 animate-pulse" />
                       ) : selectedExp?.subject === "Psychology" ? (
-                        <Brain className="h-4 sm:h-5 w-4 sm:w-5 animate-pulse" />
+                        <Network className="h-4 sm:h-5 w-4 sm:w-5 animate-pulse" />
                       ) : (
                         <FileText className="h-4 sm:h-5 w-4 sm:w-5 animate-pulse" />
                       )}
@@ -930,7 +931,7 @@ export default function ExperimentsView({
                     </h3>
                     <div className="flex items-center justify-center md:justify-start space-x-3 text-micro sm:text-tiny font-mono font-bold text-ink-500">
                       <span className="flex items-center">
-                        <Clock className="h-3.5 w-3.5 mr-1 text-moss-700" /> 
+                        <Clock className="h-3.5 w-3.5 mr-1 text-moss-700" />
                         {(() => {
                           const rawTime = selectedExp?.estimatedTime || "15 minutes";
                           let shortTime = "2 min";
@@ -944,7 +945,7 @@ export default function ExperimentsView({
                           return shortTime;
                         })()}
                       </span>
-                      <span className="flex items-center"><Compass className="h-3.5 w-3.5 mr-1 text-moss-700" /> {selectedExp?.careerPathway || "Communication"}</span>
+                      <span className="flex items-center"><Navigation className="h-3.5 w-3.5 mr-1 text-moss-700" /> {selectedExp?.careerPathway || "Communication"}</span>
                     </div>
                   </div>
 
@@ -1016,7 +1017,7 @@ export default function ExperimentsView({
               <div className="flex justify-between items-center border-b border-ink-200 pb-3 sm:pb-4">
                 <div className="space-y-1">
                   <span className="inline-flex items-center space-x-1.5 text-micro font-mono font-bold uppercase text-moss-700 bg-moss-50 px-2.5 py-0.5 rounded-md border border-moss-100">
-                    <Activity className="h-3 w-3 animate-pulse text-moss-700" />
+                    <LineChart className="h-3 w-3 animate-pulse text-moss-700" />
                     <span>MISSION PHASES • STEP {inProgressStep} OF 8</span>
                   </span>
                   <h4 className="text-base sm:text-lg md:text-xl font-bold text-ink-900 tracking-tight mt-1">
@@ -1030,7 +1031,7 @@ export default function ExperimentsView({
                     {inProgressStep === 8 && "Phase VIII: Mission Success & Credentials"}
                   </h4>
                 </div>
-                <button 
+                <button
                   onClick={() => {
                     // Save and exit to dashboard
                     setCurrentScreen(1);
@@ -1084,7 +1085,7 @@ export default function ExperimentsView({
               {/* Dynamic Step Panels (Progressive Disclosure Pattern) */}
               <div className="flex-1 py-2 sm:py-4 scroll-slim overflow-y-auto max-h-[480px]">
                 <AnimatePresence mode="wait">
-                  
+
                   {/* STEP 1: UNDERSTAND & ABSORB */}
                   {inProgressStep === 1 && (
                     <motion.div
@@ -1096,7 +1097,7 @@ export default function ExperimentsView({
                     >
                       <div className="p-3 bg-moss-50/50 border border-moss-100 rounded-2xl">
                         <p className="text-xs text-moss-900 font-semibold leading-relaxed">
-                          🧑‍🏫 <strong>Pilot Guideline:</strong> Before you dive into action, build solid mental foundations. Review the core items and click to complete them once understood.
+                           <strong>Pilot Guideline:</strong> Before you dive into action, build solid mental foundations. Review the core items and click to complete them once understood.
                         </p>
                       </div>
 
@@ -1116,8 +1117,8 @@ export default function ExperimentsView({
                                 key={idx}
                                 onClick={() => setCompletedSubtasks(prev => ({ ...prev, [idx]: !prev[idx] }))}
                                 className={`flex items-start space-x-3.5 p-3.5 rounded-2xl border transition-all cursor-pointer ${
-                                  isChecked 
-                                    ? "bg-ink-25/80 border-moss-50 text-ink-500" 
+                                  isChecked
+                                    ? "bg-ink-25/80 border-moss-50 text-ink-500"
                                     : "bg-white border-ink-200/80 hover:border-moss-300 hover:shadow-e1"
                                 }`}
                               >
@@ -1174,7 +1175,7 @@ export default function ExperimentsView({
                       className="space-y-4"
                     >
                       <div className="p-4 bg-moss-50/40 border border-moss-200 rounded-2xl flex items-start space-x-3">
-                        <span className="text-xl shrink-0">🛠️</span>
+                        <span className="text-xl shrink-0"></span>
                         <div>
                           <h5 className="text-xs sm:text-sm font-bold text-moss-950">Setup & Environmental Preparation</h5>
                           <p className="text-tiny sm:text-xs text-moss-900 font-semibold mt-0.5 leading-relaxed">
@@ -1185,7 +1186,7 @@ export default function ExperimentsView({
 
                       <div className="bg-white border border-ink-200 rounded-2xl p-4 space-y-3">
                         <span className="block text-micro font-mono font-bold text-ink-500 uppercase tracking-widest">Active Workspace Preparation Checks</span>
-                        
+
                         <div className="flex items-center justify-between p-3 bg-ink-50/50 border border-ink-200 rounded-xl">
                           <div className="flex items-center space-x-2.5">
                             <Sliders className="h-4 w-4 text-moss-700" />
@@ -1225,7 +1226,7 @@ export default function ExperimentsView({
                       <div className="space-y-3">
                         <div className="p-3 bg-white border border-ink-200 rounded-xl space-y-1.5 focus-within:border-moss-300 transition-colors">
                           <span className="block text-micro font-mono font-bold text-ink-500">PROBLEM/OBSERVATION 1</span>
-                          <input 
+                          <input
                             type="text"
                             value={problem1}
                             onChange={e => setProblem1(e.target.value)}
@@ -1236,7 +1237,7 @@ export default function ExperimentsView({
 
                         <div className="p-3 bg-white border border-ink-200 rounded-xl space-y-1.5 focus-within:border-moss-300 transition-colors">
                           <span className="block text-micro font-mono font-bold text-ink-500">PROBLEM/OBSERVATION 2</span>
-                          <input 
+                          <input
                             type="text"
                             value={problem2}
                             onChange={e => setProblem2(e.target.value)}
@@ -1247,7 +1248,7 @@ export default function ExperimentsView({
 
                         <div className="p-3 bg-white border border-ink-200 rounded-xl space-y-1.5 focus-within:border-moss-300 transition-colors">
                           <span className="block text-micro font-mono font-bold text-ink-500">PROBLEM/OBSERVATION 3</span>
-                          <input 
+                          <input
                             type="text"
                             value={problem3}
                             onChange={e => setProblem3(e.target.value)}
@@ -1279,7 +1280,7 @@ export default function ExperimentsView({
                       <div className="space-y-3">
                         <div className="p-3 bg-ink-25 border border-ink-200 rounded-xl space-y-1">
                           <span className="block text-micro font-mono font-bold text-ink-500">LINKED TO PROBLEM 1: "{problem1 || "Problem 1"}"</span>
-                          <input 
+                          <input
                             type="text"
                             value={initiative1}
                             onChange={e => setInitiative1(e.target.value)}
@@ -1290,7 +1291,7 @@ export default function ExperimentsView({
 
                         <div className="p-3 bg-ink-25 border border-ink-200 rounded-xl space-y-1">
                           <span className="block text-micro font-mono font-bold text-ink-500">LINKED TO PROBLEM 2: "{problem2 || "Problem 2"}"</span>
-                          <input 
+                          <input
                             type="text"
                             value={initiative2}
                             onChange={e => setInitiative2(e.target.value)}
@@ -1301,7 +1302,7 @@ export default function ExperimentsView({
 
                         <div className="p-3 bg-ink-25 border border-ink-200 rounded-xl space-y-1">
                           <span className="block text-micro font-mono font-bold text-ink-500">LINKED TO PROBLEM 3: "{problem3 || "Problem 3"}"</span>
-                          <input 
+                          <input
                             type="text"
                             value={initiative3}
                             onChange={e => setInitiative3(e.target.value)}
@@ -1323,7 +1324,7 @@ export default function ExperimentsView({
                       className="space-y-4"
                     >
                       <div className="p-4 bg-moss-50/50 border border-moss-100 rounded-2xl flex items-center space-x-3">
-                        <Compass className="h-6 w-6 text-moss-700 shrink-0" />
+                        <Navigation className="h-6 w-6 text-moss-700 shrink-0" />
                         <div>
                           <h5 className="text-xs sm:text-sm font-bold text-ink-900">Conduct Observational Trial Run</h5>
                           <p className="text-tiny sm:text-xs text-ink-600 font-semibold mt-0.5 leading-relaxed">
@@ -1334,7 +1335,7 @@ export default function ExperimentsView({
 
                       <div className="bg-white border border-ink-200 rounded-2xl p-4 space-y-3">
                         <span className="block text-micro font-mono font-bold text-ink-500 uppercase tracking-widest">Interactive Practice Completion Checklist</span>
-                        
+
                         <label className="flex items-center space-x-3 p-3 bg-ink-50/50 rounded-xl cursor-pointer hover:bg-ink-50 transition-colors">
                           <input type="checkbox" className="h-4 w-4 rounded text-moss-700 focus:ring-moss-500 border-ink-300" />
                           <span className="text-xs font-bold text-ink-800">I have actively tested simplifying clinical or system protocols in conversation or writing.</span>
@@ -1357,25 +1358,33 @@ export default function ExperimentsView({
                       exit={{ opacity: 0, x: -10 }}
                       className="space-y-4"
                     >
-                      {/* Emoji Selection row */}
-                      <div className="space-y-2">
-                        <span className="block text-xs font-bold uppercase text-ink-800 tracking-wider">What did you feel while executing this experiment?</span>
-                        <div className="grid grid-cols-5 gap-1.5 sm:gap-2.5">
-                          {emojiList.map((item, idx) => {
+                      {/* Reaction scale */}
+                      <div className="space-y-1.5">
+                        <span className="eyebrow block">How did it go?</span>
+                        <div className="grid grid-cols-5 divide-x divide-ink-200 border border-ink-200">
+                          {reactionScale.map((item, idx) => {
                             const isActive = activeEmoji === idx;
                             return (
                               <button
-                                key={idx}
+                                key={item.score}
                                 type="button"
+                                aria-pressed={isActive}
                                 onClick={() => setActiveEmoji(idx)}
-                                className={`p-2.5 rounded-2xl border flex flex-col items-center justify-center transition-all cursor-pointer ${
-                                  isActive 
-                                    ? "border-moss-500 bg-moss-50/50 scale-[1.03] shadow-e1" 
-                                    : "border-ink-200 bg-white hover:border-moss-200"
+                                className={`flex cursor-pointer flex-col items-center justify-center gap-0.5 px-1 py-2 transition-[color,background-color] duration-150 ${
+                                  isActive
+                                    ? "bg-moss-50 text-moss-700"
+                                    : "bg-white text-ink-500 hover:bg-ink-50"
                                 }`}
                               >
-                                <span className="text-xl sm:text-2xl">{item.emoji}</span>
-                                <span className="text-micro mt-1 font-bold text-ink-500 truncate w-full text-center leading-none">{item.label}</span>
+                                <span
+                                  data-numeric
+                                  className={`text-base font-bold leading-none ${isActive ? "text-moss-700" : "text-ink-900"}`}
+                                >
+                                  {item.score}
+                                </span>
+                                <span className="text-micro w-full truncate text-center font-semibold leading-none">
+                                  {item.label}
+                                </span>
                               </button>
                             );
                           })}
@@ -1418,8 +1427,8 @@ export default function ExperimentsView({
                                 type="button"
                                 onClick={() => setTryAgainChoice(option)}
                                 className={`flex-1 py-2 rounded-xl text-xs font-bold border cursor-pointer transition-all ${
-                                  tryAgainChoice === option 
-                                    ? "bg-moss-500 border-transparent text-white shadow-e1" 
+                                  tryAgainChoice === option
+                                    ? "bg-moss-500 border-transparent text-white shadow-e1"
                                     : "bg-white border-ink-200 text-ink-600 hover:bg-ink-50"
                                 }`}
                               >
@@ -1445,7 +1454,7 @@ export default function ExperimentsView({
                         <div className="flex flex-col items-center justify-center py-12 space-y-4">
                           <div className="relative h-12 w-12 flex items-center justify-center">
                             <div className="absolute inset-0 rounded-full border-4 border-moss-100 border-t-moss-500 animate-spin" />
-                            <Sparkles className="h-5 w-5 text-moss-700 animate-pulse" />
+                            <Star className="h-5 w-5 text-moss-700 animate-pulse" />
                           </div>
                           <div className="text-center space-y-1 animate-pulse">
                             <span className="text-xs font-mono font-bold text-moss-700 block uppercase">SECURE COGNITIVE SHAKEHAND</span>
@@ -1467,7 +1476,7 @@ export default function ExperimentsView({
                           {/* Summary Deck */}
                           <div className="border border-ink-200 rounded-2xl p-4 bg-ink-25 space-y-3 text-xs">
                             <span className="block text-micro font-mono font-bold text-ink-500 uppercase tracking-wider">HARVESTED INSIGHT BLUEPRINT</span>
-                            
+
                             <div className="space-y-1">
                               <span className="block text-micro font-mono font-bold text-moss-700">STUDENT HARVESTS:</span>
                               <p className="text-ink-800 font-bold leading-relaxed">{problem1 || "Simplified medical vocabulary communication logs."}</p>
@@ -1516,7 +1525,7 @@ export default function ExperimentsView({
                       </div>
 
                       <div className="inline-flex items-center space-x-1.5 px-3 py-1 bg-moss-50 border border-moss-100 text-moss-700 font-bold text-micro sm:text-xs rounded-xs font-mono shadow-e1">
-                        <Sparkles className="h-3.5 w-3.5 animate-pulse" />
+                        <Star className="h-3.5 w-3.5 animate-pulse" />
                         <span>+50 XP REGISTERED & STREAK MAINTAINED</span>
                       </div>
 
@@ -1542,7 +1551,7 @@ export default function ExperimentsView({
                     Back
                   </button>
                 )}
-                
+
                 {inProgressStep === 1 && (
                   <button
                     onClick={() => {
@@ -1592,7 +1601,7 @@ export default function ExperimentsView({
                         if (setXp) {
                           setXp(prev => prev + 50);
                         }
-                        
+
                         const currentSubject = selectedExp.subject || "Biomedical Sciences";
                         const currentSkills = getSkillsList(selectedExp);
                         const currentId = selectedExp.id || "explain_crispr";
@@ -1660,7 +1669,7 @@ export default function ExperimentsView({
             >
               {/* Top Navigation bar */}
               <div className="flex justify-between items-center">
-                <button 
+                <button
                   onClick={() => setCurrentScreen(1)}
                   className="px-3 sm:px-4 py-1.5 sm:py-2 border border-ink-200 rounded-xl hover:bg-ink-50 text-ink-600 text-xs font-bold transition-all cursor-pointer flex items-center space-x-1.5 bg-white"
                 >
@@ -1674,11 +1683,11 @@ export default function ExperimentsView({
 
               {/* Main Content Info */}
               <div className="grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-6 items-start">
-                
+
                 {/* Left block: brain icon & matching */}
                 <div className="md:col-span-5 flex flex-col items-center md:items-start text-center md:text-left space-y-3.5">
                   <div className="h-16 w-16 sm:h-20 sm:w-20 bg-moss-50 rounded-2xl flex items-center justify-center border border-moss-100 shadow-e2">
-                    <Brain className="h-8 w-8 sm:h-10 sm:w-10 text-moss-700 animate-pulse" />
+                    <Network className="h-8 w-8 sm:h-10 sm:w-10 text-moss-700 animate-pulse" />
                   </div>
 
                   <div className="space-y-1.5 w-full">
@@ -1690,7 +1699,7 @@ export default function ExperimentsView({
                     </h4>
                     <div className="flex items-center justify-center md:justify-start space-x-3 text-tiny font-mono font-bold text-ink-500">
                       <span className="flex items-center"><Clock className="h-3.5 w-3.5 mr-1 text-moss-700" /> 15 min</span>
-                      <span className="flex items-center"><Compass className="h-3.5 w-3.5 mr-1 text-moss-700" /> Observation</span>
+                      <span className="flex items-center"><Navigation className="h-3.5 w-3.5 mr-1 text-moss-700" /> Observation</span>
                     </div>
                   </div>
 
@@ -1708,7 +1717,7 @@ export default function ExperimentsView({
 
                 {/* Right block: progress summary */}
                 <div className="md:col-span-7 space-y-3 sm:space-y-4 w-full">
-                  
+
                   {/* Progress panel card */}
                   <div className="p-4 sm:p-5 bg-white border border-ink-200 rounded-2xl space-y-2.5 sm:space-y-3 shadow-e1">
                     <span className="block text-micro sm:text-xs font-bold uppercase text-ink-800 tracking-wider">Your progress</span>
@@ -1813,7 +1822,7 @@ export default function ExperimentsView({
 
               {/* Modal Body / Scrollable Content */}
               <div className="p-6 md:p-8 overflow-y-auto flex-1">
-                
+
                 {/* STEP 1: UPLOAD & PRESETS */}
                 {certStep === 1 && (
                   <div className="space-y-6">
@@ -1831,8 +1840,8 @@ export default function ExperimentsView({
                       onDragLeave={handleDrag}
                       onDrop={handleDrop}
                       className={`relative border-2 border-dashed rounded-2xl p-8 text-center flex flex-col items-center justify-center transition-all cursor-pointer ${
-                        dragActive 
-                          ? "border-moss-500 bg-moss-50/40 scale-[0.99]" 
+                        dragActive
+                          ? "border-moss-500 bg-moss-50/40 scale-[0.99]"
                           : "border-ink-200 bg-ink-50/50 hover:border-moss-300 hover:bg-moss-50/10"
                       }`}
                     >
@@ -1859,7 +1868,7 @@ export default function ExperimentsView({
                     {/* Verified Presets Section */}
                     <div className="space-y-3">
                       <div className="flex items-center space-x-2">
-                        <Zap className="h-4 w-4 text-moss-700 fill-moss-600" />
+                        <Gauge className="h-4 w-4 text-moss-700 fill-moss-600" />
                         <span className="text-xs font-bold uppercase text-ink-800 tracking-wider">Don't have a file handy? Try a verified preset:</span>
                       </div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -1871,7 +1880,7 @@ export default function ExperimentsView({
                           >
                             <div className="flex items-center space-x-3">
                               <div className="h-10 w-10 bg-moss-50 rounded-xl flex items-center justify-center text-moss-700 shrink-0 font-bold text-sm group-hover:bg-moss-100 transition-colors">
-                                🎓
+
                               </div>
                               <div className="text-left">
                                 <span className="block text-sm font-bold text-ink-900 leading-snug group-hover:text-moss-700 transition-colors">
@@ -1895,7 +1904,7 @@ export default function ExperimentsView({
                   <div className="space-y-6 py-8 flex flex-col items-center">
                     <div className="relative h-20 w-20 flex items-center justify-center">
                       <div className="absolute inset-0 rounded-full border-4 border-moss-100 border-t-moss-500 animate-spin" />
-                      <Cpu className="h-8 w-8 text-moss-700 animate-pulse" />
+                      <Server className="h-8 w-8 text-moss-700 animate-pulse" />
                     </div>
 
                     <div className="text-center space-y-1.5 w-full max-w-md">
@@ -1905,8 +1914,8 @@ export default function ExperimentsView({
                         <span>{parsingProgress}%</span>
                       </div>
                       <div className="h-2.5 w-full bg-ink-100 rounded-md overflow-hidden border border-ink-200/50 shadow-inner">
-                        <div 
-                          className="h-full bg-moss-500 rounded-md transition-all duration-100" 
+                        <div
+                          className="h-full bg-moss-500 rounded-md transition-all duration-100"
                           style={{ width: `${parsingProgress}%` }}
                         />
                       </div>
@@ -1921,7 +1930,7 @@ export default function ExperimentsView({
                       <div className="space-y-1.5 h-44 overflow-y-auto text-tiny text-ink-300 leading-normal scroll-slim">
                         {parsingLog.map((log, i) => (
                           <div key={i} className="flex items-start space-x-1">
-                            <span className="text-moss-400 shrink-0 select-none">❯</span>
+                            <span className="text-moss-400 shrink-0 select-none">›</span>
                             <span className="font-semibold">{log}</span>
                           </div>
                         ))}
@@ -1933,13 +1942,13 @@ export default function ExperimentsView({
                 {/* STEP 3: REVIEW EXTRACTED COMPETENCIES */}
                 {certStep === 3 && selectedPreset && (
                   <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
-                    
+
                     {/* Left: Certificate Digital Replica */}
                     <div className="md:col-span-5 bg-ink-50 p-6 rounded-lg border border-ink-200 shadow-e1 flex flex-col justify-between min-h-[340px] text-center relative overflow-hidden">
-                      
-                      
+
+
                       <div className="flex justify-between items-start">
-                        <span className="text-2xl">🎓</span>
+                        <span className="text-2xl"></span>
                         <span className="text-micro font-mono font-bold uppercase bg-white border border-moss-200 px-2 py-0.5 rounded-md text-moss-700">
                           Verified SHA256
                         </span>
@@ -1992,15 +2001,15 @@ export default function ExperimentsView({
                               key={skill}
                               onClick={() => setSelectedSkillsToConvert(prev => ({ ...prev, [skill]: !prev[skill] }))}
                               className={`flex items-center justify-between p-3 rounded-xl border transition-all cursor-pointer ${
-                                isChecked 
-                                  ? "bg-moss-50/20 border-moss-200 text-ink-900" 
+                                isChecked
+                                  ? "bg-moss-50/20 border-moss-200 text-ink-900"
                                   : "bg-white border-ink-200 text-ink-500 hover:border-moss-200"
                               }`}
                             >
                               <div className="flex items-center space-x-3">
                                 <div className={`h-5 w-5 rounded-md border flex items-center justify-center transition-all ${
-                                  isChecked 
-                                    ? "bg-moss-500 border-transparent text-white" 
+                                  isChecked
+                                    ? "bg-moss-500 border-transparent text-white"
                                     : "border-ink-300 bg-white"
                                 }`}>
                                   {isChecked && <Check className="h-3.5 w-3.5 stroke-[3]" />}
@@ -2018,7 +2027,7 @@ export default function ExperimentsView({
                       {/* Alignment Summary Panel */}
                       <div className="p-4 bg-good-50/40 border border-good-100 rounded-2xl flex items-start space-x-3">
                         <div className="h-8 w-8 bg-good-100 rounded-lg flex items-center justify-center text-good-700 shrink-0">
-                          <Zap className="h-4 w-4 fill-good-500 text-good-500" />
+                          <Gauge className="h-4 w-4 fill-good-500 text-good-500" />
                         </div>
                         <div className="text-xs">
                           <span className="block font-bold text-good-900 uppercase tracking-wide">Targeted Alignment Boost!</span>
@@ -2051,7 +2060,7 @@ export default function ExperimentsView({
                 {/* STEP 4: CONVERSION SUCCESS */}
                 {certStep === 4 && selectedPreset && (
                   <div className="text-center max-w-md mx-auto py-8 space-y-6 flex flex-col items-center">
-                    
+
                     {/* Starburst Icon */}
                     <div className="relative h-20 w-20 flex items-center justify-center">
                       <div className="absolute inset-0 bg-good-100 rounded-md animate-ping" style={{ animationDuration: "3s" }} />

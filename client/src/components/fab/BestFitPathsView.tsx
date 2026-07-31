@@ -1,18 +1,14 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { 
-  Sparkles, 
-  ChevronRight, 
-  Layers, 
-  X, 
+import {
   ArrowRightLeft,
-  GraduationCap,
   Briefcase,
-  Globe2,
-  TrendingUp,
-  ShieldAlert,
+  ChevronRight,
   Clock,
-  BookOpen
+  ShieldAlert,
+  Star,
+  TrendingUp,
+  X,
 } from "lucide-react";
 import { CareerPath, PivotReadout, PsychReadout } from "../../types";
 import { getCareerIntelligence } from "../../lib/careerIntelligence";
@@ -403,7 +399,7 @@ export default function BestFitPathsView({
                               : "border-good-100 bg-good-50 text-good-700"
                           }`}
                         >
-                          {convergent && <Sparkles className="h-3 w-3" />}
+                          {convergent && <Star className="h-3 w-3" />}
                           {m.name}
                           <span className="font-mono text-micro font-bold opacity-70 tabular-nums">{m.fitScore}</span>
                         </span>
@@ -480,7 +476,7 @@ export default function BestFitPathsView({
                   
                   <div className="absolute top-3 left-3">
                     <div className="inline-flex items-center gap-1 bg-white text-ink-900 text-micro font-bold tracking-wider px-2.5 py-1 rounded-md shadow-e2">
-                      <Sparkles className="h-3 w-3 text-moss-600" />
+                      <Star className="h-3 w-3 text-moss-600" />
                       {path.matchScore}% MATCH
                     </div>
                   </div>

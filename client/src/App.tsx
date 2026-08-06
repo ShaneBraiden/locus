@@ -1056,14 +1056,23 @@ function Workspace({ user }: { user: AuthUser }) {
     // on the right holding the top bar and the scrolling content region. Both
     // columns own their own overflow, so the rail never scrolls with the view
     // and the view never has to reserve space for floating chrome.
-    <div className="flex h-[100dvh] overflow-hidden bg-ink-50 font-sans text-ink-900">
+    // The shell is deliberately transparent. The atmospheric field is painted
+    // once on `body::before` as a fixed layer; giving the shell its own
+    // opaque fill here would cover it, and giving each region a copy of it
+    // would repaint the gradient on every scroll frame.
+    <div className="flex h-[100dvh] overflow-hidden bg-transparent font-sans text-ink-900">
 
       {/* ====================================================================
           SIDEBAR
           A real column, not a floating pill. It is bounded by a single rule on
           its right edge; everything inside it aligns to one left margin.
           ================================================================= */}
-      <aside className="hidden w-60 shrink-0 flex-col border-r border-ink-200 bg-white md:flex">
+      {/* `surface-card` rather than `bg-white`: the rail is its own column and
+          nothing scrolls behind it, so it can carry the translucent surface
+          and let the field tint its edges. The sticky sub-header inside the
+          content region (below) deliberately does not — content passes under
+          that one and it has to stay opaque. */}
+      <aside className="hidden w-60 shrink-0 flex-col border-r border-ink-200 surface-card md:flex">
         {/* Brand block. Same height as the top bar so the two rules opposite
             each other line up across the seam. */}
         <div className="flex h-13 shrink-0 items-center gap-2.5 border-b border-ink-200 px-4">
@@ -1162,7 +1171,7 @@ function Workspace({ user }: { user: AuthUser }) {
       <div className="flex min-w-0 flex-1 flex-col">
 
         {/* Top bar. States where you are; it does not repeat the nav. */}
-        <header className="flex h-13 shrink-0 items-center gap-3 border-b border-ink-200 bg-white px-3 sm:px-4">
+        <header className="flex h-13 shrink-0 items-center gap-3 border-b border-ink-200 surface-card px-3 sm:px-4">
           <button
             onClick={() => setIsMobileMenuOpen(true)}
             aria-label="Open menu"

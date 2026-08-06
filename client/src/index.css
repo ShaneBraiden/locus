@@ -34,18 +34,41 @@
      - Motion is short and functional: 150ms, standard easing. Nothing lifts,
        tilts, grows or settles.
 
+   ATMOSPHERE (added). One qualification to the tenet above, and only one: the
+   page itself is no longer a flat grey. It carries an extremely low-contrast
+   field — pale sky blue opening at the top, a warm maroon haze pooling toward
+   the lower right — with film grain baked in.
+
+   This is not decoration reinstated. It is the product's argument made
+   ambient. A career tool is about two things at once: where someone is headed
+   (sky — open, directional, unbounded) and what they have already built (the
+   maroon — earned, grounded, the colour of a diploma and a bound volume). The
+   page holds both, so every screen sits between origin and horizon without a
+   single element having to say so.
+
+   The rules that made the system work are untouched. Structure is still drawn
+   with lines. Nothing in the document flow casts a shadow. Geometry is still
+   square. The field is below everything, moves nothing, and never rises to
+   contrast where content lives — see ATMOSPHERE at the foot of the base layer.
+
    RAMP NAMES ARE HISTORICAL. `moss` and `clay` are referenced by class name in
    several thousand lines of view code, so the ramps keep their names and are
    repointed rather than renamed. What they mean now:
 
      ink   — the neutral ramp. White through graphite to near-black. Every
-             surface, rule, border and text colour in the app.
+             surface, rule, border and text colour in the app. Now carries the
+             faintest blue cast, sampled from the sky, so the neutrals belong
+             to the field rather than sitting on top of it.
      moss  — THE ACCENT (#2563A8, a deep functional blue). Brand, primary
              action, active nav, selected state, primary data series. If a
              thing is not interactive and not the current selection, it is not
              this colour.
-     clay  — secondary data only (#9A6B2F, bronze). Charts and comparison
-             series. Never a UI accent, never a button, never a link.
+     sky   — ATMOSPHERE ONLY. The washes, the horizon lift, the ambient tints.
+             Never text, never a border, never a control. If a sky value is
+             load-bearing for legibility, the wrong token is being used.
+     clay  — the maroon. Secondary data series (charts, comparison lines) and
+             the warm tint on retrospective surfaces — anything about what the
+             user has already done. Never a primary action, never a link.
      good / warn / bad / info — status. Muted, not saturated.
 
    RULE: never write a raw hex or a `text-[13px]` in a component. If a value is
@@ -117,28 +140,53 @@
        ink-500  clears 4.5:1 on white AND on the page tint, because secondary
                 text lands on both
        ink-600+ clears 4.5:1 everywhere with headroom */
+  /* The cast is a hair stronger than it was — pulled toward the blue in the
+     source photograph — so that a panel edge and a table rule read as part of
+     the same light as the field behind them. Luminance is held: every value
+     from 450 down the ramp moves by at most one step, so nothing that was
+     legible has become less so. */
   --color-ink-0:   #FFFFFF;
   --color-ink-25:  #FFFFFF;  /* panel surface — true white, flush with page */
-  --color-ink-50:  #F7F8F9;  /* the page                                    */
-  --color-ink-100: #EFF1F3;  /* sunken surfaces, table zebra, track fills   */
-  --color-ink-200: #E1E4E8;  /* THE HAIRLINE — every divider in the app     */
-  --color-ink-300: #CBD0D6;  /* control border at rest                      */
-  --color-ink-400: #9AA2AC;
-  --color-ink-450: #767E89;
-  --color-ink-500: #5F6772;  /* secondary text                              */
-  --color-ink-600: #4A515B;
-  --color-ink-700: #383E46;
-  --color-ink-800: #262B31;
-  --color-ink-900: #14181C;  /* primary text, inverse surfaces              */
-  --color-ink-950: #0A0C0F;
+  --color-ink-50:  #F2F6FA;  /* the page tint (the field sits under it)     */
+  --color-ink-100: #E8EEF4;  /* sunken surfaces, table zebra, track fills   */
+  --color-ink-200: #DCE3EA;  /* THE HAIRLINE — every divider in the app     */
+  --color-ink-300: #C5CDD7;  /* control border at rest                      */
+  --color-ink-400: #97A0AC;
+  --color-ink-450: #747D89;
+  --color-ink-500: #5D6672;  /* secondary text                              */
+  --color-ink-600: #49505B;
+  --color-ink-700: #373D46;
+  --color-ink-800: #262A31;
+  --color-ink-900: #14171C;  /* primary text, inverse surfaces              */
+  --color-ink-950: #0A0B0F;
 
   /* --- Sand: the one off-neutral -----------------------------------------
      Retained as a token because the views reference it, but repointed onto
      the cool ramp. There are no warm washes in this system. */
-  --color-sand-50:  #F7F8F9;
-  --color-sand-100: #EFF1F3;
-  --color-sand-200: #E1E4E8;
-  --color-sand-300: #CBD0D6;
+  --color-sand-50:  #F2F6FA;
+  --color-sand-100: #E8EEF4;
+  --color-sand-200: #DCE3EA;
+  --color-sand-300: #C5CDD7;
+
+  /* --- Sky: ATMOSPHERE ONLY ----------------------------------------------
+     Sampled from the source photograph: #3C97C8 is the open blue at the top
+     of the frame, #DBEDF8 the lit edge of the cloud. These are the only
+     values in the system that exist to be felt rather than read.
+
+     Hard rule: sky never carries text, never draws a border, never fills a
+     control. It appears in exactly three places — the body field, the
+     `.atmos-*` helpers, and the horizon lift on the app shell. `moss` remains
+     the blue that does work. */
+  --color-sky-50:  #F4F9FD;
+  --color-sky-100: #DBEDF8;
+  --color-sky-200: #CADEED;
+  --color-sky-300: #B0D0E8;
+  --color-sky-400: #8ABEE0;
+  --color-sky-500: #63AAD5;
+  --color-sky-600: #3C97C8;  /* the open blue                               */
+  --color-sky-700: #2E7AA4;
+  --color-sky-800: #235C7C;
+  --color-sky-900: #163D53;
 
   /* --- Moss: THE ACCENT (historical name) --------------------------------
      A deep functional blue. 500 measures 5.1:1 under white, so it carries a
@@ -155,40 +203,66 @@
   --color-moss-800: #143557;
   --color-moss-900: #0E2439;
 
-  /* --- Clay: secondary data series only (historical name) -----------------
-     Bronze. Distinguishable from the accent at chart-line width and in a
-     legend swatch, muted enough that it never competes for attention. 600 is
-     the lightest value that clears 4.5:1 both as text on the page and as a
-     fill under white, so it is the one to use whenever the clay carries a
-     label rather than just a stroke. */
-  --color-clay-50:  #FAF5EC;
-  --color-clay-100: #F2E7D2;
-  --color-clay-200: #E3CDA6;
-  --color-clay-300: #CFAE74;
-  --color-clay-400: #B98F4C;
-  --color-clay-500: #A5762F;
-  --color-clay-600: #8A6127;  /* the only clay that may carry text          */
-  --color-clay-700: #6F4E1F;
-  --color-clay-800: #533A17;
-  --color-clay-900: #37260F;
+  /* --- Clay: the maroon (historical name) ---------------------------------
+     Repointed from bronze onto the maroon in the source image (#793E39 in its
+     shadows through #9B5450 in its light). Bronze and the blue accent were
+     neighbours on the warm-cool axis and muddied against each other in a
+     legend; maroon sits opposite the accent in hue and below it in lightness,
+     so a two-series chart separates on both axes at once and stays readable
+     in greyscale print.
+
+     It also carries the meaning the app needs from a second colour. Blue is
+     the path ahead — the recommendation, the selected route, the projection.
+     Maroon is the record: prior experience, completed steps, the credential
+     already held. Where a surface is retrospective, it takes a maroon tint.
+
+     Both 500 and 600 are legal for text, which the old bronze could not
+     claim: measured against the darkest pixel of the atmospheric field —
+     which is the warm corner, where a maroon label is most likely to land —
+     500 gives 4.53:1 and 600 gives 5.33:1. 600 remains the documented default
+     for a label, since 4.53 is a thin margin; 500 is available where the
+     maroon is the subject rather than the annotation.
+
+     500 is #99534F rather than the #9B5450 sampled from the photograph. The
+     two are indistinguishable side by side; the difference is that one clears
+     4.5:1 on the warm corner of the page and the other lands at 4.44. */
+  --color-clay-50:  #FAF4F3;
+  --color-clay-100: #F2E4E2;
+  --color-clay-200: #E4C9C6;
+  --color-clay-300: #CCA19D;
+  --color-clay-400: #B47973;
+  --color-clay-500: #99534F;  /* the maroon                                 */
+  --color-clay-600: #8D4845;  /* the default when the maroon carries text   */
+  --color-clay-700: #793E39;
+  --color-clay-800: #5C2F2B;
+  --color-clay-900: #3E201D;
 
   /* --- Status ------------------------------------------------------------
      Desaturated. Status colour in a dense interface is read as a signal in
-     peripheral vision, and a saturated palette makes every row shout. Each
-     500 clears 4.5:1 under white — except warn, where no amber does, so warn
-     fills take ink-900 text instead. */
+     peripheral vision, and a saturated palette makes every row shout.
+
+     The bar these are measured against has moved. It used to be "clears 4.5:1
+     under white"; the page is now the atmospheric field, and the relevant
+     surface is its darkest pixel — the warm corner, L 0.789. `good` and `warn`
+     both cleared white and both missed that, at 4.26 and 3.94, so they are
+     darkened by roughly one notch of luminance each. `bad` and `info` already
+     cleared it and are untouched.
+
+     The note about warn still holds and is worth keeping: text ON a warn fill
+     takes ink-900, because no amber light enough to read as amber will carry
+     white type. */
   --color-good-50:  #EDF7F0;
   --color-good-100: #D6ECDD;
   --color-good-300: #8CC49F;
-  --color-good-500: #227A45;
-  --color-good-700: #1A6136;
+  --color-good-500: #207542;  /* 4.53:1 on the warm corner, 5.68:1 on white */
+  --color-good-700: #175833;
   --color-good-900: #103D22;
 
   --color-warn-50:  #FDF6E7;
   --color-warn-100: #F9EAC4;
   --color-warn-300: #EBC96E;
-  --color-warn-500: #9A6B10;
-  --color-warn-700: #7A540B;
+  --color-warn-500: #895F0D;  /* 4.53:1 on the warm corner, 5.68:1 on white */
+  --color-warn-700: #6B4A0A;
   --color-warn-900: #4B3306;
 
   --color-bad-50:  #FCF0EF;
@@ -292,6 +366,43 @@
   --color-brand-soft:  var(--color-moss-50);
   --color-accent:      var(--color-moss-500);
   --color-accent-soft: var(--color-moss-50);
+
+  /* Retrospective surfaces — anything describing what the user has already
+     done rather than what they might do next. */
+  --color-surface-warm: var(--color-clay-50);
+  --color-line-warm:    var(--color-clay-200);
+}
+
+/* ============================================================================
+   ATMOSPHERE
+   ----------------------------------------------------------------------------
+   The field, and the one knob that controls it.
+
+   `--atmos-strength` is a plain multiplier on the whole effect: 1 is as
+   authored, 0 removes every trace of it and returns the app to flat graphite
+   without touching a single component. Set it on `:root` to retune, or scope
+   it to a subtree — a print stylesheet, a dense report view, an embedded
+   widget — to make the field recede exactly where density matters more than
+   atmosphere.
+
+   `--atmos-card` is the second knob: how far a panel lets the field show
+   through it. At 1 a panel is opaque white and the effect stops at the page.
+   The authored 0.86 is deliberately close to opaque; a panel is a reading
+   surface first.
+   ========================================================================= */
+:root {
+  --atmos-strength: 1;
+  --atmos-card: 0.86;
+
+  /* The generated field. Sky and maroon blended, lifted almost to paper, with
+     grain baked in at source so it never scales with the viewport or the
+     device pixel ratio. */
+  --atmos-image: url("../assets/bg/atmosphere.jpg");
+  --atmos-image-dark: url("../assets/bg/atmosphere-dark.jpg");
+}
+
+@media print {
+  :root { --atmos-strength: 0; --atmos-card: 1; }
 }
 
 /* ============================================================================
@@ -311,6 +422,68 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overscroll-behavior-y: none;
+  }
+
+  /* --- The field ----------------------------------------------------------
+     A fixed layer behind the entire application. Three things are true of it
+     and all three are deliberate:
+
+     FIXED, not scrolled. The field is the room the app is in, not a sheet the
+     app is printed on. Parallaxing it against the content would draw the eye
+     to it, which is the opposite of the intent.
+
+     A separate layer, not `body { background-image }`. Painting it on the
+     body would put it in the same compositing pass as the scrolling content
+     and repaint the gradient on every frame. As its own fixed, non-scrolling
+     element with `will-change` left off, it is rasterised once and never
+     touched again.
+
+     Behind everything, and it never takes a click. `z-index: -1` with
+     `isolation: isolate` off means it sits under the app shell without
+     needing every subsequent surface to opt into a stacking context.
+
+     The image already contains the sky, the maroon and the grain. The two
+     gradients on top of it are not duplicating it — they re-establish the
+     horizon lift and the warm pool at viewport proportions the fixed image
+     cannot know about, so an ultrawide monitor and a phone both get the blue
+     at the top and the warmth low-right rather than a cropped slice.
+
+     THE ALPHAS BELOW ARE A CONTRAST BUDGET, NOT A TASTE SETTING. Body copy at
+     `ink-500` sits directly on this field — that is what "content sits on the
+     page" means in this system — so the darkest pixel of the composite has to
+     keep `ink-500` above 4.5:1. The image is generated against a measured
+     luminance floor of 0.87 (see `assets/bg/generate-atmosphere.py`); the two
+     gradients spend the remaining headroom down to 0.789, which leaves
+     `ink-500` at 4.65:1 in the warm corner and `moss-500` at 4.9:1. Raising
+     either peak much past 0.12 / 0.09 spends more than there is, and puts
+     secondary text under the threshold exactly where the maroon is strongest. */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-color: var(--color-ink-50);
+    background-image:
+      /* the warm pool: what has already been built */
+      radial-gradient(
+        120% 90% at 92% 108%,
+        rgb(155 84 80 / calc(0.070 * var(--atmos-strength))) 0%,
+        rgb(155 84 80 / calc(0.027 * var(--atmos-strength))) 38%,
+        rgb(155 84 80 / 0) 68%
+      ),
+      /* the horizon lift: what is still open */
+      linear-gradient(
+        to bottom,
+        rgb(60 151 200 / calc(0.100 * var(--atmos-strength))) 0%,
+        rgb(60 151 200 / calc(0.036 * var(--atmos-strength))) 32%,
+        rgb(60 151 200 / 0) 62%
+      ),
+      var(--atmos-image);
+    background-size: auto, auto, cover;
+    background-position: center, center, center;
+    background-repeat: no-repeat;
+    opacity: var(--atmos-strength);
   }
 
   /* Headings are the same face as body copy. What separates them is weight
@@ -349,9 +522,16 @@
     color: var(--color-ink-900);
   }
 
-  /* The paper grain overlay that used to sit over the entire document is
-     gone. It was the single largest contributor to the handmade read, and a
-     texture over a data table is noise in the literal sense. */
+  /* On grain, since the previous revision of this file removed it and this one
+     brings a form of it back: the objection then was correct and still holds.
+     A texture laid *over* the document — over the table, over the type — is
+     noise in the literal sense, and that is what was deleted.
+
+     What is here now is the inverse. The grain lives in the field, behind
+     everything, at roughly 3% amplitude and baked into the image at source. It
+     never crosses a panel edge, never sits between the reader and a number,
+     and never resamples. Its only job is to stop a 1920px gradient from
+     banding on an 8-bit display — which is a rendering fix, not a finish. */
 }
 
 @layer components {
@@ -371,10 +551,85 @@
 
   .mask-organic { border-radius: var(--radius-md); }
 
-  /* The ambient blurred colour wash is neutralised. Blurred colour fields
-     behind content are decoration, and this system does not decorate. Kept as
-     a no-op so the `<Wash />` component and its call sites stay valid. */
+  /* The per-view blurred colour wash stays neutralised. There is now exactly
+     one atmospheric layer in the app and it is on the body — letting
+     individual views paint their own would give the product as many moods as
+     it has screens. Kept as a no-op so `<Wash />` and its call sites stay
+     valid. */
   .wash { display: none; }
+
+  /* ==========================================================================
+     SURFACES
+     --------------------------------------------------------------------------
+     A panel in this system is a reading surface sitting in a lit room. It is
+     not opaque and it is not transparent: it is white held at
+     `--atmos-card` (0.86), which lets the field register as a tint at the
+     panel's edges without ever competing with what is printed on it.
+
+     No `backdrop-filter`. It would be the obvious reach and it is the wrong
+     one — there is nothing behind a panel that needs blurring, because the
+     field is already a smooth gradient. Translucency alone produces the whole
+     effect at zero compositing cost, which matters when a dashboard puts sixty
+     of these on screen at once.
+
+     The consequence worth knowing: two panels overlapping would double their
+     tint. They never do in this app — panels tile, they do not stack — but a
+     panel placed inside a panel should take `.surface-flat`.
+     ======================================================================= */
+  .surface-card {
+    background-color: rgb(255 255 255 / var(--atmos-card));
+  }
+
+  /* Sunken/secondary regions. Slightly more of the field, never less. */
+  .surface-card--muted {
+    background-color: color-mix(
+      in srgb,
+      var(--color-ink-100) 72%,
+      transparent
+    );
+  }
+
+  /* RETROSPECTIVE. The maroon tint, for surfaces describing what the user has
+     already done: completed roadmap steps, logged experience, credentials
+     held, history. Never for a recommendation or a next action — those are
+     the accent's territory, and the two must not be confused at a glance. */
+  .surface-card--warm {
+    background-color: color-mix(
+      in srgb,
+      var(--color-clay-50) calc(88% * var(--atmos-strength) + 12%),
+      rgb(255 255 255 / var(--atmos-card))
+    );
+  }
+
+  /* PROSPECTIVE. The sky tint's one appearance inside a component — for the
+     surface that holds the recommendation itself. Used sparingly enough that
+     it still means something when it appears. */
+  .surface-card--cool {
+    background-color: color-mix(
+      in srgb,
+      var(--color-sky-50) calc(88% * var(--atmos-strength) + 12%),
+      rgb(255 255 255 / var(--atmos-card))
+    );
+  }
+
+  /* Opt out. For a panel nested in a panel, or anywhere the doubled tint
+     would show. */
+  .surface-flat { background-color: var(--color-ink-0); }
+
+  /* --- Hero / inverse regions --------------------------------------------
+     The dark sibling of the field, for the one or two places a view goes
+     inverse — a summary banner, an onboarding step, a completed-state header.
+     Same photograph, same grain, same warm pool low-right; it simply reads at
+     night. Content on it takes `--color-content-invert`. */
+  .atmos-hero {
+    position: relative;
+    background-color: var(--color-ink-900);
+    background-image: var(--atmos-image-dark);
+    background-size: cover;
+    background-position: center;
+    color: var(--color-content-invert);
+  }
+  .atmos-hero :where(h1, h2, h3, h4) { color: var(--color-content-invert); }
 
   /* ==========================================================================
      SURFACES AND STRUCTURE

@@ -68,17 +68,26 @@ export const ICON_STROKE = 1.75;
 export const CHART = {
   /** Primary data series — the accent. */
   moss: "#2563A8",
-  /** Secondary / comparison series — bronze. */
-  clay: "#A5762F",
+  /**
+   * Secondary / comparison series — the maroon. Repointed from bronze, which
+   * shared a warm-neutral cast with the accent and lost against it at
+   * stroke width. The maroon differs in both hue and lightness, so the two
+   * series separate under a colour-vision deficiency and in greyscale print.
+   */
+  clay: "#99534F",
   /** Third series, when two are not enough. */
   stone: "#3A6285",
   /** Axis labels and legend text — ink-500, so it clears 4.5:1 on the page. */
-  axis: "#5F6772",
+  axis: "#5D6672",
   /** Gridlines — the hairline, deliberately faint. */
-  grid: "#E1E4E8",
+  grid: "#DCE3EA",
   /** Unfilled track behind a gauge or bar. */
-  track: "#EFF1F3",
-  /** Tooltip and chart surface. */
+  track: "#E8EEF4",
+  /**
+   * Tooltip and chart surface. Stays fully opaque: a tooltip floats over the
+   * data it describes, and the atmospheric surface treatment applies only to
+   * things sitting in the document flow.
+   */
   surface: "#FFFFFF",
 } as const;
 
@@ -247,6 +256,23 @@ export interface PanelProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "
   accent?: "moss" | "clay" | "good" | "warn" | "bad" | "info";
   /** Sunken fill instead of white, for secondary/inset regions. */
   muted?: boolean;
+  /**
+   * Atmospheric tint. This is a semantic choice, not a colour one:
+   *
+   *   "warm"  — RETROSPECTIVE. The panel describes something the user has
+   *             already done: experience logged, a step completed, a
+   *             credential held, history.
+   *   "cool"  — PROSPECTIVE. The panel holds a recommendation, a projected
+   *             path, a suggested next action.
+   *   "flat"  — opts out of the translucent surface entirely. Use when a
+   *             panel is nested inside another panel, where two translucent
+   *             layers would double their tint.
+   *
+   * Left undefined, a panel is the neutral reading surface. Most are, and
+   * should stay that way — the tints only read as meaningful while they are
+   * rare.
+   */
+  tone?: "warm" | "cool" | "flat";
   /** Panel header strip: title on a sunken band with a rule under it. */
   title?: React.ReactNode;
   actions?: React.ReactNode;
@@ -266,11 +292,23 @@ const ACCENT_EDGE: Record<NonNullable<PanelProps["accent"]>, string> = {
   info: "before:bg-info-500",
 };
 
+// Fill and border travel together. The border is set here as a utility rather
+// than inside the `.surface-card--*` rules because a component-layer
+// `border-color` loses to the `border-ink-200` utility below it in the
+// cascade, and winning that fight with specificity would be a worse trade than
+// simply not emitting the neutral border in the first place.
+const PANEL_TONE: Record<NonNullable<PanelProps["tone"]>, string> = {
+  warm: "surface-card--warm border-clay-200",
+  cool: "surface-card--cool border-moss-100",
+  flat: "surface-flat border-ink-200",
+};
+
 export function Panel({
   interactive,
   flush,
   accent,
   muted,
+  tone,
   title,
   actions,
   as: Tag = "div",
@@ -288,8 +326,14 @@ export function Panel({
   return (
     <Tag
       className={cx(
-        "relative rounded-lg border border-ink-200",
-        muted ? "bg-ink-50" : "bg-white",
+        "relative rounded-lg border",
+        !tone && "border-ink-200",
+        // Surfaces come from the atmosphere layer in index.css rather than
+        // from a literal `bg-white`, so that a panel sits *in* the field
+        // instead of on top of it. `surface-card` is white held at
+        // `--atmos-card`; setting that token to 1 returns every panel in the
+        // app to opaque white without touching a component.
+        tone ? PANEL_TONE[tone] : muted ? "surface-card--muted" : "surface-card",
         // Padding stays on the element itself (rather than on an inner
         // wrapper) so that the many call sites passing their own layout
         // classes — `flex`, `grid`, `space-y-*` — still apply to the children

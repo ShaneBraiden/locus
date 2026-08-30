@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import ChatContainer from "./components/fab/ChatContainer";
 
 import BestFitPathsView from "./components/fab/BestFitPathsView";
@@ -8,7 +8,7 @@ import RoadmapView from "./components/fab/RoadmapView";
 import DashboardHomeView from "./components/fab/DashboardHomeView";
 import ExperimentsView from "./components/fab/ExperimentsView";
 import JourneyView from "./components/fab/JourneyView";
-import { ChatSession, Message, Phase, ProfileSignals, PracticalConstraints, CareerPath, CareerConfidence, AssessmentState, ChatProgress, PsychReadout, UserMemory } from "./types";
+import { ChatSession, Message, Phase, ProfileSignals, PracticalConstraints, CareerPath, CareerConfidence, AssessmentState, ChatProgress, PsychReadout, UserMemory, CategoryId, GatedFeature, InterviewSchedule } from "./types";
 import { motion, AnimatePresence } from "motion/react";
 import { DailyReality, CognitiveLoad, PilotExperience } from "./lib/pilotOrchestrator";
 import {
@@ -61,6 +61,27 @@ import {
 } from "./lib/voice";
 import { experienceLibrary } from "./data/experienceLibrary";
 import { updateConfidence, EXPERIMENT_COMPLETED_MATCH } from "./lib/confidenceEngine";
+import OnboardingFlow, { OnboardingSubmission } from "./components/interview/OnboardingFlow";
+import FeatureGate from "./components/interview/FeatureGate";
+import InterviewProgress from "./components/interview/InterviewProgress";
+import { RunnerAnswer } from "./components/interview/QuestionRunner";
+import {
+  clearDeferrals,
+  computeCategoryStatus,
+  deferCategory,
+  undeferCategory,
+  featureCategory,
+  featureForTab,
+  fetchSchedule,
+  needsOnboarding,
+  onboardingCategory,
+  readDeferrals,
+  resetScheduleCache,
+  seedAssessment,
+  shouldGate,
+  submitBatch,
+  type BatchResult,
+} from "./lib/interview";
 
 
 // Initial Empty Signals & Constraints
@@ -150,6 +171,24 @@ function openingGreeting(memory: UserMemory | null): string {
   return `Heyy ${memory.name}, good to see you back.${degree}${top}\n\nPick up wherever you like. Type it or just talk to me.`;
 }
 
+/**
+ * FAB's opening line for a student who has just finished onboarding.
+ *
+ * Without this the greeting created at boot is the first-time one, which asks
+ * for the name onboarding has already collected. The server would not have
+ * re-asked — the assessment carries the name — but FAB's first message on
+ * screen would still have said "what do I call you?" to somebody who typed it
+ * thirty seconds earlier.
+ */
+function greetingAfterOnboarding(name: string, degreeName: string, year: string): string {
+  const context = [degreeName, year].filter(Boolean).join(", ");
+  return `Right, ${name}${context ? ` — ${context}` : ""}. I have got the basics.
+
+Now the part that actually decides things. No right answers, no timer, and you can stop whenever.
+
+Ready when you are.`;
+}
+
 function Workspace({ user }: { user: AuthUser }) {
   const { token, isGuest, logout } = useAuth();
 
@@ -219,6 +258,33 @@ function Workspace({ user }: { user: AuthUser }) {
   const [assessment, setAssessment] = useState<AssessmentState | null>(null);
   const [progress, setProgress] = useState<ChatProgress | null>(null);
   const [psychometrics, setPsychometrics] = useState<PsychReadout | null>(null);
+
+  // ---- The six-category interview schedule (see lib/interview.ts) ---------
+  //
+  // The 28-item bank is not one form any more. The personal category is asked
+  // at first login, two are asked at the door of the features they feed, and
+  // the remaining three are drawn out by FAB in conversation. Only that last
+  // group goes through Gemini; the tapped ones are scored straight from the
+  // committed tables, which is what keeps the first screen instant.
+  const [schedule, setSchedule] = useState<InterviewSchedule | null>(null);
+  const [interviewError, setInterviewError] = useState<string | null>(null);
+  const [deferrals, setDeferrals] = useState<CategoryId[]>(() => readDeferrals());
+  /** The feature whose question sheet is open, if any. */
+  const [gatedFeature, setGatedFeature] = useState<GatedFeature | null>(null);
+
+  // Derived rather than stored. Category completion is a pure function of the
+  // schedule and the answers, and keeping a second copy in state is how the
+  // modal and the answers eventually end up disagreeing.
+  const categories = useMemo(
+    () => computeCategoryStatus(schedule, assessment),
+    [schedule, assessment],
+  );
+
+  /** The year of study as the student would say it, not as an id. */
+  const studentYear = useMemo(
+    () => schedule?.years.find((y) => y.id === assessment?.year)?.label ?? "",
+    [schedule, assessment?.year],
+  );
 
   // Evidence list completed in the Experiments Workspace
   const [evidenceList, setEvidenceList] = useState<any[]>([]);
@@ -291,6 +357,8 @@ function Workspace({ user }: { user: AuthUser }) {
     }
     if (Array.isArray(state.careerConfidences)) setCareerConfidences(state.careerConfidences);
     if (Array.isArray(state.evidenceList)) setEvidenceList(state.evidenceList);
+    if (typeof state.xp === "number") setXp(state.xp);
+    if (typeof state.streak === "number") setStreak(state.streak);
 
     const sessions = state.chatSessions;
     if (!Array.isArray(sessions) || sessions.length === 0) return false;
@@ -363,6 +431,8 @@ function Workspace({ user }: { user: AuthUser }) {
       completedExperienceIds,
       careerConfidences,
       evidenceList,
+      xp,
+      streak,
     });
   }, [
     isHydrating,
@@ -378,6 +448,8 @@ function Workspace({ user }: { user: AuthUser }) {
     completedExperienceIds,
     careerConfidences,
     evidenceList,
+    xp,
+    streak,
   ]);
 
   // Long-term memory, loaded once per session. It arrives after boot, so a
@@ -392,14 +464,36 @@ function Workspace({ user }: { user: AuthUser }) {
     return () => { cancelled = true; };
   }, [token, isGuest]);
 
+  // An untouched first-time greeting is upgraded in place the moment we know
+  // who we are talking to — whether that came from long-term memory (a
+  // returning student) or from onboarding a minute ago. Both cases would
+  // otherwise leave FAB asking on screen for a name it already has.
   useEffect(() => {
-    if (!memory?.name) return;
+    const knownName = memory?.name || assessment?.name;
+    if (!knownName) return;
     setMessages((prev) => {
-      const untouched = prev.length === 1 && prev[0].sender === "fab" && prev[0].text === FIRST_TIME_GREETING;
+      const untouched =
+        prev.length === 1 && prev[0].sender === "fab" && prev[0].text === FIRST_TIME_GREETING;
       if (!untouched) return prev;
-      return [{ ...prev[0], text: openingGreeting(memory) }];
+      const text = memory?.name
+        ? openingGreeting(memory)
+        : greetingAfterOnboarding(knownName, studentDegree, studentYear);
+      return [{ ...prev[0], text }];
     });
-  }, [memory]);
+  }, [memory, assessment?.name, studentDegree, studentYear]);
+
+  // The interview schedule: six categories, their questions, the 26 degrees and
+  // the year options, in one request. Static reference data, so it is fetched
+  // once and cached for the tab session. Until it lands nothing is gated and
+  // no onboarding screen is shown — flashing one at a returning student is a
+  // worse failure than a moment of nothing.
+  useEffect(() => {
+    let cancelled = false;
+    fetchSchedule(token).then((loaded) => {
+      if (!cancelled && loaded) setSchedule(loaded);
+    });
+    return () => { cancelled = true; };
+  }, [token]);
 
   // Is voice available at all? Only the server knows, because only the server
   // has the Sarvam key. Until it answers, the chat is exactly as it was.
@@ -416,7 +510,11 @@ function Workspace({ user }: { user: AuthUser }) {
 
   // Don't lose the last couple of seconds of work when the tab goes away.
   useEffect(() => {
-    const handleBeforeUnload = () => flushStateSync();
+    // `beacon: true` on the way out. A fetch started during beforeunload is
+    // routinely cancelled as the document tears down, which is what used to
+    // lose the last couple of seconds of work. The unmount path keeps the
+    // ordinary request, because there the page is not going anywhere.
+    const handleBeforeUnload = () => flushStateSync(true);
     window.addEventListener("beforeunload", handleBeforeUnload);
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
@@ -425,10 +523,18 @@ function Workspace({ user }: { user: AuthUser }) {
   }, []);
 
   // Keep the degree in step with what the student actually told FAB.
+  //
+  // FALLBACK ONLY, and the guard is the point. `deriveStudentDegree` scrapes
+  // the transcript, so it yields whatever the student typed — "nursing" —
+  // while the server yields what that resolved to — "B.Sc. Nursing". This
+  // effect runs on every message change, so without the emptiness check it
+  // fired straight after each turn and overwrote the resolved name with the
+  // raw one. It now only fills a gap; it never corrects the server.
   useEffect(() => {
+    if (studentDegree) return;
     const derived = deriveStudentDegree(messages);
-    if (derived && derived !== studentDegree) setStudentDegree(derived);
-  }, [messages]);
+    if (derived) setStudentDegree(derived);
+  }, [messages, studentDegree]);
 
   // Completing an experiment nudges confidence in its career pathway.
   useEffect(() => {
@@ -502,6 +608,19 @@ function Workspace({ user }: { user: AuthUser }) {
     writeLocal(STORAGE_KEYS.evidenceList, evidenceList);
   }, [evidenceList, isHydrating]);
 
+  // XP and the streak were held in state and written nowhere, so every reload
+  // reset the lab's counters to zero while the completed experiments they were
+  // counting survived.
+  useEffect(() => {
+    if (isHydrating) return;
+    writeLocal(STORAGE_KEYS.xp, xp);
+  }, [xp, isHydrating]);
+
+  useEffect(() => {
+    if (isHydrating) return;
+    writeLocal(STORAGE_KEYS.streak, streak);
+  }, [streak, isHydrating]);
+
   // --- Session helpers -------------------------------------------------------
 
   // Save current session to cache on updates
@@ -573,6 +692,14 @@ function Workspace({ user }: { user: AuthUser }) {
     // the state effects above, so there is nothing to persist by hand here.
   };
 
+  // The schedule and the live assessment are read through refs because this is
+  // called from boot — before the render that first receives either — and from
+  // the New Conversation button, where the closure would otherwise be stale.
+  const scheduleRef = useRef<InterviewSchedule | null>(null);
+  useEffect(() => { scheduleRef.current = schedule; }, [schedule]);
+  const assessmentRef = useRef<AssessmentState | null>(null);
+  useEffect(() => { assessmentRef.current = assessment; }, [assessment]);
+
   const createNewChatSession = () => {
     const sessionId = "session_" + Date.now();
     setActiveSessionId(sessionId);
@@ -584,13 +711,21 @@ function Workspace({ user }: { user: AuthUser }) {
         timestamp: new Date().toISOString()
       }
     ];
+
+    // A new conversation restarts the conversation, not the student. Name,
+    // degree, year and everything they answered by tapping are account-level
+    // facts and carry over; the chat categories and the reflection state are
+    // what reset. Without this, "New Conversation" would put the onboarding
+    // screen back in front of someone who only wanted a fresh chat.
+    const seeded = seedAssessment(assessmentRef.current, scheduleRef.current);
+
     setPhase("phase1");
     setMessages(freshMessages);
     setSelectedPath(null);
     setCompareList([]);
     setReflectionText(null);
     setReflectionApproved(false);
-    setAssessment(null);
+    setAssessment(seeded);
     setProgress(null);
     setPsychometrics(null);
 
@@ -600,7 +735,7 @@ function Workspace({ user }: { user: AuthUser }) {
       createdAt: new Date().toISOString(),
       messages: freshMessages,
       phase: "phase1",
-      assessment: null,
+      assessment: seeded,
       progress: null,
       psychometrics: null
     };
@@ -620,6 +755,13 @@ function Workspace({ user }: { user: AuthUser }) {
     memoryRef.current = null;
     void clearUserMemory(token);
 
+    // Start fresh is the real reset: the deferred gates come back too, so the
+    // next run through the app is genuinely a first run.
+    setDeferrals([]);
+    clearDeferrals();
+    setGatedFeature(null);
+    setInterviewError(null);
+
     setCompletedExperienceIds([]);
     prevCompletedRef.current = [];
     setActivePilotExperience(null);
@@ -627,6 +769,8 @@ function Workspace({ user }: { user: AuthUser }) {
     setCognitiveBudget("Light");
     setCareerConfidences([]);
     setStudentDegree("");
+    setXp(0);
+    setStreak(0);
 
     setPhase("phase1");
     setSignals(initialSignals);
@@ -649,9 +793,97 @@ function Workspace({ user }: { user: AuthUser }) {
 
   const handleSignOut = () => {
     cancelStateSync();
+    resetScheduleCache();
     setErrorMessage(null);
     // logout() clears the token, the guest flag and every northr_* app key.
     logout();
+  };
+
+  // ---------------------------------------------------------------------------
+  // The tapped surfaces: onboarding and the two feature gates
+  //
+  // Both post to /api/interview/answers, which never calls Gemini — the student
+  // picked an option id and an option id is what the scorer wants. The result
+  // is folded in exactly the way a chat turn is, because it IS the same flow
+  // state: four items tapped at onboarding and four drawn out in conversation
+  // are worth precisely the same thing.
+  // ---------------------------------------------------------------------------
+
+  /** Folds a batch result into app state. Shares every rule with applyTurn. */
+  const applyBatch = (data: BatchResult) => {
+    const nextSignals = data.updatedSignals ? mergeSignals(data.updatedSignals) : signals;
+    const nextConstraints = data.updatedConstraints
+      ? mergeConstraints(data.updatedConstraints)
+      : constraints;
+    const nextPaths = data.bestFitPaths?.length ? data.bestFitPaths : bestFitPaths;
+
+    setAssessment(data.assessment);
+    if (data.progress) setProgress(data.progress);
+    if (data.updatedSignals) setSignals(nextSignals);
+    if (data.updatedConstraints) setConstraints(nextConstraints);
+    if (data.bestFitPaths?.length) setBestFitPaths(data.bestFitPaths);
+    if (data.psychometrics) setPsychometrics(data.psychometrics);
+    if (data.degreeName) setStudentDegree(data.degreeName);
+    if (data.memory) setMemory(data.memory);
+
+    saveSession({
+      assessment: data.assessment,
+      progress: data.progress ?? progress,
+      psychometrics: data.psychometrics ?? psychometrics,
+      signals: nextSignals,
+      constraints: nextConstraints,
+      bestFitPaths: nextPaths,
+    });
+  };
+
+  const handleOnboardingSubmit = async (submission: OnboardingSubmission) => {
+    setInterviewError(null);
+    try {
+      applyBatch(
+        await submitBatch(token, assessment, {
+          categoryId: "basics",
+          name: submission.name,
+          degreeId: submission.degreeId,
+          year: submission.year,
+          answers: submission.answers,
+        }),
+      );
+    } catch (err: any) {
+      console.error("Onboarding submission failed:", err);
+      setInterviewError(
+        err?.message || "Could not save that just now. Check your connection and try again.",
+      );
+      // Rethrown so the flow keeps the student on the last step with their
+      // answers intact rather than dropping them into a half-set-up app.
+      throw err;
+    }
+  };
+
+  const handleGateSubmit = async (feature: GatedFeature, answers: RunnerAnswer[]) => {
+    const category = featureCategory(schedule, feature);
+    setInterviewError(null);
+    try {
+      applyBatch(
+        await submitBatch(token, assessment, { categoryId: category?.id, answers }),
+      );
+      setGatedFeature(null);
+    } catch (err: any) {
+      console.error("Feature gate submission failed:", err);
+      setInterviewError(err?.message || "Could not save those answers. Try again in a moment.");
+      throw err;
+    }
+  };
+
+  /**
+   * "Later". The category goes back into FAB's queue and the dismissal is
+   * remembered on this device so the sheet does not reappear on every click.
+   * Nothing is lost: the conversation asks whatever the modals did not.
+   */
+  const handleGateDefer = (feature: GatedFeature) => {
+    const category = featureCategory(schedule, feature);
+    if (category) setDeferrals(deferCategory(category.id));
+    setInterviewError(null);
+    setGatedFeature(null);
   };
 
   const [isPilotSyncing, setIsPilotSyncing] = useState(false);
@@ -983,38 +1215,72 @@ function Workspace({ user }: { user: AuthUser }) {
     { id: "journey",     label: "Journey",     short: "Journey", icon: BookOpen },
   ] as const;
 
+  /**
+   * Navigate, raising a feature's question sheet on the way in when that
+   * feature still owes us its category.
+   *
+   * The tab changes either way. The sheet is a prompt at the door, not a lock
+   * on it — the student can dismiss it and land on the feature exactly as they
+   * would have, and FAB picks the questions up in conversation instead.
+   */
   const go = (tab: (typeof NAV_ITEMS)[number]["id"]) => {
     setActiveTab(tab as any);
     setPathsSubTab("list");
     setIsMobileMenuOpen(false);
+
+    const feature = featureForTab(tab);
+    if (feature && shouldGate(feature, assessment, categories, deferrals)) {
+      setInterviewError(null);
+      setGatedFeature(feature);
+    }
   };
 
-  /** A sidebar navigation row. The active item is marked by a 2px accent rule
-   *  on its leading edge plus a tinted fill — the standard for a vertical rail,
-   *  and readable at a glance in a way a filled pill in a horizontal strip is
-   *  not once there are five of them. Used by both the desktop rail and the
-   *  mobile drawer so the two can never drift apart. */
+  /** A navigation item, in either orientation.
+   *
+   *  `bar` is the primary one now: a horizontal pill inside the floating nav.
+   *  The active item takes a solid accent fill rather than the tint-plus-rule
+   *  the vertical rail used. That inverts the earlier reasoning deliberately —
+   *  a leading rule works in a rail because every item shares a left edge for
+   *  the rule to sit on, and in a horizontal strip there is no such shared
+   *  edge, so the mark has to be the fill itself.
+   *
+   *  `rail` survives for the mobile drawer only. */
   const NavItem = ({
     id,
     label,
     icon: Icon,
+    orientation = "rail",
   }: {
     id: (typeof NAV_ITEMS)[number]["id"];
     label: string;
     icon: React.ComponentType<{ className?: string }>;
+    orientation?: "bar" | "rail";
   }) => {
     const active = activeTab === id;
+    const bar = orientation === "bar";
     return (
       <button
         key={id}
         id={`nav-${id}`}
         onClick={() => go(id)}
         aria-current={active ? "page" : undefined}
-        className={`relative flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-sm font-semibold transition-colors duration-150 ${
-          active
-            ? "bg-moss-50 text-moss-700 before:absolute before:inset-y-1 before:left-0 before:w-[2px] before:rounded-r before:bg-moss-500 before:content-['']"
-            : "text-ink-600 hover:bg-ink-100 hover:text-ink-900"
-        }`}
+        className={
+          bar
+            ? `relative flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-semibold transition-colors duration-150 ${
+                active
+                  ? "bg-moss-500 text-white shadow-e1"
+                  : "text-ink-600 hover:bg-white/70 hover:text-ink-900"
+              }`
+            : // The rail item keeps its left marker, but as an inset capsule
+              // rather than a bar flush to the edge — a full-height bar cannot
+              // sit against a 20px corner without either clipping into the
+              // curve or poking out of it.
+              `relative flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-semibold transition-colors duration-150 ${
+                active
+                  ? "bg-moss-50 text-moss-700 before:absolute before:inset-y-2 before:left-1 before:w-[3px] before:rounded-full before:bg-moss-500 before:content-['']"
+                  : "text-ink-600 hover:bg-ink-100 hover:text-ink-900"
+              }`
+        }
       >
         <Icon className="h-4 w-4 shrink-0" />
         <span className="truncate">{label}</span>
@@ -1028,179 +1294,141 @@ function Workspace({ user }: { user: AuthUser }) {
       ? { Icon: Loader2, text: "Syncing…", tone: "text-ink-500" }
       : { Icon: Cloud, text: "Synced", tone: "text-good-700" };
 
-  /** The top bar renders the current location rather than repeating the nav.
-   *  Paths is the only tab with depth, so it is the only one that produces a
-   *  second crumb. */
-  const activeNav = NAV_ITEMS.find((item) => item.id === activeTab);
-  const pageTitle = activeNav?.label ?? "";
-  const crumb =
-    activeTab === "paths" && pathsSubTab !== "list"
-      ? pathsSubTab === "detail"
-        ? selectedPath?.fieldName ?? "Details"
-        : pathsSubTab === "universities"
-          ? "Universities"
-          : "90-Day Plan"
-      : null;
+  /* The breadcrumb the old top bar rendered is gone with it. It was doing two
+     jobs and both are now covered elsewhere: the top-level location is the
+     highlighted pill in the nav, and the one place with any depth — Paths —
+     already carries a back button and a tab strip that name the leaf. A
+     breadcrumb that restates the nav is a breadcrumb that costs a row of
+     vertical space to tell you what you can already see. */
 
-  /** The nav list, shared by the desktop rail and the mobile drawer. */
+  /** The vertical nav list. The mobile drawer only; the desktop nav renders
+   *  its items inline in the floating bar. */
   const navList = (
     <nav aria-label="Primary" className="flex flex-col gap-0.5 p-2">
       {NAV_ITEMS.map((item) => (
-        <NavItem key={item.id} {...item} />
+        <NavItem key={item.id} {...item} orientation="rail" />
       ))}
     </nav>
   );
 
+  // ---------------------------------------------------------------------------
+  // FIRST LOGIN
+  //
+  // The personal category, full screen, before the app proper. Only shown once
+  // the schedule has loaded and only when the assessment says it is genuinely
+  // owed — `needsOnboarding` returns false while `categories` is still null, so
+  // a returning student never sees this flash on their way in.
+  //
+  // The early return sits below every hook in this component, so the hook order
+  // is identical on both branches.
+  // ---------------------------------------------------------------------------
+  const onboarding = onboardingCategory(schedule);
+  if (!isHydrating && onboarding && needsOnboarding(assessment, categories)) {
+    return (
+      <OnboardingFlow
+        category={onboarding}
+        degrees={schedule?.degrees ?? []}
+        years={schedule?.years ?? []}
+        suggestedName={memory?.name || user.name}
+        onSubmit={handleOnboardingSubmit}
+        error={interviewError}
+      />
+    );
+  }
+
+  const gateCategory = gatedFeature ? featureCategory(schedule, gatedFeature) : undefined;
+
+  /** Reopens a gate the student skipped, from the dashboard panel. */
+  const reopenGate = (feature: GatedFeature) => {
+    const category = featureCategory(schedule, feature);
+    // The dismissal has to be lifted, not just the sheet reopened: leaving it
+    // in place would mean the next navigation to that tab skipped the gate
+    // again, immediately after the student asked for it.
+    if (category) setDeferrals(undeferCategory(category.id));
+    setInterviewError(null);
+    setGatedFeature(feature);
+  };
+
   return (
-    // The shell is a two-column frame: a fixed rail on the left, and a column
-    // on the right holding the top bar and the scrolling content region. Both
-    // columns own their own overflow, so the rail never scrolls with the view
-    // and the view never has to reserve space for floating chrome.
-    // The shell is deliberately transparent. The atmospheric field is painted
-    // once on `body::before` as a fixed layer; giving the shell its own
-    // opaque fill here would cover it, and giving each region a copy of it
-    // would repaint the gradient on every scroll frame.
-    <div className="flex h-[100dvh] overflow-hidden bg-transparent font-sans text-ink-900">
+    /* THE SHELL IS TWO OBJECTS IN A SKY.
+     *
+     * A capsule of nav floating at the top, and one large rounded canvas under
+     * it holding the entire application. Between them and the browser frame
+     * there is a gutter of photograph — the `canvas-inset` padding on this
+     * element — and that gutter is the whole reason the layout was rearranged.
+     *
+     * The previous shell ran content to the edge of the viewport, which meant
+     * the field was whatever showed between the panels, which in turn meant the
+     * field had to be lifted almost to white so body copy could be read against
+     * it. Pull everything in by 14px and give it its own near-opaque pane and
+     * the relationship inverts: the photograph becomes the room the app is in
+     * rather than the paper it is printed on, and it can be sky-coloured
+     * because nothing is being read against it any more.
+     *
+     * The shell itself stays transparent. The field is painted once on
+     * `body::before` as a fixed layer; an opaque fill here would cover it, and
+     * a copy of it per region would repaint on every scroll frame.
+     */
+    <div className="canvas-inset flex h-[100dvh] flex-col gap-2 overflow-hidden bg-transparent font-sans text-ink-900 sm:gap-2.5">
 
       {/* ====================================================================
-          SIDEBAR
-          A real column, not a floating pill. It is bounded by a single rule on
-          its right edge; everything inside it aligns to one left margin.
+          FLOATING NAV
+          One glass capsule, detached on all four sides. It is outside the
+          scrolling region rather than sticky inside it, so it never has
+          content passing underneath it — which is what lets it stay at
+          `--glass-tint` instead of going nearly opaque the way a sticky bar
+          has to, and what lets the sky read through it.
           ================================================================= */}
-      {/* `surface-card` rather than `bg-white`: the rail is its own column and
-          nothing scrolls behind it, so it can carry the translucent surface
-          and let the field tint its edges. The sticky sub-header inside the
-          content region (below) deliberately does not — content passes under
-          that one and it has to stay opaque. */}
-      <aside className="hidden w-60 shrink-0 flex-col border-r border-ink-200 surface-card md:flex">
-        {/* Brand block. Same height as the top bar so the two rules opposite
-            each other line up across the seam. */}
-        <div className="flex h-13 shrink-0 items-center gap-2.5 border-b border-ink-200 px-4">
+      <div className="shrink-0">
+        <header className="nav-float has-cloud has-cloud--wide mx-auto flex h-14 w-full max-w-[96rem] items-center gap-2 pl-3 pr-2 sm:pl-4 sm:pr-2.5">
+
+          {/* Brand */}
           <button
             onClick={() => go("home")}
             aria-label="Northr home"
-            className="flex min-w-0 items-center gap-2.5 rounded-md"
+            className="flex min-w-0 shrink-0 items-center gap-2 rounded-full pr-1"
           >
-            <Logo className="h-6 w-6 shrink-0 rounded-xs" />
-            <span className="truncate text-sm font-bold tracking-tight text-ink-900">
+            <Logo className="h-7 w-7 shrink-0 rounded-md" />
+            <span className="hidden truncate text-sm font-bold tracking-tight text-ink-900 sm:block">
               northr
             </span>
-            <span className="shrink-0 rounded-xs border border-ink-200 bg-ink-50 px-1.5 py-px text-micro font-bold uppercase tracking-[0.07em] text-ink-500">
-              Pro
-            </span>
-          </button>
-        </div>
-
-        <div className="scroll-slim min-h-0 flex-1 overflow-y-auto">{navList}</div>
-
-        {/* Rail footer: session state and the destructive-ish reset, kept far
-            from the primary nav and behind a rule. */}
-        <div className="shrink-0 border-t border-ink-200 p-2">
-          <div
-            className={`flex items-center gap-1.5 px-2.5 py-1.5 text-micro font-bold uppercase tracking-[0.07em] ${syncState.tone}`}
-          >
-            <syncState.Icon
-              className={`h-3 w-3 shrink-0 ${isSyncing && !isGuest ? "animate-spin" : ""}`}
-            />
-            <span className="truncate">{syncState.text}</span>
-          </div>
-          <button
-            onClick={resetSession}
-            disabled={isProcessing}
-            className="flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-sm font-semibold text-ink-600 transition-colors duration-150 hover:bg-ink-100 hover:text-ink-900 disabled:opacity-40"
-          >
-            <RefreshCw className={`h-4 w-4 shrink-0 ${isProcessing ? "animate-spin" : ""}`} />
-            <span className="truncate">Start fresh</span>
-          </button>
-        </div>
-      </aside>
-
-      {/* Mobile drawer + scrim. Slides from the left, because that is where the
-          rail lives on every other breakpoint. */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.15 }}
-              className="fixed inset-0 z-40 bg-ink-900/40 md:hidden"
-              onClick={() => setIsMobileMenuOpen(false)}
-              aria-hidden
-            />
-            <motion.aside
-              initial={{ x: "-100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "-100%" }}
-              transition={{ duration: 0.18, ease: [0.2, 0, 0, 1] }}
-              className="fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-ink-200 bg-white shadow-e5 md:hidden"
-            >
-              <div className="flex h-13 shrink-0 items-center justify-between border-b border-ink-200 px-4">
-                <span className="flex items-center gap-2.5">
-                  <Logo className="h-6 w-6 rounded-xs" />
-                  <span className="text-sm font-bold tracking-tight">northr</span>
-                </span>
-                <button
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  aria-label="Close menu"
-                  className="flex h-8 w-8 items-center justify-center rounded-md text-ink-500 hover:bg-ink-100 hover:text-ink-900"
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              </div>
-              <div className="scroll-slim min-h-0 flex-1 overflow-y-auto">{navList}</div>
-              <div className="shrink-0 border-t border-ink-200 p-2">
-                <button
-                  onClick={resetSession}
-                  disabled={isProcessing}
-                  className="flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-sm font-semibold text-ink-600 hover:bg-ink-100 hover:text-ink-900 disabled:opacity-40"
-                >
-                  <RefreshCw className={`h-4 w-4 ${isProcessing ? "animate-spin" : ""}`} />
-                  <span>Start fresh</span>
-                </button>
-              </div>
-            </motion.aside>
-          </>
-        )}
-      </AnimatePresence>
-
-      {/* ====================================================================
-          CONTENT COLUMN
-          ================================================================= */}
-      <div className="flex min-w-0 flex-1 flex-col">
-
-        {/* Top bar. States where you are; it does not repeat the nav. */}
-        <header className="flex h-13 shrink-0 items-center gap-3 border-b border-ink-200 surface-card px-3 sm:px-4">
-          <button
-            onClick={() => setIsMobileMenuOpen(true)}
-            aria-label="Open menu"
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-ink-600 transition-colors hover:bg-ink-100 hover:text-ink-900 md:hidden"
-          >
-            <Menu className="h-4 w-4" />
           </button>
 
-          {/* Breadcrumb. Truncation is on the trailing crumb, so the section
-              name never disappears before the leaf does. */}
-          <div className="flex min-w-0 items-center gap-1.5">
-            <span
-              className={`shrink-0 text-sm font-bold tracking-tight ${
-                crumb ? "text-ink-500" : "text-ink-900"
-              }`}
-            >
-              {pageTitle}
-            </span>
-            {crumb && (
-              <>
-                <ChevronRight className="h-3.5 w-3.5 shrink-0 text-ink-300" />
-                <span className="min-w-0 truncate text-sm font-bold tracking-tight text-ink-900">
-                  {crumb}
-                </span>
-              </>
-            )}
-          </div>
+          {/* Primary destinations. Hidden below `md`, where the drawer takes
+              over — five pills do not fit on a phone without either
+              truncating the labels into nonsense or scrolling horizontally,
+              and a nav you have to scroll is not a nav. */}
+          <nav
+            aria-label="Primary"
+            className="ml-1 hidden items-center gap-0.5 md:flex"
+          >
+            {NAV_ITEMS.map((item) => (
+              <NavItem key={item.id} {...item} orientation="bar" />
+            ))}
+          </nav>
 
           <div className="ml-auto flex shrink-0 items-center gap-1.5">
+            {/* Sync state. Icon-only until `lg` — it is ambient status, and
+                the first thing that should give up room. */}
+            <span
+              className={`hidden items-center gap-1.5 px-1.5 text-micro font-bold uppercase tracking-[0.07em] lg:flex ${syncState.tone}`}
+            >
+              <syncState.Icon
+                className={`h-3 w-3 shrink-0 ${isSyncing && !isGuest ? "animate-spin" : ""}`}
+              />
+              <span className="truncate">{syncState.text}</span>
+            </span>
+
+            <button
+              onClick={resetSession}
+              disabled={isProcessing}
+              aria-label="Start fresh"
+              title="Start fresh"
+              className="hidden h-8 w-8 items-center justify-center rounded-full text-ink-600 transition-colors duration-150 hover:bg-white/70 hover:text-ink-900 disabled:opacity-40 md:flex"
+            >
+              <RefreshCw className={`h-4 w-4 ${isProcessing ? "animate-spin" : ""}`} />
+            </button>
+
             {/* Account popover */}
             <div className="relative" ref={accountRef}>
               <button
@@ -1208,9 +1436,9 @@ function Workspace({ user }: { user: AuthUser }) {
                 aria-haspopup="menu"
                 aria-expanded={isAccountOpen}
                 aria-label={`Account: ${displayName}`}
-                className="flex h-8 items-center gap-2 rounded-md border border-ink-200 bg-white pl-1 pr-2 transition-colors duration-150 hover:bg-ink-50"
+                className="flex h-8 items-center gap-2 rounded-full bg-white/70 pl-1 pr-1 transition-colors duration-150 hover:bg-white sm:pr-3"
               >
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-xs bg-ink-900 text-micro font-bold uppercase text-white">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-ink-900 text-micro font-bold uppercase text-white">
                   {displayName.charAt(0)}
                 </span>
                 <span className="hidden max-w-32 truncate text-xs font-semibold text-ink-700 sm:block">
@@ -1226,9 +1454,9 @@ function Workspace({ user }: { user: AuthUser }) {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -4 }}
                     transition={{ duration: 0.12, ease: [0.2, 0, 0, 1] }}
-                    className="absolute right-0 top-[calc(100%+0.375rem)] z-50 w-60 origin-top-right rounded-lg border border-ink-200 bg-white shadow-e4"
+                    className="absolute right-0 top-[calc(100%+0.625rem)] z-50 w-60 origin-top-right overflow-hidden rounded-xl border border-ink-200 bg-white shadow-e4"
                   >
-                    <div className="border-b border-ink-200 px-3 py-2.5">
+                    <div className="border-b border-ink-200 px-4 py-3">
                       <div className="truncate text-sm font-bold leading-tight text-ink-900">
                         {displayName}
                       </div>
@@ -1238,7 +1466,7 @@ function Workspace({ user }: { user: AuthUser }) {
                     </div>
 
                     <div
-                      className={`flex items-center gap-1.5 border-b border-ink-200 px-3 py-2 text-micro font-bold uppercase tracking-[0.07em] ${syncState.tone}`}
+                      className={`flex items-center gap-1.5 border-b border-ink-200 px-4 py-2.5 text-micro font-bold uppercase tracking-[0.07em] ${syncState.tone}`}
                     >
                       <syncState.Icon
                         className={`h-3 w-3 shrink-0 ${isSyncing && !isGuest ? "animate-spin" : ""}`}
@@ -1252,7 +1480,7 @@ function Workspace({ user }: { user: AuthUser }) {
                           setIsAccountOpen(false);
                           handleSignOut();
                         }}
-                        className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm font-semibold text-ink-700 transition-colors hover:bg-ink-100 hover:text-ink-900"
+                        className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-ink-700 transition-colors hover:bg-ink-100 hover:text-ink-900"
                       >
                         <LogOut className="h-3.5 w-3.5" />
                         <span>Sign out</span>
@@ -1262,50 +1490,135 @@ function Workspace({ user }: { user: AuthUser }) {
                 )}
               </AnimatePresence>
             </div>
+
+            {/* Drawer trigger, phone only. */}
+            <button
+              onClick={() => setIsMobileMenuOpen(true)}
+              aria-label="Open menu"
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-ink-600 transition-colors hover:bg-white/70 hover:text-ink-900 md:hidden"
+            >
+              <Menu className="h-4 w-4" />
+            </button>
           </div>
         </header>
+      </div>
 
-        {/* Errors sit directly under the top bar as a full-width strip rather
-            than as a floating capsule — an alert is part of the page, and one
-            that overlays content hides the thing it is describing. */}
-        <AnimatePresence>
-          {errorMessage && (
+      {/* Mobile drawer + scrim. Still a left drawer: it is the pattern a phone
+          user reaches for, and the nav it replaces is off-screen rather than
+          in a different place. */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <>
             <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               transition={{ duration: 0.15 }}
-              role="alert"
-              className="shrink-0 overflow-hidden border-b border-bad-300/60 bg-bad-50"
+              className="fixed inset-0 z-40 bg-ink-900/40 md:hidden"
+              onClick={() => setIsMobileMenuOpen(false)}
+              aria-hidden
+            />
+            {/* The drawer no longer runs edge to edge. It is a sheet floating
+                in the same gutter of sky as the canvas, inset on three sides
+                and rounded on all four, which is what stops the one full-height
+                square object on a phone from reading as a different app. It
+                still slides from the left: that is the gesture a phone user
+                reaches for, and the nav it stands in for is off-screen rather
+                than somewhere else. */}
+            <motion.aside
+              initial={{ x: "-110%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "-110%" }}
+              transition={{ duration: 0.18, ease: [0.2, 0, 0, 1] }}
+              className="fixed inset-y-2 left-2 z-50 flex w-64 flex-col overflow-hidden rounded-2xl bg-white shadow-e5 md:hidden"
             >
-              <div className="flex items-center gap-3 px-4 py-2">
-                <span className="min-w-0 flex-1 text-xs font-semibold text-bad-700 text-pretty">
-                  {errorMessage}
+              <div className="flex h-13 shrink-0 items-center justify-between border-b border-ink-200 px-4">
+                <span className="flex items-center gap-2.5">
+                  <Logo className="h-6 w-6 rounded-sm" />
+                  <span className="text-sm font-bold tracking-tight">northr</span>
                 </span>
                 <button
-                  onClick={() => setErrorMessage(null)}
-                  className="shrink-0 rounded-xs px-2 py-0.5 text-micro font-bold uppercase tracking-[0.07em] text-bad-700 transition-colors hover:bg-bad-100"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  aria-label="Close menu"
+                  className="flex h-8 w-8 items-center justify-center rounded-full text-ink-500 hover:bg-ink-100 hover:text-ink-900"
                 >
-                  Dismiss
+                  <X className="h-4 w-4" />
                 </button>
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+              <div className="scroll-slim min-h-0 flex-1 overflow-y-auto">{navList}</div>
+              <div className="shrink-0 border-t border-ink-200 p-2">
+                <button
+                  onClick={resetSession}
+                  disabled={isProcessing}
+                  className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-semibold text-ink-600 hover:bg-ink-100 hover:text-ink-900 disabled:opacity-40"
+                >
+                  <RefreshCw className={`h-4 w-4 ${isProcessing ? "animate-spin" : ""}`} />
+                  <span>Start fresh</span>
+                </button>
+              </div>
+            </motion.aside>
+          </>
+        )}
+      </AnimatePresence>
 
-        {/* MAIN WORKSPACE AREA */}
-        <main
-          className={`relative flex min-w-0 flex-1 flex-col ${
+      {/* Errors sit between the nav and the canvas as their own capsule rather
+          than as a full-bleed strip. With everything else floating in the sky,
+          a bar pinned edge to edge would be the only object on screen touching
+          the browser frame, which reads as chrome rather than as part of the
+          app. */}
+      <AnimatePresence>
+        {errorMessage && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.15 }}
+            role="alert"
+            className="shrink-0 overflow-hidden"
+          >
+            <div className="mx-auto flex w-full max-w-[96rem] items-center gap-3 rounded-full bg-bad-50/90 py-2 pl-4 pr-2 shadow-e1 backdrop-blur-sm">
+              <span className="min-w-0 flex-1 text-xs font-semibold text-bad-700 text-pretty">
+                {errorMessage}
+              </span>
+              <button
+                onClick={() => setErrorMessage(null)}
+                className="shrink-0 rounded-full px-3 py-1 text-micro font-bold uppercase tracking-[0.07em] text-bad-700 transition-colors hover:bg-bad-100"
+              >
+                Dismiss
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ====================================================================
+          THE CANVAS
+          Everything the app renders lives inside this one pane. It clips its
+          own children — which is what the 40px radius needs to survive a
+          full-bleed hero image or a table running to the edge — so the scroll
+          container is a child rather than the pane itself.
+          ================================================================= */}
+      <main className="canvas mx-auto flex w-full min-h-0 max-w-[96rem] flex-1 flex-col overflow-hidden">
+        <div
+          className={`relative flex min-h-0 min-w-0 flex-1 flex-col ${
             activeTab === "fab" ? "h-full overflow-hidden" : "scroll-slim overflow-y-auto"
           }`}
         >
 
-          {/* Paths sub-navigation: a back affordance and an underlined tab
-              strip on an opaque sticky bar. */}
+          {/* Paths sub-navigation: a back affordance and a tab strip. */}
           {activeTab === "paths" && pathsSubTab !== "list" && (
-            <div className="sticky top-0 z-20 flex shrink-0 flex-wrap items-end gap-3 border-b border-ink-200 bg-white px-4 pt-2 sm:px-6">
+            // Opaque, not glass. Content scrolls directly under this one, and a
+            // translucent surface with rows sliding beneath it is unreadable in
+            // a way a static field showing through never is.
+            //
+            // It is no longer a bar with a bottom border. A rule spanning the
+            // full width of a pane whose corners are 40px has to stop 40px
+            // short at each end or cross the curve, and it was only ever there
+            // to carry the old underlined tab strip's active marker. The strip
+            // is a pill track now and marks itself, so the border goes and the
+            // separation is done with a soft fade under the sticky region.
+            <div className="canvas-chrome sticky top-0 z-20 flex shrink-0 flex-wrap items-center gap-3 px-3 pb-2 pt-3 sm:px-5">
               <Button
-                className="mb-2"
                 size="sm"
                 variant="ghost"
                 onClick={() => setPathsSubTab("list")}
@@ -1314,11 +1627,8 @@ function Workspace({ user }: { user: AuthUser }) {
                 <span>Hypotheses</span>
               </Button>
 
-              {/* The tab strip's own bottom rule lands exactly on the bar's, so
-                  the active underline reads as a mark on one continuous line
-                  rather than as a second border. */}
               <Segmented
-                className="ml-auto border-b-0"
+                className="ml-auto"
                 ariaLabel="Career path sections"
                 value={pathsSubTab as "detail" | "universities" | "roadmap"}
                 onChange={(v) => setPathsSubTab(v)}
@@ -1353,11 +1663,16 @@ function Workspace({ user }: { user: AuthUser }) {
                   <DashboardHomeView
                     studentName={displayName}
                     studentDegree={studentDegree}
+                    studentYear={studentYear}
+                    interviewPanel={
+                      <InterviewProgress
+                        categories={categories}
+                        onOpenFeature={reopenGate}
+                        onOpenChat={() => go("fab")}
+                      />
+                    }
                     bestFitPaths={bestFitPaths}
-                    onNavigateToTab={(tab) => {
-                      setActiveTab(tab);
-                      setPathsSubTab("list");
-                    }}
+                    onNavigateToTab={go}
                     completedCount={completedCount}
                     dailyReality={dailyReality}
                     setDailyReality={setDailyReality}
@@ -1388,6 +1703,7 @@ function Workspace({ user }: { user: AuthUser }) {
                     isProcessing={isProcessing}
                     phase={phase}
                     progress={progress}
+                    categories={categories}
                     onNewChat={createNewChatSession}
                     voice={
                       voiceStatus
@@ -1429,7 +1745,7 @@ function Workspace({ user }: { user: AuthUser }) {
                     setActivePilotExperience={setActivePilotExperience}
                     completedExperienceIds={completedExperienceIds}
                     setCompletedExperienceIds={setCompletedExperienceIds}
-                    onNavigateToTab={(tab) => setActiveTab(tab as any)}
+                    onNavigateToTab={(tab) => go(tab as any)}
                     streak={streak}
                     setStreak={setStreak}
                     xp={xp}
@@ -1466,7 +1782,7 @@ function Workspace({ user }: { user: AuthUser }) {
                           setPathsSubTab("universities");
                           saveSession({ selectedPath: path });
                         }}
-                        setActiveTab={setActiveTab}
+                        onGoToChat={() => go("fab")}
                       />
                     </motion.div>
                   )}
@@ -1539,10 +1855,7 @@ function Workspace({ user }: { user: AuthUser }) {
                     evidenceList={evidenceList}
                     careerConfidences={careerConfidences}
                     bestFitPaths={bestFitPaths}
-                    onNavigateToTab={(tab) => {
-                      setActiveTab(tab);
-                      setPathsSubTab("list");
-                    }}
+                    onNavigateToTab={go}
                   />
                 </motion.div>
               )}
@@ -1550,21 +1863,48 @@ function Workspace({ user }: { user: AuthUser }) {
             </AnimatePresence>
           </div>
 
-        </main>
+        </div>
+      </main>
 
-      </div>
+      {/* THE FEATURE GATE.
+          Raised on the way into Career Paths or the lab the first time, then
+          never again once its category is answered or deferred. It sits
+          outside <main> so the sheet is never clipped by the canvas' own
+          overflow, and it renders over the tab it interrupted rather than
+          instead of it — dismissing it leaves the student exactly where they
+          were going. */}
+      {gatedFeature && gateCategory && (
+        <FeatureGate
+          open
+          category={gateCategory}
+          featureName={gatedFeature === "paths" ? "your paths" : "the lab"}
+          onSubmit={(answers) => handleGateSubmit(gatedFeature, answers)}
+          onDefer={() => handleGateDefer(gatedFeature)}
+          error={interviewError}
+        />
+      )}
     </div>
   );
 }
 
-/** Full-screen splash shown while the stored token is being validated. */
+/**
+ * Full-screen splash shown while the stored token is being validated.
+ *
+ * No longer a full-bleed graphite fill. It sat in front of the field for the
+ * few hundred milliseconds before the app mounted, so the first thing a
+ * returning student saw was a black screen that then flashed to a bright sky.
+ * Letting the field through means the page it is about to become is already
+ * there, and only the content arrives.
+ */
 function BootSplash() {
   return (
-    <div className="flex h-[100dvh] w-full flex-col items-center justify-center gap-5 bg-ink-950">
-      <Logo className="h-12 w-12 rounded-md" />
-      <div className="flex items-center gap-2 font-mono text-micro font-bold uppercase tracking-wider text-white/40">
-        <Loader2 className="h-3.5 w-3.5 animate-spin" />
-        <span>Restoring your session</span>
+    <div className="flex h-[100dvh] w-full flex-col items-center justify-center gap-4">
+      <div className="nav-float flex items-center gap-3 rounded-2xl px-5 py-4">
+        <Logo className="h-9 w-9 rounded-lg" />
+        <div className="flex items-center gap-2 font-mono text-micro font-bold uppercase tracking-wider text-ink-500">
+          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+          <span>Restoring your session</span>
+        </div>
       </div>
     </div>
   );

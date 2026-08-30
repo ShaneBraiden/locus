@@ -244,6 +244,19 @@ export interface DegreePivot {
   timeToPivot: string;
 }
 
+// ---- The six-category interview schedule (see server/src/categories.ts) ----
+
+/** Where a category's questions are collected. */
+export type InterviewSurface = 'onboarding' | 'feature' | 'chat';
+
+export type CategoryId =
+  | 'basics'
+  | 'interests'
+  | 'workstyle'
+  | 'thinking'
+  | 'drive'
+  | 'deciding';
+
 /**
  * Explicit conversation state, round-tripped through the client so the server
  * stays stateless. Replaces the old approach of re-deriving position by
@@ -256,6 +269,8 @@ export interface AssessmentState {
   v: 1;
   name: string | null;
   degreeId: string | null;
+  /** Year of study, from the onboarding picker. Profile only, never scored. */
+  year?: string | null;
   answers: PsychAnswer[];
   /** itemId -> follow-ups already spent, so a vague student cannot stall us. */
   followUps: Record<string, number>;
@@ -283,6 +298,8 @@ export interface UserContext {
   name: string | null;
   degreeId: string | null;
   degreeName: string | null;
+  /** Year of study, collected at onboarding. Remembered, never scored. */
+  year: string | null;
   /** BCP-47 code FAB speaks to them in. `en-IN` unless voice detected otherwise. */
   language: string;
   /** Deterministic reflections from the committed item bank, not model output. */

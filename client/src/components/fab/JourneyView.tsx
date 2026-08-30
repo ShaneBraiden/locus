@@ -132,8 +132,11 @@ export default function JourneyView({
   };
 
   return (
-    <div className="min-h-screen bg-ink-25 text-ink-900 pb-20 lg:pb-0 overflow-y-auto">
-      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8 p-4 md:p-8">
+    /* No page fill and no `min-h-screen`: this renders inside the app's content
+       canvas, which supplies both. A view painting its own full-height
+       background put a square block over the pane it was sitting in. */
+    <div className="text-ink-900 pb-12">
+      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-6">
         {/* LEFT COLUMN: HERO & TIMELINE */}
         <div className="w-full lg:w-[45%] flex flex-col space-y-8 min-w-0">
           {/* Header */}
@@ -312,7 +315,18 @@ export default function JourneyView({
               )}
             </div>
 
-            <div className="relative pl-6 space-y-8 before:absolute before:inset-0 before:ml-8 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-ink-200">
+            {/* The spine is drawn only when there are entries for it to string
+                together. It is an absolutely-positioned `::before`, so it
+                painted over the in-flow empty-state card underneath — a grey
+                rule straight through "You haven't built your story yet". A
+                timeline with nothing on it should not draw a timeline. */}
+            <div
+              className={
+                hasEvidence && filteredEvidence.length > 0
+                  ? "relative pl-6 space-y-8 before:absolute before:inset-0 before:ml-8 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-ink-200"
+                  : "relative space-y-4"
+              }
+            >
               {!hasEvidence ? (
                 <div className="bg-white rounded-2xl p-6 border border-ink-200 shadow-e2 text-center space-y-3">
                   <p className="text-sm text-ink-500">
@@ -395,7 +409,7 @@ export default function JourneyView({
                                 {ev.signals.map((s: string, idx: number) => (
                                   <span
                                     key={idx}
-                                    className="bg-ink-50 border border-ink-200 text-micro font-bold px-2 py-1 rounded text-ink-600"
+                                    className="bg-ink-50 border border-ink-200 text-micro font-bold px-2.5 py-1 rounded-full text-ink-600"
                                   >
                                     {s}
                                   </span>
@@ -516,7 +530,7 @@ export default function JourneyView({
           {/* Pathway confidence */}
           <div className="space-y-4 pt-4">
             <h3 className="font-bold text-ink-900">Pathway Confidence</h3>
-            <div className="bg-white rounded-3xl p-2 shadow-e2 border border-ink-200 divide-y divide-ink-50">
+            <div className="bg-white rounded-3xl p-2 shadow-e2 border border-ink-200">
               {careerConfidences.length > 0 ? (
                 [...careerConfidences]
                   .sort((a, b) => b.score - a.score)

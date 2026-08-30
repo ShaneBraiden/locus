@@ -4,13 +4,16 @@ import dotenv from 'dotenv';
 import express from 'express';
 import { rateLimit, ipKeyGenerator } from 'express-rate-limit';
 import {
-  currentUser, loginHandler, meHandler, registerHandler, requireAuth,
+  currentUser, loginHandler, meHandler, registerHandler, requireAuth, userForToken,
   type AuthUser,
 } from './auth.js';
-import { interviewItemCount } from './bridge.js';
+import { interviewItemCount, interviewItemById } from './bridge.js';
+import {
+  CATEGORIES, STUDY_YEARS, categoryById, categoryStatus, orderedItems,
+} from './categories.js';
 import { initDb, getRepos } from './db.js';
 import { buildCareerPaths, buildProfile } from './engine.js';
-import { respond, type FlowResponse } from './flow.js';
+import { recordBatch, respond, sanitizeAssessment, type FlowResponse } from './flow.js';
 import { geminiEnabled, geminiKeys } from './gemini.js';
 import {
   clearContext, contextBrief, loadContext, publicContext, saveContext, updateContext,
@@ -88,6 +91,7 @@ app.get('/healthz', (_req, res) => {
     degrees: loadDegrees().length,
     questions: QUESTIONS.length,
     interviewItems: interviewItemCount(),
+    categories: categoryStatus([]).map((c) => `${c.id}:${c.total}@${c.surface}`),
     psychometricItems: psychItems().length,
     careerProfiles: careerProfiles().length,
     degreePivots: degreePivots().length,
@@ -128,6 +132,121 @@ app.put('/api/state', ah(requireAuth), apiLimiter, ah(async (req, res) => {
   await getRepos().state.set(u.id, req.body.state);
   res.json({ ok: true, persisted: true });
 }));
+
+/**
+ * The tab-close path.
+ *
+ * `navigator.sendBeacon` cannot set an Authorization header, so the token
+ * rides in the body instead. Everything else is identical to PUT /api/state,
+ * including the guest no-op — this route grants nothing the header route does
+ * not, it only accepts the credential somewhere a beacon can put it.
+ *
+ * It exists because a `fetch` started during `beforeunload` is routinely
+ * cancelled as the document tears down, which is precisely the moment the
+ * client most needs the write to land.
+ */
+app.post('/api/state/beacon', apiLimiter, ah(async (req, res) => {
+  const token = typeof req.body?.token === 'string' ? req.body.token : '';
+  if (!token || !('state' in (req.body ?? {}))) {
+    res.status(400).json({ error: 'Body must include "token" and "state"' });
+    return;
+  }
+
+  const user = await userForToken(token);
+  if (!user) { res.status(401).json({ error: 'Invalid session' }); return; }
+  if (user.isGuest) { res.json({ ok: true, persisted: false }); return; }
+
+  await getRepos().state.set(user.id, req.body.state);
+  res.json({ ok: true, persisted: true });
+}));
+
+// --- The six-category interview schedule ---
+//
+// Two routes, and neither of them touches Gemini. The client renders the item
+// bank as written and sends back option ids; the server validates them against
+// the same bank and scores them with the same tables the conversation uses.
+// That is the whole contract: a tapped answer and a spoken one are worth the
+// same thing, and the onboarding screen cannot be taken down by an API outage.
+
+app.get('/api/interview/categories', ah(requireAuth), apiLimiter, (_req, res) => {
+  orderedItems(); // resolves any item the category table forgot, once
+  res.json({
+    categories: CATEGORIES.map((c) => ({
+      id: c.id,
+      order: c.order,
+      title: c.title,
+      blurb: c.blurb,
+      surface: c.surface,
+      feature: c.feature,
+      profileFields: c.profileFields ?? [],
+      items: c.itemIds.flatMap((id) => {
+        const item = interviewItemById(id);
+        return item
+          ? [{
+            id: item.id,
+            text: item.text,
+            options: item.options.map((o) => ({ id: o.id, letter: o.letter, label: o.label })),
+          }]
+          : [];
+      }),
+    })),
+    // Everything the onboarding screen needs to render itself in one request.
+    degrees: loadDegrees().map((d) => ({ id: d.id, name: d.name })),
+    years: STUDY_YEARS,
+    total: interviewItemCount(),
+  });
+});
+
+app.post('/api/interview/answers', ah(requireAuth), apiLimiter, ah(async (req, res) => {
+  const body = req.body ?? {};
+
+  // A category id is optional, but when one is given it has to be real —
+  // otherwise a typo in the client silently posts answers to nothing.
+  if (body.categoryId !== undefined && !categoryById(String(body.categoryId))) {
+    res.status(400).json({ error: 'Unknown categoryId' });
+    return;
+  }
+  if (body.answers !== undefined && !Array.isArray(body.answers)) {
+    res.status(400).json({ error: '"answers" must be an array of {itemId, optionId}' });
+    return;
+  }
+
+  const flow = recordBatch(body.assessment, {
+    name: body.name,
+    degreeId: body.degreeId,
+    year: body.year,
+    answers: body.answers,
+  });
+
+  // Same long-term memory the chat writes to, so a student who answered at
+  // onboarding is already known by name the first time FAB speaks to them.
+  const u = currentUser(req);
+  const ctx = await loadContext(u.id, u.isGuest);
+  const context = updateContext(ctx, {
+    assessment: flow.assessment,
+    channel: 'text',
+    bestFitPaths: flow.bestFitPaths,
+    psychometrics: flow.psychometrics,
+  });
+  await saveContext(context, u.isGuest);
+
+  const { reply: _reply, ...rest } = flow;
+  res.json({ ...rest, memory: publicContext(context) });
+}));
+
+// The flow state on its own, re-validated. Lets the client ask "where am I"
+// after a reload without having to post a turn to find out.
+app.post('/api/interview/state', ah(requireAuth), apiLimiter, (req, res) => {
+  const assessment = sanitizeAssessment(req.body?.assessment);
+  res.json({
+    assessment,
+    categories: categoryStatus(assessment.answers, assessment.skipped),
+    progress: {
+      answered: new Set([...assessment.answers.map((a) => a.itemId), ...assessment.skipped]).size,
+      total: interviewItemCount(),
+    },
+  });
+});
 
 // --- Chat: FAB's conversational assessment ---
 // `assessment` is the client's copy of the flow state. It is re-validated
@@ -506,12 +625,16 @@ async function start() {
   // Fail fast if any dataset is missing rather than mid-conversation.
   loadDegrees();
   interviewItemCount();
+  // Resolves the category table against the item bank and warns loudly about
+  // anything the two disagree on, at boot rather than mid-conversation.
+  orderedItems();
   careerProfiles();
   degreePivots();
   app.listen(PORT, () => {
     console.log(`Northr server listening on http://localhost:${PORT}`);
     console.log(`Storage: ${getRepos().backend}`);
-    console.log(`Interview: ${interviewItemCount()} items, ${careerProfiles().length} career profiles, ${degreePivots().length} degree pivot rows`);
+      console.log(`Interview: ${interviewItemCount()} items, ${careerProfiles().length} career profiles, ${degreePivots().length} degree pivot rows`);
+    console.log(`Schedule: ${categoryStatus([]).map((c) => `${c.title} (${c.total}, ${c.surface})`).join(' | ')}`);
     const plural = (n: number) => `${n} key${n === 1 ? '' : 's'}`;
     console.log(`Gemini: ${geminiEnabled() ? `enabled (${process.env.GEMINI_MODEL || 'gemini-3.5-flash'}, ${plural(geminiKeys.size())})` : 'disabled — conversation falls back to multiple choice'}`);
     console.log(`Sarvam: ${sarvamEnabled() ? `enabled (${VOICE_LANGUAGES.length} languages, speaker ${process.env.SARVAM_SPEAKER || 'anushka'}, ${plural(sarvamKeyCount())}) — voice turns only` : 'disabled — voice chat is hidden, typing unaffected'}`);

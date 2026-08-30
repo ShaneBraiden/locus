@@ -57,7 +57,7 @@ function Field({
         {label}
       </label>
       <div className="relative">
-        <Icon className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-500" />
+        <Icon className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-500" />
         <input
           id={id}
           name={id}
@@ -69,7 +69,10 @@ function Field({
           disabled={disabled}
           aria-invalid={!!error}
           aria-describedby={error ? `${id}-error` : undefined}
-          className={cx(inputClass(!!error, true), trailing ? "pr-11" : "pr-3")}
+          // `pr-[2.75rem]`, not `pr-12` — see the note in `inputClass`: the
+          // spacing compression block rewrites step 12 to 28px, which is
+          // narrower than the toggle button it has to clear.
+          className={cx(inputClass(!!error, true), trailing ? "pr-[2.75rem]" : "pr-4")}
         />
         {trailing && (
           <div className="absolute right-2 top-1/2 -translate-y-1/2">{trailing}</div>
@@ -102,7 +105,7 @@ function PasswordToggle({
       onClick={onToggle}
       tabIndex={-1}
       aria-label={visible ? "Hide password" : "Show password"}
-      className="rounded-md p-2 text-ink-500 transition-colors hover:bg-ink-100 hover:text-ink-700 cursor-pointer"
+      className="rounded-full p-2 text-ink-500 transition-colors hover:bg-ink-100 hover:text-ink-700 cursor-pointer"
     >
       {visible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
     </button>
@@ -196,84 +199,64 @@ export default function AuthPage() {
   };
 
   return (
-    // Split screen: brand on the left, form on the right. The old page was a
-    // single grey box centred on a grey field, which gave the product no
-    // first impression at all.
-    <div className="grid min-h-[100dvh] w-full font-sans text-ink-900 lg:grid-cols-[1.1fr_1fr]">
+    /* ONE CARD.
+     *
+     * The previous version of this page was a split screen: a graphite brand
+     * panel on the left carrying a headline, a paragraph of positioning copy
+     * and a three-figure stat strip, with the form on the right. All of that
+     * is gone.
+     *
+     * The argument for it was that a bare form gives the product no first
+     * impression. That was true of a grey box on a grey field. It is not true
+     * any more — the page now has the atmosphere behind it, and a single pane
+     * of glass floating in an open sky is a considerably stronger first
+     * impression than a stat strip nobody reads on the way to a password
+     * field. Everything that panel said is said better by the field itself.
+     *
+     * What is left is the shortest path from arriving to being signed in.
+     */
+    <div className="relative flex min-h-[100dvh] w-full items-center justify-center px-4 py-10 font-sans text-ink-900">
 
-      {/* Brand panel — desktop only. A flat graphite field. The two blurred
-          colour washes that used to drift across it are gone: they were the
-          signature of the old style and they carried no information. What
-          gives the panel its interest now is the type and the rule under the
-          figures, which is the whole argument of the system in one screen. */}
-      <aside className="relative hidden flex-col justify-between overflow-hidden bg-ink-900 p-12 lg:flex">
-        <div className="relative flex items-center gap-3">
-          <Logo className="h-9 w-9 rounded-md" />
-          <div>
-            <div className="text-lg font-bold tracking-tight text-white">northr</div>
-            <div className="text-micro font-bold uppercase tracking-[0.09em] text-white/40">
-              Your Career OS
-            </div>
-          </div>
+      <div className="w-full max-w-[26rem]">
+
+        {/* Brand, above the card rather than inside it. The card is the form;
+            putting the mark in it would make the form look like it starts
+            with a logo. */}
+        <div className="mb-5 flex items-center justify-center gap-2.5">
+          <Logo className="h-9 w-9 rounded-lg" />
+          <span className="font-display text-lg font-bold tracking-tight">northr</span>
         </div>
 
-        <div className="relative max-w-md">
-          <h2 className="text-4xl font-bold leading-[1.05] tracking-tight text-white text-balance">
-            From clinical chaos to{" "}
-            {/* moss-300 rather than a clipped gradient: on a near-black panel
-                the gradient's fallback colour is invisible, and a solid accent
-                does the same emphatic job. */}
-            <span className="text-moss-300">actual clarity.</span>
-          </h2>
-          <p className="mt-5 text-base leading-relaxed text-white/60 text-pretty">
-            FAB just talks to you. Underneath, every answer maps onto a 25-item
-            psychometric instrument and a 127-career fit table — so what comes out
-            the other end is a real answer, not a personality quiz.
-          </p>
-        </div>
+        {/* The card. `has-cloud--auth` is the strongest cloud layer in the
+            system, and this is the only surface that gets it: the auth page
+            is the one screen with no data on it, so it is the one screen that
+            can afford weather.
 
-        <dl className="relative grid grid-cols-3 divide-x divide-white/10 border-t border-white/10 pt-6">
-          {[
-            ["127", "careers scored"],
-            ["26", "degree pathways"],
-            ["11", "languages"],
-          ].map(([n, label], i) => (
-            <div key={label} className={i === 0 ? "pr-6" : "px-6"}>
-              <dt data-numeric className="text-2xl font-bold text-white">
-                {n}
-              </dt>
-              <dd className="mt-1 text-micro font-bold uppercase tracking-[0.09em] text-white/40">
-                {label}
-              </dd>
-            </div>
-          ))}
-        </dl>
-      </aside>
+            `rounded-3xl` overrides the capsule `.nav-float` now carries. That
+            class is shared with the floating nav, which is 56px tall and reads
+            correctly as a capsule; this card is 500px tall and would read as a
+            pill the size of a door. Same surface treatment, different shape —
+            which is the distinction the radius ramp exists to make. */}
+        <div className="nav-float has-cloud has-cloud--auth overflow-hidden rounded-3xl p-6 sm:p-7">
 
-      {/* Form panel */}
-      <main className="relative flex items-center justify-center overflow-hidden bg-ink-50 px-4 py-10 sm:px-8">
-        <div className="relative w-full max-w-sm">
-          {/* Compact brand lockup, mobile only. */}
-          <div className="mb-8 flex items-center gap-2.5 lg:hidden">
-            <Logo className="h-10 w-10 rounded-md" />
-            <span className="font-display text-xl font-bold tracking-tight">northr</span>
-          </div>
-
-          <div className="mb-6">
+          <div className="mb-5">
             <h1 className="font-display text-2xl font-bold text-ink-950">
               {isRegister ? "Create your account" : "Welcome back"}
             </h1>
-            <p className="mt-1.5 text-sm text-ink-500">
+            <p className="mt-1 text-sm text-ink-600">
               {isRegister
-                ? "A minute to set up. Your progress follows you across devices."
-                : "Pick up exactly where you left off."}
+                ? "A minute to set up."
+                : "Pick up where you left off."}
             </p>
           </div>
 
+          {/* Mode switch. A segmented control rather than a link, because the
+              two modes are peers here — this page is as much a front door for
+              a new user as it is for a returning one. */}
           <div
             role="tablist"
             aria-label="Authentication mode"
-            className="mb-6 grid grid-cols-2 gap-1 rounded-md border border-ink-200/60 bg-ink-100/70 p-1.5"
+            className="mb-5 grid grid-cols-2 gap-1 rounded-full bg-white/45 p-1 shadow-[inset_0_1px_0_0_rgb(255_255_255/0.7)]"
           >
             {(["login", "register"] as Mode[]).map((m) => (
               <button
@@ -282,9 +265,9 @@ export default function AuthPage() {
                 type="button"
                 aria-selected={mode === m}
                 onClick={() => switchMode(m)}
-                className={`rounded-md px-3 py-2 text-sm font-bold transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                className={`rounded-full px-3 py-2 text-sm font-bold transition-all duration-150 ease-[cubic-bezier(0.2,0,0,1)] ${
                   mode === m
-                    ? "bg-ink-25 text-ink-900 shadow-soft"
+                    ? "bg-white text-ink-900 shadow-e1"
                     : "text-ink-500 hover:text-ink-800"
                 }`}
               >
@@ -293,80 +276,80 @@ export default function AuthPage() {
             ))}
           </div>
 
-        {serverError && (
-          <div
-            role="alert"
-            className="mb-5 flex items-start gap-2 rounded-lg border border-bad-100 bg-bad-50 px-3 py-2.5"
-          >
-            <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-bad-500" />
-            <p className="text-sm font-medium leading-relaxed text-bad-700">
-              {serverError}
-            </p>
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} noValidate className="space-y-4">
-          {isRegister && (
-            <Field
-              id="name"
-              label="Full name"
-              type="text"
-              value={name}
-              onChange={setName}
-              placeholder="Your name"
-              icon={User}
-              error={fieldErrors.name}
-              autoComplete="name"
-              disabled={isSubmitting}
-            />
+          {serverError && (
+            <div
+              role="alert"
+              className="mb-4 flex items-start gap-2 rounded-2xl bg-bad-50/90 px-3.5 py-2.5"
+            >
+              <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-bad-500" />
+              <p className="text-sm font-medium leading-relaxed text-bad-700">
+                {serverError}
+              </p>
+            </div>
           )}
 
-          <Field
-            id="email"
-            label="Email"
-            type="email"
-            value={email}
-            onChange={setEmail}
-            placeholder="you@example.com"
-            icon={Mail}
-            error={fieldErrors.email}
-            autoComplete="email"
-            disabled={isSubmitting}
-          />
-
-          <Field
-            id="password"
-            label="Password"
-            type={showPassword ? "text" : "password"}
-            value={password}
-            onChange={setPassword}
-            placeholder={isRegister ? "At least 6 characters" : "Password"}
-            icon={Lock}
-            error={fieldErrors.password}
-            autoComplete={isRegister ? "new-password" : "current-password"}
-            disabled={isSubmitting}
-            trailing={
-              <PasswordToggle
-                visible={showPassword}
-                onToggle={() => setShowPassword((v) => !v)}
+          <form onSubmit={handleSubmit} noValidate className="space-y-3.5">
+            {isRegister && (
+              <Field
+                id="name"
+                label="Full name"
+                type="text"
+                value={name}
+                onChange={setName}
+                placeholder="Your name"
+                icon={User}
+                error={fieldErrors.name}
+                autoComplete="name"
+                disabled={isSubmitting}
               />
-            }
-          />
+            )}
 
-          {isRegister && (
             <Field
-              id="confirmPassword"
-              label="Confirm password"
-              type={showPassword ? "text" : "password"}
-              value={confirmPassword}
-              onChange={setConfirmPassword}
-              placeholder="Re-enter your password"
-              icon={Lock}
-              error={fieldErrors.confirmPassword}
-              autoComplete="new-password"
+              id="email"
+              label="Email"
+              type="email"
+              value={email}
+              onChange={setEmail}
+              placeholder="you@example.com"
+              icon={Mail}
+              error={fieldErrors.email}
+              autoComplete="email"
               disabled={isSubmitting}
             />
-          )}
+
+            <Field
+              id="password"
+              label="Password"
+              type={showPassword ? "text" : "password"}
+              value={password}
+              onChange={setPassword}
+              placeholder={isRegister ? "At least 6 characters" : "Password"}
+              icon={Lock}
+              error={fieldErrors.password}
+              autoComplete={isRegister ? "new-password" : "current-password"}
+              disabled={isSubmitting}
+              trailing={
+                <PasswordToggle
+                  visible={showPassword}
+                  onToggle={() => setShowPassword((v) => !v)}
+                />
+              }
+            />
+
+            {isRegister && (
+              <Field
+                id="confirmPassword"
+                label="Confirm password"
+                type={showPassword ? "text" : "password"}
+                value={confirmPassword}
+                onChange={setConfirmPassword}
+                placeholder="Re-enter your password"
+                icon={Lock}
+                error={fieldErrors.confirmPassword}
+                autoComplete="new-password"
+                disabled={isSubmitting}
+              />
+            )}
 
             <Button
               type="submit"
@@ -390,10 +373,10 @@ export default function AuthPage() {
             </Button>
           </form>
 
-          <div className="my-5 flex items-center gap-3">
-            <span className="h-px flex-1 bg-ink-100" />
+          <div className="my-4 flex items-center gap-3">
+            <span className="h-px flex-1 bg-ink-200/70" />
             <span className="eyebrow">or</span>
-            <span className="h-px flex-1 bg-ink-100" />
+            <span className="h-px flex-1 bg-ink-200/70" />
           </div>
 
           <Button variant="outline" size="lg" block onClick={loginAsGuest} disabled={isSubmitting}>
@@ -402,19 +385,8 @@ export default function AuthPage() {
           <p className="mt-2 text-center text-tiny text-ink-500">
             Guest progress is saved on this device only.
           </p>
-
-          <p className="mt-6 text-center text-sm text-ink-500">
-            {isRegister ? "Already have an account?" : "Need an account?"}{" "}
-            <button
-              type="button"
-              onClick={() => switchMode(isRegister ? "login" : "register")}
-              className="font-semibold text-ink-900 underline decoration-moss-400 decoration-2 underline-offset-4 transition-colors hover:text-moss-700"
-            >
-              {isRegister ? "Sign in" : "Register"}
-            </button>
-          </p>
         </div>
-      </main>
+      </div>
     </div>
   );
 }

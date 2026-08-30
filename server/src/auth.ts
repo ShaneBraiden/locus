@@ -39,36 +39,43 @@ export const GUEST: AuthUser = {
   isGuest: true,
 };
 
+/**
+ * Resolves a bare token to a user, or null.
+ *
+ * Split out of `requireAuth` so the one route that cannot use a header — the
+ * `sendBeacon` state write on tab close — validates the token through exactly
+ * the same code path rather than a second, subtly different copy of it.
+ */
+export async function userForToken(token: string): Promise<AuthUser | null> {
+  const trimmed = token.trim();
+  if (!trimmed) return null;
+
+  if (trimmed === 'local_guest_token') return guestAllowed() ? GUEST : null;
+
+  try {
+    const payload = jwt.verify(trimmed, secret()) as { sub?: string };
+    const user = payload.sub ? await getRepos().users.findById(payload.sub) : null;
+    if (!user) return null;
+    return { id: user.id, name: user.name, email: user.email, isGuest: false };
+  } catch {
+    return null;
+  }
+}
+
 export const requireAuth: express.RequestHandler = async (req, res, next) => {
   const header = req.headers.authorization;
   if (!header?.startsWith('Bearer ')) {
     res.status(401).json({ error: 'Missing or invalid authorization' });
     return;
   }
-  const token = header.slice('Bearer '.length).trim();
 
-  if (token === 'local_guest_token') {
-    if (!guestAllowed()) {
-      res.status(401).json({ error: 'Please sign in to continue' });
-      return;
-    }
-    (req as any).user = GUEST;
-    next();
+  const user = await userForToken(header.slice('Bearer '.length));
+  if (!user) {
+    res.status(401).json({ error: 'Invalid or expired session, please sign in again' });
     return;
   }
-
-  try {
-    const payload = jwt.verify(token, secret()) as { sub?: string };
-    const user = payload.sub ? await getRepos().users.findById(payload.sub) : null;
-    if (!user) {
-      res.status(401).json({ error: 'Session no longer valid, please sign in again' });
-      return;
-    }
-    (req as any).user = { id: user.id, name: user.name, email: user.email, isGuest: false } satisfies AuthUser;
-    next();
-  } catch {
-    res.status(401).json({ error: 'Invalid or expired session, please sign in again' });
-  }
+  (req as any).user = user;
+  next();
 };
 
 export function currentUser(req: express.Request): AuthUser {

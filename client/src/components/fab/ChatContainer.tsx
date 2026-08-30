@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { Message, Phase, VoiceLanguage } from "../../types";
+import { CategoryStatus, Message, Phase, VoiceLanguage } from "../../types";
 import {
   Check,
   ClipboardList,
@@ -58,6 +58,8 @@ interface ChatContainerProps {
   isProcessing: boolean;
   phase: Phase;
   progress?: ChatProgress | null;
+  /** Per-category completion, so the bar can name what is being asked about. */
+  categories?: CategoryStatus[] | null;
   onNewChat?: () => void;
   voice?: VoiceControls;
   // Optional: only used to render the mobile "Peep Insights" toggle bar.
@@ -73,6 +75,7 @@ export default function ChatContainer({
   isProcessing,
   phase,
   progress: serverProgress,
+  categories,
   onNewChat,
   voice,
   onToggleSecretBoard,
@@ -209,6 +212,19 @@ export default function ChatContainer({
       ? serverProgress
       : null;
 
+  // Which of the six categories FAB is working through right now.
+  //
+  // The chat categories come first in the interview order (see chatOrder in
+  // server/src/categories.ts), so the first unfinished one is what the next
+  // question will be about. Naming it turns an unexplained 9/28 into "How you
+  // think, 2 of 4" — the same number, but one a student can see the end of.
+  // Falls back to the plain overall count when nothing resolves, which is what
+  // a student who deferred every gate should see.
+  const activeCategory =
+    categories?.find((c) => c.surface === "chat" && !c.complete) ??
+    categories?.find((c) => !c.complete) ??
+    null;
+
   return (
     <div className="flex h-full min-w-0 flex-col bg-white">
       {/* Chat header. Everything used to sit in one row that overflowed on a
@@ -217,7 +233,7 @@ export default function ChatContainer({
       <header className="shrink-0 border-b border-ink-200 bg-white">
         <div className="mx-auto flex w-full max-w-3xl items-center justify-between gap-2 px-4 py-2.5 sm:px-6">
           <div className="flex min-w-0 items-center gap-2.5">
-            <span className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-ink-900 font-display text-sm font-bold text-moss-300">
+            <span className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-ink-900 font-display text-sm font-bold text-moss-300">
               F
               <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-white bg-good-500" />
             </span>
@@ -236,7 +252,7 @@ export default function ChatContainer({
                   onChange={(e) => voice.onLanguageChange(e.target.value)}
                   title="Language FAB listens and replies in"
                   aria-label="Voice language"
-                  className="h-8 max-w-28 rounded-lg border border-ink-450 bg-white px-2 text-tiny font-semibold text-ink-700 shadow-e1 transition-colors hover:border-ink-600"
+                  className="h-8 max-w-28 rounded-full border border-ink-450 bg-white px-3 text-tiny font-semibold text-ink-700 shadow-e1 transition-colors hover:border-ink-600"
                 >
                   <option value="auto">Auto</option>
                   {voice.languages.map((lang) => (
@@ -289,9 +305,16 @@ export default function ChatContainer({
             >
               <div className="mx-auto w-full max-w-3xl px-4 pb-2.5 sm:px-6">
                 <div className="mb-1.5 flex items-baseline justify-between gap-2">
-                  <span className="eyebrow">Getting to know you</span>
-                  <span data-numeric className="font-mono text-micro font-bold text-ink-500">
-                    {progress.answered} / {progress.total}
+                  <span className="eyebrow truncate">
+                    {activeCategory ? activeCategory.title : "Getting to know you"}
+                  </span>
+                  <span
+                    data-numeric
+                    className="shrink-0 font-mono text-micro font-bold text-ink-500"
+                  >
+                    {activeCategory
+                      ? `${activeCategory.answered} / ${activeCategory.total}`
+                      : `${progress.answered} / ${progress.total}`}
                   </span>
                 </div>
                 <Progress
@@ -300,6 +323,12 @@ export default function ChatContainer({
                   tone="moss"
                   label="Conversation progress"
                 />
+                {/* The overall count stays, just demoted. The bar tracks the
+                    whole interview while the label tracks one section, so
+                    without this line the two would silently disagree. */}
+                <div className="mt-1 text-right text-micro font-semibold text-ink-400">
+                  {progress.answered} of {progress.total} overall
+                </div>
               </div>
             </motion.div>
           )}
@@ -340,7 +369,7 @@ export default function ChatContainer({
                 {/* FAB avatar — a spacer keeps grouped bubbles aligned. */}
                 {!isUser &&
                   (startsGroup ? (
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-ink-900 font-display text-sm font-bold text-moss-300">
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-ink-900 font-display text-sm font-bold text-moss-300">
                       F
                     </span>
                   ) : (
@@ -387,7 +416,7 @@ export default function ChatContainer({
                     <button
                       onClick={() => voice.onSpeakMessage(message)}
                       title={voice.speakingMessageId === message.id ? "Stop" : "Read this out loud"}
-                      className="inline-flex items-center gap-1.5 rounded-md px-1.5 py-1 text-micro font-bold uppercase tracking-wider text-ink-500 transition-colors hover:bg-ink-100 hover:text-moss-700"
+                      className="inline-flex items-center gap-1.5 rounded-full px-2 py-1 text-micro font-bold uppercase tracking-wider text-ink-500 transition-colors hover:bg-ink-100 hover:text-moss-700"
                     >
                       {voice.speakingMessageId === message.id ? (
                         <>
@@ -420,7 +449,7 @@ export default function ChatContainer({
                           disabled={isProcessing}
                           className="group flex w-full items-center gap-3 rounded-xl border border-ink-200 bg-white px-3.5 py-3 text-left text-sm font-semibold leading-snug text-ink-900 shadow-e1 transition-[border-color,background-color,box-shadow] duration-150 hover:border-moss-400 hover:bg-moss-50 hover:shadow-e2 disabled:opacity-50"
                         >
-                          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-ink-200 bg-ink-50 font-mono text-tiny font-bold text-ink-500 transition-colors duration-150 group-hover:border-moss-500 group-hover:bg-moss-500 group-hover:text-white">
+                          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-ink-200 bg-ink-50 font-mono text-tiny font-bold text-ink-500 transition-colors duration-150 group-hover:border-moss-500 group-hover:bg-moss-500 group-hover:text-white">
                             {String.fromCharCode(65 + idx)}
                           </span>
                           <span className="min-w-0 flex-1 break-words">{option}</span>
@@ -468,7 +497,7 @@ export default function ChatContainer({
         {isProcessing && (
           <div className="flex justify-start">
             <div className="flex max-w-[80%] items-start gap-2.5">
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-ink-900 font-display text-sm font-bold text-moss-300">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-ink-900 font-display text-sm font-bold text-moss-300">
                 F
               </span>
               <div className="space-y-1">
@@ -518,7 +547,7 @@ export default function ChatContainer({
               on narrow screens. */}
           <form
             onSubmit={handleSubmit}
-            className={`flex items-center gap-2 rounded-2xl border bg-white p-1.5 shadow-e2 transition-[border-color,box-shadow] ${
+            className={`flex items-center gap-2 rounded-full border bg-white p-1.5 shadow-e2 transition-[border-color,box-shadow] ${
               isRecording
                 ? "border-moss-400 shadow-glow-moss"
                 : "border-ink-200 focus-within:border-moss-400 focus-within:shadow-glow-moss"
@@ -533,7 +562,7 @@ export default function ChatContainer({
                 title={isRecording ? "Send what you said" : "Talk to FAB"}
                 aria-label={isRecording ? "Stop recording and send" : "Record a voice message"}
                 aria-pressed={isRecording}
-                className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-colors disabled:opacity-40 ${
+                className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-colors disabled:opacity-40 ${
                   isRecording
                     ? "bg-moss-500 text-white"
                     : "text-ink-500 hover:bg-ink-100 hover:text-moss-700"
@@ -561,7 +590,7 @@ export default function ChatContainer({
                   onClick={() => void finishRecording(false)}
                   title="Discard this recording"
                   aria-label="Discard recording"
-                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-ink-500 transition-colors hover:bg-ink-100 hover:text-bad-700"
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-ink-500 transition-colors hover:bg-ink-100 hover:text-bad-700"
                 >
                   <X className="h-4 w-4" />
                 </button>
@@ -585,7 +614,7 @@ export default function ChatContainer({
               type="submit"
               disabled={isProcessing || isRecording || !inputText.trim()}
               aria-label="Send message"
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-ink-900 text-white transition-colors hover:bg-ink-800 disabled:bg-ink-100 disabled:text-ink-500"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-ink-900 text-white transition-colors hover:bg-ink-800 disabled:bg-ink-100 disabled:text-ink-500"
             >
               {isProcessing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
             </button>

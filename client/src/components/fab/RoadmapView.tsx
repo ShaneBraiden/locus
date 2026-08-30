@@ -794,7 +794,7 @@ ADAPTIVE READINESS PROGRESSION:
         {/* SaaS-Style Dashboard Header */}
         <div className="bg-moss-50 p-6 sm:p-8 border-b border-ink-200 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2">
-            <span className="bg-moss-600 text-white text-micro font-mono tracking-widest font-bold px-2.5 py-1 rounded uppercase">
+            <span className="bg-moss-600 text-white text-micro font-mono tracking-widest font-bold px-3 py-1 rounded-full uppercase">
               Module 3: Decision Lab
             </span>
             <h2 className="text-2xl sm:text-3xl font-display font-bold tracking-tight text-ink-900">
@@ -879,7 +879,7 @@ ADAPTIVE READINESS PROGRESSION:
                       <Sliders className="h-4.5 w-4.5 text-moss-700" />
                       <span>Decision Confidence Metric</span>
                     </div>
-                    <span className="text-micro font-mono bg-moss-50 text-moss-800 border border-moss-200 font-bold px-2 py-0.5 rounded">
+                    <span className="text-micro font-mono bg-moss-50 text-moss-800 border border-moss-200 font-bold px-2.5 py-0.5 rounded-full">
                       Real-Time Calculation
                     </span>
                   </div>
@@ -1025,7 +1025,7 @@ ADAPTIVE READINESS PROGRESSION:
                     >
                       {/* Top match score pill */}
                       <div className="space-y-2">
-                        <span className="text-micro font-mono font-bold bg-moss-500 text-ink-950 px-2.5 py-1 rounded-xs uppercase">
+                        <span className="text-micro font-mono font-bold bg-moss-500 text-ink-950 px-2.5 py-1 rounded-full uppercase">
                           {gap.category} Gap
                         </span>
 
@@ -1143,7 +1143,7 @@ ADAPTIVE READINESS PROGRESSION:
                         </div>
 
                         <div className="flex items-center gap-2 shrink-0">
-                          <span className={`text-micro font-mono uppercase tracking-wider font-bold px-2 py-1 rounded ${
+                          <span className={`text-micro font-mono uppercase tracking-wider font-bold px-2.5 py-1 rounded-full ${
                             task.difficulty === "Easy" ? "bg-moss-50 text-moss-700" :
                             task.difficulty === "Medium" ? "bg-moss-50 text-moss-700" :
                             "bg-bad-50 text-bad-700"

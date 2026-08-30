@@ -2,8 +2,26 @@ export interface University {
   id: string;
   name: string;
   country: string;
+  /**
+   * FALLBACK ONLY. The card's photograph is resolved at runtime from the
+   * university's own Wikipedia article — see `lib/universityImages.ts` and the
+   * `wikipedia` field below. This is what renders on the first frame, and what
+   * stays on screen if that request fails.
+   *
+   * These URLs are generic stock campus photography and always were. Do not add
+   * more of them, and do not treat one as a picture of the school it sits next
+   * to: the whole reason for the Wikipedia lookup is that this field cannot be
+   * made accurate by hand at any realistic catalogue size.
+   */
   heroImage: string;
-  /** Short initialism used as the crest mark, e.g. "MIT". */
+  /**
+   * Exact English Wikipedia article title. This is the key the real imagery is
+   * fetched against, so it has to be the canonical title rather than a redirect
+   * or a search phrase — `Massachusetts_Institute_of_Technology`, not `MIT`.
+   * Underscores or spaces are both fine; the fetcher normalises.
+   */
+  wikipedia: string;
+  /** Short initialism, used as the crest mark until the real one loads. */
   logo: string;
   qsRanking: number;
   programmes: UniversityProgramme[];
@@ -44,6 +62,7 @@ export const UNIVERSITIES_DB: University[] = [
     name: "Massachusetts Institute of Technology (MIT)",
     country: "United States",
     heroImage: "https://images.unsplash.com/photo-1564981797816-1043664bf78d?q=80&w=2000&auto=format&fit=crop",
+    wikipedia: "Massachusetts Institute of Technology",
     logo: "MIT",
     qsRanking: 1,
     campusSize: "Large, Urban",
@@ -75,6 +94,7 @@ export const UNIVERSITIES_DB: University[] = [
     name: "Stanford University",
     country: "United States",
     heroImage: "https://images.unsplash.com/photo-1622397333309-3056849bc70b?q=80&w=2000&auto=format&fit=crop",
+    wikipedia: "Stanford University",
     logo: "SU",
     qsRanking: 2,
     campusSize: "Vast, Suburban",
@@ -106,6 +126,7 @@ export const UNIVERSITIES_DB: University[] = [
     name: "University of Cambridge",
     country: "United Kingdom",
     heroImage: "https://images.unsplash.com/photo-1582650893046-24e52f5898d9?q=80&w=2000&auto=format&fit=crop",
+    wikipedia: "University of Cambridge",
     logo: "CAM",
     qsRanking: 2,
     campusSize: "Historic, Collegiate",
@@ -154,6 +175,7 @@ export const UNIVERSITIES_DB: University[] = [
     name: "ETH Zurich",
     country: "Switzerland",
     heroImage: "https://images.unsplash.com/photo-1542470719-74d115e5d3fa?q=80&w=2000&auto=format&fit=crop",
+    wikipedia: "ETH Zurich",
     logo: "ETH",
     qsRanking: 8,
     campusSize: "Urban & Suburban split",
@@ -185,6 +207,7 @@ export const UNIVERSITIES_DB: University[] = [
     name: "National University of Singapore (NUS)",
     country: "Singapore",
     heroImage: "https://images.unsplash.com/photo-1555899434-94d1368aa7af?q=80&w=2000&auto=format&fit=crop",
+    wikipedia: "National University of Singapore",
     logo: "NUS",
     qsRanking: 8,
     campusSize: "Large, Tropical Urban",
@@ -216,6 +239,7 @@ export const UNIVERSITIES_DB: University[] = [
     name: "London Business School (LBS)",
     country: "United Kingdom",
     heroImage: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?q=80&w=2000&auto=format&fit=crop",
+    wikipedia: "London Business School",
     logo: "LBS",
     qsRanking: 12,
     campusSize: "Compact, Urban",
@@ -247,6 +271,7 @@ export const UNIVERSITIES_DB: University[] = [
     name: "Technical University of Munich (TUM)",
     country: "Germany",
     heroImage: "https://images.unsplash.com/photo-1599557422176-13a2a6b28189?q=80&w=2000&auto=format&fit=crop",
+    wikipedia: "Technical University of Munich",
     logo: "TUM",
     qsRanking: 37,
     campusSize: "Urban & Garching Tech Hub",

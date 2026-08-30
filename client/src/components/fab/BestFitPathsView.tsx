@@ -217,7 +217,15 @@ interface BestFitPathsViewProps {
   onViewDetails: (path: CareerPath) => void;
   compareList: CareerPath[];
   onToggleCompare: (path: CareerPath) => void;
-  setActiveTab?: (tab: any) => void;
+  /**
+   * Takes the student to FAB.
+   *
+   * Was `setActiveTab`, called with "chat" — a tab id that does not exist. The
+   * chat tab is "fab", so the one button on the empty state did nothing at all.
+   * A single-purpose callback cannot drift out of sync with the tab ids the
+   * way a raw setter could.
+   */
+  onGoToChat?: () => void;
   onViewUniversities?: (path: CareerPath) => void;
   psychometrics?: PsychReadout | null;
 }
@@ -227,7 +235,7 @@ export default function BestFitPathsView({
   onViewDetails,
   compareList = [],
   onToggleCompare,
-  setActiveTab,
+  onGoToChat,
   onViewUniversities,
   psychometrics = null
 }: BestFitPathsViewProps) {
@@ -275,7 +283,7 @@ export default function BestFitPathsView({
         <h3 className="font-display text-xl font-bold text-ink-900">Complete your FAB conversation to unlock your personalised career recommendations.</h3>
       </div>
       <button 
-        onClick={() => setActiveTab?.("chat")}
+        onClick={() => onGoToChat?.()}
         className="px-6 py-3.5 bg-moss-500 hover:bg-moss-600 text-white rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer uppercase tracking-wider font-sans"
       >
         Continue with FAB
@@ -497,19 +505,19 @@ export default function BestFitPathsView({
 
                   {/* 4 Quick Metrics in a row */}
                   <div className="scroll-slim mb-4 flex items-center gap-1.5 overflow-x-auto pb-1 whitespace-nowrap">
-                    <div className="flex items-center gap-1 shrink-0 bg-ink-50 border border-ink-200 shadow-e2 px-2 py-1 rounded text-micro text-ink-600">
+                    <div className="flex items-center gap-1 shrink-0 bg-ink-50 border border-ink-200 shadow-e2 px-2 py-1 rounded-full text-micro text-ink-600">
                       <TrendingUp className="h-3 w-3 text-moss-700" />
                       <span className="font-semibold truncate">{intel.futureDemand}</span>
                     </div>
-                    <div className="flex items-center gap-1 shrink-0 bg-ink-50 border border-ink-200 shadow-e2 px-2 py-1 rounded text-micro text-ink-600">
+                    <div className="flex items-center gap-1 shrink-0 bg-ink-50 border border-ink-200 shadow-e2 px-2 py-1 rounded-full text-micro text-ink-600">
                       <Briefcase className="h-3 w-3 text-good-500" />
                       <span className="font-semibold truncate">{intel.salaryRange}</span>
                     </div>
-                    <div className="flex items-center gap-1 shrink-0 bg-ink-50 border border-ink-200 shadow-e2 px-2 py-1 rounded text-micro text-ink-600">
+                    <div className="flex items-center gap-1 shrink-0 bg-ink-50 border border-ink-200 shadow-e2 px-2 py-1 rounded-full text-micro text-ink-600">
                       <Clock className="h-3 w-3 text-info-500" />
                       <span className="font-semibold truncate">{intel.yearsToEnter}</span>
                     </div>
-                    <div className="flex items-center gap-1 shrink-0 bg-ink-50 border border-ink-200 shadow-e2 px-2 py-1 rounded text-micro text-ink-600">
+                    <div className="flex items-center gap-1 shrink-0 bg-ink-50 border border-ink-200 shadow-e2 px-2 py-1 rounded-full text-micro text-ink-600">
                       <ShieldAlert className="h-3 w-3 text-moss-700" />
                       <span className="font-semibold truncate">{intel.aiRisk}</span>
                     </div>

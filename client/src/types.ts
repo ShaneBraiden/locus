@@ -72,6 +72,8 @@ export interface VoiceLanguage {
 export interface UserMemory {
   name: string | null;
   degreeName: string | null;
+  /** Year of study, collected at onboarding. */
+  year: string | null;
   language: string;
   traits: string[];
   topPaths: { fieldName: string; matchScore: number }[];
@@ -216,6 +218,8 @@ export interface AssessmentState {
   v: 1;
   name: string | null;
   degreeId: string | null;
+  /** Year of study, from the onboarding picker. Profile only, never scored. */
+  year?: string | null;
   answers: PsychAnswer[];
   followUps: Record<string, number>;
   skipped: string[];
@@ -228,6 +232,82 @@ export interface AssessmentState {
 
 export interface ChatProgress {
   answered: number;
+  total: number;
+}
+
+// ---- The six-category interview schedule (server/src/categories.ts) ----
+//
+// The 28-item bank is delivered across three surfaces so no student ever meets
+// it as one long form: the personal items at first login, two categories
+// behind the features that need them, and the rest in conversation with FAB.
+// Only the chat categories go through Gemini — the tapped ones are scored
+// straight from the committed tables.
+
+export type InterviewSurface = 'onboarding' | 'feature' | 'chat';
+
+export type CategoryId =
+  | 'basics'
+  | 'interests'
+  | 'workstyle'
+  | 'thinking'
+  | 'drive'
+  | 'deciding';
+
+/** Which tab opening a `feature` category belongs to. */
+export type GatedFeature = 'paths' | 'lab';
+
+export interface InterviewOption {
+  id: string;
+  letter: string;
+  label: string;
+}
+
+export interface InterviewItem {
+  id: string;
+  text: string;
+  options: InterviewOption[];
+}
+
+/** A category with its questions, as served by /api/interview/categories. */
+export interface InterviewCategory {
+  id: CategoryId;
+  order: number;
+  title: string;
+  blurb: string;
+  surface: InterviewSurface;
+  feature?: GatedFeature;
+  profileFields: ('name' | 'degree' | 'year')[];
+  items: InterviewItem[];
+}
+
+/** Per-category completion, returned alongside every turn and every batch. */
+export interface CategoryStatus {
+  id: CategoryId;
+  order: number;
+  title: string;
+  blurb: string;
+  surface: InterviewSurface;
+  feature?: GatedFeature;
+  answered: number;
+  total: number;
+  complete: boolean;
+}
+
+export interface DegreeOption {
+  id: string;
+  name: string;
+}
+
+export interface StudyYear {
+  id: string;
+  label: string;
+}
+
+/** The whole schedule, fetched once per session. */
+export interface InterviewSchedule {
+  categories: InterviewCategory[];
+  degrees: DegreeOption[];
+  years: StudyYear[];
   total: number;
 }
 
@@ -250,6 +330,7 @@ export interface ChatSession {
   assessment?: AssessmentState | null;
   progress?: ChatProgress | null;
   psychometrics?: PsychReadout | null;
+  categories?: CategoryStatus[] | null;
 }
 
 export interface CareerPath {

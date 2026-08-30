@@ -22,11 +22,58 @@ use the app without an account, but their data stays local only.
 If MongoDB is unreachable the server still boots on in-memory storage and warns
 loudly — accounts are lost on restart, so that mode is for local dev only.
 
+## The six categories
+
+The instrument is 28 items long. Asked end to end in one sitting it is a
+twenty-minute form, and a twenty-minute form put in front of a student before
+the app has shown them anything is the most reliable way there is to lose them.
+So the bank is cut into six themed categories (`server/src/categories.ts`) and
+each is collected on the surface where its questions are least intrusive and
+most obviously relevant:
+
+| # | Category          | Items | Where it is asked                        | Gemini |
+| - | ----------------- | ----- | ---------------------------------------- | ------ |
+| 1 | About you         | 4     | First login, with name, degree and year  | No     |
+| 2 | What pulls you    | 6     | First time they open **Career Paths**    | No     |
+| 3 | How you work      | 6     | First time they open the **Lab**         | No     |
+| 4 | How you think     | 4     | In conversation with FAB                 | Yes    |
+| 5 | What drives you   | 5     | In conversation with FAB                 | Yes    |
+| 6 | How you decide    | 3     | In conversation with FAB                 | Yes    |
+
+**The first three never touch Gemini.** They are rendered from the committed
+item bank exactly as written and answered by tapping, so the student returns an
+option id — which is precisely what the scorer wants. There is nothing for a
+model to interpret, and putting a network round trip and an outage mode in
+front of a new account's first screen would buy nothing. They post to
+`POST /api/interview/answers`, which validates each pair against the bank and
+scores it with the same tables the conversation uses. A tapped answer and a
+spoken one are worth exactly the same thing.
+
+**A gate is not a wall.** Every feature sheet carries a "Later", and a deferred
+category simply goes back into FAB's queue. The conversation works through the
+chat categories first and then falls through to whatever the modals did not
+collect (`chatOrder`), so a student who dismissed every sheet still reaches a
+recommendation — it just takes more conversation. Nothing in the product is
+unreachable because somebody closed a modal.
+
+**Ranking has a floor.** Career paths and the psychometric read stay hidden
+until at least six psychometric items are in — the size of the Holland
+category, which carries the largest weight in the fit score. Before that the
+ranking is driven by whatever happened to be answered, which is how four
+personal questions produced "Graphic Designer, 97.6" for a nursing student:
+arithmetically correct, and exactly the confident nonsense that costs a student
+their trust in everything else on screen. Category 2 is what lifts the floor,
+which is also what that gate is for.
+
+"New conversation" restarts the conversation, not the student: name, degree,
+year and every tapped answer carry over, and only the chat categories reset.
+"Start fresh" is still the real reset and wipes everything, memory included.
+
 ## How prediction works
 
-FAB just talks to you. Gemini asks each thing in its own words, reacts to what
-you actually said, and follows up when an answer is vague — there are no
-multiple-choice buttons and the text box is never disabled.
+Inside the conversation FAB just talks to you. Gemini asks each thing in its own
+words, reacts to what you actually said, and follows up when an answer is vague
+— there are no multiple-choice buttons and the text box is never disabled.
 
 Underneath, every reply is mapped onto the **LOCUS instrument**
 (`docs/psychometric-items.json`, parsed from `locus_psychometric_engine.xlsx`):
@@ -160,6 +207,16 @@ Auth routes are public; everything else needs `Authorization: Bearer <token>`
 - `GET  /api/careers/pivots` / `GET /api/careers/pivots/:degreeId` - the degree
   pivot map: direct-line roles, short-bridge pivots, careers open to any
   graduate, and the bridging qualification for each
+- `GET  /api/interview/categories` - the six categories with their questions,
+  plus the 26 degrees and the year options: everything onboarding needs in one
+  request
+- `POST /api/interview/answers` - one batch of tapped answers:
+  `{assessment, categoryId?, name?, degreeId?, year?, answers:[{itemId, optionId}]}`
+  → the updated `assessment`, `progress`, `categories`, signals, constraints and
+  (past the ranking floor) `bestFitPaths` and `psychometrics`. Never calls Gemini
+- `POST /api/interview/state` - re-validate an assessment and report where it sits
+- `POST /api/state/beacon` - `PUT /api/state` with the token in the body, for
+  `navigator.sendBeacon` on tab close (a `fetch` there is routinely cancelled)
 - `GET  /api/quiz/questions` - the legacy 15-question bank (still serves `/api/predict`)
 - `POST /api/predict` - stateless prediction: `{degreeId, answers: {q1: 0, ...}}` → ranked paths
 - `GET  /healthz` - liveness, dataset and storage-backend check (no auth)
@@ -171,5 +228,6 @@ but never forge a result.
 
 To regenerate the datasets after editing a source file:
 `node docs/parse-topology.mjs` and `node docs/parse-psychometrics.mjs`.
-#   l o c u s  
+#   l o c u s 
+ 
  

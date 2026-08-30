@@ -46,12 +46,21 @@ export default function CareerDetailView({
   const reqUni = ["medicine", "engineering", "law", "research", "architecture", "psychology", "business", "data science", "bioinformatics", "computational biology", "clinical data", "healthcare consulting", "strategy consulting", "hospital administration", "medical affairs", "regulatory", "computer science"].some(r => path.fieldName.toLowerCase().includes(r));
 
   return (
-    <div className="bg-ink-50 min-h-screen pb-24 text-ink-900 selection:bg-moss-200">
-      
-      {/* HERO SECTION */}
-      <div className="relative h-[50vh] sm:h-[70vh] min-h-[380px] sm:min-h-[500px] w-full overflow-hidden">
-        <img 
-          src={path.heroImage} 
+    /* No `min-h-screen` and no page fill. This view renders inside the app's
+       content canvas, which is already a white pane with its own height and its
+       own 40px corners — a full-height grey rectangle in it painted a hard-edged
+       block over the top of the pane it was sitting in. */
+    <div className="pb-16 text-ink-900 selection:bg-moss-200">
+
+      {/* HERO SECTION
+          Shorter than it was (70vh of photograph is a landing page, not a
+          detail view) and no longer full-bleed: it is a plate with the same
+          radius as the panels under it. Bleeding it to the canvas edge meant
+          relying on the canvas to clip its top corners, which worked and left
+          the bottom two square against the content below. */}
+      <div className="media relative h-[34vh] min-h-[240px] w-full rounded-3xl sm:h-[42vh] sm:min-h-[320px]">
+        <img
+          src={path.heroImage}
           alt={path.fieldName}
           referrerPolicy="no-referrer"
           className="absolute inset-0 w-full h-full object-cover"
@@ -63,57 +72,59 @@ export default function CareerDetailView({
         <div className="absolute top-4 left-4 sm:top-6 sm:left-6 z-20">
           <button 
             onClick={onBack}
-            className="flex items-center gap-2 bg-white/15 hover:bg-white/25 text-white px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl text-tiny sm:text-xs font-bold uppercase tracking-wider transition-all"
+            className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-xs font-bold uppercase tracking-wider text-white backdrop-blur-sm transition-colors hover:bg-white/30"
           >
-            <ChevronRight className="h-3.5 sm:h-4 w-3.5 sm:w-4 rotate-180" />
-            Back to Paths
+            <ChevronRight className="h-3.5 w-3.5 rotate-180" />
+            Back to paths
           </button>
         </div>
 
-        {/* Hero Content */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-12 z-20 max-w-5xl mx-auto flex flex-col items-start">
-          <div className="inline-flex items-center gap-1.5 bg-moss-400 text-ink-900 px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-micro sm:text-xs font-bold uppercase tracking-widest mb-3 sm:mb-4">
-            <Star className="h-3.5 sm:h-4 w-3.5 sm:w-4" />
-            {path.matchScore}% MATCH
+        {/* Hero Content
+            The type came down with the hero. It was 7xl on a 70vh plate, which
+            is a landing-page proportion — at the height this block is now, a
+            72px headline leaves room for the headline and nothing else. */}
+        <div className="absolute bottom-0 left-0 right-0 z-20 mx-auto flex max-w-5xl flex-col items-start p-4 sm:p-8">
+          <div className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1 text-micro font-bold uppercase tracking-widest text-ink-900">
+            <Star className="h-3.5 w-3.5 text-moss-600" />
+            {path.matchScore}% match
           </div>
-          
-          <h1 className="text-2xl sm:text-5xl md:text-7xl font-bold text-white tracking-tight leading-tight mb-2 sm:mb-4 drop-shadow-e3">
+
+          <h1 className="mb-2 text-2xl font-bold leading-tight tracking-tight text-white drop-shadow-e3 sm:text-4xl">
             {path.fieldName}
           </h1>
-          
-          <p className="text-sm sm:text-lg md:text-xl text-white/90 font-medium max-w-3xl leading-relaxed mb-6 sm:mb-10 drop-shadow-e2">
+
+          <p className="mb-5 max-w-3xl text-sm font-medium leading-relaxed text-white/90 drop-shadow-e2 sm:text-base">
             {path.oneLineRecommendation}
           </p>
-          
-          <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
-            {reqUni ? (
-              <button
-                onClick={onContinue}
-                className="w-full sm:w-auto px-6 py-3 sm:px-8 sm:py-4 bg-white text-ink-900 hover:bg-ink-100 rounded-xl text-xs sm:text-sm font-bold uppercase tracking-wider transition-transform flex items-center justify-center gap-2"
-              >
-                <BookOpen className="h-4 sm:h-5 w-4 sm:w-5" />
-                View Universities
-              </button>
-            ) : (
-              <button
-                onClick={onContinue}
-                className="w-full sm:w-auto px-6 py-3 sm:px-8 sm:py-4 bg-white text-ink-900 hover:bg-ink-100 rounded-xl text-xs sm:text-sm font-bold uppercase tracking-wider transition-transform flex items-center justify-center gap-2"
-              >
-                <Target className="h-4 sm:h-5 w-4 sm:w-5" />
-                Explore Skill Roadmap
-              </button>
-            )}
+
+          <div className="flex w-full flex-col items-stretch gap-2 sm:w-auto sm:flex-row sm:items-center">
+            <button
+              onClick={onContinue}
+              className="flex items-center justify-center gap-2 rounded-full bg-white px-6 py-2.5 text-xs font-bold uppercase tracking-wider text-ink-900 transition-colors hover:bg-ink-100 sm:text-sm"
+            >
+              {reqUni ? (
+                <>
+                  <BookOpen className="h-4 w-4" />
+                  View universities
+                </>
+              ) : (
+                <>
+                  <Target className="h-4 w-4" />
+                  Explore skill roadmap
+                </>
+              )}
+            </button>
 
             {onToggleCompare && (
               <button
                 onClick={() => onToggleCompare(path)}
-                className={`w-full sm:w-auto px-6 py-3 sm:px-8 sm:py-4 rounded-xl text-xs sm:text-sm font-bold uppercase tracking-wider border transition-transform flex items-center justify-center gap-2 ${
-                  isSelected 
-                    ? "bg-moss-400/20 border-moss-400/50 text-moss-300" 
-                    : "bg-white/10 border-white/20 text-white hover:bg-white/20"
+                className={`flex items-center justify-center gap-2 rounded-full border px-6 py-2.5 text-xs font-bold uppercase tracking-wider backdrop-blur-sm transition-colors sm:text-sm ${
+                  isSelected
+                    ? "border-moss-400/50 bg-moss-400/25 text-white"
+                    : "border-white/25 bg-white/15 text-white hover:bg-white/25"
                 }`}
               >
-                <Layers className="h-4 sm:h-5 w-4 sm:w-5" />
+                <Layers className="h-4 w-4" />
                 {isSelected ? "Comparing" : "Compare"}
               </button>
             )}
@@ -121,7 +132,7 @@ export default function CareerDetailView({
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-12 py-10 sm:py-16 space-y-12 sm:space-y-24">
+      <div className="mx-auto max-w-5xl space-y-10 py-8 sm:space-y-14 sm:py-10">
         
         {/* SECTION 1: Why Northr Recommended This */}
         <section>

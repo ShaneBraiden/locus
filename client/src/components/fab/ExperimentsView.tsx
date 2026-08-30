@@ -566,10 +566,15 @@ export default function ExperimentsView({
   };
 
   return (
-    <div id="experiments-redesign-container" className="w-full h-full flex flex-col select-none font-sans bg-ink-25">
+    <div id="experiments-redesign-container" className="w-full h-full flex flex-col select-none font-sans">
 
-      {/* Main Dynamic Workspace Canvas */}
-      <div className="relative flex-1 bg-white border-0 sm:border sm:border-ink-200 sm:m-2 sm:rounded-lg overflow-hidden flex flex-col justify-between">
+      {/* Main Dynamic Workspace Canvas.
+          The border and the page fill are gone: this sits inside the app's
+          content canvas, which already supplies a white pane with its own
+          corners, and a bordered rectangle drawn inside it read as a second
+          window rather than as the workspace. What is left is the scroll
+          boundary and its radius. */}
+      <div className="relative flex-1 overflow-hidden flex flex-col justify-between rounded-2xl m-1.5 sm:m-2">
 
         <AnimatePresence mode="wait">
 
@@ -626,22 +631,27 @@ export default function ExperimentsView({
                 </div>
 
                 {/* Sub Tab Selector (Pill Capsule Design) */}
-                <div className="flex w-full sm:w-auto bg-ink-100 p-1 rounded-2xl text-micro sm:text-tiny font-mono font-bold tracking-wider uppercase text-ink-500 overflow-x-auto scroll-slim">
+                {/* `w-fit` on wide screens, not `w-auto`: this is a flex child
+                    of a full-width row, so `w-auto` let it stretch and the
+                    track ran the width of the page with three small pills
+                    huddled at the left end. A capsule that wide reads as a
+                    container rather than as a control. */}
+                <div className="flex w-full sm:w-fit bg-ink-100 p-1 rounded-full text-micro sm:text-tiny font-mono font-bold tracking-wider uppercase text-ink-500 overflow-x-auto scroll-slim">
                   <button
                     onClick={() => setDashboardTab("for_you")}
-                    className={`flex-1 sm:flex-initial text-center whitespace-nowrap px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl transition-all cursor-pointer ${dashboardTab === "for_you" ? "bg-white text-ink-900 shadow-e2" : "hover:text-ink-900"}`}
+                    className={`flex-1 sm:flex-initial text-center whitespace-nowrap px-3 sm:px-4 py-1.5 sm:py-2 rounded-full transition-all cursor-pointer ${dashboardTab === "for_you" ? "bg-white text-ink-900 shadow-e2" : "hover:text-ink-900"}`}
                   >
                      For You
                   </button>
                   <button
                     onClick={() => setDashboardTab("in_progress")}
-                    className={`flex-1 sm:flex-initial text-center whitespace-nowrap px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl transition-all cursor-pointer ${dashboardTab === "in_progress" ? "bg-white text-ink-900 shadow-e2" : "hover:text-ink-900"}`}
+                    className={`flex-1 sm:flex-initial text-center whitespace-nowrap px-3 sm:px-4 py-1.5 sm:py-2 rounded-full transition-all cursor-pointer ${dashboardTab === "in_progress" ? "bg-white text-ink-900 shadow-e2" : "hover:text-ink-900"}`}
                   >
                     ⏳ In Progress
                   </button>
                   <button
                     onClick={() => setDashboardTab("completed")}
-                    className={`flex-1 sm:flex-initial text-center whitespace-nowrap px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl transition-all cursor-pointer ${dashboardTab === "completed" ? "bg-white text-ink-900 shadow-e2" : "hover:text-ink-900"}`}
+                    className={`flex-1 sm:flex-initial text-center whitespace-nowrap px-3 sm:px-4 py-1.5 sm:py-2 rounded-full transition-all cursor-pointer ${dashboardTab === "completed" ? "bg-white text-ink-900 shadow-e2" : "hover:text-ink-900"}`}
                   >
                      Completed ({completedExperienceIds.length})
                   </button>
@@ -740,7 +750,7 @@ export default function ExperimentsView({
                                        </p>
                                      </div>
                                    </div>
-                                   <span className="text-micro sm:text-xs font-mono text-ink-500 font-bold shrink-0 sm:ml-3 flex items-center bg-ink-50 border border-ink-200/80 px-2.5 py-1 sm:py-1.5 rounded-xs self-start sm:self-center">
+                                   <span className="text-micro sm:text-xs font-mono text-ink-500 font-bold shrink-0 sm:ml-3 flex items-center bg-ink-50 border border-ink-200/80 px-2.5 py-1 sm:py-1.5 rounded-full self-start sm:self-center">
                                     <Clock className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1 text-moss-700" />
                                     {pick.duration}
                                    </span>
@@ -845,7 +855,7 @@ export default function ExperimentsView({
                                     <h5 className="text-xs sm:text-sm font-bold text-ink-900 truncate">{title}</h5>
                                     <div className="flex flex-wrap gap-1 pt-1">
                                       {skills.slice(0, 3).map((sk, idx) => (
-                                        <span key={idx} className="text-micro sm:text-micro font-mono font-bold text-ink-500 bg-ink-50 border border-ink-200 px-1.5 rounded">{sk.trim()}</span>
+                                        <span key={idx} className="text-micro sm:text-micro font-mono font-bold text-ink-500 bg-ink-50 border border-ink-200 px-2 rounded-full">{sk.trim()}</span>
                                       ))}
                                     </div>
                                   </div>
@@ -923,7 +933,7 @@ export default function ExperimentsView({
                   </div>
 
                   <div className="space-y-1.5 sm:space-y-2 w-full">
-                    <span className="inline-block text-micro sm:text-micro font-mono font-bold uppercase bg-moss-100 text-moss-700 border border-moss-200 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-xs">
+                    <span className="inline-block text-micro sm:text-micro font-mono font-bold uppercase bg-moss-100 text-moss-700 border border-moss-200 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full">
                       PILOT SUGGESTED CHALLENGE
                     </span>
                     <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-ink-900 tracking-tight leading-snug break-words whitespace-normal">
@@ -1192,7 +1202,7 @@ export default function ExperimentsView({
                             <Sliders className="h-4 w-4 text-moss-700" />
                             <span className="text-xs font-bold text-ink-800">Review Clinical/Experiment Subject Blueprint</span>
                           </div>
-                          <span className="text-micro font-mono text-good-500 bg-good-50 px-2 py-0.5 rounded font-bold uppercase">READY</span>
+                          <span className="text-micro font-mono text-good-500 bg-good-50 px-2 py-0.5 rounded-full font-bold uppercase">READY</span>
                         </div>
 
                         <div className="flex items-center justify-between p-3 bg-ink-50/50 border border-ink-200 rounded-xl">
@@ -1200,7 +1210,7 @@ export default function ExperimentsView({
                             <BookOpen className="h-4 w-4 text-moss-700" />
                             <span className="text-xs font-bold text-ink-800">Academic references & vocabulary logs locked</span>
                           </div>
-                          <span className="text-micro font-mono text-good-500 bg-good-50 px-2 py-0.5 rounded font-bold uppercase">LOCKED ON DECK</span>
+                          <span className="text-micro font-mono text-good-500 bg-good-50 px-2 py-0.5 rounded-full font-bold uppercase">LOCKED ON DECK</span>
                         </div>
                       </div>
                     </motion.div>
@@ -1337,12 +1347,12 @@ export default function ExperimentsView({
                         <span className="block text-micro font-mono font-bold text-ink-500 uppercase tracking-widest">Interactive Practice Completion Checklist</span>
 
                         <label className="flex items-center space-x-3 p-3 bg-ink-50/50 rounded-xl cursor-pointer hover:bg-ink-50 transition-colors">
-                          <input type="checkbox" className="h-4 w-4 rounded text-moss-700 focus:ring-moss-500 border-ink-300" />
+                          <input type="checkbox" className="h-4 w-4 rounded-xs text-moss-700 focus:ring-moss-500 border-ink-300" />
                           <span className="text-xs font-bold text-ink-800">I have actively tested simplifying clinical or system protocols in conversation or writing.</span>
                         </label>
 
                         <label className="flex items-center space-x-3 p-3 bg-ink-50/50 rounded-xl cursor-pointer hover:bg-ink-50 transition-colors">
-                          <input type="checkbox" className="h-4 w-4 rounded text-moss-700 focus:ring-moss-500 border-ink-300" />
+                          <input type="checkbox" className="h-4 w-4 rounded-xs text-moss-700 focus:ring-moss-500 border-ink-300" />
                           <span className="text-xs font-bold text-ink-800">I compared layperson outcomes vs traditional text density.</span>
                         </label>
                       </div>
@@ -1361,7 +1371,11 @@ export default function ExperimentsView({
                       {/* Reaction scale */}
                       <div className="space-y-1.5">
                         <span className="eyebrow block">How did it go?</span>
-                        <div className="grid grid-cols-5 divide-x divide-ink-200 border border-ink-200">
+                        {/* Five separate pills on a track, not a bordered grid
+                            with rules between the cells. A divider that meets a
+                            rounded frame has nowhere to terminate — see the
+                            same change in `<StatRow>`. */}
+                        <div className="grid grid-cols-5 gap-1 rounded-2xl bg-ink-100 p-1">
                           {reactionScale.map((item, idx) => {
                             const isActive = activeEmoji === idx;
                             return (
@@ -1370,10 +1384,10 @@ export default function ExperimentsView({
                                 type="button"
                                 aria-pressed={isActive}
                                 onClick={() => setActiveEmoji(idx)}
-                                className={`flex cursor-pointer flex-col items-center justify-center gap-0.5 px-1 py-2 transition-[color,background-color] duration-150 ${
+                                className={`flex cursor-pointer flex-col items-center justify-center gap-0.5 rounded-xl px-1 py-2 transition-[color,background-color] duration-150 ${
                                   isActive
                                     ? "bg-moss-50 text-moss-700"
-                                    : "bg-white text-ink-500 hover:bg-ink-50"
+                                    : "text-ink-500 hover:bg-white/70"
                                 }`}
                               >
                                 <span
@@ -1515,7 +1529,7 @@ export default function ExperimentsView({
                       </div>
 
                       <div className="space-y-1">
-                        <span className="text-micro font-mono font-bold text-moss-700 bg-moss-50 border border-moss-200 px-2.5 py-0.5 rounded-xs uppercase tracking-wider">Validated Proof Point Signed</span>
+                        <span className="text-micro font-mono font-bold text-moss-700 bg-moss-50 border border-moss-200 px-2.5 py-0.5 rounded-full uppercase tracking-wider">Validated Proof Point Signed</span>
                         <h3 className="text-lg sm:text-xl font-bold text-ink-950 tracking-tight leading-snug">
                           Mission Success & Registered!
                         </h3>
@@ -1524,7 +1538,7 @@ export default function ExperimentsView({
                         </p>
                       </div>
 
-                      <div className="inline-flex items-center space-x-1.5 px-3 py-1 bg-moss-50 border border-moss-100 text-moss-700 font-bold text-micro sm:text-xs rounded-xs font-mono shadow-e1">
+                      <div className="inline-flex items-center space-x-1.5 px-3 py-1 bg-moss-50 border border-moss-100 text-moss-700 font-bold text-micro sm:text-xs rounded-full font-mono shadow-e1">
                         <Star className="h-3.5 w-3.5 animate-pulse" />
                         <span>+50 XP REGISTERED & STREAK MAINTAINED</span>
                       </div>
@@ -1691,7 +1705,7 @@ export default function ExperimentsView({
                   </div>
 
                   <div className="space-y-1.5 w-full">
-                    <span className="inline-block text-micro sm:text-micro font-bold uppercase bg-moss-100 text-moss-700 border border-moss-200 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-xs font-mono">
+                    <span className="inline-block text-micro sm:text-micro font-bold uppercase bg-moss-100 text-moss-700 border border-moss-200 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full font-mono">
                       High Match
                     </span>
                     <h4 className="text-lg sm:text-xl md:text-2xl font-bold text-ink-900 tracking-tight leading-snug">
@@ -1983,7 +1997,7 @@ export default function ExperimentsView({
                     {/* Right: Mapped signals and Claim Button */}
                     <div className="md:col-span-7 space-y-5 text-left">
                       <div className="space-y-1">
-                        <span className="inline-block text-micro font-bold uppercase bg-moss-100 text-moss-700 border border-moss-200 px-2.5 py-1 rounded-xs font-mono">
+                        <span className="inline-block text-micro font-bold uppercase bg-moss-100 text-moss-700 border border-moss-200 px-2.5 py-1 rounded-full font-mono">
                           Decoding Complete
                         </span>
                         <h4 className="text-xl font-bold text-ink-900 tracking-tight">Verify Mapped Skills</h4>
@@ -2016,7 +2030,7 @@ export default function ExperimentsView({
                                 </div>
                                 <span className="text-xs font-bold">{skill}</span>
                               </div>
-                              <span className="text-micro font-mono font-bold text-moss-700 bg-moss-50 px-2 py-0.5 rounded-xs uppercase border border-moss-100">
+                              <span className="text-micro font-mono font-bold text-moss-700 bg-moss-50 px-2 py-0.5 rounded-full uppercase border border-moss-100">
                                 Verified Point
                               </span>
                             </div>

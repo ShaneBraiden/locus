@@ -1,4 +1,5 @@
 import { buildPsychProfile } from './bridge.js';
+import { isStudyYear, studyYearLabel } from './categories.js';
 import { getRepos } from './db.js';
 import { loadDegrees } from './topology.js';
 import { DEFAULT_LANGUAGE, normalizeLanguage } from './sarvam.js';
@@ -33,6 +34,7 @@ export function emptyContext(userId: string): UserContext {
     name: null,
     degreeId: null,
     degreeName: null,
+    year: null,
     language: DEFAULT_LANGUAGE,
     traits: [],
     topPaths: [],
@@ -60,6 +62,7 @@ export function sanitizeContext(input: unknown, userId: string): UserContext {
     c.degreeId = raw.degreeId;
     c.degreeName = loadDegrees().find((d) => d.id === raw.degreeId)?.name ?? null;
   }
+  if (isStudyYear(raw.year)) c.year = raw.year;
   c.language = normalizeLanguage(raw.language);
 
   if (Array.isArray(raw.traits)) {
@@ -157,6 +160,7 @@ export function updateContext(ctx: UserContext, turn: TurnRecord): UserContext {
     next.degreeId = assessment.degreeId;
     next.degreeName = loadDegrees().find((d) => d.id === assessment.degreeId)?.name ?? null;
   }
+  if (assessment.year) next.year = assessment.year;
   if (turn.language) next.language = normalizeLanguage(turn.language);
 
   // Traits are the same deterministic reflections the reflection moment uses.
@@ -210,7 +214,10 @@ export function contextBrief(ctx: UserContext): string {
   const lines: string[] = [];
 
   if (ctx.name) lines.push(`Name: ${ctx.name}`);
-  if (ctx.degreeName) lines.push(`Studying: ${ctx.degreeName}`);
+  if (ctx.degreeName) {
+    const year = studyYearLabel(ctx.year);
+    lines.push(`Studying: ${ctx.degreeName}${year ? ` (${year})` : ''}`);
+  }
   if (ctx.language && ctx.language !== DEFAULT_LANGUAGE) {
     lines.push(`Speaks to you in: ${ctx.language} (they use voice, so keep sentences short and easy to say out loud)`);
   }
@@ -238,6 +245,7 @@ export function publicContext(ctx: UserContext) {
   return {
     name: ctx.name,
     degreeName: ctx.degreeName,
+    year: ctx.year,
     language: ctx.language,
     traits: ctx.traits,
     topPaths: ctx.topPaths,

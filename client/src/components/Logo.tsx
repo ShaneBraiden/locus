@@ -8,8 +8,11 @@ import React from 'react';
  * palette's colours into a 24px square and left the logo as the last warm
  * object on an otherwise cool page.
  *
- * Rounding is left to the caller. Call sites use `rounded-xs` in the rail and
- * `rounded-md` at hero size; nothing uses `rounded-full` any more.
+ * Rounding is left to the caller, and every call site now passes one — the
+ * mark is a tile and a square tile is the single most conspicuous corner left
+ * on a page made of capsules. `rounded-sm` in the drawer, `rounded-md` in the
+ * nav, `rounded-lg` at hero size. Not `rounded-full`: the artwork is drawn to
+ * the edges of its box and a circular mask cuts the star's beams off.
  */
 export const Logo = ({ className = "w-8 h-8", style }: { className?: string, style?: React.CSSProperties }) => (
   <div

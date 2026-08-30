@@ -14,42 +14,71 @@
    rounded boxes hides its own structure. Twelve cards on a page have twelve
    outlines and no hierarchy.
 
-   The replacement tenet: STRUCTURE IS DRAWN WITH LINES, NOT WITH BOXES.
+   That revision replaced it with: STRUCTURE IS DRAWN WITH LINES, NOT BOXES.
+   Content sat directly on the page, radii were zero, and every shadow in the
+   document flow resolved to `none`.
 
-     - Content sits directly on the page. Sections are separated by 1px rules
-       and by whitespace, not by a container with a shadow under it. Elevation
-       is reserved for things that genuinely float: modals, popovers, dropdowns,
-       toasts. Nothing else casts a shadow — in the document flow, every shadow
-       token resolves to `none`.
-     - Geometry is FLAT and square. The radius ramp is zero from `xs` through
-       `lg`, which is every chip, control, field, tile and panel in the app.
-       Only the overlay tokens keep 2px, because a modal is a separate object
-       above the page and a perfectly square one reads as a rendering fault.
-     - Density is the point. The page gutter, section rhythm and the top of the
-       Tailwind spacing scale are all compressed (see SPACING COMPRESSION at
-       the foot of this file) so the interface shows information rather than
-       margin.
+   A third revision then made surfaces translucent again and set them floating
+   in a low-contrast atmospheric field, on the grounds that a card does not
+   need an outline if the page gives it something to be *in*. That argument was
+   right and this revision keeps it. What it did not do was follow through: the
+   field was lifted almost to white, because content sat directly on it and had
+   to stay readable, and a sky lifted to 0.87 luminance is not a sky. The
+   photograph was in the file and almost none of it was on the screen.
+
+   THIS REVISION FOLLOWS THROUGH. Two tenets, and the second is downstream of
+   the first:
+
+       THE PAGE IS A PHOTOGRAPH OF SKY.
+       NOTHING IN THE APP HAS A CORNER.
+
+   The move that makes both affordable is THE CANVAS. Every view now renders
+   inside one large rounded pane, inset from the viewport on all four sides,
+   near-opaque, with its own paper tint. Nothing is read against the field any
+   more — the field shows in the gutter around the canvas, behind the floating
+   nav, and around the auth card. So it can be the actual photograph at close
+   to its actual colour.
+
+   And once the page is a photograph of cloud, the square corner is the one
+   shape on screen that does not occur anywhere behind it. Hence the second
+   tenet, and hence a radius ramp that starts at 10px and runs to 40px, with
+   every control the user can operate rendered as a capsule.
+
+     - Surfaces are GLASS in the field and PAPER in the canvas. Outside the
+       canvas a surface is ~72% white with a blur behind it and a hairline of
+       light along its top edge. Inside it, the same component goes opaque
+       white — there is nothing left to show through, and two nested backdrop
+       filters go milky.
+     - Geometry is ROUND. `--radius-xs` is 10px and `--radius-pill` is a
+       capsule. See the RADII block for which of the two a given element takes;
+       the short version is that surfaces get a radius and controls get a pill.
+     - Elevation is REAL but shallow, with one exception. Shadows are wide,
+       soft and very light — the shadow of something resting a few millimetres
+       off the page. The canvas gets the one deep shadow in the system, because
+       it is genuinely held up in front of the sky.
+     - CLOUDS. The same photograph the field is built from, at low opacity,
+       inside the nav and the larger surfaces. See the CLOUDS block below for
+       what keeps them from becoming wallpaper.
+     - Density survives all of it. The page gutter, section rhythm and the top
+       of the Tailwind spacing scale stay compressed (see SPACING COMPRESSION
+       at the foot of this file). Round is not the same as roomy, and this is
+       still an application that has to show sixty things at once. The only
+       space this revision spends is the few pixels of padding a corner costs.
      - Colour is a neutral graphite ramp plus exactly one accent. Colour marks
        state and action. It does not decorate.
      - Motion is short and functional: 150ms, standard easing. Nothing lifts,
        tilts, grows or settles.
 
-   ATMOSPHERE (added). One qualification to the tenet above, and only one: the
-   page itself is no longer a flat grey. It carries an extremely low-contrast
-   field — pale sky blue opening at the top, a warm maroon haze pooling toward
-   the lower right — with film grain baked in.
+   WHY A SKY AND NOT A GRADIENT. It is the product's argument made ambient. A
+   career tool is about two things at once: where someone is headed (sky —
+   open, directional, unbounded) and what they have already built (the maroon
+   pooling low-right — earned, grounded, the colour of a diploma and a bound
+   volume). The page holds both, so every screen sits between origin and
+   horizon without a single element having to say so.
 
-   This is not decoration reinstated. It is the product's argument made
-   ambient. A career tool is about two things at once: where someone is headed
-   (sky — open, directional, unbounded) and what they have already built (the
-   maroon — earned, grounded, the colour of a diploma and a bound volume). The
-   page holds both, so every screen sits between origin and horizon without a
-   single element having to say so.
-
-   The rules that made the system work are untouched. Structure is still drawn
-   with lines. Nothing in the document flow casts a shadow. Geometry is still
-   square. The field is below everything, moves nothing, and never rises to
-   contrast where content lives — see ATMOSPHERE at the foot of the base layer.
+   THE ONE HARD RULE THE FIELD IMPOSES: text on the field goes on glass. The
+   field is below everything, moves nothing, and takes no clicks — see
+   ATMOSPHERE at the foot of the base layer for the contrast arithmetic.
 
    RAMP NAMES ARE HISTORICAL. `moss` and `clay` are referenced by class name in
    several thousand lines of view code, so the ramps keep their names and are
@@ -280,46 +309,78 @@
   --color-info-900: #1B303F;
 
   /* --- Radii -------------------------------------------------------------
-     FLAT. The ramp is zero from `xs` through `lg`, which covers every chip,
-     control, field, tile and panel in the app. A rounded corner is a soft-UI
-     signal; removing it entirely is what makes the interface read as flat
-     rather than merely low-contrast.
+     NOTHING IN THIS SYSTEM HAS A CORNER.
 
-     Only the two overlay tokens keep a hair of radius (2px), because a modal
-     and a dropdown are physically separate objects sitting above the page and
-     a fully square overlay reads as a rendering error rather than a surface.
+     The ramp has been through three states. It was blobby, then it was zero
+     from `xs` through `lg`, then it was a cautious 6–24px. This revision takes
+     the last one to its conclusion: the smallest radius in the app is 10px,
+     every control that can be a capsule is one, and the largest surfaces run
+     to 40px.
 
-     Every component keeps the token it always used, so the whole app squares
-     off from this one block. */
-  --radius-xs:  0;         /* chips, swatches, tags                         */
-  --radius-sm:  0;         /* inputs, small buttons                         */
-  --radius-md:  0;         /* the default. Buttons, fields, tiles           */
-  --radius-lg:  0;         /* panels, table wrappers                        */
-  --radius-xl:  0.125rem;  /* 2px — sheets, large containers                */
-  --radius-2xl: 0.125rem;  /* 2px — modals                                  */
-  --radius-3xl: 0.125rem;  /* 2px — the ceiling                             */
+     The reason is the field. The page is a photograph of sky now, and a sharp
+     90° corner is the one shape that never occurs in it — a square panel on a
+     cloud reads as a screenshot pasted over the wallpaper, which is exactly
+     the failure the previous ramp was still half-committing. Curvature is what
+     makes a surface belong to the light behind it.
+
+     The curve is deliberately not linear. Small objects take proportionally
+     more radius than large ones, because roundness is read relative to the
+     shortest edge: 10px on a 22px chip is already a lozenge, while 28px on a
+     600px panel is a gentle sweep. Scaling radius with element size would make
+     the chips look square beside the panels; holding it flat would turn the
+     panels into pills.
+
+     `--radius-pill` is not a size, it is an instruction: be a capsule at
+     whatever height you happen to be. Buttons, badges, inputs, tabs, avatars
+     and progress tracks all take it, which is what removes the last of the
+     straight-edged vocabulary from the app.
+
+     `lg` (20px) is the workhorse — the panel, and therefore most of the
+     surfaces on screen. `3xl` (40px) is the content canvas and the auth card:
+     the two objects that float free with sky visible on every side, and which
+     need the extra curve to read as detached rather than as a panel that has
+     come loose from a grid. */
+  --radius-xs:  0.625rem;  /* 10px — the floor. Swatches, dots, tight chips */
+  --radius-sm:  0.875rem;  /* 14px — nested blocks, inline media            */
+  --radius-md:  1rem;      /* 16px — the default. Tiles, menu items, images */
+  --radius-lg:  1.25rem;   /* 20px — panels, table wrappers                 */
+  --radius-xl:  1.5rem;    /* 24px — the floating nav, sheets, popovers     */
+  --radius-2xl: 2rem;      /* 32px — modals, hero blocks                    */
+  --radius-3xl: 2.5rem;    /* 40px — the content canvas, the auth card      */
+  --radius-pill: 999px;    /* capsule — every control the user can operate  */
 
   /* --- Elevation ---------------------------------------------------------
-     Gone, apart from genuine overlays. Everything in the document flow is now
-     literally zero: e1 through e3 resolve to `none`, so the ~180 inline
-     `shadow-soft` / `shadow-e2` references across the views flatten without
-     needing 180 edits.
+     Restored, and deliberately shallow. The previous revision resolved e1–e3
+     to `none`; they are real again, because a glass surface with no shadow
+     does not read as glass — it reads as a lighter patch of page. The shadow
+     is the only cue that says the thing has an underside.
 
-     e4 and e5 survive for floating chrome ONLY — popovers, dropdowns, modals,
-     toasts — and even there they are a hairline ring plus the faintest drop,
-     enough to separate the overlay from what it covers and nothing more. */
-  --shadow-e1: none;
-  --shadow-e2: none;
-  --shadow-e3: none;
-  --shadow-e4: 0 0 0 1px rgb(20 24 28 / 0.08), 0 2px 8px -4px rgb(20 24 28 / 0.10);
-  --shadow-e5: 0 0 0 1px rgb(20 24 28 / 0.10), 0 4px 16px -8px rgb(20 24 28 / 0.14);
-  /* Legacy aliases. `soft` was under every card in the old build; it is now
-     nothing, which is what flattens the app in one line. `float` survives for
-     genuine overlays. */
-  --shadow-soft: none;
-  --shadow-float: 0 0 0 1px rgb(20 24 28 / 0.08), 0 2px 8px -4px rgb(20 24 28 / 0.10);
-  --shadow-glow-moss: 0 0 0 1px rgb(37 99 168 / 0.35);
-  --shadow-glow-clay: 0 0 0 1px rgb(165 118 47 / 0.35);
+     Every shadow here is built the same way, and the shape matters more than
+     the darkness:
+
+       - A LARGE, VERY SOFT drop. Wide blur, big negative spread, 4–8% black.
+         This is the ambient occlusion of an object resting just off the page.
+       - A TIGHT CONTACT shadow directly beneath it, 1–2px, slightly darker.
+         Without this the surface floats unanchored; with it, it sits.
+       - A HAIRLINE RING of white *inside* the top edge (see `--glass-edge`).
+         Real glass catches light on its lip. This is what stops a translucent
+         panel from looking like a hole in the page.
+
+     They are also blue-black rather than neutral black (20 26 34), because a
+     grey shadow over a blue-tinted field goes muddy where the two meet. */
+  --shadow-e1: 0 1px 2px rgb(20 26 34 / 0.04), 0 4px 12px -6px rgb(20 26 34 / 0.06);
+  --shadow-e2: 0 1px 2px rgb(20 26 34 / 0.05), 0 8px 20px -10px rgb(20 26 34 / 0.09);
+  --shadow-e3: 0 2px 4px rgb(20 26 34 / 0.05), 0 14px 32px -14px rgb(20 26 34 / 0.12);
+  --shadow-e4: 0 2px 6px rgb(20 26 34 / 0.06), 0 20px 44px -18px rgb(20 26 34 / 0.16);
+  --shadow-e5: 0 4px 10px rgb(20 26 34 / 0.08), 0 32px 64px -24px rgb(20 26 34 / 0.22);
+
+  /* Legacy aliases. `soft` was under every card in the old build, then became
+     nothing; it is now e1, so the ~180 inline `shadow-soft` references across
+     the views pick the new language up without an edit. */
+  --shadow-soft: var(--shadow-e1);
+  --shadow-float: var(--shadow-e4);
+  --shadow-glow-moss: 0 0 0 3px rgb(37 99 168 / 0.14);
+  --shadow-glow-clay: 0 0 0 3px rgb(153 83 79 / 0.14);
 
   /* --- Motion ------------------------------------------------------------
      Short and linear-ish. An interface control should change state, not
@@ -394,15 +455,103 @@
   --atmos-strength: 1;
   --atmos-card: 0.86;
 
-  /* The generated field. Sky and maroon blended, lifted almost to paper, with
-     grain baked in at source so it never scales with the viewport or the
-     device pixel ratio. */
-  --atmos-image: url("../assets/bg/atmosphere.jpg");
+  /* THE FIELD IS THE PHOTOGRAPH NOW.
+     ------------------------------------------------------------------------
+     This previously pointed at `atmosphere.jpg` — a generated composite that
+     took the sky, the maroon and the grain and lifted the whole thing to a
+     measured luminance floor of 0.87, i.e. almost to paper. That was the right
+     asset for the layout it was built for, where body copy sat directly on the
+     page and every pixel of the field was competing with a paragraph.
+
+     That constraint is gone. Content now lives inside `.canvas` (see SURFACES
+     below), a near-opaque rounded pane inset from the viewport on all four
+     sides. Almost nothing reads against the field any more — it shows in the
+     margin around the canvas, behind the floating nav, and around the auth
+     card. So the field can be the actual photograph at close to its actual
+     colour, which is what the sky was for in the first place.
+
+     `--sky-veil` is the one knob: how much white sits between the photograph
+     and the app. `--sky-veil-far` is the same measurement at the bottom of the
+     viewport, which is higher — the eye reads a field that lightens downward
+     as depth, and a field that darkens downward as a lid. */
+  --atmos-image: url("../assets/bg/source/sky.jpg");
   --atmos-image-dark: url("../assets/bg/atmosphere-dark.jpg");
+  --sky-veil: 0.30;
+  --sky-veil-far: 0.50;
+
+  /* The canvas fill, as bare RGB channels so it can be used at several alphas.
+     This is `ink-50` (#F2F6FA) lifted about two thirds of the way to white:
+     pale enough to read as paper rather than as a grey box, tinted enough that
+     a true-white panel on it has a visible edge. */
+  --canvas-fill: 249 251 253;
+
+  /* --- Glass -------------------------------------------------------------
+     Four values describe every translucent surface in the app.
+
+     `--glass-tint` is how much white the surface carries. 0.72 is the number
+     that matters and it was arrived at from both ends: below about 0.62 the
+     field shows through strongly enough that body text starts fighting the
+     cloud behind it, and above about 0.82 the surface is effectively opaque
+     and there was no point making it glass. 0.72 keeps the field legible as
+     light without letting it become pattern.
+
+     `--glass-blur` is what makes it glass rather than tracing paper. It has to
+     be large relative to the features behind it: the field's gradients are
+     hundreds of pixels wide, so a 4px blur would do nothing visible. 12px is
+     enough to smear a cloud edge into a gradient while staying cheap.
+
+     `--glass-saturate` compensates for a real artefact — averaging pixels
+     under a blur pulls them toward grey, so a backdrop-filtered panel over a
+     blue field comes out visibly less blue than the field beside it. Pushing
+     saturation back up by 40% restores the match.
+
+     `--glass-edge` is the lit lip. See the elevation note above. */
+  --glass-tint: 0.72;
+  --glass-blur: 12px;
+  --glass-saturate: 1.4;
+  --glass-edge: rgb(255 255 255 / 0.85);
+
+  /* --- Clouds ------------------------------------------------------------
+     Generated by `assets/bg/generate-clouds.py`, which solves each layer's
+     baked-in opacity against the contrast floor rather than picking it by eye.
+
+     `--cloud-opacity` is a second, runtime multiplier on top of that. It
+     exists so a surface can carry *less* cloud than the asset allows — a
+     panel wrapping a dense table takes `.no-cloud`, and a whole subtree can be
+     calmed by scoping this variable — but it should never be raised above 1,
+     because that would spend contrast the generator already allocated. */
+  --cloud-opacity: 1;
+  --cloud-wide: url("../assets/bg/clouds-wide.png");
+  --cloud-card: url("../assets/bg/clouds-card.png");
+  --cloud-auth: url("../assets/bg/clouds-auth.png");
+  --cloud-soft: url("../assets/bg/clouds-soft.png");
+}
+
+/* Backdrop filters are the one part of this that has a real fallback path.
+   Where they are unsupported, the tint alone would leave the field's cloud
+   detail sitting undiffused behind body text, so the surface goes nearly
+   opaque instead. Firefox has supported them by default since 103; this
+   branch is for older engines and for users who have disabled the feature. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :root { --glass-tint: 0.94; }
+}
+
+/* Cheap devices and users who have asked for less motion also tend to be the
+   ones a full-screen backdrop filter costs the most. Reduced motion is not
+   literally a statement about blur, but it is the closest signal available
+   and it is the one the platform gives us. */
+@media (prefers-reduced-motion: reduce) {
+  :root { --glass-blur: 0px; --glass-tint: 0.92; }
 }
 
 @media print {
-  :root { --atmos-strength: 0; --atmos-card: 1; }
+  :root {
+    --atmos-strength: 0;
+    --atmos-card: 1;
+    --glass-tint: 1;
+    --glass-blur: 0px;
+    --cloud-opacity: 0;
+  }
 }
 
 /* ============================================================================
@@ -448,15 +597,30 @@
      cannot know about, so an ultrawide monitor and a phone both get the blue
      at the top and the warmth low-right rather than a cropped slice.
 
-     THE ALPHAS BELOW ARE A CONTRAST BUDGET, NOT A TASTE SETTING. Body copy at
-     `ink-500` sits directly on this field — that is what "content sits on the
-     page" means in this system — so the darkest pixel of the composite has to
-     keep `ink-500` above 4.5:1. The image is generated against a measured
-     luminance floor of 0.87 (see `assets/bg/generate-atmosphere.py`); the two
-     gradients spend the remaining headroom down to 0.789, which leaves
-     `ink-500` at 4.65:1 in the warm corner and `moss-500` at 4.9:1. Raising
-     either peak much past 0.12 / 0.09 spends more than there is, and puts
-     secondary text under the threshold exactly where the maroon is strongest. */
+     THE VEIL HAS A FLOOR, AND THE GLASS IS WHAT PAYS FOR IT. Almost nothing
+     reads against the bare field — that is what the canvas is for — but the
+     nav sits on it, and the nav carries an `ink-500` sync label.
+
+     Against the deepest blue in the photograph (approximately #4A9BD0, L 0.30)
+     the numbers run:
+
+       bare field, 0.30 veil ............ ink-500 at 2.7:1   ✗
+       under `--glass-tint` (0.72) ...... ink-500 at 4.8:1   ✓
+       under `.nav-float` (0.78) ........ ink-500 at 5.0:1   ✓
+                                          ink-600 at 7.0:1   ✓
+
+     So the rule this establishes is not "the veil is high enough", it is
+     TEXT ON THE FIELD GOES ON GLASS. Nothing may sit on the bare photograph.
+
+     If a future layout does need text directly on the field, raise
+     `--sky-veil` to 0.78 rather than darkening the type — 0.78 is the point at
+     which `ink-500` clears 4.5:1 over the darkest pixel of this photograph
+     unaided. It costs most of the sky to do it.
+
+     The stack, back to front: the photograph, a warm pool low-right for what
+     the student has already built, then the white veil itself — the veil is
+     LAST so it sits over the maroon as well, keeping the warm corner a tint in
+     the sky rather than a stain on top of it. */
   body::before {
     content: "";
     position: fixed;
@@ -465,23 +629,29 @@
     pointer-events: none;
     background-color: var(--color-ink-50);
     background-image:
+      /* the veil: the photograph read through paper */
+      linear-gradient(
+        to bottom,
+        rgb(255 255 255 / var(--sky-veil)) 0%,
+        rgb(255 255 255 / calc((var(--sky-veil) + var(--sky-veil-far)) / 2)) 55%,
+        rgb(255 255 255 / var(--sky-veil-far)) 100%
+      ),
       /* the warm pool: what has already been built */
       radial-gradient(
         120% 90% at 92% 108%,
-        rgb(155 84 80 / calc(0.070 * var(--atmos-strength))) 0%,
-        rgb(155 84 80 / calc(0.027 * var(--atmos-strength))) 38%,
+        rgb(155 84 80 / calc(0.22 * var(--atmos-strength))) 0%,
+        rgb(155 84 80 / calc(0.09 * var(--atmos-strength))) 38%,
         rgb(155 84 80 / 0) 68%
       ),
-      /* the horizon lift: what is still open */
-      linear-gradient(
-        to bottom,
-        rgb(60 151 200 / calc(0.100 * var(--atmos-strength))) 0%,
-        rgb(60 151 200 / calc(0.036 * var(--atmos-strength))) 32%,
-        rgb(60 151 200 / 0) 62%
-      ),
       var(--atmos-image);
+    /* The source is a 675x1200 portrait frame, so on any landscape viewport
+       `cover` crops to a horizontal band. Anchoring at 22% from the top takes
+       the band with the open blue and the two cloud banks in it rather than
+       the empty middle. There is no detail in a sky to lose to the upscale —
+       which is the reason a photograph of one survives being blown up 3x and a
+       photograph of anything else does not. */
     background-size: auto, auto, cover;
-    background-position: center, center, center;
+    background-position: center, center, center 22%;
     background-repeat: no-repeat;
     opacity: var(--atmos-strength);
   }
@@ -511,10 +681,22 @@
 
   /* One focus treatment everywhere: a 2px accent ring, offset, with the same
      small radius as the control it wraps. */
+  /* The radius here is a fallback for elements that declare none of their own —
+     a class-based `rounded-*` has real specificity and wins, so a pill button
+     still gets a pill ring. */
   :where(a, button, input, select, textarea, [tabindex]):focus-visible {
     outline: 2px solid var(--color-moss-500);
-    outline-offset: 1px;
-    border-radius: var(--radius-sm);
+    outline-offset: 2px;
+    border-radius: var(--radius-md);
+  }
+
+  /* Form controls default to round. Tailwind's reset leaves `border-radius`
+     at the platform value, so any `<select>` or `<input>` the app styles
+     without an explicit `rounded-*` keeps square corners — which on a page
+     built out of capsules is the one element that gives the game away. This is
+     a floor, not a rule: every `rounded-*` class outranks it. */
+  :where(select, input, textarea, button) {
+    border-radius: var(--radius-md);
   }
 
   ::selection {
@@ -537,19 +719,19 @@
 @layer components {
   /* ==========================================================================
      SHAPE COMPATIBILITY SHIMS
-     The organic silhouette classes are referenced from view code. Rather than
-     chase every call site, they are redefined here onto the sharp ramp. A
-     `.blob-3` is now a 4px rounded rectangle; a `.card-organic-2` is a 6px
-     one. Left in place so nothing renders unstyled, but they should be
-     considered deprecated — new code uses the radius tokens directly.
+     The organic silhouette classes are referenced from view code. They were
+     flattened onto the square ramp by the previous revision and now pick up
+     the soft one, which is closer to what they originally meant than either
+     intermediate state was. Still deprecated — new code uses the radius
+     tokens directly — but they render correctly.
      ======================================================================= */
   .blob-1, .blob-2, .blob-3,
-  .blob-4, .blob-5, .blob-6 { border-radius: var(--radius-md); }
+  .blob-4, .blob-5, .blob-6 { border-radius: var(--radius-lg); }
 
   .card-organic-0, .card-organic-1, .card-organic-2,
-  .card-organic-3, .card-organic-4, .card-organic-5 { border-radius: var(--radius-lg); }
+  .card-organic-3, .card-organic-4, .card-organic-5 { border-radius: var(--radius-2xl); }
 
-  .mask-organic { border-radius: var(--radius-md); }
+  .mask-organic { border-radius: var(--radius-lg); }
 
   /* The per-view blurred colour wash stays neutralised. There is now exactly
      one atmospheric layer in the app and it is on the body — letting
@@ -559,34 +741,76 @@
   .wash { display: none; }
 
   /* ==========================================================================
-     SURFACES
+     SURFACES — THE GLASS
      --------------------------------------------------------------------------
-     A panel in this system is a reading surface sitting in a lit room. It is
-     not opaque and it is not transparent: it is white held at
-     `--atmos-card` (0.86), which lets the field register as a tint at the
-     panel's edges without ever competing with what is printed on it.
+     A panel is a pane of glass resting just off the page. Four things make it
+     one, and leaving any of them out makes it look like a mistake rather than
+     like a lighter panel:
 
-     No `backdrop-filter`. It would be the obvious reach and it is the wrong
-     one — there is nothing behind a panel that needs blurring, because the
-     field is already a smooth gradient. Translucency alone produces the whole
-     effect at zero compositing cost, which matters when a dashboard puts sixty
-     of these on screen at once.
+       1. TINT      white at `--glass-tint`, so the field shows through
+       2. BLUR      `backdrop-filter`, so what shows through is diffuse
+       3. EDGE      a white hairline inset along the top lip, so it catches
+                    light the way a real edge does
+       4. SHADOW    e1, so it has an underside
 
-     The consequence worth knowing: two panels overlapping would double their
-     tint. They never do in this app — panels tile, they do not stack — but a
-     panel placed inside a panel should take `.surface-flat`.
+     The border is gone. That is the deliberate part: a translucent surface
+     over a lit field is found by its light and its shadow, and adding an
+     outline on top of those is what makes glass UI look like a sticker. Where
+     a boundary genuinely has to be asserted — a nested panel, a table frame —
+     `.surface-ruled` puts a hairline back.
+
+     STACKING. `isolation: isolate` gives each panel its own stacking context
+     so the cloud layer can sit at `z-index: -1` — behind the content, in
+     front of the tint — without escaping into the page. Panels tile rather
+     than stack in this app, but a panel inside a panel should still take
+     `.surface-flat`: two backdrop filters in sequence blur an already-blurred
+     backdrop and the result goes milky.
      ======================================================================= */
   .surface-card {
-    background-color: rgb(255 255 255 / var(--atmos-card));
+    position: relative;
+    isolation: isolate;
+    background-color: rgb(255 255 255 / var(--glass-tint));
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    box-shadow:
+      inset 0 1px 0 0 var(--glass-edge),
+      var(--shadow-e1);
   }
 
-  /* Sunken/secondary regions. Slightly more of the field, never less. */
+  /* The cloud. Applied by `.has-cloud`, not by `.surface-card`, because most
+     panels should not carry one — see the CLOUDS note in the token block. The
+     layer is clipped by the panel's own radius, sits above the tint and below
+     the content, and never intercepts a pointer. */
+  .has-cloud { position: relative; isolation: isolate; }
+  .has-cloud::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    border-radius: inherit;
+    background-image: var(--cloud-soft);
+    background-size: cover;
+    background-position: center top;
+    background-repeat: no-repeat;
+    opacity: var(--cloud-opacity);
+  }
+  /* Photographic clouds, for surfaces large enough to carry the detail. */
+  .has-cloud--card::after   { background-image: var(--cloud-card); }
+  .has-cloud--wide::after   { background-image: var(--cloud-wide); }
+  .has-cloud--auth::after   { background-image: var(--cloud-auth); background-position: center; }
+  /* Escape hatch: a panel wrapping a dense table takes this. */
+  .no-cloud::after { display: none; }
+
+  /* Sunken/secondary regions. Less white, so more field — a sunken surface in
+     a glass system is one you can see further through, not a grey one. */
   .surface-card--muted {
     background-color: color-mix(
       in srgb,
-      var(--color-ink-100) 72%,
-      transparent
+      var(--color-ink-100) 55%,
+      rgb(255 255 255 / calc(var(--glass-tint) * 0.8))
     );
+    box-shadow: inset 0 1px 0 0 rgb(255 255 255 / 0.5);
   }
 
   /* RETROSPECTIVE. The maroon tint, for surfaces describing what the user has
@@ -597,7 +821,7 @@
     background-color: color-mix(
       in srgb,
       var(--color-clay-50) calc(88% * var(--atmos-strength) + 12%),
-      rgb(255 255 255 / var(--atmos-card))
+      rgb(255 255 255 / var(--glass-tint))
     );
   }
 
@@ -608,13 +832,139 @@
     background-color: color-mix(
       in srgb,
       var(--color-sky-50) calc(88% * var(--atmos-strength) + 12%),
-      rgb(255 255 255 / var(--atmos-card))
+      rgb(255 255 255 / var(--glass-tint))
     );
   }
 
-  /* Opt out. For a panel nested in a panel, or anywhere the doubled tint
-     would show. */
-  .surface-flat { background-color: var(--color-ink-0); }
+  /* Puts a boundary back, for the cases the light does not draw one: a nested
+     panel, a table frame, a region whose edge is structural. */
+  .surface-ruled {
+    box-shadow:
+      inset 0 0 0 1px var(--color-ink-200),
+      inset 0 1px 0 0 var(--glass-edge),
+      var(--shadow-e1);
+  }
+
+  /* Opt out of glass entirely. For a panel inside a panel, and for anything
+     that has to be opaque: a sticky table header with rows passing under it,
+     a dropdown, a tooltip. */
+  .surface-flat {
+    background-color: var(--color-ink-0);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  /* ==========================================================================
+     THE CANVAS — the object the whole layout now hangs off.
+     --------------------------------------------------------------------------
+     One pane, inset from the viewport on all four sides, with a 40px radius and
+     every scrolling view inside it. It is the single largest change in this
+     revision and it is what makes the photograph usable.
+
+     The previous shell was edge to edge: content ran to the browser frame and
+     the field was whatever showed between the panels. That is why the field had
+     to be lifted almost to white — it was the reading surface. Pull the content
+     in by 14px and give it its own near-opaque pane, and the relationship
+     inverts. The photograph is now the room the app sits in, seen in a margin
+     all the way around, and the pane is a sheet held up in front of it. Sky can
+     be sky, because nothing is being read against it.
+
+     Near-opaque, not glass, and deliberately so. This surface has a whole
+     application scrolling inside it — tables, charts, dense rows — and a
+     translucent pane with content moving under its own backdrop is the exact
+     case where a backdrop filter stops being atmosphere and starts being fog.
+     The blur is here to soften the sky at the corners, not to show it through.
+
+     The shadow is the deepest in the system. It is the only thing separating
+     the pane from the sky, since there is no border, and at this size a shallow
+     one reads as a printing error rather than as depth. */
+  .canvas {
+    position: relative;
+    isolation: isolate;
+    border-radius: var(--radius-3xl);
+    /* NOT WHITE, and this is the load-bearing detail of the whole layout.
+       A white pane makes a white panel invisible: `.surface-card` is 72% white,
+       which over a white backdrop composites to about 98% white and leaves the
+       panel defined by a 4%-black shadow and nothing else. The canvas is
+       therefore the palest cool paper the ramp has — three or four percent of
+       tint, enough that a true-white card sitting on it has an edge without a
+       border being drawn. This is the same relationship the app had against the
+       old grey page; what changed is only where the paper stops. */
+    background-color: rgb(var(--canvas-fill) / 0.94);
+    backdrop-filter: blur(28px) saturate(1.25);
+    -webkit-backdrop-filter: blur(28px) saturate(1.25);
+    box-shadow:
+      inset 0 1px 0 0 rgb(255 255 255 / 0.9),
+      inset 0 0 0 1px rgb(255 255 255 / 0.5),
+      var(--shadow-e5);
+  }
+
+  /* Panels inside the canvas sit on paper, not on the field. Their glass has
+     nothing left to show through, so it comes off: they go opaque white, which
+     is what gives them their edge against the tint above. Leaving the backdrop
+     filter on would also mean a full-screen blur nested inside a full-screen
+     blur, which is the arrangement that makes glass UI go milky. */
+  .canvas .surface-card {
+    background-color: var(--color-ink-0);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  /* The tinted variants keep their tint — they are semantic (see the `tone`
+     note on `<Panel>`) and have to stay distinguishable from the plain card. */
+  .canvas .surface-card--warm { background-color: var(--color-clay-50); }
+  .canvas .surface-card--cool { background-color: var(--color-sky-50); }
+  .canvas .surface-card--muted { background-color: var(--color-ink-100); }
+
+  /* Sticky chrome inside the canvas has to match the canvas, not white — a
+     white bar on pale paper reads as a panel that failed to scroll. */
+  .canvas-chrome {
+    background-color: rgb(var(--canvas-fill) / 0.97);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  /* The gutter between the viewport and the canvas: how much sky you see. Small
+     on a phone, where every pixel of width is content, and never large — this
+     is a frame, not a mat. */
+  .canvas-inset {
+    padding: 0.5rem;
+  }
+  @media (min-width: 640px) {
+    .canvas-inset { padding: 0.75rem; }
+  }
+  @media (min-width: 1024px) {
+    .canvas-inset { padding: 0.875rem; }
+  }
+
+  /* --- The floating nav ---------------------------------------------------
+     One object, detached on all four sides, holding every top-level
+     destination. It takes the widest radius in the ramp and the deepest
+     in-flow shadow, because it is the only thing in the app that genuinely
+     hovers over scrolling content rather than sitting beside it — and it is
+     the surface the cloud belongs on most, being the one place in the
+     interface that is literally nothing but sky.
+
+     `--cloud-opacity` is dialled back here rather than at the asset: the nav
+     is short, so its cloud is compressed into 56px and reads much stronger
+     per pixel than the same layer across a 400px card. */
+  .nav-float {
+    position: relative;
+    isolation: isolate;
+    /* A capsule, not a rounded rectangle. The nav is the one surface with sky
+       on all four sides and nothing above it to align to, so there is no edge
+       for a corner to answer — and a 56px bar at `--radius-xl` looks like a
+       panel that has floated up off the page rather than like an object of its
+       own. `.nav-float` is also used for the auth card, which is far too tall
+       to be a capsule; that call site overrides the radius. */
+    border-radius: var(--radius-pill);
+    background-color: rgb(255 255 255 / calc(var(--glass-tint) + 0.06));
+    backdrop-filter: blur(calc(var(--glass-blur) * 1.4)) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 1.4)) saturate(var(--glass-saturate));
+    box-shadow:
+      inset 0 1px 0 0 var(--glass-edge),
+      var(--shadow-e3);
+    --cloud-opacity: 0.72;
+  }
 
   /* --- Hero / inverse regions --------------------------------------------
      The dark sibling of the field, for the one or two places a view goes
@@ -642,7 +992,7 @@
   .scroll-slim::-webkit-scrollbar-track { background: transparent; }
   .scroll-slim::-webkit-scrollbar-thumb {
     background-color: var(--color-ink-300);
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-pill);
     border: 3px solid transparent;
     background-clip: content-box;
   }
@@ -651,11 +1001,17 @@
     background-clip: content-box;
   }
 
-  /* Sticky chrome. Formerly a frosted translucent pill; now an opaque surface
-     with a hairline underneath. Blur behind a sticky bar was costing a
-     compositor layer to achieve an effect that reads as decorative. */
+  /* Sticky chrome. This one is genuinely frosted again — a sticky bar has
+     scrolling content passing directly under it, which is the one situation
+     where a backdrop filter is doing real work rather than decorating.
+
+     Note the tint is higher than `--glass-tint`. Content moving under a
+     surface is far more distracting than a static field showing through one,
+     so this needs to be closer to opaque than a panel does. */
   .glass {
-    background-color: var(--color-ink-0);
+    background-color: rgb(255 255 255 / calc(var(--glass-tint) + 0.16));
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
     border-color: var(--color-ink-200);
   }
 
@@ -727,8 +1083,15 @@
 
   /* --- Data tables --------------------------------------------------------
      Card grids that were really tables are now really tables. This is the
-     shared chrome so every one of them matches: a hairline frame, uppercase
-     column heads on a sunken fill, rules between rows and nothing else. */
+     shared chrome so every one of them matches: uppercase column heads on a
+     sunken fill, rules between rows and nothing else.
+
+     A table is the one place curvature has to be argued for rather than
+     assumed. Rounding every cell would be absurd — a grid is a grid because its
+     lines meet. What is rounded is the head strip, which is a single object
+     spanning the table's width and therefore reads as a control rather than as
+     part of the data. `border-collapse: separate` is what makes that possible:
+     collapsed borders discard corner radii outright. */
   .table-flat {
     width: 100%;
     border-collapse: separate;
@@ -739,9 +1102,8 @@
     position: sticky;
     top: 0;
     z-index: 1;
-    background-color: var(--color-ink-50);
-    border-bottom: 1px solid var(--color-ink-200);
-    padding: 0.375rem 0.625rem;
+    background-color: var(--color-ink-100);
+    padding: 0.4375rem 0.75rem;
     text-align: left;
     font-size: var(--text-micro);
     font-weight: 700;
@@ -749,6 +1111,24 @@
     text-transform: uppercase;
     color: var(--color-ink-500);
     white-space: nowrap;
+  }
+  .table-flat thead th:first-child {
+    border-start-start-radius: var(--radius-md);
+    border-end-start-radius: var(--radius-md);
+  }
+  .table-flat thead th:last-child {
+    border-start-end-radius: var(--radius-md);
+    border-end-end-radius: var(--radius-md);
+  }
+  /* The row hover has to be round too, or the first thing the pointer does on
+     a curvy page is draw a rectangle across it. */
+  .table-flat tbody td:first-child {
+    border-start-start-radius: var(--radius-sm);
+    border-end-start-radius: var(--radius-sm);
+  }
+  .table-flat tbody td:last-child {
+    border-start-end-radius: var(--radius-sm);
+    border-end-end-radius: var(--radius-sm);
   }
   .table-flat tbody td {
     border-bottom: 1px solid var(--color-ink-200);
@@ -758,10 +1138,48 @@
   }
   .table-flat tbody tr:last-child td { border-bottom: 0; }
   .table-flat tbody tr:hover td { background-color: var(--color-ink-50); }
+  /* A row hover that clips into the neighbouring row's rule looks broken, so
+     the rule is suppressed under the pointer rather than drawn over. */
+  .table-flat tbody tr:hover td { border-bottom-color: transparent; }
   .table-flat [data-numeric],
   .table-flat .num {
     font-variant-numeric: tabular-nums;
     text-align: right;
+  }
+
+  /* --- Media --------------------------------------------------------------
+     Every photograph in the app goes in one of these. A bare `<img>` is the
+     last rectangle left once the panels are round, and it is the most
+     conspicuous one because a photo has content right up to its edge.
+
+     `isolation: isolate` matters here: an `overflow: hidden` ancestor is not
+     enough to clip a child that creates its own layer (a `transform` on hover,
+     a `position: absolute` overlay), and every hero image in this app has
+     both. Radius plus isolation clips reliably; radius alone does not. */
+  .media {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    background-color: var(--color-ink-100);
+  }
+  .media > img,
+  .media > video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* A photograph is the one surface in the app that is not white, so it needs
+     its own lit edge or it reads as a hole cut in the panel. */
+  .media::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    box-shadow: inset 0 0 0 1px rgb(20 26 34 / 0.07);
   }
 
   /* Gradient text is gone — a hero numeral is data, and data is ink-900. Kept

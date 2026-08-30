@@ -4,6 +4,9 @@ import {
 } from './bridge.js';
 import { buildCareerPaths, reflectionText } from './engine.js';
 import {
+  categoryStatus, chatOrder, isStudyYear, orderedItems, type CategoryStatus,
+} from './categories.js';
+import {
   dominantConstructs, matchCareers, motivationNote, pivotForDegree,
   scoreAnswers, splitByTrack,
 } from './psychometrics.js';
@@ -42,6 +45,7 @@ export function emptyAssessment(): AssessmentState {
     v: 1,
     name: null,
     degreeId: null,
+    year: null,
     answers: [],
     followUps: {},
     skipped: [],
@@ -68,6 +72,8 @@ export function sanitizeAssessment(input: unknown): AssessmentState {
   if (typeof raw.degreeId === 'string') {
     s.degreeId = loadDegrees().some((d) => d.id === raw.degreeId) ? raw.degreeId : null;
   }
+
+  if (isStudyYear(raw.year)) s.year = raw.year;
 
   const seen = new Set<string>();
   for (const a of Array.isArray(raw.answers) ? raw.answers : []) {
@@ -220,14 +226,23 @@ export interface FlowResponse {
   psychometrics?: PsychReadout;
   /** Resolved degree name, so the client does not have to scrape the transcript. */
   degreeName?: string;
+  /** Per-category completion, so the client knows which gates are still shut. */
+  categories?: CategoryStatus[];
 }
 
 const covered = (s: AssessmentState) =>
   new Set([...s.answers.map((a) => a.itemId), ...s.skipped]);
 
+/**
+ * What is still open, in the order FAB should ask it.
+ *
+ * `chatOrder` puts the three conversational categories first and leaves the
+ * onboarding and feature ones as a backstop, so the interview always reaches
+ * its end even for a student who dismissed every modal. See categories.ts.
+ */
 function openItems(s: AssessmentState): InterviewItem[] {
   const done = covered(s);
-  return interviewItems().filter((i) => !done.has(i.id));
+  return chatOrder(orderedItems().filter((i) => !done.has(i.id)));
 }
 
 function progressOf(s: AssessmentState) {
@@ -262,6 +277,104 @@ function readout(s: AssessmentState, paths: CareerPath[]): PsychReadout {
   };
 }
 
+// ------------------------------------------------------- the tapped surfaces
+
+export interface BatchPatch {
+  name?: unknown;
+  degreeId?: unknown;
+  year?: unknown;
+  answers?: unknown;
+}
+
+/**
+ * One batch of tapped answers, from onboarding or a feature gate.
+ *
+ * THIS PATH NEVER CALLS GEMINI, and that is the point of it. The onboarding
+ * screen and the two feature modals show the item bank as written and take a
+ * tap, so there is nothing for a model to interpret: the student picked an
+ * option id, and an option id is exactly what the scorer wants. Routing it
+ * through the interviewer would buy nothing and would put a network call, a
+ * latency budget and an outage mode in front of a student's first screen.
+ *
+ * Everything else about scoring is unchanged. The batch is merged into the
+ * same AssessmentState the conversation uses, validated by the same
+ * `sanitizeAssessment`, and read by the same deterministic tables — so four
+ * items tapped at onboarding and four items drawn out in conversation are
+ * worth precisely the same thing.
+ */
+export function recordBatch(rawAssessment: unknown, patch: BatchPatch): FlowResponse {
+  const s = sanitizeAssessment(rawAssessment);
+
+  if (typeof patch.name === 'string' && patch.name.trim()) {
+    s.name = patch.name.trim().slice(0, 40);
+  }
+  if (typeof patch.degreeId === 'string' && loadDegrees().some((d) => d.id === patch.degreeId)) {
+    s.degreeId = patch.degreeId;
+  }
+  if (isStudyYear(patch.year)) s.year = patch.year;
+
+  for (const a of Array.isArray(patch.answers) ? patch.answers : []) {
+    if (!a || typeof a !== 'object') continue;
+    const { itemId, optionId } = a as { itemId?: unknown; optionId?: unknown };
+    if (typeof itemId !== 'string' || typeof optionId !== 'string') continue;
+    // `record` already refuses an unknown pair and a second answer to the same
+    // item, so a replayed or hand-edited batch cannot double-count.
+    record(s, { itemId, optionId, rawText: '', confidence: 1 });
+  }
+
+  const profile = buildPsychProfile(s.answers);
+  const degree = s.degreeId ? loadDegrees().find((d) => d.id === s.degreeId) : undefined;
+
+  return {
+    reply: '',
+    assessment: s,
+    progress: progressOf(s),
+    updatedSignals: profile.signals,
+    updatedConstraints: profile.constraints,
+    ...ranking(s, degree, profile),
+    degreeName: degree?.name,
+    categories: categoryStatus(s.answers, s.skipped),
+  };
+}
+
+/**
+ * How many psychometric items must be settled before a ranking is worth
+ * showing.
+ *
+ * Not an arbitrary number: it is the size of the Holland category. The fit
+ * score is a weighted distance against a career's success profile, and the
+ * Holland term carries the largest weight of the four, so a ranking computed
+ * before those items exist is a ranking driven almost entirely by whatever
+ * else happened to be answered. With only the personal category in, this
+ * produced Graphic Designer at 97.6 for a nursing student — arithmetically
+ * correct, and exactly the sort of confident nonsense that costs a student
+ * their trust in everything else on the screen.
+ *
+ * So the paths tab stays empty until "What pulls you" is in, which is also
+ * what that gate is for. The conversation is unaffected: it only builds paths
+ * at the end, by which point everything is answered.
+ */
+const MIN_PSYCH_FOR_RANKING = 6;
+
+/**
+ * The ranked half of a batch response, or nothing at all.
+ *
+ * Returning `undefined` rather than an empty array matters on the client:
+ * `applyBatch` only overwrites the paths it already holds when the field is
+ * present, so an early batch cannot wipe a ranking a later one produced.
+ */
+function ranking(
+  s: AssessmentState,
+  degree: Degree | undefined,
+  profile: ReturnType<typeof buildPsychProfile>,
+): { bestFitPaths?: CareerPath[]; psychometrics?: PsychReadout } {
+  const settled = s.answers.filter((a) => a.itemId.startsWith('p')).length;
+  if (!degree || settled < MIN_PSYCH_FOR_RANKING) return {};
+
+  const paths = buildCareerPaths(degree, profile, 5);
+  return { bestFitPaths: paths.length ? paths : undefined, psychometrics: readout(s, paths) };
+}
+
 /**
  * Everything about a turn that is not the transcript or the flow position.
  *
@@ -288,6 +401,10 @@ export async function respond(
   if (res.assessment.degreeId) {
     res.degreeName = loadDegrees().find((d) => d.id === res.assessment.degreeId)?.name;
   }
+  // Attached on every turn rather than per branch: the client uses it to decide
+  // which feature gates are still worth opening, and a turn that quietly
+  // omitted it would read on the client as "every category is empty again".
+  res.categories = categoryStatus(res.assessment.answers, res.assessment.skipped);
   return res;
 }
 

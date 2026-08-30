@@ -30,6 +30,9 @@ export interface NorthrSyncedState {
   completedExperienceIds?: string[];
   careerConfidences?: CareerConfidence[];
   evidenceList?: any[];
+  /** Gamification counters from the lab. Reset to zero on "Start fresh". */
+  xp?: number;
+  streak?: number;
 }
 
 export const STORAGE_KEYS = {
@@ -42,6 +45,8 @@ export const STORAGE_KEYS = {
   completedExperienceIds: "northr_completed_exp_ids",
   careerConfidences: "northr_career_confidences",
   evidenceList: "northr_evidence",
+  xp: "northr_xp",
+  streak: "northr_streak",
   // Voice preferences are device-local on purpose: which mic language you use
   // and whether FAB talks back are properties of where you are sitting, not of
   // your account. The language FAB actually heard is remembered server-side.
@@ -114,6 +119,12 @@ export function readLocalState(): NorthrSyncedState {
   const evidence = readLocal<any[] | null>(STORAGE_KEYS.evidenceList, null);
   if (Array.isArray(evidence)) state.evidenceList = evidence;
 
+  const xp = readLocal<number | null>(STORAGE_KEYS.xp, null);
+  if (typeof xp === "number" && Number.isFinite(xp)) state.xp = xp;
+
+  const streak = readLocal<number | null>(STORAGE_KEYS.streak, null);
+  if (typeof streak === "number" && Number.isFinite(streak)) state.streak = streak;
+
   return state;
 }
 
@@ -126,6 +137,8 @@ export function writeStateToLocal(state: NorthrSyncedState): void {
   if (state.completedExperienceIds) writeLocal(STORAGE_KEYS.completedExperienceIds, state.completedExperienceIds);
   if (state.careerConfidences) writeLocal(STORAGE_KEYS.careerConfidences, state.careerConfidences);
   if (state.evidenceList) writeLocal(STORAGE_KEYS.evidenceList, state.evidenceList);
+  if (typeof state.xp === "number") writeLocal(STORAGE_KEYS.xp, state.xp);
+  if (typeof state.streak === "number") writeLocal(STORAGE_KEYS.streak, state.streak);
   if (state.activePilotExperience) {
     writeLocal(STORAGE_KEYS.activePilotExperience, state.activePilotExperience);
   } else if (state.activePilotExperience === null) {
@@ -255,11 +268,38 @@ export function cancelStateSync(): void {
   pendingSnapshot = null;
 }
 
-/** Sends any queued snapshot right away (used on tab close). */
-export function flushStateSync(): void {
+/**
+ * Sends any queued snapshot right away.
+ *
+ * `beacon` is for the tab-close path. A `fetch` started during `beforeunload`
+ * is routinely cancelled by the browser as the document tears down, which is
+ * how the last couple of seconds of work went missing on close — exactly the
+ * case this function exists to cover. `sendBeacon` is queued by the browser
+ * and survives the unload, so it is used whenever it is available and the
+ * normal request remains the fallback.
+ *
+ * The beacon carries the token in the body rather than a header, because
+ * sendBeacon cannot set one. `/api/state` accepts either.
+ */
+export function flushStateSync(beacon = false): void {
   if (pendingTimer) clearTimeout(pendingTimer);
   pendingTimer = null;
   const snapshot = pendingSnapshot;
   pendingSnapshot = null;
-  if (snapshot) void pushServerState(snapshot.token, snapshot.state);
+  if (!snapshot) return;
+  if (isGuestToken(snapshot.token)) return;
+
+  if (beacon && typeof navigator !== "undefined" && typeof navigator.sendBeacon === "function") {
+    try {
+      const body = JSON.stringify({ token: snapshot.token, state: snapshot.state });
+      if (body.length <= MAX_STATE_BYTES) {
+        const blob = new Blob([body], { type: "application/json" });
+        if (navigator.sendBeacon("/api/state/beacon", blob)) return;
+      }
+    } catch (err) {
+      console.warn("Beacon sync failed, falling back to fetch:", err);
+    }
+  }
+
+  void pushServerState(snapshot.token, snapshot.state);
 }

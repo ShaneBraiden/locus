@@ -29,6 +29,14 @@ interface DashboardHomeViewProps {
   studentName: string;
   /** The student's real degree, learned from FAB. Empty until they tell it. */
   studentDegree: string;
+  /** Year of study, from onboarding. Empty until they pick one. */
+  studentYear?: string;
+  /**
+   * The six-category interview panel. Passed in rather than built here so the
+   * dashboard stays a view over state and does not need to know about the
+   * schedule, the gates or how to reopen one.
+   */
+  interviewPanel?: React.ReactNode;
   bestFitPaths: CareerPath[];
   onNavigateToTab: (tab: "home" | "fab" | "experiments" | "paths" | "journey") => void;
   completedCount: number;
@@ -93,6 +101,8 @@ function EmptyPanel({
 export default function DashboardHomeView({
   studentName,
   studentDegree,
+  studentYear,
+  interviewPanel,
   bestFitPaths = [],
   onNavigateToTab,
   completedCount = 0,
@@ -205,9 +215,11 @@ export default function DashboardHomeView({
           </p>
         </div>
         <div className="flex items-center justify-between md:justify-start gap-3 w-full md:w-auto">
-          <span className="bg-moss-50 text-ink-900 text-micro md:text-xs px-3 py-1 rounded-xs border border-ink-200 shadow-e2 font-bold flex items-center space-x-1.5 min-w-0">
+          <span className="bg-moss-50 text-ink-900 text-micro md:text-xs px-3 py-1 rounded-full border border-ink-200 shadow-e2 font-bold flex items-center space-x-1.5 min-w-0">
             <span className="h-2 w-2 rounded-full bg-good-500 shrink-0" />
-            <span className="truncate">{degreeLabel}</span>
+            <span className="truncate">
+              {studentYear ? `${degreeLabel} · ${studentYear}` : degreeLabel}
+            </span>
           </span>
           <button
             onClick={() => onNavigateToTab("fab")}
@@ -217,6 +229,13 @@ export default function DashboardHomeView({
           </button>
         </div>
       </div>
+
+      {/* 1b. WHAT FAB KNOWS.
+          Directly under the greeting because it is the one thing on this page
+          that explains every other thing on it: a thin ranking and an empty
+          confidence gauge are both symptoms of an unfinished interview, and
+          this is where a student sees that and can do something about it. */}
+      {interviewPanel}
 
       {/* 2. CORE ANALYTICAL WIDGETS */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6">
@@ -276,7 +295,7 @@ export default function DashboardHomeView({
           <div className="w-full flex justify-between items-center text-xs font-bold text-ink-500">
             <span>Current Best Match</span>
             {topPath && (
-              <span className="text-moss-700 bg-moss-50 border border-moss-100 text-micro px-2 py-0.5 rounded-xs font-mono uppercase font-bold">
+              <span className="text-moss-700 bg-moss-50 border border-moss-100 text-micro px-2 py-0.5 rounded-full font-mono uppercase font-bold">
                 {Math.round(topPath.matchScore)}% Match
               </span>
             )}
@@ -376,17 +395,17 @@ export default function DashboardHomeView({
             <div className="relative flex flex-col lg:flex-row lg:items-center justify-between gap-6">
               <div className="space-y-3 flex-1 min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="rounded-xs bg-moss-50 border border-ink-200 shadow-e2 text-ink-600 px-2.5 py-0.5 text-micro font-mono font-bold uppercase">
+                  <span className="rounded-full bg-moss-50 border border-ink-200 shadow-e2 text-ink-600 px-2.5 py-0.5 text-micro font-mono font-bold uppercase">
                     {topExperience.subject}
                   </span>
                   {topExperience.id.startsWith("JS_") && (
-                    <span className="rounded-xs bg-moss-50 border border-moss-100 text-moss-700 px-2.5 py-0.5 text-micro font-mono font-bold uppercase flex items-center">
+                    <span className="rounded-full bg-moss-50 border border-moss-100 text-moss-700 px-2.5 py-0.5 text-micro font-mono font-bold uppercase flex items-center">
                       <Briefcase className="h-3 w-3 mr-1" />
                       Job Simulation
                     </span>
                   )}
                   <span
-                    className={`text-micro font-mono px-2 py-0.5 rounded-xs font-bold border uppercase ${
+                    className={`text-micro font-mono px-2 py-0.5 rounded-full font-bold border uppercase ${
                       topExperience.cognitiveLoad === "Deep"
                         ? "bg-bad-50 text-bad-700 border-bad-100"
                         : topExperience.cognitiveLoad === "Focused"
@@ -462,7 +481,7 @@ export default function DashboardHomeView({
         {/* Pathway spotlight carousel — driven by the student's real ranked paths */}
         <div className="lg:col-span-2 rounded-3xl border border-ink-200 bg-white p-5 sm:p-6 shadow-e1 flex flex-col justify-between relative overflow-hidden">
           <div className="absolute top-0 right-0 p-3 z-10">
-            <span className="bg-moss-500 text-white text-micro font-mono uppercase px-2.5 py-0.5 rounded-xs font-bold">
+            <span className="bg-moss-500 text-white text-micro font-mono uppercase px-2.5 py-0.5 rounded-full font-bold">
               Pathway Spotlight
             </span>
           </div>
@@ -470,7 +489,7 @@ export default function DashboardHomeView({
           {spotlightPath ? (
             <>
               <div className="space-y-3 pr-24">
-                <span className="inline-block text-micro font-mono font-bold text-moss-700 uppercase bg-moss-50 px-2.5 py-1 rounded-xs border border-moss-100">
+                <span className="inline-block text-micro font-mono font-bold text-moss-700 uppercase bg-moss-50 px-2.5 py-1 rounded-full border border-moss-100">
                   Match Score: {Math.round(spotlightPath.matchScore)}%
                 </span>
                 <h4 className="text-base font-bold text-ink-900 font-display leading-snug">

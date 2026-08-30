@@ -9,22 +9,27 @@
  *
  * Five rules carry the current style through this file:
  *
- *   1. STRUCTURE IS DRAWN WITH LINES. A region is defined by a 1px rule and by
- *      whitespace. The card — a floating rounded box with a shadow under it —
- *      is gone. `<Panel>` exists for the cases that genuinely need a frame
- *      (a bounded data region inside a grid), and it is a hairline border with
- *      no elevation. Everything else stacks with `<Section>`.
- *   2. ELEVATION MEANS FLOATING. Only things that actually leave the page get a
- *      shadow: modals, popovers, dropdowns, toasts. Nothing in the document
- *      flow casts one.
- *   3. GEOMETRY IS FLAT. Controls are square. Every radius token from `xs` to
- *      `lg` is zero, so `rounded-md` on a button resolves to no corner at all.
- *      The only round elements left are the ones that are genuinely circular —
- *      avatars, status dots, spinners.
- *   4. PADDING IS THE MINIMUM THAT KEEPS CONTENT OFF AN EDGE. Panels are 12px
- *      and do not grow with the viewport. Rows are 8px. Nothing here reserves
- *      space it is not using, and no component's padding scales at a
- *      breakpoint — a wider screen should show more content, not more margin.
+ *   1. NOTHING HAS A CORNER. Every control the user can operate is a capsule —
+ *      buttons, badges, inputs, tabs, avatars, progress tracks. Every surface
+ *      is 16px or rounder, and the two that float free in the sky (the nav and
+ *      the content canvas) are rounder still. The page behind all of it is a
+ *      photograph of cloud, and a 90° corner is the one shape that does not
+ *      occur anywhere in it.
+ *   2. THE CAPSULE IS FOR CONTROLS, THE RADIUS IS FOR SURFACES. This is the
+ *      distinction that keeps the app from turning into a bag of lozenges. If
+ *      you click it, it is a pill. If you read inside it, it has a radius
+ *      proportional to its size. A panel is never a capsule and a button is
+ *      never a rounded rectangle.
+ *   3. ELEVATION MEANS FLOATING. Shadows are shallow and wide — the shadow of
+ *      something resting a few millimetres off the page. The one deep shadow
+ *      in the system belongs to the canvas, which is genuinely held up in
+ *      front of the sky.
+ *   4. PADDING IS THE MINIMUM THAT KEEPS CONTENT OFF AN EDGE — plus whatever
+ *      the curve costs. That last part is new and it is the one place this
+ *      system spends space: a 20px radius eats into the top-left of a panel's
+ *      content box, so panels carry 14px rather than 12px. No component's
+ *      padding scales at a breakpoint — a wider screen should show more
+ *      content, not more margin.
  *   5. INTERACTION IS A STATE CHANGE, NOT A PERFORMANCE. 150ms on colour and
  *      border. Nothing scales, lifts, tilts or settles.
  */
@@ -101,15 +106,22 @@ const MOTION =
 
 /* ===========================================================================
  * BUTTON
- * Rectangles with a 4px radius. The pill is gone: a pill has no corners to
- * align to anything, which is exactly the problem when a button sits at the
- * end of a table row or flush against a field.
+ * A capsule. The previous revision of this file argued the pill out of the
+ * system on the grounds that it has no corners to align to anything, which is
+ * a problem at the end of a table row or flush against a field.
+ *
+ * That was true when the field and the table were square. Neither is any more,
+ * so there is nothing left for a corner to align to — a 4px radius beside a
+ * 20px panel edge inside a 40px canvas reads as an unfinished control, not as
+ * a precise one. The alignment the argument was protecting is still protected,
+ * because it was never done with corners: buttons line up on their baseline
+ * and their outer edge, both of which a capsule has.
  * ======================================================================== */
 type ButtonVariant = "primary" | "secondary" | "ghost" | "outline" | "danger" | "inverse";
 type ButtonSize = "sm" | "md" | "lg" | "icon";
 
 const BUTTON_BASE =
-  "inline-flex items-center justify-center gap-1.5 rounded-md font-semibold whitespace-nowrap " +
+  "inline-flex items-center justify-center gap-1.5 rounded-full font-semibold whitespace-nowrap " +
   "border " +
   MOTION +
   " disabled:pointer-events-none disabled:opacity-45";
@@ -132,16 +144,24 @@ const BUTTON_VARIANTS: Record<ButtonVariant, string> = {
 };
 
 /**
- * Shorter than the old build across the board — h-12 buttons are a marketing
- * page's proportion, and a dense application reads as amateur at that scale.
- * `md` is 34px, which is the standard for a desktop toolbar. `lg` at 40px is
- * still comfortably thumb-sized for the mobile primary actions, and coarse
- * pointers get their hit area from padding rather than from height.
+ * Heights are unchanged — h-12 buttons are a marketing page's proportion and a
+ * dense application reads as amateur at that scale. `md` is 34px, the standard
+ * for a desktop toolbar; `lg` at 40px stays comfortably thumb-sized for the
+ * mobile primary actions.
+ *
+ * The horizontal padding is up by roughly a step at every size, and that is a
+ * consequence of the capsule rather than a change of taste. A pill's usable
+ * width is its box minus its two end caps, so at `md` the 17px radius on each
+ * side eats most of what 14px of padding was buying and the label ends up
+ * sitting in the curve. The extra step buys it back.
+ *
+ * `icon` stays square in its box and round in its shape — a circle, which is
+ * what a 34px capsule is.
  */
 const BUTTON_SIZES: Record<ButtonSize, string> = {
-  sm: "h-7 px-2.5 text-xs",
-  md: "h-[2.125rem] px-3.5 text-sm",
-  lg: "h-10 px-5 text-sm",
+  sm: "h-7 px-3 text-xs",
+  md: "h-[2.125rem] px-4 text-sm",
+  lg: "h-10 px-6 text-sm",
   icon: "h-[2.125rem] w-[2.125rem] p-0",
 };
 
@@ -240,8 +260,9 @@ export function Section({
  * PANEL — a bounded region, for the cases a rule cannot express.
  *
  * Use this only when content needs a real boundary: a data block inside a
- * grid, a chart with its own axis space, a sidebar module. It is a hairline
- * border and a 6px radius. It does not lift, tint, tilt or glow.
+ * grid, a chart with its own axis space, a sidebar module. It is a 20px radius
+ * with no border at all — the light along its top edge and the shadow under it
+ * are what find the boundary. It does not lift, tint, tilt or glow.
  *
  * `Card` is kept as an alias below because ~200 call sites import it. New code
  * should reach for `Section` first and `Panel` only when a frame is load-
@@ -273,6 +294,25 @@ export interface PanelProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "
    * rare.
    */
   tone?: "warm" | "cool" | "flat";
+  /**
+   * Puts a cloud layer inside the panel.
+   *
+   *   "soft"  — the drawn variant. No detail to notice. This is the one to
+   *             reach for on an ordinary card.
+   *   "card"  — photographic, cut from the same sky as the page field. For
+   *             surfaces large enough to carry the detail without it
+   *             competing: a hero block, a summary panel, an empty state.
+   *
+   * Off by default, and it should stay off for most panels. A cloud in every
+   * card is wallpaper; a cloud in one card on a screen is weather.
+   *
+   * Never set this on a panel wrapping a table or a chart — the layer sits
+   * behind the content at a contrast the generator solved for body text, not
+   * for a 1px gridline.
+   */
+  cloud?: "soft" | "card";
+  /** Restores a hairline boundary where the light does not draw one. */
+  ruled?: boolean;
   /** Panel header strip: title on a sunken band with a rule under it. */
   title?: React.ReactNode;
   actions?: React.ReactNode;
@@ -292,15 +332,15 @@ const ACCENT_EDGE: Record<NonNullable<PanelProps["accent"]>, string> = {
   info: "before:bg-info-500",
 };
 
-// Fill and border travel together. The border is set here as a utility rather
-// than inside the `.surface-card--*` rules because a component-layer
-// `border-color` loses to the `border-ink-200` utility below it in the
-// cascade, and winning that fight with specificity would be a worse trade than
-// simply not emitting the neutral border in the first place.
 const PANEL_TONE: Record<NonNullable<PanelProps["tone"]>, string> = {
-  warm: "surface-card--warm border-clay-200",
-  cool: "surface-card--cool border-moss-100",
-  flat: "surface-flat border-ink-200",
+  warm: "surface-card--warm",
+  cool: "surface-card--cool",
+  flat: "surface-flat surface-ruled",
+};
+
+const PANEL_CLOUD: Record<NonNullable<PanelProps["cloud"]>, string> = {
+  soft: "has-cloud",
+  card: "has-cloud has-cloud--card",
 };
 
 export function Panel({
@@ -309,6 +349,8 @@ export function Panel({
   accent,
   muted,
   tone,
+  cloud,
+  ruled,
   title,
   actions,
   as: Tag = "div",
@@ -326,42 +368,71 @@ export function Panel({
   return (
     <Tag
       className={cx(
-        "relative rounded-lg border",
-        !tone && "border-ink-200",
-        // Surfaces come from the atmosphere layer in index.css rather than
-        // from a literal `bg-white`, so that a panel sits *in* the field
-        // instead of on top of it. `surface-card` is white held at
-        // `--atmos-card`; setting that token to 1 returns every panel in the
-        // app to opaque white without touching a component.
-        tone ? PANEL_TONE[tone] : muted ? "surface-card--muted" : "surface-card",
+        "relative rounded-lg",
+        // The surface comes from the glass layer in index.css rather than from
+        // `bg-white` + `border`, so a panel sits *in* the field instead of on
+        // top of it. There is no border by default: the tint, the lit top edge
+        // and the shadow are what find the panel's boundary, and outlining it
+        // as well is what makes glass read as a sticker. `ruled` puts the
+        // hairline back where an edge is structural.
+        //
+        // `surface-card` always applies — the tone modifiers only override the
+        // fill, and dropping the base class would take the blur, the lit edge
+        // and the shadow with it.
+        "surface-card",
+        tone && PANEL_TONE[tone],
+        muted && !tone && "surface-card--muted",
+        ruled && "surface-ruled",
+        cloud && PANEL_CLOUD[cloud],
         // Padding stays on the element itself (rather than on an inner
         // wrapper) so that the many call sites passing their own layout
         // classes — `flex`, `grid`, `space-y-*` — still apply to the children
         // they were written for.
         //
-        // Flat 12px, and it no longer grows at the `sm` breakpoint. A panel's
-        // padding exists to keep content off the border; scaling it with the
+        // 14px, flat, and it does not grow at the `sm` breakpoint. A panel's
+        // padding exists to keep content off the edge; scaling it with the
         // viewport just meant wider screens got more air, not more content.
-        !flush && !hasHeader && "p-3",
+        //
+        // It was 12px under the old ramp and the extra 2px is the radius'
+        // doing rather than a change of mind — at a 20px corner the diagonal
+        // clearance from the content box to the curve is about 6px less than
+        // the nominal padding, so 12px put the first character of a heading
+        // visibly inside the arc.
+        !flush && !hasHeader && "p-3.5",
+        // The accent marker. It used to be a 2px bar running the full height of
+        // a square panel, flush to the edge. That does not survive a 12px
+        // radius — a full-height bar either clips into the corner curve or
+        // pokes out of it. So it is now a rounded 3px capsule, inset from the
+        // top and bottom, which reads as a deliberate marker at any radius.
         accent &&
           cx(
-            "before:absolute before:left-0 before:top-0 before:h-full before:w-[2px] before:content-['']",
+            "before:absolute before:left-1 before:top-2.5 before:bottom-2.5 before:w-[3px]",
+            "before:rounded-full before:content-['']",
             ACCENT_EDGE[accent],
           ),
-        interactive && cx(MOTION, "hover:border-ink-400 focus-within:border-moss-500"),
+        accent && !flush && "pl-4",
+        // Interactive panels lift rather than darken their border, since there
+        // is no border to darken any more.
+        interactive &&
+          cx(MOTION, "hover:shadow-e2 focus-within:shadow-glow-moss"),
         className,
       )}
       {...(rest as any)}
     >
       {hasHeader ? (
         <>
-          <div className="flex items-center justify-between gap-2 border-b border-ink-200 px-3 py-1.5">
+          {/* The header strip is inset rather than full-bleed. A band that runs
+              to the panel's edge has to be clipped by the panel's radius to
+              look right, which means `overflow: hidden` on the panel — and
+              that would clip the accent capsule and any popover a header
+              action opens. Insetting it costs 4px and clips nothing. */}
+          <div className="mx-1.5 mt-1 flex items-center justify-between gap-2 border-b border-ink-200 px-2 py-2">
             {title && (
               <h3 className="min-w-0 truncate text-sm font-bold text-ink-900">{title}</h3>
             )}
             {actions && <div className="flex shrink-0 items-center gap-1.5">{actions}</div>}
           </div>
-          <div className={cx(!flush && "p-3")}>{children}</div>
+          <div className={cx(!flush && "p-3.5")}>{children}</div>
         </>
       ) : (
         children
@@ -392,6 +463,7 @@ export function Rule({
     <div
       aria-hidden
       className={cx(
+        "rounded-full",
         vertical ? "w-px self-stretch bg-ink-200" : "h-px w-full bg-ink-200",
         className,
       )}
@@ -431,7 +503,11 @@ export function Row({
   return (
     <div
       className={cx(
-        "flex items-start gap-2.5 px-1 py-2",
+        // A row's hover and selected fills are the widest blocks of colour in
+        // a list view, so they are the ones that decide whether the list reads
+        // as curvy or as a stack of bars. Rounded, and with the horizontal
+        // padding raised to 12px so the text clears the new corner.
+        "flex items-start gap-2.5 rounded-lg px-3 py-2",
         interactive && cx(MOTION, "cursor-pointer hover:bg-ink-50"),
         active && "bg-moss-50",
         className,
@@ -455,8 +531,13 @@ export function Row({
 
 /* ===========================================================================
  * BADGE
- * A 2px-radius chip, not a pill. Lowercase-height, uppercase letterforms, one
- * weight of border.
+ * A capsule. Uppercase letterforms at lowercase height, one weight of border.
+ *
+ * A badge is the smallest object in the app that has a fill, which makes it
+ * the one where the shape is read fastest — at 18px tall there is no interior
+ * to look at, only an outline. It is also never aligned to anything, since it
+ * sits inline in a sentence or at the end of a row. Both of those point the
+ * same way.
  * ======================================================================== */
 type BadgeTone = "neutral" | "moss" | "clay" | "good" | "warn" | "bad" | "info";
 
@@ -493,7 +574,7 @@ export function Badge({ tone = "neutral", solid, className, ...rest }: BadgeProp
   return (
     <span
       className={cx(
-        "inline-flex items-center gap-1 rounded-xs border px-1.5 py-px",
+        "inline-flex items-center gap-1 rounded-full border px-2 py-px",
         "text-micro font-bold uppercase tracking-[0.07em] whitespace-nowrap",
         solid ? BADGE_SOLID[tone] : BADGE_TONES[tone],
         className,
@@ -538,11 +619,12 @@ export function SectionHeader({
         className,
       )}
     >
-      <div className="flex min-w-0 items-start gap-2">
+      <div className="flex min-w-0 items-start gap-2.5">
         {Icon && (
-          // A 24px square, flat and square-cornered. An icon beside a heading
-          // is a locator, not a feature — it should not out-weigh the words.
-          <span className="mt-px flex h-6 w-6 shrink-0 items-center justify-center border border-ink-200 bg-ink-50 text-ink-600">
+          // A 26px disc. An icon beside a heading is a locator, not a feature —
+          // it should not out-weigh the words, which is why it keeps the flat
+          // fill and the hairline rather than picking up the accent.
+          <span className="mt-px flex h-[1.625rem] w-[1.625rem] shrink-0 items-center justify-center rounded-full border border-ink-200 bg-ink-50 text-ink-600">
             <Icon className="h-3.5 w-3.5" strokeWidth={1.75} />
           </span>
         )}
@@ -593,7 +675,12 @@ const STAT_TONE: Record<BadgeTone, string> = {
 
 export function Stat({ label, value, hint, icon: Icon, tone = "neutral", className }: StatProps) {
   return (
-    <div className={cx("flex min-w-0 flex-col gap-0.5 px-3 py-2", className)}>
+    <div
+      className={cx(
+        "flex min-w-0 flex-col gap-0.5 rounded-lg bg-ink-50 px-3.5 py-2.5",
+        className,
+      )}
+    >
       <div className="flex items-center gap-1.5">
         {Icon && (
           <Icon
@@ -615,8 +702,19 @@ export function Stat({ label, value, hint, icon: Icon, tone = "neutral", classNa
 }
 
 /**
- * A framed strip of stats divided by vertical rules. The replacement for a
- * `grid gap-4` of stat cards.
+ * A row of stat tiles.
+ *
+ * This was a single framed strip with vertical rules between the cells, which
+ * is the correct construction for a square system and cannot survive a round
+ * one: a divider that runs the full height of a 20px-radius frame either
+ * terminates in mid-air short of the curve or crosses it. Both look like a
+ * rendering bug, and there is no third option — the rule and the corner are
+ * describing the same edge in two different languages.
+ *
+ * So the rules are gone and the cells are separate sunken tiles on a small gap.
+ * The strip still reads as one instrument panel, because what made it read that
+ * way was never the dividers — it was that the labels share a baseline and the
+ * figures share a scale, and those are untouched.
  */
 export function StatRow({
   children,
@@ -626,13 +724,7 @@ export function StatRow({
   className?: string;
 }) {
   return (
-    <div
-      className={cx(
-        "grid grid-cols-2 divide-x divide-y divide-ink-200 overflow-hidden rounded-lg",
-        "border border-ink-200 bg-white sm:grid-cols-4 sm:divide-y-0",
-        className,
-      )}
-    >
+    <div className={cx("grid grid-cols-2 gap-1.5 sm:grid-cols-4", className)}>
       {children}
     </div>
   );
@@ -640,9 +732,15 @@ export function StatRow({
 
 /* ===========================================================================
  * PROGRESS
- * A 4px square-ended bar. The old one was a fully rounded capsule with a
- * gradient fill; at 6px tall a gradient is invisible and the round cap makes
- * low percentages unreadable, because the cap alone is several percent wide.
+ * A capsule track with a capsule fill.
+ *
+ * The square-ended version this replaces was there for a real reason: a round
+ * cap on a 6px bar is ~3px wide at each end, so a 2% value renders as a dot
+ * that looks identical to a 4% value. That objection is answered by the height
+ * rather than by the shape — at `sm` the bar is 4px, so the cap is 2px, and
+ * the fill is given a `min-width` equal to its own height so a non-zero value
+ * always renders as a visible, correctly-proportioned lozenge instead of a
+ * sliver. Zero stays empty, which is the distinction that actually matters.
  * ======================================================================== */
 export interface ProgressProps {
   /** 0–100. Clamped. */
@@ -672,7 +770,7 @@ export function Progress({
   return (
     <div
       className={cx(
-        "w-full overflow-hidden rounded-xs bg-ink-100",
+        "w-full overflow-hidden rounded-full bg-ink-100",
         size === "sm" ? "h-1" : "h-1.5",
         className,
       )}
@@ -684,10 +782,13 @@ export function Progress({
     >
       <div
         className={cx(
-          "h-full transition-[width] duration-300 ease-[cubic-bezier(0.2,0,0,1)]",
+          "h-full rounded-full transition-[width] duration-300 ease-[cubic-bezier(0.2,0,0,1)]",
           PROGRESS_FILL[tone],
         )}
-        style={{ width: `${pct}%` }}
+        // `min-width` only applies once there is something to show. See the
+        // note above the component: it is what keeps a round cap from turning
+        // every small value into the same dot.
+        style={{ width: `${pct}%`, minWidth: pct > 0 ? (size === "sm" ? 4 : 6) : 0 }}
       />
     </div>
   );
@@ -714,18 +815,18 @@ export function EmptyState({
   return (
     <div
       className={cx(
-        "flex flex-col items-center justify-center gap-1.5 rounded-lg border border-dashed",
+        "flex flex-col items-center justify-center gap-1.5 rounded-2xl border border-dashed",
         // Was px-6 py-10. An empty state is a placeholder, not a feature — at
         // 40px of vertical padding it was reserving more room than the content
         // it stands in for would have taken.
-        "border-ink-300 bg-ink-50 px-4 py-6 text-center",
+        "border-ink-300 bg-ink-50 px-5 py-7 text-center",
         className,
       )}
     >
       {Icon && (
-        // A plain square. No frame, no chip, no fill — the icon is a hint at
-        // what is missing, and wrapping it in a bordered box made the absence
-        // of content look like a component in its own right.
+        // Bare, with no frame around it. The icon is a hint at what is missing,
+        // and wrapping it in a chip made the absence of content look like a
+        // component in its own right.
         <Icon className="h-4 w-4 text-ink-400" strokeWidth={ICON_STROKE} />
       )}
       <h3 className="text-sm font-bold text-ink-900 text-balance">{title}</h3>
@@ -739,9 +840,19 @@ export function EmptyState({
 
 /* ===========================================================================
  * SEGMENTED CONTROL / TABS
- * Reworked from a pill strip on a tinted track into an underlined tab bar. The
- * active tab is marked by a 2px accent rule sitting on the container's bottom
- * border — the standard, and the one that costs no elevation and no fill.
+ * A pill strip on a sunken capsule track.
+ *
+ * This was an underlined tab bar, which is the right control for a page built
+ * out of rules and the wrong one for a page built out of curves: the underline
+ * is a straight line terminating in two square ends, sitting on a straight
+ * container border, and it was the last piece of the old vocabulary still
+ * visible in a default view. Everything it was doing — mark one of n, cost no
+ * elevation — a filled pill in a track does as well.
+ *
+ * `variant` is kept because roughly a dozen call sites pass it, but the two
+ * variants are now the same object at two weights: `underline` (the default)
+ * is the track with no frame, `boxed` is the track with a hairline round it
+ * for use inside a toolbar where it needs to hold its own against a button.
  * ======================================================================== */
 export interface SegmentedOption<T extends string> {
   value: T;
@@ -777,10 +888,10 @@ export function Segmented<T extends string>({
       role="tablist"
       aria-label={ariaLabel}
       className={cx(
-        "inline-flex items-stretch",
-        boxed
-          ? "divide-x divide-ink-200 overflow-hidden rounded-md border border-ink-200 bg-white"
-          : "gap-4 border-b border-ink-200",
+        "inline-flex items-stretch gap-0.5 rounded-full bg-ink-100 p-1",
+        boxed && "border border-ink-200",
+        // A scrolling track has to keep its end caps clear of the content, or
+        // the first pill sits half-under the left curve at scroll offset 0.
         scrollable && "max-w-full overflow-x-auto scroll-slim",
         className,
       )}
@@ -795,23 +906,16 @@ export function Segmented<T extends string>({
             aria-selected={active}
             onClick={() => onChange(opt.value)}
             className={cx(
-              "inline-flex shrink-0 items-center gap-1.5 text-xs font-semibold",
+              "inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5",
+              "text-xs font-semibold",
               MOTION,
-              boxed
-                ? cx(
-                    "px-3 py-1.5",
-                    active
-                      ? "bg-moss-50 text-moss-700"
-                      : "bg-white text-ink-600 hover:bg-ink-50 hover:text-ink-900",
-                  )
-                : cx(
-                    // -1px margin pulls the active underline down onto the
-                    // container's own border so the two read as one line.
-                    "border-b-2 px-0.5 pb-2 pt-1 -mb-px",
-                    active
-                      ? "border-moss-500 text-ink-900"
-                      : "border-transparent text-ink-500 hover:border-ink-300 hover:text-ink-900",
-                  ),
+              active
+                ? // White rather than the accent fill. The selected tab is a
+                  // location, not an action — filling it moss would put the
+                  // brightest thing on the screen on something the user has
+                  // already done rather than on what they can do next.
+                  "bg-white text-ink-900 shadow-e1"
+                : "text-ink-500 hover:text-ink-900",
             )}
           >
             {Icon && <Icon className="h-3.5 w-3.5 shrink-0" strokeWidth={ICON_STROKE} />}
@@ -862,14 +966,24 @@ export function Field({ id, label, error, hint, children, className }: FieldProp
 /**
  * Shared input chrome, so every text input in the app matches.
  *
- * Solid white on a 4px rectangle. The old field was a translucent pill that
- * let the page grain show through — a nice detail, and one that made every
- * form look like it was printed on the page rather than something you could
- * type into.
+ * SOLID WHITE, and it stays solid white now that everything around it is not.
+ * An earlier version of this system made the field translucent so the page
+ * showed through; it was a nice detail and it made every form look like it was
+ * printed on the page rather than something you could type into. That is even
+ * more true against glass — a translucent control on a translucent surface has
+ * no edge at all, and the one place in an interface where the user must be
+ * certain where the boundary is, is the box they are about to type in.
+ *
+ * So the input is the exception: opaque fill, real border. It reads as the
+ * solid object set into the glass, which is also what it is.
  */
 export const inputClass = (hasError?: boolean, hasLeadingIcon?: boolean) =>
   cx(
-    "w-full h-[2.125rem] rounded-md border bg-white text-sm text-ink-900",
+    // A capsule, and the height is up from 34px to 38px because of it. A pill
+    // input at 34px with a 17px cap on each end has almost no straight run
+    // left for the text to sit on, so the caret at position 0 lands in the
+    // curve. 38px is the shortest height at which it does not.
+    "w-full h-[2.375rem] rounded-full border bg-white text-sm text-ink-900",
     // ink-500 placeholder, not ink-400: placeholders are text and must clear
     // 4.5:1. The border uses ink-300 at rest, which clears 3:1 for a
     // perceivable boundary (WCAG 1.4.11).
@@ -879,7 +993,18 @@ export const inputClass = (hasError?: boolean, hasLeadingIcon?: boolean) =>
     // gets heavier and changes colour.
     "focus:outline-none focus:ring-1",
     "disabled:cursor-not-allowed disabled:bg-ink-100 disabled:text-ink-500",
-    hasLeadingIcon ? "pl-9 pr-3" : "px-3",
+    // LITERAL VALUES, DELIBERATELY. Every Tailwind spacing step from 6 upward
+    // is remapped at the foot of `index.css` — `pl-10` resolves to 24px there,
+    // not 40px. That compression is correct for layout padding, which is what
+    // it was written for, and wrong for this: the leading inset is not a
+    // spacing choice, it is the width of the icon that sits in it. A 16px icon
+    // at `left-4` ends at 32px, so anything under that puts the placeholder
+    // underneath the glyph — which is exactly what `pl-9` and `pl-10` both did.
+    //
+    // 2.5rem clears the icon with 8px of air. 2.75rem on the right clears a
+    // 32px trailing button at `right-2`. Neither can be expressed in the scale
+    // without picking a step the compression block will silently rewrite.
+    hasLeadingIcon ? "pl-[2.5rem] pr-4" : "px-4",
     hasError
       ? "border-bad-500 focus:border-bad-500 focus:ring-bad-500"
       : "border-ink-300 hover:border-ink-450 focus:border-moss-500 focus:ring-moss-500",
@@ -908,7 +1033,7 @@ export function Skeleton({ className }: { className?: string }) {
   return (
     <div
       aria-hidden
-      className={cx("animate-pulse rounded-xs bg-ink-100", className ?? "h-3.5 w-full")}
+      className={cx("animate-pulse rounded-full bg-ink-100", className ?? "h-3.5 w-full")}
     />
   );
 }

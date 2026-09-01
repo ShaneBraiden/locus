@@ -1264,6 +1264,11 @@ function Workspace({ user }: { user: AuthUser }) {
         id={`nav-${id}`}
         onClick={() => go(id)}
         aria-current={active ? "page" : undefined}
+        /* The bar item drops to icon-only between `md` and `lg`, so the label
+           is not always in the accessible tree. `aria-label` is therefore the
+           name in both states rather than the text node. */
+        aria-label={bar ? label : undefined}
+        title={bar ? label : undefined}
         className={
           bar
             ? `relative flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-semibold transition-colors duration-150 ${
@@ -1283,7 +1288,11 @@ function Workspace({ user }: { user: AuthUser }) {
         }
       >
         <Icon className="h-4 w-4 shrink-0" />
-        <span className="truncate">{label}</span>
+        {/* Five labelled pills plus the brand and the account cluster measure
+            ~830px, so between `md` and `lg` they pushed the account button and
+            the right edge of the canvas off the viewport. The labels are the
+            part that gives: icon-only from `md`, full pills from `lg`. */}
+        <span className={bar ? "hidden truncate lg:inline" : "truncate"}>{label}</span>
       </button>
     );
   };
@@ -1379,8 +1388,16 @@ function Workspace({ user }: { user: AuthUser }) {
           `--glass-tint` instead of going nearly opaque the way a sticky bar
           has to, and what lets the sky read through it.
           ================================================================= */}
-      <div className="shrink-0">
-        <header className="nav-float has-cloud has-cloud--wide mx-auto flex h-14 w-full max-w-[96rem] items-center gap-2 pl-3 pr-2 sm:pl-4 sm:pr-2.5">
+      {/* `relative z-30` is load-bearing, not decoration. `.canvas` below is
+          `position: relative` with `isolation: isolate`, so it is a positioned
+          stacking context that comes AFTER this header in tree order — which
+          means it paints on top of everything in here, account popover
+          included, no matter how high that popover's own z-index goes. Giving
+          the nav an explicit layer is what lets a menu hang off the header and
+          over the canvas instead of disappearing behind it. See the layer
+          scale in index.css. */}
+      <div className="relative z-30 shrink-0">
+        <header className="nav-float gloss has-cloud has-cloud--wide mx-auto flex h-14 w-full max-w-[96rem] items-center gap-2 pl-3 pr-2 sm:pl-4 sm:pr-2.5">
 
           {/* Brand */}
           <button

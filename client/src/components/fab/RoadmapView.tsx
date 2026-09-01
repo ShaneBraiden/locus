@@ -1079,7 +1079,7 @@ ADAPTIVE READINESS PROGRESSION:
                       key={lvl}
                       id={`level-tab-${lvl}`}
                       onClick={() => setActiveLevel(lvl)}
-                      className={`px-3 py-1.5 rounded-lg text-micro font-bold uppercase tracking-wider transition-all cursor-pointer ${
+                      className={`min-h-6 px-3 py-1.5 rounded-lg text-micro font-bold uppercase tracking-wider transition-all cursor-pointer ${
                         activeLevel === lvl
                           ? "bg-moss-600 text-white shadow-e1"
                           : "text-ink-500 hover:text-ink-800"

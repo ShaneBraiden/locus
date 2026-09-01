@@ -34,6 +34,7 @@
  *      border. Nothing scales, lifts, tilts or settles.
  */
 import React from "react";
+import { createPortal } from "react-dom";
 
 /* ---------------------------------------------------------------------------
  * cx — the world's smallest classname joiner. Avoids pulling in clsx.
@@ -1060,4 +1061,25 @@ export interface WashProps {
 /** @deprecated Renders nothing. Delete call sites as views are touched. */
 export function Wash(_props: WashProps) {
   return null;
+}
+
+
+/* ===========================================================================
+ * PORTAL
+ *
+ * Anything that has to cover the whole viewport has to leave the canvas to do
+ * it. `.canvas` carries a `backdrop-filter`, and a filtered element becomes
+ * the containing block for its `position: fixed` descendants — so a
+ * `fixed inset-0` scrim written inside a view does not cover the viewport, it
+ * covers the canvas, and then gets clipped by the canvas' own
+ * `overflow: hidden` and 40px radius on top of that. It is also sealed under
+ * the canvas' `isolation: isolate`, which is why a modal at `z-[100]` still
+ * could not rise above the nav.
+ *
+ * Rendering into `document.body` puts overlays back in the root stacking
+ * context, where the layer scale in index.css actually applies.
+ * ======================================================================== */
+export function Portal({ children }: { children: React.ReactNode }) {
+  if (typeof document === "undefined") return null;
+  return createPortal(children, document.body);
 }

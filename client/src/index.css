@@ -525,6 +525,13 @@
   --cloud-card: url("../assets/bg/clouds-card.png");
   --cloud-auth: url("../assets/bg/clouds-auth.png");
   --cloud-soft: url("../assets/bg/clouds-soft.png");
+
+  /* --- Gloss -------------------------------------------------------------
+     One multiplier over the whole specular finish. See the GLOSS block in the
+     components layer for what the four layers are and why. 1 is the tuned
+     value; a surface that wants a quieter finish scopes this down rather than
+     editing the gradients. */
+  --gloss-strength: 1;
 }
 
 /* Backdrop filters are the one part of this that has a real fallback path.
@@ -551,6 +558,7 @@
     --glass-tint: 1;
     --glass-blur: 0px;
     --cloud-opacity: 0;
+    --gloss-strength: 0;
   }
 }
 
@@ -802,6 +810,93 @@
   /* Escape hatch: a panel wrapping a dense table takes this. */
   .no-cloud::after { display: none; }
 
+  /* ==========================================================================
+     GLOSS — the polished finish
+     --------------------------------------------------------------------------
+     `.surface-card` makes a pane of glass. `.gloss` makes that pane WET: the
+     same surface, seen at the angle where it throws light back rather than
+     just letting it through. It is a finish, not a surface — it composes with
+     whatever the element already is and sets no background of its own.
+
+     Four layers, listed in the order they matter:
+
+       1. THE CATCH LIGHT. A soft radial anchored off the top-left corner,
+          outside the box, so the brightest point is a highlight the surface is
+          turned toward rather than a glow sitting inside it. Every glossy
+          object in the world has one and it is always off-centre — a highlight
+          centred on a shape reads as emission, not reflection.
+       2. THE SHEEN. The specular band down the top of the surface, cut off at
+          a waterline around 42%. The cut is the whole trick: a gradient that
+          fades evenly top to bottom is a LIT surface, and a gradient that
+          stops is a REFLECTIVE one. Aqua drew that line at the exact half and
+          drew it hard; this system takes it higher and feathers it, because a
+          hard waterline across a working interface is a lozenge and this app
+          is not a jukebox.
+       3. THE FOOT. A blue-black deepening across the bottom quarter, at 5%.
+          This is what makes gloss survive contact with paper: inside `.canvas`
+          a card is opaque white, and white sheen on white is nothing at all.
+          The foot gives the sheen something to be brighter *than*, so one
+          class reads on glass in the field and on paper in the canvas.
+       4. THE RIM. A hard lip along the top, a fainter one along the bottom
+          (light bouncing off the page back into the underside), and a hairline
+          of white around the whole edge. `.surface-card` already draws a top
+          lip; this one is brighter, because a wet edge catches more than a dry
+          one.
+
+     It rides on `::before` at `z-index: -1`, so it sits over the surface's own
+     background and UNDER its content. Real lacquer is in front of the print,
+     but real lacquer is not asked to hold 4.5:1 — running the sheen over body
+     copy would spend contrast on exactly the surfaces (the nav, the hero card)
+     carrying the smallest type. The cloud layer is `::after` at the same
+     depth and so paints over the gloss, which is the right way round: the
+     cloud is in the glass, the gloss is on it.
+
+     `--gloss-strength` is the runtime knob, same shape as `--cloud-opacity`.
+     Print takes it to zero — a specular highlight is a claim about a light
+     source, and paper has its own. */
+  .gloss { position: relative; isolation: isolate; }
+  .gloss::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    border-radius: inherit;
+    background-image:
+      /* 1. the catch light */
+      radial-gradient(
+        140% 130% at 14% -30%,
+        rgb(255 255 255 / calc(0.50 * var(--gloss-strength))) 0%,
+        rgb(255 255 255 / calc(0.12 * var(--gloss-strength))) 40%,
+        rgb(255 255 255 / 0) 70%
+      ),
+      /* 2. the sheen, cut at the waterline */
+      linear-gradient(
+        to bottom,
+        rgb(255 255 255 / calc(0.72 * var(--gloss-strength))) 0%,
+        rgb(255 255 255 / calc(0.34 * var(--gloss-strength))) 14%,
+        rgb(255 255 255 / calc(0.08 * var(--gloss-strength))) 30%,
+        rgb(255 255 255 / 0) 42%
+      ),
+      /* 3. the foot */
+      linear-gradient(
+        to bottom,
+        rgb(20 26 34 / 0) 72%,
+        rgb(20 26 34 / calc(0.05 * var(--gloss-strength))) 100%
+      );
+    /* 4. the rim */
+    box-shadow:
+      inset 0 1px 0 0 rgb(255 255 255 / calc(0.95 * var(--gloss-strength))),
+      inset 0 -1px 0 0 rgb(255 255 255 / calc(0.45 * var(--gloss-strength))),
+      inset 0 0 0 1px rgb(255 255 255 / calc(0.32 * var(--gloss-strength)));
+  }
+
+  /* The nav is 56px of capsule with sky on all four sides — the one surface in
+     the app where the sheen has room to be the whole object rather than a
+     detail on top of one. It carries a cloud as well, so its gloss comes down
+     a little to stop the two adding up to a white bar. */
+  .nav-float.gloss { --gloss-strength: 0.88; }
+
   /* Sunken/secondary regions. Less white, so more field — a sunken surface in
      a glass system is one you can see further through, not a grey one. */
   .surface-card--muted {
@@ -853,6 +948,25 @@
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
   }
+
+  /* --- The layer scale ----------------------------------------------------
+     Every stacking decision in the app is one of these five, and they are only
+     comparable because each one lives in the ROOT stacking context. Both
+     `.canvas` and `.nav-float` set `isolation: isolate`, so a z-index written
+     inside either of them is sealed in there and is not on this scale at all.
+
+       auto   `.canvas` — the app pane. Positioned and isolated, and after the
+              nav in tree order, so without an explicit layer on the nav it
+              paints over it.
+       30     the floating nav, and anything hanging off it (account menu).
+       35     in-view furniture that floats over the canvas but yields to every
+              overlay above it (the compare tray).
+       40/50  the phone drawer's scrim and sheet.
+       60/61  the feature gate.
+       70     modals and full-viewport overlays.
+
+     Anything at 40 or above has to be rendered through `<Portal>` if it is
+     written inside a view — see the note on that component. */
 
   /* ==========================================================================
      THE CANVAS — the object the whole layout now hangs off.

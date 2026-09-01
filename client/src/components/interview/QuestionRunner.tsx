@@ -268,7 +268,9 @@ export default function QuestionRunner({
             type="button"
             onClick={back}
             disabled={busy}
-            className="inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-1 text-micro font-bold uppercase tracking-[0.07em] text-ink-500 transition-colors hover:bg-ink-100 hover:text-ink-900 disabled:opacity-40"
+            /* `min-h-6` keeps this on the 24px target floor (WCAG 2.5.8); at
+               `py-1` around 10px type the box measured 20px tall. */
+            className="inline-flex min-h-6 shrink-0 items-center gap-1 rounded-full px-2 py-1 text-micro font-bold uppercase tracking-[0.07em] text-ink-500 transition-colors hover:bg-ink-100 hover:text-ink-900 disabled:opacity-40"
           >
             <ArrowLeft className="h-3 w-3" />
             Back

@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { CareerPath, PivotReadout, PsychReadout } from "../../types";
 import { getCareerIntelligence } from "../../lib/careerIntelligence";
-import { Button } from "../../ui";
+import { Button, Portal } from "../../ui";
 
 // The five theories behind the psychometric read, in the workbook's own order
 // and weighting. Labels are deliberately plain English — students should not
@@ -298,8 +298,16 @@ export default function BestFitPathsView({
   // further down, which uses the 700-on-50 pairs.
 
   return (
-    <div className="p-3.5 sm:p-6 md:p-8 bg-ink-50 text-ink-900 rounded-3xl min-h-[550px] relative border border-ink-200 shadow-e2">
-      
+    /* The compare tray is `fixed`, so it is out of flow and sits on top of
+       whatever the page ends with — which was the action row of the last two
+       cards. Reserve the tray's height at the foot of the view while it is up
+       so the grid ends above it rather than under it. */
+    <div
+      className={`p-3.5 sm:p-6 md:p-8 bg-ink-50 text-ink-900 rounded-3xl min-h-[550px] relative border border-ink-200 shadow-e2 ${
+        compareList.length >= 1 ? "pb-56 sm:pb-44 md:pb-36" : ""
+      }`}
+    >
+
       {/* HEADER SECTION */}
       <div className="flex flex-col md:flex-row md:items-end md:justify-between pb-6 border-b border-ink-200 mb-10 gap-4">
         <div>
@@ -474,11 +482,19 @@ export default function BestFitPathsView({
               >
                 {/* Image Section - Top 40% on md, 110px on mobile */}
                 <div className="relative h-[110px] md:h-[40%] w-full overflow-hidden shrink-0">
-                  <img 
-                    src={path.heroImage} 
-                    alt={path.fieldName} 
+                  {/* Decorative: the field name is rendered as an <h3> over
+                      this image, so an `alt` here only duplicates it — and
+                      when the photo fails to load, that alt text paints in the
+                      top-left of the plate, straight through the match badge.
+                      Empty alt plus a hide-on-error keeps the plate clean on a
+                      flaky connection. */}
+                  <img
+                    src={path.heroImage}
+                    alt=""
+                    aria-hidden
                     referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover transition-transform duration-700" 
+                    onError={(e) => { e.currentTarget.style.visibility = "hidden"; }}
+                    className="w-full h-full object-cover transition-transform duration-700 bg-ink-200"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
                   
@@ -499,28 +515,41 @@ export default function BestFitPathsView({
                 {/* Content Section */}
                 <div className="flex-1 p-4 flex flex-col justify-between">
                   {/* One line summary */}
-                  <p className="text-xs text-ink-600 font-medium line-clamp-2 md:truncate mb-3">
+                  {/* `line-clamp-2 md:truncate` fought itself: `truncate` sets
+                      `white-space: nowrap`, which collapses the clamp to one
+                      line and then cuts a full sentence at the card edge. Two
+                      clamped lines at every width is the same height budget and
+                      actually shows the sentence. */}
+                  <p className="text-xs text-ink-600 font-medium line-clamp-2 mb-3">
                     {path.oneLineRecommendation}
                   </p>
 
-                  {/* 4 Quick Metrics in a row */}
+                  {/* 4 Quick Metrics in a row.
+
+                      Every chip is `shrink-0` inside a `whitespace-nowrap`
+                      strip, so `truncate` on the label had nothing to truncate
+                      against: the intelligence strings are whole sentences
+                      ("India: Rs 4-6L entry, Rs 8-15L mid (3-6 yrs)...") and a
+                      chip grew to twelve hundred pixels, ran out of the card
+                      and was cut mid-word. The cap is what makes `truncate`
+                      mean something. Full text stays available on hover and to
+                      assistive tech via `title`. */}
                   <div className="scroll-slim mb-4 flex items-center gap-1.5 overflow-x-auto pb-1 whitespace-nowrap">
-                    <div className="flex items-center gap-1 shrink-0 bg-ink-50 border border-ink-200 shadow-e2 px-2 py-1 rounded-full text-micro text-ink-600">
-                      <TrendingUp className="h-3 w-3 text-moss-700" />
-                      <span className="font-semibold truncate">{intel.futureDemand}</span>
-                    </div>
-                    <div className="flex items-center gap-1 shrink-0 bg-ink-50 border border-ink-200 shadow-e2 px-2 py-1 rounded-full text-micro text-ink-600">
-                      <Briefcase className="h-3 w-3 text-good-500" />
-                      <span className="font-semibold truncate">{intel.salaryRange}</span>
-                    </div>
-                    <div className="flex items-center gap-1 shrink-0 bg-ink-50 border border-ink-200 shadow-e2 px-2 py-1 rounded-full text-micro text-ink-600">
-                      <Clock className="h-3 w-3 text-info-500" />
-                      <span className="font-semibold truncate">{intel.yearsToEnter}</span>
-                    </div>
-                    <div className="flex items-center gap-1 shrink-0 bg-ink-50 border border-ink-200 shadow-e2 px-2 py-1 rounded-full text-micro text-ink-600">
-                      <ShieldAlert className="h-3 w-3 text-moss-700" />
-                      <span className="font-semibold truncate">{intel.aiRisk}</span>
-                    </div>
+                    {[
+                      { Icon: TrendingUp, tone: "text-moss-700", value: intel.futureDemand },
+                      { Icon: Briefcase, tone: "text-good-500", value: intel.salaryRange },
+                      { Icon: Clock, tone: "text-info-500", value: intel.yearsToEnter },
+                      { Icon: ShieldAlert, tone: "text-moss-700", value: intel.aiRisk },
+                    ].map(({ Icon, tone, value }, i) => (
+                      <div
+                        key={i}
+                        title={value}
+                        className="flex max-w-[11rem] items-center gap-1 shrink-0 bg-ink-50 border border-ink-200 shadow-e2 px-2 py-1 rounded-full text-micro text-ink-600"
+                      >
+                        <Icon className={`h-3 w-3 shrink-0 ${tone}`} />
+                        <span className="min-w-0 truncate font-semibold">{value}</span>
+                      </div>
+                    ))}
                   </div>
 
                   {/* Actions. Three equal buttons each with a 65px floor and
@@ -561,14 +590,17 @@ export default function BestFitPathsView({
           })}        </div>
       )}
 
-      {/* Persistent Compare Workbench bar at bottom */}
+      {/* Persistent Compare Workbench bar at bottom. Portalled: `fixed` inside
+          the canvas is fixed to the canvas, not the viewport, so the tray
+          otherwise sat 14px off and was clipped by the canvas' rounded edge. */}
+      <Portal>
       <AnimatePresence>
         {compareList.length >= 1 && (
           <motion.div
             initial={{ opacity: 0, y: 100 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 100 }}
-            className="fixed bottom-20 md:bottom-6 left-1/2 -translate-x-1/2 z-40 w-full max-w-3xl px-4"
+            className="fixed bottom-20 md:bottom-6 left-1/2 -translate-x-1/2 z-[35] w-full max-w-3xl px-4"
           >
             <div className="bg-ink-900 text-white rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-white/10">
               <div className="flex flex-col">
@@ -603,7 +635,7 @@ export default function BestFitPathsView({
       {/* COMPARISON MATRIX MODAL */}
       <AnimatePresence>
         {showCompareModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 overflow-y-auto pt-20 pb-20">
+          <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/60 overflow-y-auto pt-20 pb-20">
             <motion.div
               initial={{ opacity: 0, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -790,6 +822,7 @@ export default function BestFitPathsView({
           </div>
         )}
       </AnimatePresence>
+      </Portal>
 
     </div>
   );

@@ -28,6 +28,7 @@ import {
   Users,
   X,
 } from "lucide-react";
+import { Portal } from "../../ui";
 import { CareerPath, Experience } from "../../types";
 import { experienceLibrary } from "../../data/experienceLibrary";
 import { getCuratedRecommendations, DailyReality, CognitiveLoad, PilotExperience } from "../../lib/pilotOrchestrator";
@@ -639,19 +640,19 @@ export default function ExperimentsView({
                 <div className="flex w-full sm:w-fit bg-ink-100 p-1 rounded-full text-micro sm:text-tiny font-mono font-bold tracking-wider uppercase text-ink-500 overflow-x-auto scroll-slim">
                   <button
                     onClick={() => setDashboardTab("for_you")}
-                    className={`flex-1 sm:flex-initial text-center whitespace-nowrap px-3 sm:px-4 py-1.5 sm:py-2 rounded-full transition-all cursor-pointer ${dashboardTab === "for_you" ? "bg-white text-ink-900 shadow-e2" : "hover:text-ink-900"}`}
+                    className={`min-h-6 flex-1 sm:flex-initial text-center whitespace-nowrap px-3 sm:px-4 py-1.5 sm:py-2 rounded-full transition-all cursor-pointer ${dashboardTab === "for_you" ? "bg-white text-ink-900 shadow-e2" : "hover:text-ink-900"}`}
                   >
                      For You
                   </button>
                   <button
                     onClick={() => setDashboardTab("in_progress")}
-                    className={`flex-1 sm:flex-initial text-center whitespace-nowrap px-3 sm:px-4 py-1.5 sm:py-2 rounded-full transition-all cursor-pointer ${dashboardTab === "in_progress" ? "bg-white text-ink-900 shadow-e2" : "hover:text-ink-900"}`}
+                    className={`min-h-6 flex-1 sm:flex-initial text-center whitespace-nowrap px-3 sm:px-4 py-1.5 sm:py-2 rounded-full transition-all cursor-pointer ${dashboardTab === "in_progress" ? "bg-white text-ink-900 shadow-e2" : "hover:text-ink-900"}`}
                   >
                     ⏳ In Progress
                   </button>
                   <button
                     onClick={() => setDashboardTab("completed")}
-                    className={`flex-1 sm:flex-initial text-center whitespace-nowrap px-3 sm:px-4 py-1.5 sm:py-2 rounded-full transition-all cursor-pointer ${dashboardTab === "completed" ? "bg-white text-ink-900 shadow-e2" : "hover:text-ink-900"}`}
+                    className={`min-h-6 flex-1 sm:flex-initial text-center whitespace-nowrap px-3 sm:px-4 py-1.5 sm:py-2 rounded-full transition-all cursor-pointer ${dashboardTab === "completed" ? "bg-white text-ink-900 shadow-e2" : "hover:text-ink-900"}`}
                   >
                      Completed ({completedExperienceIds.length})
                   </button>
@@ -731,10 +732,17 @@ export default function ExperimentsView({
                                    className="p-3 sm:p-5 bg-white border border-ink-200 rounded-lg hover:border-ink-400 transition-colors cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 group"
                                  >
                                    <div className="flex items-start gap-3 sm:gap-4 min-w-0 flex-1">
+                                     {/* Decorative — the title is the next node
+                                         over, so an `alt` only repeats it, and
+                                         a failed fetch painted that title as
+                                         broken-image text spilling out of a
+                                         52px box across the row. */}
                                      <img
                                        src={expImage}
-                                       alt={pick.title}
-                                       className="h-10 w-10 sm:h-14 sm:w-14 rounded-md object-cover shrink-0 border-2 border-moss-100/50 shadow-e1 self-center"
+                                       alt=""
+                                       aria-hidden
+                                       onError={(e) => { e.currentTarget.style.visibility = "hidden"; }}
+                                       className="h-10 w-10 sm:h-14 sm:w-14 rounded-md object-cover shrink-0 border-2 border-moss-100/50 shadow-e1 self-center bg-ink-100"
                                        referrerPolicy="no-referrer"
                                      />
                                      <div className="min-w-0 flex-1 space-y-1">
@@ -915,9 +923,14 @@ export default function ExperimentsView({
                 {/* Left block: Title, image and tags */}
                 <div className="md:col-span-5 flex flex-col items-center md:items-start text-center md:text-left space-y-4 sm:space-y-5">
                   <div className="relative h-36 sm:h-44 w-full bg-ink-100 rounded-2xl sm:rounded-3xl overflow-hidden border border-ink-200 shadow-e2">
+                    {/* Decorative: the <h3> beside it carries the same title,
+                        and a failed fetch otherwise paints that title over the
+                        subject badge in the top-left corner. */}
                     <img
                       src={getExperienceImage(selectedExp?.subject || "Science", selectedExp?.title || "")}
-                      alt={selectedExp?.title}
+                      alt=""
+                      aria-hidden
+                      onError={(e) => { e.currentTarget.style.visibility = "hidden"; }}
                       className="h-full w-full object-cover"
                       referrerPolicy="no-referrer"
                     />
@@ -1800,13 +1813,14 @@ export default function ExperimentsView({
       </div>
 
       {/* FULL-SCREEN OVERLAY MODAL FOR CERTIFICATE UPLOAD & DECODER */}
+      <Portal>
       <AnimatePresence>
         {showCertModal && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-ink-900/80 flex items-center justify-center p-4 md:p-6 overflow-y-auto"
+            className="fixed inset-0 z-[70] bg-ink-900/80 flex items-center justify-center p-4 md:p-6 overflow-y-auto"
           >
             <motion.div
               initial={{ scale: 0.95, y: 15 }}
@@ -2136,6 +2150,7 @@ export default function ExperimentsView({
           </motion.div>
         )}
       </AnimatePresence>
+      </Portal>
 
     </div>
   );

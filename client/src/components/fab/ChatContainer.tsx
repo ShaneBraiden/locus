@@ -416,7 +416,9 @@ export default function ChatContainer({
                     <button
                       onClick={() => voice.onSpeakMessage(message)}
                       title={voice.speakingMessageId === message.id ? "Stop" : "Read this out loud"}
-                      className="inline-flex items-center gap-1.5 rounded-full px-2 py-1 text-micro font-bold uppercase tracking-wider text-ink-500 transition-colors hover:bg-ink-100 hover:text-moss-700"
+                      /* `min-h-6` so the control clears the 24px floor in WCAG
+                         2.5.8 — at `py-1` around 10px type it measured 20px. */
+                      className="inline-flex min-h-6 items-center gap-1.5 rounded-full px-2 py-1 text-micro font-bold uppercase tracking-wider text-ink-500 transition-colors hover:bg-ink-100 hover:text-moss-700"
                     >
                       {voice.speakingMessageId === message.id ? (
                         <>

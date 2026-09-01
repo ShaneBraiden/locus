@@ -3,7 +3,7 @@ import { CareerPath, ProfileSignals, PracticalConstraints } from "../../types";
 import { UniversityMatch } from "../../data/universityData";
 import { getUniversityRecommendations } from "../../lib/universityIntelligence";
 import { useUniversityMedia } from "../../lib/universityImages";
-import { Badge, Button, EmptyState, Panel, Skeleton, cx } from "../../ui";
+import { Badge, Button, EmptyState, Panel, Portal, Skeleton, cx } from "../../ui";
 import { motion, AnimatePresence } from "motion/react";
 import {
   Award,
@@ -506,9 +506,10 @@ export default function UniversityView({ path, signals, constraints, onBack }: U
           wrapped to two lines. Each column now carries its own labels, which
           costs some repetition and buys an arrangement that cannot drift.
           ================================================================ */}
+      <Portal>
       <AnimatePresence>
         {showCompare && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6">
+          <div className="fixed inset-0 z-[70] flex items-center justify-center p-3 sm:p-6">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -568,6 +569,7 @@ export default function UniversityView({ path, signals, constraints, onBack }: U
           </div>
         )}
       </AnimatePresence>
+      </Portal>
     </div>
   );
 }

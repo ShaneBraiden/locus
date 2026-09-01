@@ -58,18 +58,26 @@ export default function CareerDetailView({
           radius as the panels under it. Bleeding it to the canvas edge meant
           relying on the canvas to clip its top corners, which worked and left
           the bottom two square against the content below. */}
-      <div className="media relative h-[34vh] min-h-[240px] w-full rounded-3xl sm:h-[42vh] sm:min-h-[320px]">
+      {/* The height used to be `h-[34vh]` with the caption block absolutely
+          positioned at `bottom-0`. On a phone that block — badge, two-line
+          headline, four lines of summary and two stacked buttons — is taller
+          than 34vh, so it grew upward out of the plate and landed on top of
+          the back button. It is in flow now and the plate is a *minimum*
+          height, so the hero grows to fit its own content instead. */}
+      <div className="media relative flex min-h-[240px] w-full flex-col rounded-3xl sm:min-h-[320px]">
         <img
           src={path.heroImage}
-          alt={path.fieldName}
+          alt=""
+          aria-hidden
           referrerPolicy="no-referrer"
+          onError={(e) => { e.currentTarget.style.visibility = "hidden"; }}
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-black/40" />
         <div className="absolute inset-0 bg-gradient-to-t from-ink-900 via-ink-900/70 to-transparent" />
         
         {/* Top Nav (Back) */}
-        <div className="absolute top-4 left-4 sm:top-6 sm:left-6 z-20">
+        <div className="relative z-20 p-4 sm:p-6">
           <button 
             onClick={onBack}
             className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-xs font-bold uppercase tracking-wider text-white backdrop-blur-sm transition-colors hover:bg-white/30"
@@ -83,7 +91,7 @@ export default function CareerDetailView({
             The type came down with the hero. It was 7xl on a 70vh plate, which
             is a landing-page proportion — at the height this block is now, a
             72px headline leaves room for the headline and nothing else. */}
-        <div className="absolute bottom-0 left-0 right-0 z-20 mx-auto flex max-w-5xl flex-col items-start p-4 sm:p-8">
+        <div className="relative z-20 mx-auto mt-auto flex w-full max-w-5xl flex-col items-start p-4 sm:p-8">
           <div className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1 text-micro font-bold uppercase tracking-widest text-ink-900">
             <Star className="h-3.5 w-3.5 text-moss-600" />
             {path.matchScore}% match

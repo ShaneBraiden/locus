@@ -391,7 +391,7 @@ export default function DashboardHomeView({
         </div>
 
         {topExperience ? (
-          <div className="relative overflow-hidden border border-ink-200 bg-white rounded-3xl p-5 sm:p-6 shadow-e1 hover:border-moss-500/30 transition-all duration-300 group">
+          <div className="gloss relative overflow-hidden border border-ink-200 bg-white rounded-3xl p-5 sm:p-6 shadow-e1 hover:border-moss-500/30 transition-all duration-300 group">
             <div className="relative flex flex-col lg:flex-row lg:items-center justify-between gap-6">
               <div className="space-y-3 flex-1 min-w-0">
                 <div className="flex flex-wrap items-center gap-2">

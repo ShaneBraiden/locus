@@ -296,7 +296,13 @@ export default function JourneyView({
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
                       placeholder="Search journey..."
-                      className="pl-8 pr-3 py-1.5 bg-white border border-ink-200 rounded-lg text-xs w-full sm:w-48 focus:outline-none focus:ring-2 focus:ring-moss-600/20"
+                      /* `pl-[1.875rem]`, not `pl-8`. The SPACING COMPRESSION
+                         block in index.css remaps `pl-8` from 2rem to 1.25rem,
+                         which put the text start at 20px — 4px inside the
+                         magnifier, which ends at 24px. An icon inset needs a
+                         literal value so a change to the density scale cannot
+                         walk the label under the icon. */
+                      className="pl-[1.875rem] pr-3 py-1.5 bg-white border border-ink-200 rounded-lg text-xs w-full sm:w-48 focus:outline-none focus:ring-2 focus:ring-moss-600/20"
                     />
                     <svg
                       className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-ink-500"

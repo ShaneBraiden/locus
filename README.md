@@ -13,14 +13,16 @@ clinical/science chaos to clarity.
 
 ## Accounts and storage
 
-Auth is email + password backed by **MongoDB** (`users` collection, bcrypt
-hashes, JWT sessions valid 30 days). Per-user app state — chat sessions, career
-paths, progress — is mirrored to the `userstates` collection so it follows the
-account across devices; `localStorage` remains the fast local cache. Guests can
-use the app without an account, but their data stays local only.
+Auth is email + password backed by **Postgres** — Supabase in production
+(`users` table, bcrypt hashes, JWT sessions valid 30 days). Per-user app state —
+chat sessions, career paths, progress — is mirrored to the `user_states` table
+so it follows the account across devices; `localStorage` remains the fast local
+cache. Guests can use the app without an account, but their data stays local
+only. The server creates its tables on first boot.
 
-If MongoDB is unreachable the server still boots on in-memory storage and warns
-loudly — accounts are lost on restart, so that mode is for local dev only.
+Without `DATABASE_URL` (or if the database is unreachable) the dev server still
+boots on in-memory storage and warns loudly — accounts are lost on restart, so
+that mode is for local dev only. In production it refuses to start instead.
 
 ## The six categories
 
@@ -147,8 +149,8 @@ mid-conversation without losing a single answer. Nothing about scoring changes:
 Sarvam only moves words between audio and text.
 
 **What FAB remembers.** Alongside the per-conversation `assessment`, each
-account has a long-term record (`server/src/memory.ts`, `usercontexts`
-collection): name, degree, spoken language, the deterministic traits from the
+account has a long-term record (`server/src/memory.ts`, `user_contexts`
+table): name, degree, spoken language, the deterministic traits from the
 item bank, the paths already ranked, and the things the student said in their
 own words. Every Gemini prompt on both channels is given this record, so a new
 chat with a returning student picks up where the last one ended instead of
@@ -160,8 +162,9 @@ identical.
 
 ## Run locally
 
-**Prerequisites:** Node.js, and MongoDB running locally (default
-`mongodb://127.0.0.1:27017/northr`).
+**Prerequisites:** Node.js. A database is optional in dev: point
+`DATABASE_URL` at a local Postgres or your Supabase project, or leave it unset
+to run on in-memory storage.
 
 ```bash
 # terminal 1 — API on :3000
@@ -174,14 +177,19 @@ cd client && npm install && npm run dev
 From the repo root: `npm run dev` (client), `npm run dev:server`,
 `npm run build`, `npm run lint`.
 
-The server needs no configuration in dev: it connects to local MongoDB, allows
+The server needs no configuration in dev: it runs on in-memory storage, allows
 guest sessions, and runs the conversation as plain multiple choice. Copy
-`.env.example` to `.env` to set `MONGODB_URI`, a real `JWT_SECRET` (required in
+`.env.example` to `.env` to set `DATABASE_URL`, a real `JWT_SECRET` (required in
 production), `GEMINI_API_KEY` — which is what turns the assessment into an
 actual conversation — and `SARVAM_API_KEY`, which adds the microphone.
 
 Voice needs a secure context in the browser: `localhost` is fine, but a LAN
 address must be served over HTTPS or the mic button will not appear.
+
+## Deploy
+
+One Render web service serves both the API and the built client, backed by a
+Supabase Postgres database. Step-by-step guide: [`DEPLOY.md`](DEPLOY.md).
 
 ## API
 

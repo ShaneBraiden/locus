@@ -1,3 +1,4 @@
+import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
@@ -36,6 +37,12 @@ dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 dotenv.config({ path: path.resolve(__dirname, '../.env'), override: true });
 
 const app = express();
+// Hosts like Render put a load balancer in front of the app. Without this every
+// request appears to come from the proxy's IP, so the rate limiters below would
+// throttle all students together as one client. TRUST_PROXY is the number of
+// proxy hops to trust (default 1); raise it if the host chains several.
+const trustProxy = process.env.TRUST_PROXY ?? '1';
+app.set('trust proxy', /^\d+$/.test(trustProxy) ? Number(trustProxy) : trustProxy);
 // State sync payloads can be large, and a voice clip arrives base64-encoded in
 // the same JSON body (see MAX_AUDIO_BYTES below for the per-clip cap).
 app.use(express.json({ limit: '8mb' }));
@@ -55,10 +62,17 @@ app.use((err: any, _req: express.Request, res: express.Response, next: express.N
   next(err);
 });
 
+// Signed-in students are limited per account. Guests all share one user id, so
+// they are limited per IP instead or every guest would throttle every other.
+const userOrIpKey = (req: express.Request): string => {
+  const user = (req as any).user as AuthUser | undefined;
+  return user && !user.isGuest ? user.id : ipKeyGenerator(req.ip ?? '');
+};
+
 const apiLimiter = rateLimit({
   windowMs: 5 * 60 * 1000,
   max: 150, // a full 15-question conversation is ~19 requests; leave headroom for the dashboard
-  keyGenerator: (req) => (req as any).user?.id || ipKeyGenerator(req.ip ?? ''),
+  keyGenerator: userOrIpKey,
   handler: (_req, res) => {
     res.status(429).json({ error: "You're sending requests too fast, please slow down" });
   },
@@ -69,7 +83,7 @@ const apiLimiter = rateLimit({
 const voiceLimiter = rateLimit({
   windowMs: 5 * 60 * 1000,
   max: 60,
-  keyGenerator: (req) => (req as any).user?.id || ipKeyGenerator(req.ip ?? ''),
+  keyGenerator: userOrIpKey,
   handler: (_req, res) => {
     res.status(429).json({ error: "That's a lot of talking. Give it a minute and try again." });
   },
@@ -610,6 +624,20 @@ app.post('/api/pilot/analyze', ah(requireAuth), apiLimiter, (req, res) => {
 app.use('/api', (_req, res) => {
   res.status(404).json({ error: 'Unknown endpoint' });
 });
+
+// In production the built client is served from this same process, so the
+// browser's relative /api calls reach this server with no CORS or base URL to
+// configure. In dev, Vite serves the client on :5173 and proxies /api here.
+const clientDist = path.resolve(__dirname, '../../client/dist');
+if (fs.existsSync(path.join(clientDist, 'index.html'))) {
+  // Vite content-hashes everything under assets/, so it can be cached forever.
+  app.use('/assets', express.static(path.join(clientDist, 'assets'), { immutable: true, maxAge: '1y' }));
+  app.use(express.static(clientDist, { index: false }));
+  app.get('*', (_req, res) => {
+    res.setHeader('Cache-Control', 'no-cache');
+    res.sendFile(path.join(clientDist, 'index.html'));
+  });
+}
 
 // Anything an async handler passed to next(err) lands here.
 app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {

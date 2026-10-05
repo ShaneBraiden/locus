@@ -2,10 +2,15 @@
   "name": "northr",
   "private": true,
   "version": "0.0.0",
+  "engines": {
+    "node": "24.x"
+  },
   "scripts": {
     "dev": "npm --prefix client run dev",
     "dev:server": "npm --prefix server run dev",
+    "install:all": "npm ci --prefix client --include=dev && npm ci --prefix server --include=dev",
     "build": "npm --prefix client run build && npm --prefix server run build",
+    "start": "npm --prefix server run start",
     "start:server": "npm --prefix server run start",
     "lint": "npm --prefix client run lint && npm --prefix server run lint"
   }

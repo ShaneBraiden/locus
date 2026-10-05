@@ -18,12 +18,12 @@ Two defining decisions:
 
 ```
 server/
-  package.json          # express, express-rate-limit, mongoose, bcryptjs,
+  package.json          # express, express-rate-limit, pg, bcryptjs,
                         # jsonwebtoken, @google/genai, dotenv
   tsconfig.json
   src/
     index.ts            # bootstrap: env, DB, rate limits, all routes, listen :3000
-    db.ts               # MongoDB (mongoose) + in-memory fallback; users & state repos
+    db.ts               # Postgres (pg; Supabase in prod) + in-memory fallback; repos
     auth.ts             # JWT sessions, bcrypt, register/login/me, requireAuth
     flow.ts             # stateless chat state machine over an explicit AssessmentState
     conversation.ts     # the Gemini interviewer: free text -> pre-scored option ids
@@ -46,12 +46,20 @@ Three datasets are read at boot; a missing file is a fail-fast startup error.
 
 ## 2. Accounts and storage
 
-MongoDB via mongoose, default `mongodb://127.0.0.1:27017/northr`.
+Postgres via `pg`, connected with `DATABASE_URL` — Supabase's Session pooler in
+production. `db.ts` creates the tables idempotently on every boot, so there is
+no separate migration step.
 
-| Collection   | Holds                                                        |
-| ------------ | ------------------------------------------------------------ |
-| `users`      | name, email (unique index), bcrypt hash (cost 10), timestamps |
-| `userstates` | one document per user: the client's synced app state          |
+| Table           | Holds                                                         |
+| --------------- | ------------------------------------------------------------- |
+| `users`         | uuid id, name, email (unique), bcrypt hash (cost 10), timestamps |
+| `user_states`   | one row per user: the client's synced app state (`jsonb`)      |
+| `user_contexts` | one row per user: FAB's long-term memory (`jsonb`)             |
+
+Row level security is enabled on all three with no policies. Supabase exposes
+`public` tables through its auto-generated Data API; with RLS and no policies
+the `anon` and `authenticated` roles read nothing, while this server connects
+as the table owner and is unaffected.
 
 Sessions are JWTs (`sub` = user id, 30-day expiry) signed with `JWT_SECRET`,
 which is **required in production** and falls back to a dev constant otherwise.
@@ -62,9 +70,10 @@ Guests send the literal token `local_guest_token`, allowed outside production
 (or with `ALLOW_GUEST=true`). Guest sessions are sandboxed: `/api/state` reads
 `null` and writes are no-ops, so guest data never touches the database.
 
-If MongoDB is unreachable the server boots on an in-memory implementation of the
-same repository interface and warns loudly at startup. Dev convenience only —
-accounts vanish on restart.
+Without a reachable database the dev server boots on an in-memory
+implementation of the same repository interface and warns loudly at startup.
+Dev convenience only — accounts vanish on restart. In production the server
+refuses to start rather than silently lose accounts.
 
 Login responses do not distinguish "no such user" from "wrong password", and the
 password comparison runs even when the user does not exist so response timing
@@ -236,6 +245,6 @@ Rate limits: 150 requests / 5 min per user on the API (a full conversation is
 
 ## 8. Environment
 
-All optional in dev. `MONGODB_URI`, `JWT_SECRET` (mandatory in production),
+All optional in dev. `DATABASE_URL`, `JWT_SECRET` (mandatory in production),
 `GEMINI_API_KEY`, `GEMINI_MODEL`, `ALLOW_GUEST`, `PORT`, `NODE_ENV`.
 See `.env.example`.

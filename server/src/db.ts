@@ -1,8 +1,8 @@
-import mongoose from 'mongoose';
+import pg from 'pg';
 
-// MongoDB persistence with a graceful in-memory fallback: if no MongoDB is
-// reachable the server still runs (auth + state survive until restart) and
-// logs loudly so nobody mistakes it for durable storage.
+// Postgres persistence (Supabase in production) with an in-memory fallback for
+// local dev: without DATABASE_URL the server still runs (auth + state survive
+// until restart) and logs loudly so nobody mistakes it for durable storage.
 
 export interface UserRecord {
   id: string;
@@ -13,7 +13,7 @@ export interface UserRecord {
 }
 
 export interface Repos {
-  backend: 'mongodb' | 'memory';
+  backend: 'postgres' | 'memory';
   users: {
     findByEmail(email: string): Promise<UserRecord | null>;
     findById(id: string): Promise<UserRecord | null>;
@@ -31,81 +31,125 @@ export interface Repos {
   };
 }
 
-const userSchema = new mongoose.Schema(
-  {
-    name: { type: String, required: true, trim: true, maxlength: 60 },
-    email: { type: String, required: true, unique: true, lowercase: true, trim: true },
-    passwordHash: { type: String, required: true },
-  },
-  { timestamps: true },
-);
+// Idempotent, so it runs on every boot and doubles as the migration.
+//
+// Supabase publishes every table in `public` through its auto-generated Data
+// API. Row level security with no policies closes that door completely — the
+// anon and authenticated roles see nothing — while this server, connecting as
+// the table owner, is unaffected. The password hashes must never be reachable
+// from there.
+const SCHEMA = `
+  CREATE TABLE IF NOT EXISTS users (
+    id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    name          text NOT NULL,
+    email         text NOT NULL UNIQUE,
+    password_hash text NOT NULL,
+    created_at    timestamptz NOT NULL DEFAULT now(),
+    updated_at    timestamptz NOT NULL DEFAULT now()
+  );
+  CREATE TABLE IF NOT EXISTS user_states (
+    user_id    uuid PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+    state      jsonb,
+    updated_at timestamptz NOT NULL DEFAULT now()
+  );
+  CREATE TABLE IF NOT EXISTS user_contexts (
+    user_id    uuid PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+    context    jsonb,
+    updated_at timestamptz NOT NULL DEFAULT now()
+  );
+  ALTER TABLE users         ENABLE ROW LEVEL SECURITY;
+  ALTER TABLE user_states   ENABLE ROW LEVEL SECURITY;
+  ALTER TABLE user_contexts ENABLE ROW LEVEL SECURITY;
+`;
 
-const stateSchema = new mongoose.Schema(
-  {
-    userId: { type: String, required: true, unique: true, index: true },
-    state: { type: mongoose.Schema.Types.Mixed },
-  },
-  { timestamps: true },
-);
+// Ids are uuids; anything else (a stale token from the MongoDB era, a forged
+// `sub`) would make Postgres throw on the cast, so it is simply not found.
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-const contextSchema = new mongoose.Schema(
-  {
-    userId: { type: String, required: true, unique: true, index: true },
-    context: { type: mongoose.Schema.Types.Mixed },
-  },
-  { timestamps: true },
-);
-
-function toRecord(doc: any): UserRecord {
+function toRecord(row: any): UserRecord {
   return {
-    id: String(doc._id),
-    name: doc.name,
-    email: doc.email,
-    passwordHash: doc.passwordHash,
-    createdAt: doc.createdAt?.toISOString?.() ?? new Date().toISOString(),
+    id: row.id,
+    name: row.name,
+    email: row.email,
+    passwordHash: row.password_hash,
+    createdAt: new Date(row.created_at).toISOString(),
   };
 }
 
-function mongoRepos(): Repos {
-  const User = mongoose.models.User ?? mongoose.model('User', userSchema);
-  const UserState = mongoose.models.UserState ?? mongoose.model('UserState', stateSchema);
-  const UserContextDoc = mongoose.models.UserContext ?? mongoose.model('UserContext', contextSchema);
+/**
+ * Connection options for a DATABASE_URL. Local servers get plain TCP; anything
+ * remote (Supabase) is encrypted. Supabase signs its certificate with its own
+ * CA, so the chain is verified only when DATABASE_SSL_CA holds that CA's PEM.
+ * Otherwise the link is encrypted but unverified, which is what Supabase's own
+ * Node examples do. `sslmode` is stripped from the URL because pg lets it
+ * override the `ssl` object below.
+ */
+export function poolConfig(databaseUrl: string): pg.PoolConfig {
+  const url = new URL(databaseUrl);
+  url.searchParams.delete('sslmode');
+  const local = ['localhost', '127.0.0.1', '[::1]'].includes(url.hostname);
+  const ca = process.env.DATABASE_SSL_CA;
   return {
-    backend: 'mongodb',
+    connectionString: url.toString(),
+    ssl: local ? false : ca ? { ca } : { rejectUnauthorized: false },
+    max: 5,
+    // A cloud database gets longer to answer the first connection.
+    connectionTimeoutMillis: 15000,
+  };
+}
+
+function postgresRepos(pool: pg.Pool): Repos {
+  const one = async (sql: string, params: unknown[]) => (await pool.query(sql, params)).rows[0] ?? null;
+  // Serialised explicitly: pg would turn a top-level array into a Postgres
+  // array literal rather than JSON.
+  const json = (value: unknown) => (value === undefined ? null : JSON.stringify(value));
+  return {
+    backend: 'postgres',
     users: {
       async findByEmail(email) {
-        const d = await User.findOne({ email: email.toLowerCase().trim() }).lean();
-        return d ? toRecord(d) : null;
+        const row = await one('SELECT * FROM users WHERE email = $1', [email.toLowerCase().trim()]);
+        return row ? toRecord(row) : null;
       },
       async findById(id) {
-        if (!mongoose.Types.ObjectId.isValid(id)) return null;
-        const d = await User.findById(id).lean();
-        return d ? toRecord(d) : null;
+        if (!UUID_RE.test(id)) return null;
+        const row = await one('SELECT * FROM users WHERE id = $1', [id]);
+        return row ? toRecord(row) : null;
       },
       async create(data) {
-        const d = await User.create(data);
-        return toRecord(d);
+        const row = await one(
+          'INSERT INTO users (name, email, password_hash) VALUES ($1, $2, $3) RETURNING *',
+          [data.name.trim(), data.email.toLowerCase().trim(), data.passwordHash],
+        );
+        return toRecord(row);
       },
     },
     state: {
       async get(userId) {
-        const d = await UserState.findOne({ userId }).lean();
-        return (d as any)?.state ?? null;
+        if (!UUID_RE.test(userId)) return null;
+        return (await one('SELECT state FROM user_states WHERE user_id = $1', [userId]))?.state ?? null;
       },
       async set(userId, state) {
-        await UserState.updateOne({ userId }, { $set: { state } }, { upsert: true });
+        await pool.query(
+          `INSERT INTO user_states (user_id, state) VALUES ($1, $2::jsonb)
+           ON CONFLICT (user_id) DO UPDATE SET state = EXCLUDED.state, updated_at = now()`,
+          [userId, json(state)],
+        );
       },
     },
     context: {
       async get(userId) {
-        const d = await UserContextDoc.findOne({ userId }).lean();
-        return (d as any)?.context ?? null;
+        if (!UUID_RE.test(userId)) return null;
+        return (await one('SELECT context FROM user_contexts WHERE user_id = $1', [userId]))?.context ?? null;
       },
       async set(userId, context) {
-        await UserContextDoc.updateOne({ userId }, { $set: { context } }, { upsert: true });
+        await pool.query(
+          `INSERT INTO user_contexts (user_id, context) VALUES ($1, $2::jsonb)
+           ON CONFLICT (user_id) DO UPDATE SET context = EXCLUDED.context, updated_at = now()`,
+          [userId, json(context)],
+        );
       },
       async clear(userId) {
-        await UserContextDoc.deleteOne({ userId });
+        await pool.query('DELETE FROM user_contexts WHERE user_id = $1', [userId]);
       },
     },
   };
@@ -154,16 +198,30 @@ let repos: Repos | null = null;
 
 export async function initDb(): Promise<Repos> {
   if (repos) return repos;
-  const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/northr';
+  const production = process.env.NODE_ENV === 'production';
+  const databaseUrl = process.env.DATABASE_URL;
+  let pool: pg.Pool | undefined;
   try {
-    await mongoose.connect(uri, { serverSelectionTimeoutMS: 4000 });
-    repos = mongoRepos();
-    console.log(`[db] connected to MongoDB at ${uri.replace(/\/\/[^@]*@/, '//***@')}`);
+    if (!databaseUrl) throw new Error('DATABASE_URL is not set');
+    pool = new pg.Pool(poolConfig(databaseUrl));
+    // An idle client dropped by the pooler emits 'error' on the pool; without a
+    // listener that would crash the process. The pool replaces the client.
+    pool.on('error', (err) => console.error('[db] idle client error:', err.message));
+    await pool.query(SCHEMA);
+    repos = postgresRepos(pool);
+    const where = new URL(databaseUrl);
+    console.log(`[db] connected to Postgres at ${where.hostname}:${where.port || 5432}${where.pathname}`);
   } catch (err: any) {
+    await pool?.end().catch(() => {});
+    // A hosted instance that restarts or sleeps would silently wipe every
+    // account on in-memory storage, so production refuses to boot instead.
+    if (production) {
+      throw new Error(`Database unreachable in production (${err.message}). Check DATABASE_URL — see DEPLOY.md.`);
+    }
     console.warn('!!'.repeat(35));
-    console.warn(`[db] MongoDB unreachable (${err.message}).`);
+    console.warn(`[db] Postgres unavailable (${err.message}).`);
     console.warn('[db] FALLING BACK TO IN-MEMORY STORAGE — accounts and saved state are LOST on restart.');
-    console.warn('[db] Start MongoDB or set MONGODB_URI, then restart the server.');
+    console.warn('[db] Set DATABASE_URL (local Postgres or your Supabase project), then restart the server.');
     console.warn('!!'.repeat(35));
     repos = memoryRepos();
   }

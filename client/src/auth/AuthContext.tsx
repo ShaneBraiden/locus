@@ -8,7 +8,7 @@ import React, {
 } from "react";
 
 // ---------------------------------------------------------------------------
-// Northr auth — MongoDB-backed API (replaces the old Firebase integration).
+// Northr auth — Postgres-backed API (replaces the old Firebase integration).
 //
 //   POST /api/auth/register  {name,email,password} -> 201 {token, user}
 //   POST /api/auth/login     {email,password}      -> 200 {token, user}

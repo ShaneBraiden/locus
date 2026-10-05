@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { getRepos } from './db.js';
 
-// JWT auth over MongoDB-backed users. Replaces the old Firebase Admin flow.
+// JWT auth over Postgres-backed users (Supabase in production). Replaces the old Firebase Admin flow.
 // The literal token "local_guest_token" still grants a sandboxed guest session
 // in dev so the app is usable without registering.
 

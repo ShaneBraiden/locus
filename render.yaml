@@ -1,0 +1,29 @@
+# Render Blueprint: one web service serves both the API and the built client.
+# Deploy guide: DEPLOY.md
+services:
+  - type: web
+    name: northr
+    runtime: node
+    plan: free
+    region: singapore
+    branch: main
+    buildCommand: npm run install:all && npm run build
+    startCommand: npm start
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      # The login page offers "Continue as guest"; production rejects guest
+      # tokens unless this is set. Set to "false" to make accounts mandatory.
+      - key: ALLOW_GUEST
+        value: "true"
+      # Secrets: Render asks for these when the Blueprint is created.
+      # Supabase → Connect → Session pooler connection string (see DEPLOY.md).
+      - key: DATABASE_URL
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: SARVAM_API_KEY
+        sync: false
